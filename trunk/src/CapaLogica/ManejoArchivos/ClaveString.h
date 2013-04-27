@@ -23,11 +23,11 @@ class ClaveString:public Clave{
 
 	public:
 
-		virtual void importar(char* buffer,unsigned short tamanioBuffer= 0);
+		virtual void desempaquetar(char* buffer,unsigned short tamanioBuffer= 0);
 		/*importa un string a partir de una cadena de caracteres. Si tamanioBuffer no es
 		 * especificado, se toma como 0 -> como tamanio del buffer se usa strlen(buffer) .*/
 
-		virtual int exportar(char* buffer);
+		virtual int empaquetar(char* buffer);
 		/*exporta el string como una cadena de caracteres, se retorna la longitud de
 		 * dicha cadena*/
 
@@ -51,6 +51,8 @@ class ClaveString:public Clave{
 		void set_dato(const string&);
 		string get_dato();
 		/*getters y setters*/
+
+		int get_tamanio();
 
 		ClaveString();
 		ClaveString(const string& linea);

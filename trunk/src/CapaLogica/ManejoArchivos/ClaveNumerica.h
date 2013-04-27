@@ -29,11 +29,11 @@ class ClaveNumerica:public Clave {
 		/*se redefinen operatores*/
 
 
-		virtual void importar(char* buffer,unsigned short tamanioBuffer= sizeof(int));
+		virtual void desempaquetar(char* buffer,unsigned short tamanioBuffer= sizeof(int));
 		/*no es necesario aclarar el tamanio de la clave, los integer siempre tienen el mismo
 		 * tamanio.*/
 
-		virtual int exportar(char* buffer);
+		virtual int empaquetar(char* buffer);
 
 		int incrementar();
 		/*incrementa en uno el valor de la clave y retorna el nuevo valor incrementado*/
@@ -41,6 +41,8 @@ class ClaveNumerica:public Clave {
 		void set_dato(int dato);
 		int get_dato();
 		/*getters y setters*/
+
+		int get_tamanio();
 
 		ClaveNumerica();
 		ClaveNumerica(int dato);

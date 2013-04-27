@@ -1,6 +1,6 @@
 #include "ClaveNumerica.h"
 
-void ClaveNumerica::importar(char* buffer,unsigned short tamanioBuffer){
+void ClaveNumerica::desempaquetar(char* buffer,unsigned short tamanioBuffer){
 
 	stringstream stream;
 	stream.write(buffer,tamanioBuffer);
@@ -11,7 +11,7 @@ void ClaveNumerica::importar(char* buffer,unsigned short tamanioBuffer){
 }
 
 
-int ClaveNumerica::exportar(char* buffer){
+int ClaveNumerica::empaquetar(char* buffer){
 
 	stringstream stream;
 	stream.write( (char*)&dato , sizeof(int) );
@@ -94,6 +94,13 @@ void ClaveNumerica::set_dato(int dato){
 int ClaveNumerica::get_dato(){
 
 	return dato;
+
+}
+
+
+int ClaveNumerica::get_tamanio(){
+
+	return sizeof(int);
 
 }
 
