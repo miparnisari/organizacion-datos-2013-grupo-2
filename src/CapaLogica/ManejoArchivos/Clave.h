@@ -19,11 +19,12 @@ class Clave{
 		/*clases que extiendan a clave tendran que redefinir los operadores de comparacion
 		 * > , < y == */
 
-		virtual int exportar(char* buffer)= 0;
+		virtual int empaquetar(char* buffer)= 0;
 		/*exporta los datos como un buffer de char. Se retorna la cantidad de bytes escritos*/
-		virtual void importar(char* buffer,unsigned short tamanioBuffer)= 0;
+		virtual void desempaquetar(char* buffer,unsigned short tamanioBuffer)= 0;
 		/*importa una clave desde un buffer de char. */
-
+		virtual int get_tamanio()= 0;
+		/*retorna el tamanio de la clave guardada en bytes*/
 
 		Clave();
 		virtual ~Clave();

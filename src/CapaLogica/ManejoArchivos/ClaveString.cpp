@@ -8,7 +8,7 @@
 #include "ClaveString.h"
 
 
-void ClaveString::importar(char* buffer,unsigned short tamanioBuffer){
+void ClaveString::desempaquetar(char* buffer,unsigned short tamanioBuffer){
 
 	if(tamanioBuffer== 0)
 		tamanioBuffer= strlen(buffer);
@@ -19,9 +19,13 @@ void ClaveString::importar(char* buffer,unsigned short tamanioBuffer){
 }
 
 
-int ClaveString::exportar(char* buffer){
+int ClaveString::empaquetar(char* buffer){
 
-	memcpy(buffer,dato.c_str(),dato.length());
+	//memcpy(buffer,dato.c_str(),dato.length());
+	stringstream ss;
+	ss.write(dato.c_str(),dato.length());
+	ss.seekg(0,ss.beg);
+	ss.read(buffer,dato.length());
 
 	return dato.length();
 
@@ -119,6 +123,13 @@ void ClaveString::set_dato(const string& dato){
 string ClaveString::get_dato(){
 
 	return dato;
+
+}
+
+
+int ClaveString::get_tamanio(){
+
+	return dato.length();
 
 }
 
