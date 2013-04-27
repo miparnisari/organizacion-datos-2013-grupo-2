@@ -1,0 +1,557 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{titlesec}
+
+\titleformat{\section}
+{\color{red}\normalfont\Large\bfseries}{\thesection}{1em}{}
+
+\titleformat{\subsection}
+{\color{blue}\normalfont\Large\bfseries}{\thesubsection}{1em}{}
+
+\titleformat{\subsubsection}
+{\color{cyan}\normalfont\Large\bfseries}{\thesubsubsection}{1em}{}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language spanish
+\language_package none
+\inputencoding auto
+\fontencoding default
+\font_roman default
+\font_sans default
+\font_typewriter beramono
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format pdf2
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_title "Organizacion de Datos"
+\pdf_author "Maria Ines Parnisari"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize a4paper
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 0
+\use_mathdots 0
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 0
+\paragraph_separation skip
+\defskip smallskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\listings_params "keywordstyle={\color{red}},language={C++}"
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+int HashingExtensibleSufijo::insertar(registro, tabla, bloques):
+\end_layout
+
+\begin_layout Plain Layout
+
+	int posTabla = fhash(registro.clave)
+\end_layout
+
+\begin_layout Plain Layout
+
+	int numeroBloque = tabla[posTabla]
+\end_layout
+
+\begin_layout Plain Layout
+
+	Bloque bloque = bloques[numeroBloque]
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\end_layout
+
+\begin_layout Plain Layout
+
+	if (bloque.contiene(registro.clave))
+\end_layout
+
+\begin_layout Plain Layout
+
+		return RES_REGISTRO_DUPLICADO
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\end_layout
+
+\begin_layout Plain Layout
+
+	if (bloque.cantRegsLibres < tabla.cantRegsPorBloque)
+\end_layout
+
+\begin_layout Plain Layout
+
+		bloque.insertar(registro)
+\end_layout
+
+\begin_layout Plain Layout
+
+		return RES_OK
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	// La clave no esta en el bloque y no se puede insertar en el
+\end_layout
+
+\begin_layout Plain Layout
+
+	// El bloque aparece referenciado en la tabla solo 1 vez
+\end_layout
+
+\begin_layout Plain Layout
+
+	if (bloque.td == tabla.tt)
+\end_layout
+
+\begin_layout Plain Layout
+
+		tabla.duplicar()
+\end_layout
+
+\begin_layout Plain Layout
+
+		tabla.tt *= 2
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		Bloque nuevoBloque // Uno nuevo o el primero de bloquesLibres
+\end_layout
+
+\begin_layout Plain Layout
+
+		bloques.agregar(nuevoBloque) // Si cree uno nuevo
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		bloque.td *= 2
+\end_layout
+
+\begin_layout Plain Layout
+
+		nuevoBloque.td = bloque.td
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		// Actualizo la referencia en la tabla
+\end_layout
+
+\begin_layout Plain Layout
+
+		tabla[posTabla] = numNuevoBloque
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\end_layout
+
+\begin_layout Plain Layout
+
+	// La clave no esta en el bloque y no se puede insertar en el
+\end_layout
+
+\begin_layout Plain Layout
+
+	// El bloque aparece referenciado en la tabla mas de 1 vez
+\end_layout
+
+\begin_layout Plain Layout
+
+	else:
+\end_layout
+
+\begin_layout Plain Layout
+
+		Bloque nuevoBloque // Uno nuevo o el primero de bloquesLibres
+\end_layout
+
+\begin_layout Plain Layout
+
+		bloques.agregar(nuevoBloque) // Si cree uno nuevo
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		bloque.td *= 2
+\end_layout
+
+\begin_layout Plain Layout
+
+		nuevoBloque.td = bloque.td
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		// Actualizo las referencias en la tabla
+\end_layout
+
+\begin_layout Plain Layout
+
+		int punteroInicial = numBloque
+\end_layout
+
+\begin_layout Plain Layout
+
+		while (tabla[punteroInicial] == numBloque)
+\end_layout
+
+\begin_layout Plain Layout
+
+			tabla[punteroInicial] = numNuevoBloque
+\end_layout
+
+\begin_layout Plain Layout
+
+			punteroInicial = (punteroInicial + bloque.td) mod (tabla.tt)
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\end_layout
+
+\begin_layout Plain Layout
+
+	bloque.redispersar()
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	insertar(registro, tabla, bloques)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Alta mediante bits sufijos.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+int HashingExtensibleSufijo::baja (registro, tabla, bloques, bloquesLibres):
+\end_layout
+
+\begin_layout Plain Layout
+
+	int posTabla = funcionMod(registro.clave)
+\end_layout
+
+\begin_layout Plain Layout
+
+	int numeroBloque = tabla[posTabla]
+\end_layout
+
+\begin_layout Plain Layout
+
+	Bloque bloque = bloques[numeroBloque]
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\end_layout
+
+\begin_layout Plain Layout
+
+	if (! bloque.contiene(registro.clave))
+\end_layout
+
+\begin_layout Plain Layout
+
+		return RES_REGISTRO_NO_EXISTE
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\end_layout
+
+\begin_layout Plain Layout
+
+	if (bloque.cantRegsLibres > 1)
+\end_layout
+
+\begin_layout Plain Layout
+
+		bloque.eliminar(registro)
+\end_layout
+
+\begin_layout Plain Layout
+
+		return RES_OK
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	// El bloque queda vacio
+\end_layout
+
+\begin_layout Plain Layout
+
+	else:
+\end_layout
+
+\begin_layout Plain Layout
+
+		int posTabla_atras = (posTabla - bloque.td / 2) mod (tabla.tt)
+\end_layout
+
+\begin_layout Plain Layout
+
+		int posTabla_adelante = (posTabla - bloque.td / 2) mod (tabla.tt)
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\end_layout
+
+\begin_layout Plain Layout
+
+		if (tabla[posTabla_atras] == tabla[posTabla_adelante):
+\end_layout
+
+\begin_layout Plain Layout
+
+			// El bloque se lo puede agregar a "bloques libres"
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+			bloquesLibres.agregar(numBloque)
+\end_layout
+
+\begin_layout Plain Layout
+
+			numBloqueReemplazo = tabla[posTabla_atras]
+\end_layout
+
+\begin_layout Plain Layout
+
+			Bloque reemplazo = bloques[numBloqueReemplazo]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+			// Se reemplazan sus referencias en la tabla por otro bloque
+\end_layout
+
+\begin_layout Plain Layout
+
+			int punteroInicial = numBLoque
+\end_layout
+
+\begin_layout Plain Layout
+
+			while (tabla[punteroInicial] != numBloqueReemplazo)
+\end_layout
+
+\begin_layout Plain Layout
+
+				tabla[punteroInicial] = numBloqueReemplazo
+\end_layout
+
+\begin_layout Plain Layout
+
+				punteroInicial = (punteroInicial + reemplazo.td) mod (tabla.tt)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+			reemplazo.td /= 2
+\end_layout
+
+\begin_layout Plain Layout
+
+			if (tabla.mitadesIguales())
+\end_layout
+
+\begin_layout Plain Layout
+
+				tabla.cortarPorMitad()
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		else:
+\end_layout
+
+\begin_layout Plain Layout
+
+			// No se puede marcar como libre, queda vacio
+\end_layout
+
+\begin_layout Plain Layout
+
+			return RES_OK
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Baja mediante bits sufijos
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
