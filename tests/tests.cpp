@@ -186,14 +186,15 @@ void test_recuperar_campos_registro_variable()
 	rv3.agregar_campo(campos[1].c_str(),strlen(campos[1].c_str()));
 	rv3.agregar_campo(campos[2].c_str(),strlen(campos[2].c_str()));
 
-
+	char* campoRecuperado;
 	for (unsigned short int i = 0; i < rv3.get_cantidad_campos(); i ++)
 	{
-		char* campoRecuperado = new char[rv3.get_tamanio_campo(i) +1]();
+		campoRecuperado = new char[rv3.get_tamanio_campo(i) +1]();
 		rv3.recuperar_campo(campoRecuperado,i);
 		const char* copia = campoRecuperado;
 		const char* campo = campos[i].c_str();
 		assert (strcmp(copia,campo) == 0);
+		delete[] campoRecuperado;
 	}
 
 	print_test_ok("test_recuperar_campos_registro_variable");
@@ -340,6 +341,8 @@ void test_clave_string(){
 
 	clave2.desempaquetar(cadena ,10 );
 	assert(clave1== clave2);
+	
+	delete[] cadena;
 
 	print_test_ok("test_clave_string");
 
@@ -593,6 +596,7 @@ void test_recuperar_registros_bloque(){
 	tamanioCampo= rv6.recuperar_campo(campo,1);
 	string s3(campo,tamanioCampo);
 	assert(s3 == datos[1]);
+	delete[] campo;
 	/*en el campo 1 del registro 0 se guarda "ines"*/
 
 	assert( b2.recuperar_registro(&rv6 , 1) );
@@ -602,7 +606,7 @@ void test_recuperar_registros_bloque(){
 	assert(s4 == datos[3]);
 	/*en el campo 1 del registro 1 se guarda "ricardo"*/
 
-
+	delete[] campo;
 	print_test_ok("test_recuperar_registros_bloque");
 
 

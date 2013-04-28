@@ -20,7 +20,6 @@ tests:  $(OBJLIBS)
 	$(CC) $(CFLAGS) $(EXTERNOBJ) $(EXTERNOBJ-CAPALOGICA) -o $@ $(TARGETS)
 
 clean :
-	$(ECHO) Borrando archivos.
 	-$(RM) -f ./tests
 	cd "../src"; make clean
 	find . -name "*.o" -type f -print | xargs /bin/rm -f

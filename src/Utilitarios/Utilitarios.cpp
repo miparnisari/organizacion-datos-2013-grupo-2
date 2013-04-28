@@ -28,7 +28,7 @@ namespace utilitarios
 
 	}/*imprime argumentos del programa*/
 	
-	int listpath (std::string dir, std::vector<std::string> &files, const char* extension)
+	int listpath (std::string dir, std::vector<std::string> & files, const char* extension)
 	{
 		DIR* dp;
 		struct dirent* dirp;
@@ -37,7 +37,7 @@ namespace utilitarios
 			return errno;
 		}
 
-		std::string filename;
+		std::string filename = "";
 		
 		while ((dirp = readdir(dp)) != NULL) {
 			filename = std::string(dirp->d_name);
