@@ -29,11 +29,14 @@ char ParserCanciones::estandarizar (char caracter)
 
 int ParserCanciones::create (std::string dir)
 {
+	char cwd[1024];
+	getcwd(cwd, sizeof(cwd));
 	archivos = std::vector<std::string>();
 	int res = chdir(dir.c_str()); // Cambia el directorio al del repositorio, para poder indexar
 	if (res == -1)
 		return RES_DIRECTORY_DOESNT_EXIST;
 	listpath (dir, archivos, ".txt");
+	chdir(cwd); // De vuelta al directorio original
 	return RES_OK;
 }
 

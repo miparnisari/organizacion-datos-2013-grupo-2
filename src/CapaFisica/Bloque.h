@@ -18,11 +18,11 @@ class Bloque {
 		unsigned int tamanioBloque;
 		unsigned int espacioLibreOffset;
 
-		virtual void obtener_espacio_libre()throw();
+		virtual void obtener_espacio_libre()const throw();
 		virtual void escribir_espacio_libre()throw();
-		virtual unsigned int obtener_offset_final()throw();
-		virtual unsigned int obtener_offset_registro(unsigned short numeroRegistro)throw();
-		virtual unsigned int calcular_resto_bloque(unsigned int offsetRegistro)throw();
+		virtual unsigned int obtener_offset_final()const throw();
+		virtual unsigned int obtener_offset_registro(unsigned short numeroRegistro)const throw();
+		virtual unsigned int calcular_resto_bloque(unsigned int offsetRegistro)const throw();
 		virtual void limpiar_buffer()throw();
 
 	public:
@@ -30,18 +30,23 @@ class Bloque {
 		/*Si no se le pasa un tamanio, se le asignara BLOQUE_TAM_DEFAULT.*/
 		virtual ~Bloque();
 
-		virtual unsigned short get_cantidad_registros_almacenados()throw();
+		int marcar_libre_bloque(unsigned int numBloque); //TODO
+		int actualizar_ref_prox_bloque(unsigned int primerBloque); //TODO
+		int obtener_ref_prox_bloque(); //TODO
+		bool esta_libre(); //TODO
 
-		virtual unsigned int get_espacio_libre()throw(){
+		virtual unsigned short get_cantidad_registros_almacenados()const throw();
+
+		virtual unsigned int get_espacio_libre()const throw(){
 			return this->espacioLibre;}
 
-		unsigned int get_tamanio_bloque()throw(){
+		unsigned int get_tamanio_bloque()const throw(){
 			return this->tamanioBloque;}
 
-		virtual char* get_buffer()throw(){
+		virtual char* get_buffer()const throw(){
 			return this->bufferBloque;}
 
-		virtual bool esta_vacio()throw();
+		virtual bool esta_vacio()const throw();
 
 		virtual int recuperar_registro(RegistroVariable* registro, unsigned short numeroRegistro)throw();
 		/*se recupera un registro de una posicion determinada y se retorna la cantidad de bytes leidos.
@@ -73,11 +78,11 @@ class Bloque {
 		 * del TP0, NO PRESTAR ATENCION!!!*/
 		virtual void listar_registros()throw();
 		/*lista el byte offset de cada registro contenido en el bloque*/
-		virtual unsigned int calcular_espacio_usable()throw();
+		virtual unsigned int calcular_espacio_usable()const throw();
 		/*calcula espacio asignado al bloque para guardar registros exclusivamente*/
-		virtual unsigned int calcular_espacio_ocupado()throw();
+		virtual unsigned int calcular_espacio_ocupado()const throw();
 		/*calcula espacio ocupado por registros exclusivamente*/
-		virtual unsigned int calcular_espacio_libre()throw();
+		virtual unsigned int calcular_espacio_libre()const throw();
 		/*este metodo puede ser alterado en clases hijas para agregar un colchon de amortiguacion de
 		 * datos de 75% por ejemplo*/
 		virtual int agregar_registro(char* dato,unsigned short tamanioDato)throw();

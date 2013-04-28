@@ -10,34 +10,42 @@
 
 #include "ManejadorArchivos.h"
 #include "Bloque.h"
-#include <sstream>
-#include <fstream>
+#include <stdio.h>
+#include "../Utilitarios/Utilitarios.h"
 
 using namespace std;
 
+struct mb_header
+{
+	unsigned int tamanioBloque;
+	unsigned int cantidadBloques;
+	int proximoBloqueLibre;
+};
+
 class ManejadorBloques:public ManejadorArchivos {
 
-	protected:
-		unsigned int tamanioBloque;
+	private:
+		struct mb_header header;
+		FILE* file_handler;
 
-		virtual int hallar_bloque_libre(ifstream& archivo,Bloque* bloque,unsigned int espacioNecesario)throw();
+		int __set_header();
+		int __get_header();
+		int __marcar_libre_bloque(std::string nombreArchivo, unsigned int numBloque);
+		int __marcar_usado_bloque(std::string nombreArchivo, unsigned int numBloque);
 
 	public:
+		ManejadorBloques(unsigned int tamBloque = BLOQUE_TAM_DEFAULT);
+		~ManejadorBloques();
 		
+		int crear_archivo(std::string nombreArchivo);
+		int abrir_archivo(std::string nombreArchivo, std::string modo);
 
-		virtual int contar_bloques(char* nombreArchivo)throw();
-		virtual int agregar_registro(char* nombreArchivo,char* dato,unsigned int tamanioDato)throw();
-		virtual int agregar_archivo(char* nombreArchivoDestino,char* nombreArchivoFuente)throw();
-		virtual bool esta_vacio(char* nombreArchivo)throw();
-		virtual int listar_archivo_completo(char* nombreArchivo)throw();
-		virtual int obtener_bloque(char* nombreArchivo,unsigned short numeroBloque,Bloque* bloque)throw();
-		virtual int listar_bloque(char* nombreArchivo,unsigned short numeroBloque)throw();
+		int actualizar_bloque(std::string nombreArchivo, Bloque* bloque, unsigned int numBloque);
+		int obtener_bloque(std::string nombreArchivo,  Bloque* bloque, unsigned int numBloque);
 
-		ManejadorBloques(unsigned int tb){
-			tamanioBloque= tb;
-		}
-		virtual ~ManejadorBloques(){}
-
+		int get_cantidad_bloques();
+		int get_proximo_bloque_libre();
+		int get_tamanio_bloque();
 
 };
 
