@@ -7,7 +7,7 @@ AOBJS = $(OBJS:.o=.a)
 %.a : $(OBJS)
 	ar cr $@ $^
  
-%.o: %.cpp
+(../bin/)%.o: %.cpp
 	$(CC) -c $(CFLAGS) $<
 
 main: $(OBJS)

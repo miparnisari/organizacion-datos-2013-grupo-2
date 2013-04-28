@@ -334,11 +334,11 @@ void test_clave_string(){
 
 	const int TAMANIO_CADENA = 16;
 	char* cadena = new char[TAMANIO_CADENA]();
-	clave1.exportar(cadena);
-	clave2.importar(cadena);
+	clave1.empaquetar(cadena);
+	clave2.desempaquetar(cadena);
 	assert(clave1== clave2);
 
-	clave2.importar(cadena ,10 );
+	clave2.desempaquetar(cadena ,10 );
 	assert(clave1== clave2);
 
 	print_test_ok("test_clave_string");
@@ -366,8 +366,8 @@ void test_clave_numerica(){
 	ClaveString cs3;
 	const int TAMANIO_BUFFER= 64;
 	char* buffer= new char[TAMANIO_BUFFER]();
-	cs1.exportar(buffer);
-	cs3.importar(buffer);
+	cs1.empaquetar(buffer);
+	cs3.desempaquetar(buffer);
 	assert(cs1 <= cs3 && cs1 >= cs3 && cs1 == cs3);
 	delete[] buffer;
 
@@ -375,11 +375,11 @@ void test_clave_numerica(){
 	ClaveString cs4;
 	cs4.set_dato(s1);
 	buffer= new char[TAMANIO_BUFFER]();
-	assert( cs4.exportar(buffer) == (signed)s1.length() );
+	assert( cs4.empaquetar(buffer) == (signed)s1.length() );
 	assert( strlen(buffer)== s1.length() );
 	ClaveString cs5;
-	int s1Largo= cs4.exportar(buffer);
-	cs5.importar(buffer,s1Largo);
+	int s1Largo= cs4.empaquetar(buffer);
+	cs5.desempaquetar(buffer,s1Largo);
 	assert(cs4 == cs5);
 	delete[] buffer;
 
@@ -388,7 +388,7 @@ void test_clave_numerica(){
 	assert( mayor_a(&cn5 , &cn4) );
 	assert( !mayor_a(&cn4,&cn5) );
 
-	cout<<endl<<"fin test_clave"<<endl;
+	print_test_ok("test_clave");
 
 }/*funcionaaa*/
 
@@ -453,7 +453,7 @@ void test_agregar_registros_bloque(){
 	assert( b4.agregar_registro(&rv4)== RES_ERROR );
 	/*no se puede agregar un registro que fue limpiado a un bloque*/
 
-	cout<<"OK: test_agregar_registros_bloque"<<endl;
+	print_test_ok("test_agregar_registros_bloque");
 
 
 }/*FUNCIONA! .LA INSERSION DE REGISTROS (APPEND) Y CALCULOS DE ESPACIO LIBRE FUNCIONAN
@@ -496,7 +496,7 @@ void test_remover_registros_bloque(){
 	/*si se busca remover un registro de una posicion mas alla de la ultima
 	 * el metodo retorna error y ningun registro es removido del bloque*/
 
-	cout<<"OK: test_remover_registros_bloque"<<endl;
+	print_test_ok("test_remover_registros_bloque");
 
 
 }/*FUNCIONA! . REGISTROS SE REMUEVEN DEL BLOQUE EFECTIVAMENTE . */
@@ -603,7 +603,7 @@ void test_recuperar_registros_bloque(){
 	/*en el campo 1 del registro 1 se guarda "ricardo"*/
 
 
-	cout<<"OK: test_recuperar_registros_bloque"<<endl;
+	print_test_ok("test_recuperar_registros_bloque");
 
 
 }/*FUNCIONA. LOS REGISTROS SE RECUPERAN DE FORMA CORRECTA Y SUS CAMPOS PUEDEN
@@ -625,7 +625,7 @@ void test_empaquetar_desempaquetar_bloque(){
 	char* empaquetador = new char[b1.get_tamanio_bloque()+100]();
 	b1.empaquetar(empaquetador);
 	b2.desempaquetar(empaquetador);
-	delete empaquetador;
+	delete[] empaquetador;
 	/*el empaquetamiento y desempaquetamiento resultara a pesar que el tamanio del buffer
 	 * empaquetador sea mas grande que el tamnio del bloque a empaquetar.*/
 
@@ -652,17 +652,43 @@ void test_empaquetar_desempaquetar_bloque(){
 	}/*al desempaquetar b2 es igual a b1*/
 
 
-	cout<<"OK: test_empaquetar_desempaquetar_bloque"<<endl;
+	print_test_ok("test_empaquetar_desempaquetar_bloque");
+}
 
+void test_crear_archivo_bloques()
+{
+	ManejadorBloques manejador;
+	manejador.crear_archivo("manejadorbloques.dat");
+
+	manejador.abrir_archivo("manejadorbloques.dat","rb");
+
+	assert(manejador.get_cantidad_bloques() == 0);
+	assert(manejador.get_proximo_bloque_libre() == 0);
+	assert(manejador.get_tamanio_bloque() == BLOQUE_TAM_DEFAULT);
+
+	print_test_ok("test_crear_archivo_bloques");
 
 }
 
+void test_agregar_bloques()
+{
+	ManejadorBloques manejador;
+	assert (manejador.crear_archivo("manejadorbloques.dat") == RES_OK);
 
+	RegistroVariable registro;
+	std::string campo = "organizacion de datos";
+	registro.agregar_campo(campo.c_str(),campo.size());
+
+	Bloque bloque;
+	bloque.agregar_registro(&registro);
+	manejador.actualizar_bloque("manejadorbloques.dat", &bloque,0);
+
+	print_test_ok("test_agregar_bloques");
+}
 
 int main(int argc,char** args)
 {
-//	test_leer_de_archivo(); FIXME test falla
-
+	test_leer_de_archivo();
 	test_eliminar_registro_variable();
 	test_agregar_campos_registro_variable();
 	test_empaquetar_desempaquetar_registro_variable();
@@ -673,6 +699,8 @@ int main(int argc,char** args)
 	test_remover_registros_bloque();
 	test_recuperar_registros_bloque();
 	test_empaquetar_desempaquetar_bloque();
+//	test_crear_archivo_bloques();
+	test_agregar_bloques();
 
 	return RES_OK;
 }

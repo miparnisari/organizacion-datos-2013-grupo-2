@@ -22,7 +22,7 @@ Bloque::~Bloque()
 }
 
 
-unsigned int Bloque::calcular_resto_bloque(unsigned int offsetRegistro)throw()
+unsigned int Bloque::calcular_resto_bloque(unsigned int offsetRegistro)const throw()
 {
 	const unsigned int ESPACIO_OCUPADO= this->calcular_espacio_ocupado();
 	return (ESPACIO_OCUPADO - offsetRegistro);
@@ -30,21 +30,21 @@ unsigned int Bloque::calcular_resto_bloque(unsigned int offsetRegistro)throw()
 }/*calcula la cantidad de datos restantes validos en buffer a partir de un offsetDeterminado*/
 
 
-unsigned int Bloque::calcular_espacio_libre()throw(){
+unsigned int Bloque::calcular_espacio_libre()const throw(){
 
 	return  espacioLibre;
 
 }/*calcula el espacio libre disponible para una siguiente alta de registro*/
 
 
-unsigned int Bloque::calcular_espacio_usable()throw(){
+unsigned int Bloque::calcular_espacio_usable()const throw(){
 
 	return (tamanioBloque - sizeof(espacioLibre));
 
 }/*retorna la cantidad de espacio del bloque usable para guardar registros*/
 
 
-unsigned int Bloque::calcular_espacio_ocupado()throw(){
+unsigned int Bloque::calcular_espacio_ocupado()const throw(){
 
 	unsigned int espacioUsable= calcular_espacio_usable();
 	unsigned int espacioOcupado= espacioUsable - espacioLibre;
@@ -54,7 +54,7 @@ unsigned int Bloque::calcular_espacio_ocupado()throw(){
 }/*retorna el espacio usado por registros*/
 
 
-unsigned int Bloque::obtener_offset_final()throw(){
+unsigned int Bloque::obtener_offset_final()const throw(){
 
 	unsigned int offsetFinal;
 	offsetFinal= tamanioBloque - espacioLibre - sizeof(espacioLibre);
@@ -64,10 +64,9 @@ unsigned int Bloque::obtener_offset_final()throw(){
 }/*devuelve el byte offset del final del buffer*/
 
 
-bool Bloque::esta_vacio()throw()
+bool Bloque::esta_vacio()const throw()
 {
-	unsigned int espacioUsado= this->obtener_offset_final();
-	return espacioUsado == 0;
+	return this->calcular_espacio_ocupado() == 0;
 
 }/*El bloque se considera vacio si su espacio ocupado
 es unicamente debido al almacenamiento del espacio libre disponible en buffer */
@@ -87,6 +86,7 @@ void Bloque::desempaquetar(const char* datos)throw(){
 	stringstream stream(ios::in |ios::out);
 
 	stream.write(datos,tamanioBloque);
+	stream.seekg(0,stream.beg);
 	stream.read(bufferBloque,tamanioBloque);
 	obtener_espacio_libre();
 
@@ -192,7 +192,7 @@ int Bloque::agregar_registro(RegistroVariable* registro,unsigned short posicionR
 
 
 
-unsigned short Bloque::get_cantidad_registros_almacenados()throw(){
+unsigned short Bloque::get_cantidad_registros_almacenados()const throw(){
 
 	if(this->esta_vacio())
 		return 0;
@@ -285,7 +285,7 @@ void Bloque::empaquetar(char* copia)throw(){
 }/*exporta los datos del buffer en copia. Se exporta el bloque COMPLETO. copia debe tener datos reservados*/
 
 
-unsigned int Bloque::obtener_offset_registro(unsigned short numeroRegistro)throw(){
+unsigned int Bloque::obtener_offset_registro(unsigned short numeroRegistro)const throw(){
 
 	if(numeroRegistro>= get_cantidad_registros_almacenados())
 		return RES_INVALID_OFFSET;
@@ -366,7 +366,7 @@ int Bloque::remover_registro(unsigned short numeroRegistro)throw(){
 
 
 
-void Bloque::obtener_espacio_libre()throw(){
+void Bloque::obtener_espacio_libre()const throw(){
 
 	stringstream stream(ios::in | ios::out);
 	stream.write(bufferBloque,tamanioBloque);
@@ -420,3 +420,20 @@ void Bloque::listar_registros()throw(){
 	}
 
 }/*lista el byte offset de cada registro contenido en el bloque*/
+
+int Bloque::marcar_libre_bloque(unsigned int numBloque)
+{
+	return 0;
+}
+int Bloque::actualizar_ref_prox_bloque(unsigned int primerBloque)
+{
+	return 0;
+}
+int Bloque::obtener_ref_prox_bloque()
+{
+	return 0;
+}
+bool Bloque::esta_libre()
+{
+	return true;
+}

@@ -19,8 +19,6 @@ class ManejadorArchivos {
 		virtual int crear_archivo(std::string nombreArchivo);
 		virtual bool archivo_existe(std::string nombreArchivo)const throw();
 		virtual int eliminar_archivo(std::string nombreArchivo)const throw();
-		virtual int mostrar_archivo(std::string nombreArchivo)= 0;
-		virtual int manejar(int argc,char** args) = 0;
 		
 		virtual ~ManejadorArchivos(){};
 
