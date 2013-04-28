@@ -7,7 +7,7 @@ OBJLIBS	= CapaFisica.a CapaLogica.a CapaInterfaz.a Utilitarios.a
 EXTERNOBJ =  $(foreach path, $(DIRS), $(wildcard $(path)/*.o))
 EXTERNOBJ-CAPALOGICA = $(foreach path, $(SUBDIRS), $(wildcard $(path)/*.o))
 
-TARGETS = main.cpp
+TARGETS = tests.cpp
 EXE	= tests
 
 all : $(EXE)
@@ -22,5 +22,6 @@ tests:  $(OBJLIBS)
 clean :
 	$(ECHO) Borrando archivos.
 	-$(RM) -f ./tests
+	cd "../src"; make clean
 	find . -name "*.o" -type f -print | xargs /bin/rm -f
 	find . -name "*.a" -type f -print | xargs /bin/rm -f
