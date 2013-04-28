@@ -128,11 +128,10 @@ std::string RegistroVariable::mostrar_campo(unsigned short numeroCampo){
 		return "***";
 
 	const unsigned short TAMANIO_CAMPO= this->get_tamanio_campo(numeroCampo);
-	char* campo= new char[TAMANIO_CAMPO];
+	char* campo= new char[TAMANIO_CAMPO]();
 	this->recuperar_campo(campo,numeroCampo);
-
 	string retornar(campo,TAMANIO_CAMPO);
-
+	delete[] campo;
 	return retornar;
 
 }
