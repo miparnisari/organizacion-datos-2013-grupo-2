@@ -22,6 +22,7 @@ class ClaveString:public Clave{
 		string dato;
 
 	public:
+		static const char DATO_DEFECTO= '~';
 
 		virtual void desempaquetar(char* buffer,unsigned short tamanioBuffer= 0);
 		/*importa un string a partir de una cadena de caracteres. Si tamanioBuffer no es
@@ -53,6 +54,8 @@ class ClaveString:public Clave{
 		/*getters y setters*/
 
 		int get_tamanio();
+
+		void resetear();
 
 		ClaveString();
 		ClaveString(const string& linea);

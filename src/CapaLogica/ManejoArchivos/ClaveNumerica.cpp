@@ -1,5 +1,13 @@
 #include "ClaveNumerica.h"
 
+
+void ClaveNumerica::resetear(){
+
+	this->dato= 0;
+
+}
+
+
 void ClaveNumerica::desempaquetar(char* buffer,unsigned short tamanioBuffer){
 
 	stringstream stream;

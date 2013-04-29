@@ -25,6 +25,8 @@ class Clave{
 		/*importa una clave desde un buffer de char. */
 		virtual int get_tamanio()= 0;
 		/*retorna el tamanio de la clave guardada en bytes*/
+		virtual void resetear()= 0;
+		/*resetea la clave a un estado por defecto*/
 
 		Clave();
 		virtual ~Clave();

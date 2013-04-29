@@ -44,6 +44,9 @@ class ClaveNumerica:public Clave {
 
 		int get_tamanio();
 
+		void resetear();
+		/*setea el dato de la clav en 0*/
+
 		ClaveNumerica();
 		ClaveNumerica(int dato);
 		virtual ~ClaveNumerica();
