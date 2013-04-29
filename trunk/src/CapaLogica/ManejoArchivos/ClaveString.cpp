@@ -8,6 +8,13 @@
 #include "ClaveString.h"
 
 
+void ClaveString::resetear(){
+
+	this->dato= DATO_DEFECTO;
+
+}
+
+
 void ClaveString::desempaquetar(char* buffer,unsigned short tamanioBuffer){
 
 	if(tamanioBuffer== 0)
