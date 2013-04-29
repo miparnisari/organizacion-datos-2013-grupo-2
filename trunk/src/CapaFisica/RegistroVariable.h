@@ -29,6 +29,8 @@ class RegistroVariable {
 		virtual std::string mostrar_campo(unsigned short numeroCampo);
 
 	public:
+		static const unsigned short CAMPO_ENCADENAMIENTO_LIBRES= 1;
+
 		RegistroVariable();
 		virtual ~RegistroVariable();
 
@@ -67,6 +69,9 @@ class RegistroVariable {
 
 		bool esta_limpio(){return tamanio==0;};
 		/*retorna true si el registru fue limpiado y el mismo no se cargo de nuevo con datos.*/
+
+		virtual int eliminar_y_encadenar(int offsetRegistro);
+		/*marca al registro como eliminado y en el campo 2 guarda el valor offsetRegistro*/
 
 /*--------------------------------------------------------------------------------------------------*/
 /*LOS SIGUIENTES METODOS SE CREARON POR CUESTION DE PRUEBAS O PARA CUMPLIR CON CONSIGNAS DEL TP0*/

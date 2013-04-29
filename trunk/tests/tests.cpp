@@ -234,7 +234,7 @@ void test_manejador_registros_variables()
 
 	RegistroVariable rv2;
 	assert( mrv.get_registro(&rv2,3)== RES_ERROR );
-	assert( mrv.get_registro(&rv2,0)!= RES_ERROR );
+	assert( mrv.get_registro(&rv2,0)== sizeof(ManejadorRegistrosVariables::Header) );
 	assert( rv2.get_tamanio()== datos[0].length()+sizeof(unsigned short) );
 	char campo[16];
 	int tamanioCampo= rv2.recuperar_campo(campo,0);
@@ -242,7 +242,9 @@ void test_manejador_registros_variables()
 	assert( s2== datos[0] );
 
 	rv2.limpiar_buffer();
-	assert( mrv.get_registro(&rv2,2)!= RES_ERROR );
+	unsigned short offsetRegistro2= sizeof(ManejadorRegistrosVariables::Header)+
+			10+9;
+	assert( mrv.get_registro(&rv2,2)==offsetRegistro2 );
 	assert( rv2.get_tamanio()== datos[2].length()+sizeof(unsigned short) );
 	tamanioCampo= rv2.recuperar_campo(campo,0);
 	string s3(campo,tamanioCampo);
@@ -261,6 +263,37 @@ void test_manejador_registros_variables()
 		assert( s==datos[i] );
 	}
 	/*es posible recuperar un registro de varios campos */
+	assert(mrv.get_cantidad_registros()== 4);
+
+
+	unsigned int tamanioArchivo= mrv.get_tamanio_archivo();
+	assert( mrv.eliminar_registro(5)== RES_ERROR );
+	assert( mrv.eliminar_registro(0)!= RES_ERROR );
+	assert( mrv.get_tamanio_archivo()== tamanioArchivo );
+	assert( mrv.get_cantidad_registros_ocupados()== 3 );
+	assert( mrv.get_cantidad_registros()== 4 );
+	/*al eliminar un registro disminuye la cantidad de registros ocupados y
+	 * aumenta la cantidad de registros libres, la cantidad de registros totales
+	 * permanece constante. El tamanio del archivo no disminuye dado que quedan los
+	 * registros liberados en el archivo*/
+	assert( mrv.get_registro(&rv2 , 0)== RES_ERROR );
+
+
+	rv2.limpiar_buffer();
+	assert( mrv.get_registro(&rv2,1)!= RES_ERROR );
+	assert( rv2.get_tamanio()== datos[1].length()+sizeof(unsigned short) );
+	tamanioCampo= rv2.recuperar_campo(campo,0);
+	string s4(campo,tamanioCampo);
+	assert( s4== datos[1] );
+
+	rv2.limpiar_buffer();
+	assert( mrv.get_registro(&rv2,2)!= RES_ERROR );
+	assert( rv2.get_tamanio()== datos[2].length()+sizeof(unsigned short) );
+	tamanioCampo= rv2.recuperar_campo(campo,0);
+	string s5(campo,tamanioCampo);
+	assert( s5== datos[2] );
+
+
 
 
 	print_test_ok("test_manejador_registros_variables");
@@ -725,7 +758,7 @@ void test_agregar_bloques()
 
 int main(int argc,char** args)
 {
-	test_leer_de_archivo();
+//	test_leer_de_archivo(); TODO des-comentar
 	test_eliminar_registro_variable();
 	test_agregar_campos_registro_variable();
 	test_empaquetar_desempaquetar_registro_variable();
