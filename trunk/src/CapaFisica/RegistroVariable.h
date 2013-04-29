@@ -38,6 +38,7 @@ class RegistroVariable {
 
 		virtual int eliminar()throw();
 
+
 		virtual int agregar_campo(const char* campo,unsigned short tamanioCampo)throw();
 		/*agrega (append) un campo al registro : tamanioCampo|datosCampo */
 
@@ -52,6 +53,9 @@ class RegistroVariable {
 		virtual int empaquetar(char* copia)throw();
 		/*exporta los datos del registro variable como un buffer de caracteres con el siguiente
 		 * formato: tamanioRegistro|datosRegistro */
+		virtual int get_tamanio_empaquetado();
+		/*retorna el tamanio del registroVariable junto con el size del tamanio del mismo
+		 * es decir : get_tamanio_empaquetado = sizeof(tamanio) + tamanio ; */
 
 		virtual int desempaquetar(const char* copia)throw();
 		/*construye un objeto RegistroVariable a partir de un registro variable contenido en un buffer

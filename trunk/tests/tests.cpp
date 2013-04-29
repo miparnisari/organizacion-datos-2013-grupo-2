@@ -203,39 +203,68 @@ void test_recuperar_campos_registro_variable()
 
 void test_manejador_registros_variables()
 {
-	std::cout<<"----test_manejador_registros_variables------"<<std::endl;
+
 	ManejadorRegistrosVariables mrv;
+	assert( mrv.abrir_archivo("nombreArchInexistente")== RES_ERROR );
+	assert( mrv.get_cantidad_registros()== RES_ERROR );
 
-	assert( mrv.crear_archivo("registrosVariables") == RES_OK);
-	assert(mrv.agregar_registro("registrosVariables","martin"));
-	assert(mrv.agregar_registro("registrosVariables","mateo"));
-	assert(mrv.agregar_registro("registrosVariables","sonia"));
+	assert( mrv.eliminar_archivo("tmrv1.dat")== RES_OK );
+	assert( mrv.crear_archivo("tmrv1.dat")== RES_OK );
+	assert( mrv.get_cantidad_registros()== 0 );
 
-	assert(mrv.agregar_registro("hola","hector")== RES_FILE_DOESNT_EXIST);
-
-	cout<<"mostrar archivo ----------------------"<<endl<<endl;
-
-	assert(mrv.mostrar_archivo("registrosVariables") == RES_OK);
-	assert( mrv.mostrar_archivo("lalala") == RES_FILE_DOESNT_EXIST );
-
-	cout<<"registros------------------------"<<endl<<endl;
-
+	const int CANT_DATOS= 3;
+	string datos[]= {"martin","mateo","hector"};
 	RegistroVariable rv;
+	rv.agregar_campo(datos[0].c_str() , datos[0].length());
+	assert( mrv.agregar_registro(&rv)== RES_OK );
 
-	mrv.get_registro("registrosVariables",&rv,0);
-	rv.mostrar();
-	mrv.get_registro("registrosVariables",&rv,1);
-	rv.mostrar();
-	mrv.get_registro("registrosVariables",&rv,2);
-	rv.mostrar();
-	assert(mrv.get_registro("registrosVariables",&rv,4) != RES_OK);/*no lee*/
-	rv.mostrar();
 
-	cout<<"busqueda de registros-------------------------"<<endl<<endl;
-	mrv.buscar_registro_por_texto("registrosVariables","teo");
-	mrv.buscar_registro_por_texto("registrosVariables","xaxa");
+	rv.limpiar_buffer();
+	rv.agregar_campo(datos[1].c_str() , datos[1].length());
+	mrv.agregar_registro(&rv);
+
+
+	rv.limpiar_buffer();
+	rv.agregar_campo(datos[2].c_str() , datos[2].length());
+	mrv.agregar_registro(&rv);
+
+	assert( mrv.get_cantidad_registros()== 3 );
+
+
+
+	RegistroVariable rv2;
+	assert( mrv.get_registro(&rv2,3)== RES_ERROR );
+	assert( mrv.get_registro(&rv2,0)!= RES_ERROR );
+	assert( rv2.get_tamanio()== datos[0].length()+sizeof(unsigned short) );
+	char campo[16];
+	int tamanioCampo= rv2.recuperar_campo(campo,0);
+	string s2(campo,tamanioCampo);
+	assert( s2== datos[0] );
+
+	rv2.limpiar_buffer();
+	assert( mrv.get_registro(&rv2,2)!= RES_ERROR );
+	assert( rv2.get_tamanio()== datos[2].length()+sizeof(unsigned short) );
+	tamanioCampo= rv2.recuperar_campo(campo,0);
+	string s3(campo,tamanioCampo);
+	assert( s3== datos[2] );
+
+	RegistroVariable rv3;
+	for(int i=0;i<CANT_DATOS;i++)
+		rv3.agregar_campo(datos[i].c_str() , datos[i].length());
+	mrv.agregar_registro(&rv3);
+	rv3.limpiar_buffer();
+	mrv.get_registro(&rv3,3);
+	for(int i=0;i<CANT_DATOS;i++){
+		char campo[16];
+		int tamanioCampo= rv3.recuperar_campo(campo,i);
+		string s(campo,tamanioCampo);
+		assert( s==datos[i] );
+	}
+	/*es posible recuperar un registro de varios campos */
+
 
 	print_test_ok("test_manejador_registros_variables");
+
 
 }/*funciona */
 
@@ -690,6 +719,10 @@ void test_agregar_bloques()
 	print_test_ok("test_agregar_bloques");
 }
 
+
+
+
+
 int main(int argc,char** args)
 {
 	test_leer_de_archivo();
@@ -705,6 +738,7 @@ int main(int argc,char** args)
 	test_empaquetar_desempaquetar_bloque();
 //	test_crear_archivo_bloques();
 	test_agregar_bloques();
+	test_manejador_registros_variables();
 
 	return RES_OK;
 }

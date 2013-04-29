@@ -42,7 +42,8 @@ int Indexador::indexar (std::string directorioEntrada, std::string directorioSal
 		regCancion.comprimir(compresor);
 		
 //		int offsetInicialRegCancion;
-		archivoMaestro.agregar_registro(directorioSalida+std::string(FILENAME_ARCH_MAESTRO),std::string(regCancion.get_buffer()));
+		//archivoMaestro.agregar_registro(directorioSalida+std::string(FILENAME_ARCH_MAESTRO),std::string(regCancion.get_buffer()));
+		//FIXME esta funcion fue modificada
 		
 		// Cargamos en el indice primario el offset al registro
 //		int longitudCampo[1] = {sizeof(int)};

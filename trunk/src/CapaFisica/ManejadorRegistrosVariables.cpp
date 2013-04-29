@@ -9,290 +9,190 @@
 
 using std::stringstream;
 
-int ManejadorRegistrosVariables::agregar_registro(std::string nombreArchivo,std::string dato)const throw(){
 
-	if(!archivo_existe(nombreArchivo))
-		return RES_FILE_DOESNT_EXIST;
+long ManejadorRegistrosVariables::get_registro(RegistroVariable* registro,
+		unsigned short numeroRegistro){
 
-	ofstream archivo(nombreArchivo.c_str(), ios::app);
-	string datoString= dato;
-	unsigned int tamanioDato= datoString.length();
-
-	//archivo<<tamanioDato;
-	archivo.write( (char*)(&tamanioDato),sizeof(tamanioDato) );
-	archivo.write(dato.c_str(),tamanioDato);
-
-	archivo.close();
-
-	return tamanioDato;
-
-}/*agrega un registro de longitud variable y retorna tamanio del dato escrito*/
-
-
-int ManejadorRegistrosVariables::registrar_archivo(std::string nombreArchivoDestino,std::string nombreArchivoFuente)
-	const throw(){
-
-	if(!archivo_existe(nombreArchivoDestino) || !archivo_existe(nombreArchivoFuente))
-		return RES_FILE_DOESNT_EXIST;
-
-	ofstream archivoDestino(nombreArchivoDestino.c_str() , ios::app);
-	ifstream archivoFuente(nombreArchivoFuente.c_str() , ios::binary);
-
-	while(archivoFuente.good()){
-
-		int tamanioBuffer;
-		//archivoFuente>>tamanioBuffer;
-		archivoFuente.read( (char*)(&tamanioBuffer),sizeof(tamanioBuffer) );
-
-		if(archivoFuente.good()){
-			char* buffer = new char[tamanioBuffer];
-			archivoFuente.read(buffer,tamanioBuffer);
-			//archivoDestino<<tamanioBuffer;
-			archivoDestino.write( (char*)(&tamanioBuffer),sizeof(tamanioBuffer) );
-			archivoDestino.write(buffer,tamanioBuffer);
-			delete[] buffer;
-		}
-
-	}
-
-	return RES_OK;
-
-
-}/*registra todos los registros del archivo fuente en el archivo destino*/
-
-
-int ManejadorRegistrosVariables::mostrar_archivo(std::string nombreArchivo){
-
-	if(!archivo_existe(nombreArchivo))
-		return RES_FILE_DOESNT_EXIST;
-
-	ifstream archivo(nombreArchivo.c_str(),ios::binary);
-
-	while(archivo.good()){
-
-		int tamanioBuffer;
-		//archivo>>tamanioBuffer;
-		archivo.read( (char*)(&tamanioBuffer),sizeof(tamanioBuffer) );
-
-		if(archivo.good()){
-
-			char* buffer = new char[tamanioBuffer];
-			archivo.read(buffer,tamanioBuffer);
-
-			stringstream stream(ios::in | ios::out);
-			stream.write(buffer,tamanioBuffer);
-			stream<<endl;
-			stream.seekg(0,ios::beg);
-			cout<<stream.rdbuf();
-			delete[] buffer;
-
-		}
-
-	}
-
-	return RES_OK;
-
-	/*stringstream streamDestino(ios::in | ios::out);
-
-
-	while(archivo.good()){
-
-		unsigned int tamanioBuffer;
-		char* buffer;
-
-		archivo>>tamanioBuffer;
-
-		if(archivo.good()){
-			buffer= new char[tamanioBuffer];
-			archivo.read(buffer,tamanioBuffer);
-			streamDestino.write(buffer,tamanioBuffer);
-			streamDestino<<'\n';
-			delete[] buffer;
-		}
-
-	}
-
-	streamDestino.seekg(0,ios::beg);
-	cout<<streamDestino.rdbuf();
-
-	return RES_OK;*/
-
-}/*muestra el archivo por pantalla*/
-
-
-int ManejadorRegistrosVariables::get_registro(std::string nombreArchivo,RegistroVariable* registro,
-		unsigned int numeroRegistro)
-{
-
-	if(!archivo_existe(nombreArchivo))
-		return RES_FILE_DOESNT_EXIST;
-	if(!registro)
+	_leer_header();
+	if(numeroRegistro >= header.cantidadRegistros)
 		return RES_ERROR;
 
-	unsigned int cuentaRegistro= 0;
-	ifstream archivo(nombreArchivo.c_str());
-	unsigned int tamanioBuffer;
-	char* buffer;
-	bool archivoEstaBien= archivo.good();
+	long contadorOffset= OFFSET_PRIMER_REGISTRO;
+	unsigned short contadorRegistros= 0;
+	fstream archivo(nombreArchivo.c_str());
+	archivo.seekg(OFFSET_PRIMER_REGISTRO,ios::beg);
 
-	if(numeroRegistro)
-	while(archivo.good() && cuentaRegistro<numeroRegistro){
-		//archivo>>tamanioBuffer;
-		archivo.read((char*)(&tamanioBuffer),sizeof(tamanioBuffer));
-		archivoEstaBien= archivo.good();
+	for(int i=0;i<numeroRegistro;i++){
 
-		if(archivoEstaBien){
-			char* bufAux = new char[tamanioBuffer];
-			archivo.read(bufAux,tamanioBuffer);
-			cuentaRegistro++;
-			delete[] bufAux;
-		}
+		unsigned short tamanioRegistro;
+		archivo.read( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
+		archivo.seekg( tamanioRegistro , ios::cur );
+
+		contadorOffset+= tamanioRegistro;
+		contadorRegistros++;
 
 	}
 
-	if(!archivoEstaBien)
-		return RES_ERROR;
 
-	//archivo>>tamanioBuffer;
-	archivo.read((char*)(&tamanioBuffer),sizeof(tamanioBuffer));
-	buffer= new char[tamanioBuffer];
-	archivo.read(buffer,tamanioBuffer);
-	registro->limpiar_buffer();
-	int resultado= registro->agregar_datos(buffer,tamanioBuffer);
+	unsigned short tamanioRegistro;
+	archivo.read( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
+	char* bufferRegistro= new char[tamanioRegistro + sizeof(tamanioRegistro)];
+	archivo.read( bufferRegistro , tamanioRegistro );
+
+	stringstream empaquetador;
+	empaquetador.write( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
+	empaquetador.write( bufferRegistro , tamanioRegistro );
+	empaquetador.seekg(0,ios::beg);
+	empaquetador.read( bufferRegistro , tamanioRegistro + sizeof(tamanioRegistro) );
+	registro->desempaquetar(bufferRegistro);
+
+	delete[] bufferRegistro;
+
+	return contadorOffset;
+
+}
+
+
+void ManejadorRegistrosVariables::_append_registro(RegistroVariable* registro){
+
+	fstream archivo(nombreArchivo.c_str());
+	archivo.seekp(0,ios::end);
+	const int TAMANIO_EMPAQUETADO= registro->get_tamanio_empaquetado();
+	char* buffer= new char[TAMANIO_EMPAQUETADO];
+
+	registro->empaquetar(buffer);
+	archivo.write(buffer,TAMANIO_EMPAQUETADO);
+	header.cantidadRegistros++;
+	header.tamanioArchivo+= TAMANIO_EMPAQUETADO;
 
 	delete[] buffer;
+	_cerrar_archivo(&archivo);
+	_guardar_header();
 
-	return resultado;
+}
 
 
-}/*guarda los datos en registro*/
+void ManejadorRegistrosVariables::_desvincular(){
+
+	this->nombreArchivo= "~";
+
+}
 
 
-int ManejadorRegistrosVariables::mostrar_registro(std::string nombreArchivo,unsigned int numeroRegistro){
+void ManejadorRegistrosVariables::_cerrar_archivo(fstream* archivo){
 
-	RegistroVariable rv;
-	int resultado;
+	archivo->seekg(0,ios::end);
+	archivo->close();
 
-	resultado= get_registro(nombreArchivo,&rv,numeroRegistro);
-	if(resultado== RES_ERROR)
+}
+
+
+void ManejadorRegistrosVariables::_resetear_header(){
+
+	header.cantidadRegistros= 0;
+	header.numerorPrimerRegistroLibre= -1;
+	header.tamanioArchivo= sizeof(header);
+
+}
+
+
+void ManejadorRegistrosVariables::_guardar_header(){
+
+	fstream archivo(nombreArchivo.c_str());
+	archivo.write( (char*)&header , sizeof(header) );
+
+	_cerrar_archivo(&archivo);
+
+}
+
+
+void ManejadorRegistrosVariables::_leer_header(){
+
+	fstream archivo(nombreArchivo.c_str());
+
+	archivo.read( (char*)&header , sizeof(header) );
+	this->_cerrar_archivo(&archivo);
+
+}
+
+
+int ManejadorRegistrosVariables::abrir_archivo(string nombreArchivo){
+
+	if(!this->archivo_existe(nombreArchivo))
 		return RES_ERROR;
 
-	rv.mostrar();
-	return RES_OK;
 
-}/*muestra un registro especifico*/
+	this->nombreArchivo= nombreArchivo;
+	_leer_header();
 
-
-int ManejadorRegistrosVariables::mostrar_offsets(std::string nombreArchivo)throw(){
-
-	if(!archivo_existe(nombreArchivo))
-		return RES_FILE_DOESNT_EXIST;
-
-	ifstream archivo(nombreArchivo.c_str(),ios::binary);
-	unsigned int offset= 0;
-	unsigned int cuentaRegistros= 0;
-
-	while(archivo.good()){
-
-		int tamanioBuffer;
-		//archivo>>tamanioBuffer;
-		archivo.read((char*)(&tamanioBuffer),sizeof(tamanioBuffer));
-
-		if(archivo.good()){
-
-			cout<<"Registro: "<<cuentaRegistros<<" - ";
-			cout<<offset;
-			offset+= sizeof(int);
-			offset+= tamanioBuffer;
-			char* buffer = new char[tamanioBuffer];
-			archivo.read(buffer,tamanioBuffer);
-			delete[] buffer;
-
-		}
-
-	}
-
-	return RES_OK;
-
-}/*muestra para cada registro en el archivo su numero de posicion logica y el byte offset del mismo*/
-
-
-int ManejadorRegistrosVariables::buscar_registro_por_texto(std::string nombreArchivo,std::string texto)throw(){
-
-	if(!archivo_existe(nombreArchivo))
-		return RES_FILE_DOESNT_EXIST;
-
-	RegistroVariable rv;
-	unsigned int cuentaRegistro= 0;
-	const int TEXTO_NO_HALLADO= -1;
-	int posicionTexto= TEXTO_NO_HALLADO;
-	string textoString(texto);
-	bool algunRegistroHallado= false;
-
-	while(get_registro(nombreArchivo,&rv,cuentaRegistro)){
-
-		stringstream stream(ios::in |ios::out);
-		rv.guardar(stream);
-		stream<<'\n';
-		stream.seekg(0,ios::beg);
-		string lineaRegistro= stream.str();
-
-		posicionTexto= lineaRegistro.find(texto.c_str());
-
-		if(posicionTexto!= TEXTO_NO_HALLADO){
-			cout<<"Registro: "<<cuentaRegistro<<endl;
-			cout<<"Posicion: "<<posicionTexto<<endl<<endl;
-			algunRegistroHallado= true;
-		}
-
-		cuentaRegistro++;
-
-	}
-
-	if(!algunRegistroHallado)
-		cout<<"No se hallaron registros"<<endl;
-
-	return RES_OK;
-
-}/*muestra registros que tienen la linea de texto buscada*/
-
-
-int ManejadorRegistrosVariables::mostrar_caracteristicas_registro(std::string nombreArchivo,unsigned int numeroRegistro){
-
-	RegistroVariable rv;
-	int resultado;
-
-	resultado= get_registro(nombreArchivo,&rv,numeroRegistro);
-	if(!resultado)
-		return RES_ERROR;
-
-	ifstream archivo(nombreArchivo.c_str());
-	unsigned int cuentaBytes= 0;
-	unsigned int cuentaRegistro= 0;
-	unsigned int tamanioBuffer;
-
-	while(cuentaRegistro!=numeroRegistro){
-
-		char* buffer = new char[tamanioBuffer];
-		//archivo>>tamanioBuffer;
-		archivo.read((char*)(&tamanioBuffer),sizeof(tamanioBuffer));
-		cuentaBytes+= sizeof(int);
-		archivo.read(buffer,tamanioBuffer);
-		cuentaBytes+= tamanioBuffer;
-		cuentaRegistro++;
-		delete[] buffer;
-	}
-
-	cout<<"Registro: "<<numeroRegistro<<endl;
-	cout<<"Tamanio: "<<rv.get_tamanio()<<endl;
 
 	return RES_OK;
 
 }
 
 
-int ManejadorRegistrosVariables::manejar(int argc,char** args){
+int ManejadorRegistrosVariables::crear_archivo(string nombreArchivo){
+
+	if(this->archivo_existe(nombreArchivo))
+		return RES_ERROR;
+
+	this->nombreArchivo= nombreArchivo;
+	ofstream archivo(nombreArchivo.c_str());
+	archivo.close();
+
+	_resetear_header();
+	_guardar_header();
+
 
 	return RES_OK;
+
 }
 
+
+int ManejadorRegistrosVariables::get_cantidad_registros(){
+
+	if(!this->archivo_existe(nombreArchivo))
+		return RES_ERROR;
+
+	_leer_header();
+
+	return header.cantidadRegistros;
+
+}
+
+long ManejadorRegistrosVariables::get_tamanio_archivo(){
+
+	if(!this->archivo_existe(nombreArchivo))
+		return RES_ERROR;
+
+	_leer_header();
+
+	return header.tamanioArchivo;
+
+}
+
+
+int ManejadorRegistrosVariables::agregar_registro(RegistroVariable* registro){
+
+	if(!archivo_existe(nombreArchivo))
+		return RES_ERROR;
+	if(registro== NULL)
+		return RES_ERROR;
+
+	_leer_header();
+	if(header.numerorPrimerRegistroLibre== -1){
+		this->_append_registro(registro);
+		return RES_OK;
+	}
+
+	return RES_OK;
+
+}
+
+
+ManejadorRegistrosVariables::ManejadorRegistrosVariables():ManejadorArchivos(){
+
+	_desvincular();
+	_resetear_header();
+
+}
