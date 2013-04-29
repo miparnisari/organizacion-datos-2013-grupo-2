@@ -15,10 +15,18 @@ ClaveX::ClaveX(ClaveX::TipoClave tipoClave){
 
 }
 
+
 ClaveX::~ClaveX(){
 
 	delete claves[CLAVE_NUMERICA];
 	delete claves[CLAVE_STRING];
+
+}
+
+
+ClaveX::TipoClave ClaveX::get_tipo_clave(){
+
+	return tipoClave;
 
 }
 
@@ -79,57 +87,45 @@ void ClaveX::desempaquetar(char* buffer,unsigned short tamanioBuffer){
 
 
 
-int ClaveX::set_clave(string clave){
+void ClaveX::set_clave(string clave){
 
-	if(tipoClave!= CLAVE_STRING)
-		return RES_ERROR;
+	tipoClave= CLAVE_STRING;
 
 	*(ClaveString*)claves[CLAVE_STRING] = clave;
-	return RES_OK;
 
 }
 
 
-int ClaveX::set_clave(int clave){
+void ClaveX::set_clave(int clave){
 
-	if(tipoClave!= CLAVE_NUMERICA)
-		return RES_ERROR;
+	tipoClave= CLAVE_NUMERICA;
 
 	ClaveNumerica* cn= (ClaveNumerica*)claves[CLAVE_NUMERICA];
 	cn->set_dato(clave);
 
-	return RES_OK;
 
 }
 
 
-bool ClaveX::es_incompatible_con(const ClaveX& clavex){
-
-	return tipoClave!=clavex.tipoClave;
-
-}
 
 
 bool ClaveX::operator <(const ClaveX& clavex){
 
-	if(tipoClave != clavex.tipoClave)
-		return false;
+
 	return ( (*claves[tipoClave]) < (*clavex.claves[tipoClave]) );
 
 }
 
 bool ClaveX::operator >(const ClaveX& clavex){
 
-	if(tipoClave != clavex.tipoClave)
-		return false;
+
 	return ( (*claves[tipoClave]) > (*clavex.claves[tipoClave]) );
 
 }
 
 bool ClaveX::operator ==(const ClaveX& clavex){
 
-	if(tipoClave != clavex.tipoClave)
-		return false;
+
 	return ( (*claves[tipoClave]) == (*clavex.claves[tipoClave]) );
 
 }

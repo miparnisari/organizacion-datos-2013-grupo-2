@@ -383,6 +383,14 @@ int RegistroVariable::desempaquetar(const char* copia)throw()
 }/*importa un registro a partir de un arreglo
 con el formato tamanioRegistro|tamanioPrimerCampo|datos...*/
 
+
+int RegistroVariable::get_tamanio_empaquetado(){
+
+	return (sizeof(tamanio)+tamanio) ;
+
+}
+
+
 char* RegistroVariable::get_buffer()throw()
 {
 	return buffer;
