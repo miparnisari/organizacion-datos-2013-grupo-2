@@ -10,10 +10,40 @@
 using std::stringstream;
 
 
+long ManejadorRegistrosVariables::_get_offset_registro(unsigned short numeroRegistro){
+
+	_leer_header();
+	if(numeroRegistro >= header.cantidadRegistros)
+		return RES_ERROR;
+
+	long contadorOffset= OFFSET_PRIMER_REGISTRO;
+	fstream archivo(nombreArchivo.c_str());
+	archivo.seekg(OFFSET_PRIMER_REGISTRO,ios::beg);
+
+	for(int i=0;i<numeroRegistro;i++){
+
+		unsigned short tamanioRegistro;
+		archivo.read( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
+		archivo.seekg( tamanioRegistro , ios::cur );
+
+		contadorOffset+= tamanioRegistro + sizeof(tamanioRegistro);
+
+	}
+
+
+	_cerrar_archivo(&archivo);
+	return contadorOffset;
+
+}
+
+
 long ManejadorRegistrosVariables::get_registro(RegistroVariable* registro,
 		unsigned short numeroRegistro){
 
-	_leer_header();
+	if(_registro_fue_eliminado(numeroRegistro))
+		return RES_ERROR;//TODO verificar que funque!!!
+
+	/*_leer_header();
 	if(numeroRegistro >= header.cantidadRegistros)
 		return RES_ERROR;
 
@@ -28,10 +58,14 @@ long ManejadorRegistrosVariables::get_registro(RegistroVariable* registro,
 		archivo.read( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
 		archivo.seekg( tamanioRegistro , ios::cur );
 
-		contadorOffset+= tamanioRegistro;
+		contadorOffset+= tamanioRegistro + sizeof(tamanioRegistro);
 		contadorRegistros++;
 
-	}
+	}*/
+
+	long contadorOffset= _get_offset_registro(numeroRegistro);
+	fstream archivo(nombreArchivo.c_str());
+	archivo.seekg( contadorOffset,ios::beg );
 
 
 	unsigned short tamanioRegistro;
@@ -47,8 +81,78 @@ long ManejadorRegistrosVariables::get_registro(RegistroVariable* registro,
 	registro->desempaquetar(bufferRegistro);
 
 	delete[] bufferRegistro;
+	_cerrar_archivo(&archivo);
 
 	return contadorOffset;
+
+}
+
+
+bool ManejadorRegistrosVariables::_registro_fue_eliminado(unsigned short numeroRegistro){
+
+	long offset= _get_offset_registro(numeroRegistro);
+
+	if(offset== RES_ERROR)
+		return true;
+
+	if(header.cantidadRegistrosLibres== 0)
+		return false;
+
+	fstream archivo(nombreArchivo.c_str());
+	archivo.seekg(offset, ios::beg);
+	unsigned short tamanioRegistro;
+	archivo.read( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
+
+	char* bufferRegistro= new char[tamanioRegistro]();
+	archivo.read( bufferRegistro , tamanioRegistro );
+	if( bufferRegistro[0]!= MARCA_BORRADO ){
+		delete[] bufferRegistro;
+		this->_cerrar_archivo(&archivo);
+		return false;
+	}
+
+	delete[] bufferRegistro;
+	_cerrar_archivo(&archivo);
+	return true;
+
+}
+
+
+long ManejadorRegistrosVariables::eliminar_registro(unsigned short numeroRegistro){
+
+	if(this->_registro_fue_eliminado(numeroRegistro))
+		return RES_ERROR;
+	/*verifico que el registro a buscar no haya sido eliminado*/
+
+	RegistroVariable registroEliminar;
+	long offset=  this->get_registro(&registroEliminar , numeroRegistro);
+
+	const unsigned short ESPACIO_LIBERADO= registroEliminar.get_tamanio_empaquetado();
+	const unsigned short TAMANIO_REGISTRO_ELIMINAR= registroEliminar.get_tamanio();
+	char* bufferEliminacion= new char[ESPACIO_LIBERADO]();
+	stringstream streamEliminacion;
+
+	streamEliminacion.write( (char*)&TAMANIO_REGISTRO_ELIMINAR , sizeof(TAMANIO_REGISTRO_ELIMINAR) );
+	streamEliminacion.write( (char*)&MARCA_BORRADO , sizeof(MARCA_BORRADO) );
+	streamEliminacion.write( (char*)&header.offsetPrimerRegistroLibre ,
+			sizeof(header.offsetPrimerRegistroLibre) );
+	header.offsetPrimerRegistroLibre= offset;
+	header.cantidadRegistrosLibres++;
+	/*escribo en el stream:  tamanioRegistroLibre| * | offsetSigRegLibre.
+	 * Apilo los registrosLibres. */
+
+	streamEliminacion.seekg(0,ios::beg);
+	streamEliminacion.read( bufferEliminacion,ESPACIO_LIBERADO );
+	/*escribo en el bufferEliminacion aquello que guarde en el stream*/
+
+	fstream archivo(nombreArchivo.c_str());
+	archivo.seekg(offset , ios::beg);
+	archivo.write(bufferEliminacion,ESPACIO_LIBERADO);
+
+	delete[] bufferEliminacion;
+	_cerrar_archivo(&archivo);
+	_guardar_header();
+	return offset;
 
 }
 
@@ -90,8 +194,9 @@ void ManejadorRegistrosVariables::_cerrar_archivo(fstream* archivo){
 void ManejadorRegistrosVariables::_resetear_header(){
 
 	header.cantidadRegistros= 0;
-	header.numerorPrimerRegistroLibre= -1;
+	header.offsetPrimerRegistroLibre= -1;
 	header.tamanioArchivo= sizeof(header);
+	header.cantidadRegistrosLibres= 0;
 
 }
 
@@ -160,6 +265,14 @@ int ManejadorRegistrosVariables::get_cantidad_registros(){
 
 }
 
+
+int ManejadorRegistrosVariables::get_cantidad_registros_ocupados(){
+
+	return (header.cantidadRegistros - header.cantidadRegistrosLibres);
+
+}
+
+
 long ManejadorRegistrosVariables::get_tamanio_archivo(){
 
 	if(!this->archivo_existe(nombreArchivo))
@@ -180,14 +293,21 @@ int ManejadorRegistrosVariables::agregar_registro(RegistroVariable* registro){
 		return RES_ERROR;
 
 	_leer_header();
-	if(header.numerorPrimerRegistroLibre== -1){
+	if(header.offsetPrimerRegistroLibre== -1){
 		this->_append_registro(registro);
 		return RES_OK;
 	}
 
+
+
+
+
 	return RES_OK;
 
 }
+
+
+
 
 
 ManejadorRegistrosVariables::ManejadorRegistrosVariables():ManejadorArchivos(){

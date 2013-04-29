@@ -196,6 +196,31 @@ en el primer campo, en su longitud, pone "1", y en el valor pone
 un caracter de marca de borrado * */
 
 
+int RegistroVariable::eliminar_y_encadenar(int offsetRegistro){
+
+	if(this->fue_eliminado())
+		return RES_OK;
+
+	stringstream stream;
+	stream.write(buffer,tamanio);
+	unsigned short uno= 1;
+	stream.seekp(0,ios::beg);
+
+	stream.write( (char*)(&uno),sizeof(uno) );
+	stream.write( (char*)(&MARCA_BORRADO) , sizeof(MARCA_BORRADO) );
+	//stream.write( (char*)&sizeof(offsetRegistro) , sizeof(tamanio) );
+	/*guarde el tamanio del campo*/
+	stream.write( (char*)&offsetRegistro , sizeof(offsetRegistro) );
+
+	stream.seekg(0,ios::beg);
+	stream.read(buffer,tamanio);
+
+	return RES_OK;
+
+
+}
+
+
 bool RegistroVariable::fue_eliminado()throw(){
 
 	if(buffer==NULL)
@@ -328,7 +353,7 @@ int RegistroVariable::get_tamanio_campo(unsigned short numeroCampo)
 
 int RegistroVariable::recuperar_campo(char* copia,unsigned short numeroCampo)throw(){
 
-	if (this->fue_eliminado())
+	if(this->fue_eliminado() && numeroCampo> CAMPO_ENCADENAMIENTO_LIBRES)
 		return RES_ERROR;
 	if (numeroCampo >= this->get_cantidad_campos())
 		return RES_ERROR;
