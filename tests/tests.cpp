@@ -877,32 +877,56 @@ void test_manejador_bloques_insertar()
 
 	assert( manejador.agregar_registro_en_bloque("manejadorbloques.dat", 0,&registro2) == RES_OK);
 
-//	RegistroVariable registroFalla;
-//	std::string campoFalla = "bioquimica ii";
-//	assert (registroFalla.agregar_campo(campoFalla.c_str(),campoFalla.size()) == RES_OK);
-//
-//	// El bloque permite como maximo 2 registros y estoy agregando un tercero
-//	assert( manejador.agregar_registro_en_bloque("manejadorbloques.dat", 0,&registroFalla) == RES_ESPACIO_INSUFICIENTE);
-//
-//	RegistroVariable registroLeido;
-//	assert (manejador.get_registro_de_bloque("manejadorbloques.dat",0,0,&registroLeido));
-//	IMPRIMIR_VARIABLE(registroLeido.get_cantidad_campos());
-//	assert (registroLeido.get_cantidad_campos() == cantidad_campos);
-//
-//	char* campo= new char[100];
-//	int tamanioCampo = registroLeido.recuperar_campo(campo,0); // recupero "organizacion de datos"
-//	string s_campo(campo,tamanioCampo);
-//	delete[] campo;
-//	assert( s_campo == campos[0]);
+	RegistroVariable registroFalla;
+	std::string campoFalla = "bioquimica ii";
+	assert (registroFalla.agregar_campo(campoFalla.c_str(),campoFalla.size()) == RES_OK);
+
+	// El bloque permite como maximo 2 registros y estoy agregando un tercero
+	assert( manejador.agregar_registro_en_bloque("manejadorbloques.dat", 0,&registroFalla) == RES_ESPACIO_INSUFICIENTE);
+
+	RegistroVariable registroLeido;
+	assert (manejador.get_registro_de_bloque("manejadorbloques.dat",0,0,&registroLeido));
+	IMPRIMIR_VARIABLE(registroLeido.get_cantidad_campos());
+	assert (registroLeido.get_cantidad_campos() == cantidad_campos);
+
+	char* campo= new char[100];
+	int tamanioCampo = registroLeido.recuperar_campo(campo,0); // recupero "organizacion de datos"
+	string s_campo(campo,tamanioCampo);
+	delete[] campo;
+	assert( s_campo == campos[0]);
 
 	manejador.cerrar_archivo();
+	manejador.eliminar_archivo("manejadorbloques.dat");
 
 	print_test_ok("test_agregar_bloques");
 }
 
+void test_manejador_bloques_eliminar()
+{
+	unsigned int minRegsPorBloque = 1;
+	unsigned int maxRegsPorBloque = 2;
+	ManejadorBloques manejador(BLOQUE_TAM_DEFAULT, minRegsPorBloque, maxRegsPorBloque);
 
+	assert (manejador.crear_archivo("manejadorbloques.dat") == RES_OK);
+	assert (manejador.abrir_archivo("manejadorbloques.dat","rb+") == RES_OK);
 
+	RegistroVariable registro1;
+	const unsigned int cantidad_campos = 3;
+	std::string campos[] = {"organizacion de datos", "taller de programacion", "sistemas operativos"};
+	assert (registro1.agregar_campo(campos[0].c_str(),campos[0].size()) == RES_OK);
+	assert (registro1.agregar_campo(campos[1].c_str(),campos[1].size()) == RES_OK);
+	assert (registro1.agregar_campo(campos[2].c_str(),campos[2].size()) == RES_OK);
 
+	assert( manejador.agregar_registro_en_bloque("manejadorbloques.dat", 0,&registro1) == RES_OK);
+
+	// El bloque requiere 1 registro como minimo, e intento borrar el unico registro que inserte
+	assert (manejador.eliminar_registro_en_bloque("manejadorbloques.dat",0,0) != RES_OK);
+	manejador.cerrar_archivo();
+	manejador.eliminar_archivo("manejadorbloques.dat");
+
+	print_test_ok("test_manejador_bloques_eliminar");
+
+}
 
 int main(int argc,char** args)
 {
@@ -921,6 +945,7 @@ int main(int argc,char** args)
 	test_manejador_registros_variables_recuperar_espacio_libre();
 	test_manejador_bloques_crear();
 	test_manejador_bloques_insertar();
+	test_manejador_bloques_eliminar();
 
 	return RES_OK;
 }

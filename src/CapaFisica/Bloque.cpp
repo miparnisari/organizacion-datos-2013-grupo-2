@@ -124,9 +124,6 @@ int Bloque::agregar_registro(RegistroVariable* registro)throw(){
 		return RES_ERROR;
 	if(registro->esta_limpio())
 		return RES_ERROR;
-
-	std::cout << "maxNumeroRegistros = " << maxNumeroRegistros << std::endl;
-	std::cout << "cantidad_registros_almacenados = " << get_cantidad_registros_almacenados() << std::endl;
 	if (this->get_cantidad_registros_almacenados() >= maxNumeroRegistros)
 		return RES_ESPACIO_INSUFICIENTE;
 
