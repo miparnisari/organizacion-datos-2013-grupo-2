@@ -216,7 +216,7 @@ void test_manejador_registros_variables()
 	string datos[]= {"martin","mateo","hector"};
 	RegistroVariable rv;
 	rv.agregar_campo(datos[0].c_str() , datos[0].length());
-	assert( mrv.agregar_registro(&rv)== RES_OK );
+	assert( mrv.agregar_registro(&rv)!= RES_ERROR );
 
 
 	rv.limpiar_buffer();
@@ -371,6 +371,40 @@ void test_manejador_registros_variables_recuperar_espacio_libre(){
 	assert( mrv.eliminar_registro( mrv.get_cantidad_registros()-1 )!=RES_ERROR );
 	mrv.agregar_registro( &registros[1] );
 	assert( mrv.get_tamanio_archivo() > tamanioInicial );
+
+
+
+	ManejadorRegistrosVariables mrv2;
+	string nombreArchivo2= "tmrvre2.dat";
+	mrv2.eliminar_archivo(nombreArchivo2);
+	mrv2.crear_archivo(nombreArchivo2);
+	assert( mrv2.get_cantidad_registros_ocupados()== 0 );
+
+	string datos2[]={ "aaaaaa","bbbbbbbbbbbbbbbb","cccccc","dddddddddddddddd" };
+	RegistroVariable registros2[CANT_DATOS];
+	long offsetAppend= mrv2.get_tamanio_archivo();
+	long offsetsAppend[CANT_DATOS];
+	for(int i=0;i<CANT_DATOS;i++){
+		offsetsAppend[i]= offsetAppend;
+		registros2[i].agregar_campo( datos2[i].c_str() , datos2[i].length() );
+		assert( mrv2.agregar_registro(&registros2[i])== offsetAppend );
+		offsetAppend+= registros2[i].get_tamanio_empaquetado();
+	}
+	assert( mrv2.get_cantidad_registros_ocupados()== CANT_DATOS );
+	long tamanioInicial2= mrv2.get_tamanio_archivo();
+
+	assert( mrv2.eliminar_registro(1)== offsetsAppend[1] );
+	assert( mrv2.eliminar_registro(3)== offsetsAppend[3] );
+
+	assert( mrv2.agregar_registro(&registros2[2]) > offsetsAppend[3] );
+	/*verifico que al agregar un nuevo registro el mismo se agregue cerca de donde
+	 * se removio el dato2[3]*/
+	assert( mrv2.eliminar_registro( 1 )== RES_ERROR );
+
+	assert( mrv2.agregar_registro(&registros2[0]) < offsetsAppend[2] );
+
+	offsetAppend= mrv2.get_tamanio_archivo();
+	assert( mrv2.agregar_registro(&registros2[0])== offsetAppend  );
 
 	print_test_ok("test_manejador_registros_variables_recuperar_espacio_libre");
 

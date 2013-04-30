@@ -25,7 +25,8 @@ long ManejadorRegistrosVariables::_buscar_registro_libre(unsigned short espacioN
 	unsigned short espacioRegistroLibre= 0;
 	fstream archivo(nombreArchivo.c_str());
 	long offsetRegistroLibre= header.offsetPrimerRegistroLibre;
-	const unsigned short ESPACIO_REQUERIDO= espacioNecesario + sizeof(HeaderRegistroLibre);
+	const unsigned short ESPACIO_REQUERIDO= espacioNecesario + sizeof(HeaderRegistroLibre) -
+			sizeof( unsigned short );
 	/*dado que un registro libre al ser reaprovechado se partira en dos (una parte se
 	 * ocupara y otra permanecera libre), se necesita  suficiente espacio para guardar
 	 * el nuevo registro y un HeaderRegistroLibre contiguos .*/
@@ -37,7 +38,7 @@ long ManejadorRegistrosVariables::_buscar_registro_libre(unsigned short espacioN
 		archivo.read( (char*)&hrl , sizeof(hrl) );
 		espacioRegistroLibre= hrl.espacioLibre;
 
-		if(espacioRegistroLibre < espacioNecesario)
+		if(espacioRegistroLibre < ESPACIO_REQUERIDO)
 			offsetRegistroLibre= hrl.offsetProximoRegistroLibre;
 
 	}
@@ -197,10 +198,11 @@ long ManejadorRegistrosVariables::eliminar_registro(unsigned short numeroRegistr
 }
 
 
-void ManejadorRegistrosVariables::_append_registro(RegistroVariable* registro){
+long ManejadorRegistrosVariables::_append_registro(RegistroVariable* registro){
 
 	fstream archivo(nombreArchivo.c_str());
 	archivo.seekp(0,ios::end);
+	long offset= archivo.tellp();
 	const int TAMANIO_EMPAQUETADO= registro->get_tamanio_empaquetado();
 	char* buffer= new char[TAMANIO_EMPAQUETADO];
 
@@ -212,6 +214,7 @@ void ManejadorRegistrosVariables::_append_registro(RegistroVariable* registro){
 	delete[] buffer;
 	_cerrar_archivo(&archivo);
 	_guardar_header();
+	return offset;
 
 }
 
@@ -325,7 +328,7 @@ long ManejadorRegistrosVariables::get_tamanio_archivo(){
 }
 
 
-int ManejadorRegistrosVariables::agregar_registro(RegistroVariable* registro){
+long ManejadorRegistrosVariables::agregar_registro(RegistroVariable* registro){
 
 	if(!archivo_existe(nombreArchivo))
 		return RES_ERROR;
@@ -344,8 +347,7 @@ int ManejadorRegistrosVariables::agregar_registro(RegistroVariable* registro){
 	TODO si no funca eliminar comentarios*/
 
 	if(OFFSET_REGISTRO_LIBRE== RES_ERROR){
-		this->_append_registro(registro);
-		return RES_OK;
+		return this->_append_registro(registro);
 	}
 
 
@@ -401,7 +403,9 @@ int ManejadorRegistrosVariables::agregar_registro(RegistroVariable* registro){
 	header.cantidadRegistros++;
 	_guardar_header();
 
-	return RES_OK;
+	long offsetRetornar= OFFSET_REGISTRO_LIBRE + sizeof(HeaderRegistroLibre)
+			+ tamanioResto;
+	return offsetRetornar;
 
 }
 
