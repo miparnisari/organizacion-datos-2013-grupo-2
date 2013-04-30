@@ -1,10 +1,3 @@
-/*
- * ClaveNumerica.h
- *
- *  Created on: Apr 22, 2013
- *      Author: martin
- */
-
 #ifndef CLAVENUMERICA_H_
 #define CLAVENUMERICA_H_
 

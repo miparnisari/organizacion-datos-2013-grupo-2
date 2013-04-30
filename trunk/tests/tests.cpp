@@ -208,7 +208,7 @@ void test_manejador_registros_variables()
 	assert( mrv.abrir_archivo("nombreArchInexistente")== RES_ERROR );
 	assert( mrv.get_cantidad_registros()== RES_ERROR );
 
-	assert( mrv.eliminar_archivo("tmrv1.dat")== RES_OK );
+	assert( mrv.eliminar_archivo("tmrv1.dat")== RES_FILE_DOESNT_EXIST );
 	assert( mrv.crear_archivo("tmrv1.dat")== RES_OK );
 	assert( mrv.get_cantidad_registros()== 0 );
 
@@ -218,19 +218,15 @@ void test_manejador_registros_variables()
 	rv.agregar_campo(datos[0].c_str() , datos[0].length());
 	assert( mrv.agregar_registro(&rv)!= RES_ERROR );
 
-
 	rv.limpiar_buffer();
 	rv.agregar_campo(datos[1].c_str() , datos[1].length());
 	mrv.agregar_registro(&rv);
-
 
 	rv.limpiar_buffer();
 	rv.agregar_campo(datos[2].c_str() , datos[2].length());
 	mrv.agregar_registro(&rv);
 
 	assert( mrv.get_cantidad_registros()== 3 );
-
-
 
 	RegistroVariable rv2;
 	assert( mrv.get_registro(&rv2,3)== RES_ERROR );
@@ -266,7 +262,7 @@ void test_manejador_registros_variables()
 	assert(mrv.get_cantidad_registros()== 4);
 
 
-	unsigned int tamanioArchivo= mrv.get_tamanio_archivo();
+	long tamanioArchivo= mrv.get_tamanio_archivo();
 	assert( mrv.eliminar_registro(5)== RES_ERROR );
 	assert( mrv.eliminar_registro(0)!= RES_ERROR );
 	assert( mrv.get_tamanio_archivo()== tamanioArchivo );
@@ -293,7 +289,7 @@ void test_manejador_registros_variables()
 	string s5(campo,tamanioCampo);
 	assert( s5== datos[2] );
 
-
+	assert( mrv.eliminar_archivo("tmrv1.dat")== RES_OK);
 
 
 	print_test_ok("test_manejador_registros_variables");
@@ -391,7 +387,6 @@ void test_manejador_registros_variables_recuperar_espacio_libre(){
 		offsetAppend+= registros2[i].get_tamanio_empaquetado();
 	}
 	assert( mrv2.get_cantidad_registros_ocupados()== CANT_DATOS );
-	long tamanioInicial2= mrv2.get_tamanio_archivo();
 
 	assert( mrv2.eliminar_registro(1)== offsetsAppend[1] );
 	assert( mrv2.eliminar_registro(3)== offsetsAppend[3] );
@@ -833,33 +828,74 @@ void test_empaquetar_desempaquetar_bloque(){
 	print_test_ok("test_empaquetar_desempaquetar_bloque");
 }
 
-void test_crear_archivo_bloques()
+void test_manejador_bloques_crear()
 {
-	ManejadorBloques manejador;
-	manejador.crear_archivo("manejadorbloques.dat");
+	unsigned int minRegsPorBloque = 0;
+	unsigned int maxRegsPorBloque = 100;
+	ManejadorBloques manejador(BLOQUE_TAM_DEFAULT, minRegsPorBloque, maxRegsPorBloque);
 
-	manejador.abrir_archivo("manejadorbloques.dat","rb");
+	assert (manejador.crear_archivo("manejadorbloques.dat") == RES_OK);
 
-	assert(manejador.get_cantidad_bloques() == 0);
+	assert (manejador.abrir_archivo("manejadorbloques.dat","rb") == RES_OK);
+
+	assert(manejador.get_cantidad_bloques() == 1);
 	assert(manejador.get_proximo_bloque_libre() == 0);
+	assert(manejador.get_min_regs_bloque() == minRegsPorBloque);
+	assert(manejador.get_max_regs_bloque() == maxRegsPorBloque);
 	assert(manejador.get_tamanio_bloque() == BLOQUE_TAM_DEFAULT);
+
+	assert (manejador.cerrar_archivo() == RES_OK);
+
 
 	print_test_ok("test_crear_archivo_bloques");
 
 }
 
-void test_agregar_bloques()
+void test_manejador_bloques_insertar()
 {
-	ManejadorBloques manejador;
+	unsigned int minRegsPorBloque = 0;
+	unsigned int maxRegsPorBloque = 2;
+	ManejadorBloques manejador(BLOQUE_TAM_DEFAULT, minRegsPorBloque, maxRegsPorBloque);
+
 	assert (manejador.crear_archivo("manejadorbloques.dat") == RES_OK);
+	assert (manejador.abrir_archivo("manejadorbloques.dat","rb+") == RES_OK);
 
-	RegistroVariable registro;
-	std::string campo = "organizacion de datos";
-	registro.agregar_campo(campo.c_str(),campo.size());
+	RegistroVariable registro1;
+	const unsigned int cantidad_campos = 3;
+	std::string campos[] = {"organizacion de datos", "taller de programacion", "sistemas operativos"};
+	assert (registro1.agregar_campo(campos[0].c_str(),campos[0].size()) == RES_OK);
+	assert (registro1.agregar_campo(campos[1].c_str(),campos[1].size()) == RES_OK);
+	assert (registro1.agregar_campo(campos[2].c_str(),campos[2].size()) == RES_OK);
 
-	Bloque bloque;
-	bloque.agregar_registro(&registro);
-	manejador.actualizar_bloque("manejadorbloques.dat", &bloque,0);
+	assert( manejador.agregar_registro_en_bloque("manejadorbloques.dat", 0,&registro1) == RES_OK);
+
+	RegistroVariable registro2;
+	std::string campos2[] = {"algebra ii", "analisis ii", "matematica discreta"};
+	assert (registro2.agregar_campo(campos2[0].c_str(),campos2[0].size()) == RES_OK);
+	assert (registro2.agregar_campo(campos2[1].c_str(),campos2[1].size()) == RES_OK);
+	assert (registro2.agregar_campo(campos2[2].c_str(),campos2[2].size()) == RES_OK);
+
+	assert( manejador.agregar_registro_en_bloque("manejadorbloques.dat", 0,&registro2) == RES_OK);
+
+//	RegistroVariable registroFalla;
+//	std::string campoFalla = "bioquimica ii";
+//	assert (registroFalla.agregar_campo(campoFalla.c_str(),campoFalla.size()) == RES_OK);
+//
+//	// El bloque permite como maximo 2 registros y estoy agregando un tercero
+//	assert( manejador.agregar_registro_en_bloque("manejadorbloques.dat", 0,&registroFalla) == RES_ESPACIO_INSUFICIENTE);
+//
+//	RegistroVariable registroLeido;
+//	assert (manejador.get_registro_de_bloque("manejadorbloques.dat",0,0,&registroLeido));
+//	IMPRIMIR_VARIABLE(registroLeido.get_cantidad_campos());
+//	assert (registroLeido.get_cantidad_campos() == cantidad_campos);
+//
+//	char* campo= new char[100];
+//	int tamanioCampo = registroLeido.recuperar_campo(campo,0); // recupero "organizacion de datos"
+//	string s_campo(campo,tamanioCampo);
+//	delete[] campo;
+//	assert( s_campo == campos[0]);
+
+	manejador.cerrar_archivo();
 
 	print_test_ok("test_agregar_bloques");
 }
@@ -881,10 +917,10 @@ int main(int argc,char** args)
 	test_remover_registros_bloque();
 	test_recuperar_registros_bloque();
 	test_empaquetar_desempaquetar_bloque();
-//	test_crear_archivo_bloques();
-	test_agregar_bloques();
 	test_manejador_registros_variables();
 	test_manejador_registros_variables_recuperar_espacio_libre();
+	test_manejador_bloques_crear();
+	test_manejador_bloques_insertar();
 
 	return RES_OK;
 }

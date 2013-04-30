@@ -84,9 +84,6 @@ void ClaveX::desempaquetar(char* buffer,unsigned short tamanioBuffer){
 
 }
 
-
-
-
 void ClaveX::set_clave(string clave){
 
 	tipoClave= CLAVE_STRING;
@@ -94,7 +91,6 @@ void ClaveX::set_clave(string clave){
 	*(ClaveString*)claves[CLAVE_STRING] = clave;
 
 }
-
 
 void ClaveX::set_clave(int clave){
 

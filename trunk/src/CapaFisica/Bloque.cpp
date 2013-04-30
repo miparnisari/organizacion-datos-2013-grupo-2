@@ -1,18 +1,13 @@
-/*
- * Bloque.cpp
- *
- *  Created on: Mar 25, 2013
- *      Author: martin
- */
-
 #include "Bloque.h"
 
-Bloque::Bloque(unsigned int tamBloque)
+Bloque::Bloque(unsigned int tamBloque, unsigned int min, unsigned int max)
 {
 	this->tamanioBloque= tamBloque;
 	this->espacioLibre= tamanioBloque - sizeof(espacioLibre);
 	this->espacioLibreOffset= espacioLibre;
 	this->bufferBloque= new char[tamanioBloque]();
+	this->minNumeroRegistros = min;
+	this->maxNumeroRegistros = max;
 	limpiar_buffer();
 }
 
@@ -24,7 +19,7 @@ Bloque::~Bloque()
 
 unsigned int Bloque::calcular_resto_bloque(unsigned int offsetRegistro)const throw()
 {
-	const unsigned int ESPACIO_OCUPADO= this->calcular_espacio_ocupado();
+	const unsigned int ESPACIO_OCUPADO = this->calcular_espacio_ocupado();
 	return (ESPACIO_OCUPADO - offsetRegistro);
 
 }/*calcula la cantidad de datos restantes validos en buffer a partir de un offsetDeterminado*/
@@ -130,6 +125,11 @@ int Bloque::agregar_registro(RegistroVariable* registro)throw(){
 	if(registro->esta_limpio())
 		return RES_ERROR;
 
+	std::cout << "maxNumeroRegistros = " << maxNumeroRegistros << std::endl;
+	std::cout << "cantidad_registros_almacenados = " << get_cantidad_registros_almacenados() << std::endl;
+	if (this->get_cantidad_registros_almacenados() >= maxNumeroRegistros)
+		return RES_ESPACIO_INSUFICIENTE;
+
 	unsigned short tamanioDato= registro->get_tamanio();
 	return this->agregar_registro( registro->get_buffer() , tamanioDato );
 
@@ -185,6 +185,8 @@ int Bloque::agregar_registro(RegistroVariable* registro,unsigned short posicionR
 		return RES_ERROR;
 	if(registro->esta_limpio())
 		return RES_ERROR;
+	if (get_cantidad_registros_almacenados() >= this->maxNumeroRegistros)
+		return RES_ESPACIO_INSUFICIENTE;
 	return this->agregar_registro(registro->get_buffer() , registro->get_tamanio() , posicionRegistro);
 
 }
@@ -318,6 +320,8 @@ int Bloque::remover_registro(unsigned short numeroRegistro)throw(){
 
 	if(this->esta_vacio())
 		return RES_OK;
+	if(get_cantidad_registros_almacenados() == minNumeroRegistros)
+		return RES_ERROR;
 
 	const unsigned int OFFSET_REGISTRO= this->obtener_offset_registro(numeroRegistro);
 	if((int)OFFSET_REGISTRO == RES_INVALID_OFFSET)

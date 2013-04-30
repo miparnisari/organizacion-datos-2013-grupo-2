@@ -24,3 +24,4 @@ clean :
 	cd "../src"; make clean
 	find . -name "*.o" -type f -print | xargs /bin/rm -f
 	find . -name "*.a" -type f -print | xargs /bin/rm -f
+	find . -name "*.dat" -type f -print | xargs /bin/rm -f
