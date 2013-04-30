@@ -27,6 +27,11 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 			eliminados y no eliminados*/
 			unsigned int cantidadRegistrosLibres;
 		};
+		struct HeaderRegistroLibre{
+			unsigned short espacioLibre;
+			char marcaBorrado;
+			long offsetProximoRegistroLibre;
+		};
 
 	protected:
 		Header header;
@@ -43,6 +48,16 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 		/*agrega un registro al final del archivo*/
 		virtual bool _registro_fue_eliminado(unsigned short numeroRegistro);
 		virtual long _get_offset_registro(unsigned short numeroRegistro);
+
+
+		virtual long _buscar_registro_libre(unsigned short espacioNecesario);
+		/*retorna el valor de offset del primer registro libre con tamanio >=
+		  espacioNecesario. En caso de no existir tal registro, se retorna RES_ERROR
+		  NOTA: espacioNecesario de un registro deberia ser el espacio de empaquetamiento*/
+
+		virtual void _pegar_registro(RegistroVariable* registro,long offset);
+		/*esta primitiva se invoca en caso que el espacio libre de un registro libre
+		 * coincide EXACTAMENTE con el tamanio de empaquetamiento del registro a insertar.*/
 
 
 

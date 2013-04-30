@@ -302,6 +302,84 @@ void test_manejador_registros_variables()
 }/*funciona */
 
 
+void test_manejador_registros_variables_recuperar_espacio_libre(){
+
+	ManejadorRegistrosVariables mrv;
+	string nombreArchivo= "tmrvrel.dat";
+	mrv.eliminar_archivo(nombreArchivo);
+	mrv.crear_archivo(nombreArchivo);
+	assert( mrv.get_cantidad_registros_ocupados()== 0 );
+
+	const int CANT_DATOS= 4;
+	string datos[]={ "aaaa","bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","ccccc","dddddddddddd"};
+	RegistroVariable registros[CANT_DATOS];
+	for(int i=0;i<CANT_DATOS;i++){
+		registros[i].agregar_campo( datos[i].c_str() , datos[i].length() );
+		mrv.agregar_registro(&registros[i]);
+	}
+	assert( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
+	long tamanioInicial= mrv.get_tamanio_archivo();
+
+
+	assert( mrv.eliminar_registro(1)!= RES_ERROR );
+	IMPRIMIR_VARIABLE( registros[1].get_tamanio_empaquetado() );
+	assert( mrv.agregar_registro(&registros[0])!= RES_ERROR );
+
+	{
+		RegistroVariable rv;
+		assert( mrv.get_registro(&rv,1)== RES_ERROR );
+		assert( mrv.get_registro(&rv,2)!= RES_ERROR );
+		char campo[64];
+		int tamanioCampo= rv.recuperar_campo(campo,0);
+		string s(campo,tamanioCampo);
+		assert( s==datos[0] );
+	}
+
+	{
+		RegistroVariable rv;
+		assert( mrv.get_registro(&rv,3)!= RES_ERROR );
+		char campo[64];
+		int tamanioCampo= rv.recuperar_campo(campo,0);
+		string s(campo,tamanioCampo);
+		assert( s==datos[2] );
+	}
+
+	{
+		RegistroVariable rv;
+		assert( mrv.get_registro(&rv,4)!= RES_ERROR );
+		char campo[64];
+		int tamanioCampo= rv.recuperar_campo(campo,0);
+		string s(campo,tamanioCampo);
+		assert( s==datos[3] );
+	}
+
+	assert( mrv.agregar_registro(&registros[0])!= RES_ERROR );
+
+	{
+		RegistroVariable rv;
+		assert( mrv.get_registro(&rv,1)== RES_ERROR );
+		assert( mrv.get_registro(&rv,2)!= RES_ERROR );
+		char campo[64];
+		int tamanioCampo= rv.recuperar_campo(campo,0);
+		string s(campo,tamanioCampo);
+		assert( s==datos[0] );
+	}
+
+	assert( tamanioInicial== mrv.get_tamanio_archivo() );
+
+
+	assert( mrv.eliminar_registro( mrv.get_cantidad_registros()-1 )!=RES_ERROR );
+	mrv.agregar_registro( &registros[1] );
+	assert( mrv.get_tamanio_archivo() > tamanioInicial );
+
+	print_test_ok("test_manejador_registros_variables_recuperar_espacio_libre");
+
+
+}/*funcionaaaaa
+TODO mas tests que verifiquen que el espacio libre es recuperado sin afectar la
+integridad del archivo*/
+
+
 void test_registro_cancion()throw(){
 
 	std::cout<<"----------test_registro_cancion-------------"<<std::endl;
@@ -772,6 +850,7 @@ int main(int argc,char** args)
 //	test_crear_archivo_bloques();
 	test_agregar_bloques();
 	test_manejador_registros_variables();
+	test_manejador_registros_variables_recuperar_espacio_libre();
 
 	return RES_OK;
 }

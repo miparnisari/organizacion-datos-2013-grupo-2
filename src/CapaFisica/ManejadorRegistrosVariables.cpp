@@ -10,6 +10,44 @@
 using std::stringstream;
 
 
+void ManejadorRegistrosVariables::_pegar_registro(RegistroVariable* registro,long offset){
+
+
+
+}
+
+
+long ManejadorRegistrosVariables::_buscar_registro_libre(unsigned short espacioNecesario){
+
+	if(header.cantidadRegistrosLibres== 0)
+		return RES_ERROR;
+
+	unsigned short espacioRegistroLibre= 0;
+	fstream archivo(nombreArchivo.c_str());
+	long offsetRegistroLibre= header.offsetPrimerRegistroLibre;
+	const unsigned short ESPACIO_REQUERIDO= espacioNecesario + sizeof(HeaderRegistroLibre);
+	/*dado que un registro libre al ser reaprovechado se partira en dos (una parte se
+	 * ocupara y otra permanecera libre), se necesita  suficiente espacio para guardar
+	 * el nuevo registro y un HeaderRegistroLibre contiguos .*/
+
+	while(espacioRegistroLibre< ESPACIO_REQUERIDO && offsetRegistroLibre!= -1){
+
+		archivo.seekg(offsetRegistroLibre , ios::beg);
+		HeaderRegistroLibre hrl;
+		archivo.read( (char*)&hrl , sizeof(hrl) );
+		espacioRegistroLibre= hrl.espacioLibre;
+
+		if(espacioRegistroLibre < espacioNecesario)
+			offsetRegistroLibre= hrl.offsetProximoRegistroLibre;
+
+	}
+
+	_cerrar_archivo(&archivo);
+	return offsetRegistroLibre;
+
+}
+
+
 long ManejadorRegistrosVariables::_get_offset_registro(unsigned short numeroRegistro){
 
 	_leer_header();
@@ -130,12 +168,14 @@ long ManejadorRegistrosVariables::eliminar_registro(unsigned short numeroRegistr
 	const unsigned short ESPACIO_LIBERADO= registroEliminar.get_tamanio_empaquetado();
 	const unsigned short TAMANIO_REGISTRO_ELIMINAR= registroEliminar.get_tamanio();
 	char* bufferEliminacion= new char[ESPACIO_LIBERADO]();
-	stringstream streamEliminacion;
 
-	streamEliminacion.write( (char*)&TAMANIO_REGISTRO_ELIMINAR , sizeof(TAMANIO_REGISTRO_ELIMINAR) );
-	streamEliminacion.write( (char*)&MARCA_BORRADO , sizeof(MARCA_BORRADO) );
-	streamEliminacion.write( (char*)&header.offsetPrimerRegistroLibre ,
-			sizeof(header.offsetPrimerRegistroLibre) );
+	HeaderRegistroLibre hre;
+	hre.espacioLibre= TAMANIO_REGISTRO_ELIMINAR;
+	hre.marcaBorrado= MARCA_BORRADO;
+	hre.offsetProximoRegistroLibre= header.offsetPrimerRegistroLibre;
+
+	stringstream streamEliminacion;
+	streamEliminacion.write( (char*)&hre , sizeof(hre) );
 	header.offsetPrimerRegistroLibre= offset;
 	header.cantidadRegistrosLibres++;
 	/*escribo en el stream:  tamanioRegistroLibre| * | offsetSigRegLibre.
@@ -293,14 +333,73 @@ int ManejadorRegistrosVariables::agregar_registro(RegistroVariable* registro){
 		return RES_ERROR;
 
 	_leer_header();
+	const unsigned short TAMANIO_EMPAQUETAMIENTO= registro->get_tamanio_empaquetado();
+	const long OFFSET_REGISTRO_LIBRE= _buscar_registro_libre(TAMANIO_EMPAQUETAMIENTO);
+
+/*
 	if(header.offsetPrimerRegistroLibre== -1){
+		this->_append_registro(registro);
+		return RES_OK;
+	}
+	TODO si no funca eliminar comentarios*/
+
+	if(OFFSET_REGISTRO_LIBRE== RES_ERROR){
 		this->_append_registro(registro);
 		return RES_OK;
 	}
 
 
+	fstream archivo(nombreArchivo.c_str());
+	archivo.seekg(OFFSET_REGISTRO_LIBRE , ios::beg);
+	HeaderRegistroLibre hrlInicial;
+	archivo.read( (char*)&hrlInicial , sizeof(hrlInicial) );
+	HeaderRegistroLibre hrlFinal= hrlInicial;
+	/*obtengo los datos del registro libre a usar .*/
+
+	unsigned short tamanioEscribir= hrlInicial.espacioLibre + sizeof(unsigned short);
+	/*calculo el tamanio del buffer a escribir en el archivo*/
+
+	hrlFinal.espacioLibre-= TAMANIO_EMPAQUETAMIENTO;
+	/*el espacio del registro libre particionado es el anterior menos el tamanio del
+	 * registro a escribir*/
 
 
+	archivo.seekg(OFFSET_REGISTRO_LIBRE , ios::beg);
+	unsigned short tamanioResto= tamanioEscribir - TAMANIO_EMPAQUETAMIENTO -
+			sizeof(HeaderRegistroLibre);
+	char* bufferResto= new char[tamanioResto]();
+	/*obtengo el resto de datos libres*/
+
+
+	char* bufferRegistro= new char[TAMANIO_EMPAQUETAMIENTO];
+	registro->empaquetar(bufferRegistro);
+	/*empaqueto el registro a guardar*/
+
+
+	stringstream stream;
+	stream.write( (char*)&hrlFinal , sizeof(hrlFinal) );
+	stream.write( bufferResto , tamanioResto );
+	stream.write( bufferRegistro,TAMANIO_EMPAQUETAMIENTO );
+	/*guardo en el stream registroLibre|registroNuevo */
+
+
+	char* bufferEscribir= new char[tamanioEscribir];
+	stream.seekg(0,ios::beg);
+	stream.read(bufferEscribir , tamanioEscribir);
+
+
+	archivo.write( bufferEscribir , tamanioEscribir );
+
+
+
+	delete[] bufferResto;
+	delete[] bufferRegistro;
+	delete[] bufferEscribir;
+
+
+	_cerrar_archivo(&archivo);
+	header.cantidadRegistros++;
+	_guardar_header();
 
 	return RES_OK;
 
