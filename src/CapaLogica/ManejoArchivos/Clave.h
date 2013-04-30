@@ -8,7 +8,10 @@ class Clave{
 	protected:
 
 
-	public:
+	public:	
+		Clave();
+		virtual ~Clave();
+		
 		virtual bool operator <(const Clave&)= 0;
 		virtual bool operator >(const Clave&)= 0;
 		virtual bool operator ==(const Clave&)= 0;
@@ -27,10 +30,6 @@ class Clave{
 		/*retorna el tamanio de la clave guardada en bytes*/
 		virtual void resetear()= 0;
 		/*resetea la clave a un estado por defecto*/
-
-		Clave();
-		virtual ~Clave();
-
 };
 
 #endif /* CLAVE_H */ 

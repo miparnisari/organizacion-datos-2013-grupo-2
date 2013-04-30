@@ -42,7 +42,7 @@ bool ManejadorArchivos::archivo_existe(std::string nombreArchivo)const throw(){
 int ManejadorArchivos::eliminar_archivo(std::string nombreArchivo)const throw(){
 
 	if(!archivo_existe(nombreArchivo))
-		return RES_FILE_EXISTS;
+		return RES_FILE_DOESNT_EXIST;
 
 	std::string comando= "rm ";
 	comando += nombreArchivo;
