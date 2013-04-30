@@ -49,6 +49,13 @@ class ManejadorBloques:public ManejadorArchivos {
 		int agregar_registro_en_bloque(std::string nombreArchivo, unsigned int numBloque, RegistroVariable* reg);
 		int get_registro_de_bloque(std::string nombreArchivo, unsigned int numReg, unsigned int numBloque, RegistroVariable* reg);
 
+		int agregar_registro(std::string nombreArchivo, const RegistroVariable* reg);
+		/* Devuelve el numero de bloque donde fue insertado el registro */
+		int eliminar_registro(std::string nombreArchivo, const RegistroVariable* reg);
+		/* Devuelve el numero de bloque donde fue insertado el registro */
+		int actualizar_registro(std::string nombreArchivo, const RegistroVariable* reg);
+		/* Devuelve el numero de bloque donde fue insertado el registro */
+
 		int actualizar_bloque(std::string nombreArchivo, Bloque* bloque, unsigned int numBloque);
 		int obtener_bloque(std::string nombreArchivo,  Bloque* bloque, unsigned int numBloque);
 

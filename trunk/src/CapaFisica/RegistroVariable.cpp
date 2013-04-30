@@ -25,13 +25,11 @@ int RegistroVariable::agregar_datos(const char* datos,unsigned short tamanioDato
 
 	if (this->fue_eliminado() || datos == NULL)
 	{
-		std::cout << "RES_ERROR" << std::endl;
 		return RES_ERROR;
 	}
 	unsigned short tamanioFinal = tamanio + tamanioDatos;
 	if (tamanioFinal > REG_VAR_MAX_TAM)
 	{
-		std::cout << "RES_RECORD_TOO_LONG" << std::endl;
 		return RES_RECORD_TOO_LONG;
 	}
 

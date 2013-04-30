@@ -133,22 +133,14 @@ int ManejadorBloques::agregar_registro_en_bloque(std::string nombreArchivo, unsi
 	Bloque bloque(header.tamanioBloque,header.minRegsBloque,header.maxRegsBloque);
 	int res = obtener_bloque(nombreArchivo,&bloque,numBloque);
 	if (res != RES_OK)
-	{
-		std::cout << "falló obtener bloque" << std::endl;
 		return RES_ERROR;
-	}
 
 	res = bloque.agregar_registro(reg);
 	if (res == RES_OK)
 	{
 		res = actualizar_bloque(nombreArchivo,&bloque,numBloque);
-		if (res != RES_OK)
-		{
-			std::cout << "falló actualizar bloque" << std::endl;
-		}
 		return res;
 	}
-	std:: cout << "falló agregar registro en bloque"  << std::endl;
 	return res;
 }
 
@@ -224,10 +216,7 @@ int ManejadorBloques :: obtener_bloque(std::string nombreArchivo, Bloque* bloque
 {
 	// El tamanio del bloque debe coincidir
 	if (bloque->get_tamanio_bloque() != this->header.tamanioBloque)
-	{
-		std::cout << "tamanio bloque no coincide" << std::endl;
 		return RES_ERROR;
-	}
 
 	// Salteamos el header
 	long int offset = sizeof(this->header) + (this->header.tamanioBloque * numBloque);
@@ -236,19 +225,15 @@ int ManejadorBloques :: obtener_bloque(std::string nombreArchivo, Bloque* bloque
 	int res;
 	res = fseek(this->file_handler,offset,SEEK_SET);
 	if (res != 0)
-	{
-		std::cout << "no pude hacer seek" << std::endl;
 		return RES_ERROR;
-	}
 
 	// Leemos el bloque
 	char* buffer = new char[header.tamanioBloque];
 	res = fread(buffer,this->header.tamanioBloque,1,this->file_handler);
-	bloque->empaquetar(buffer);
+	bloque->desempaquetar(buffer);
 	delete[] buffer;
 	if (res != 1)
 	{
-		std::cout << "no pude leer el bloque" << std::endl;
 		return RES_ERROR;
 	}
 	return RES_OK;
