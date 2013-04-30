@@ -44,8 +44,9 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 		virtual void _guardar_header();
 		virtual void _desvincular();
 		/*desvincula el manejadorRegistrosVariables de el archivo que este manejando*/
-		virtual void _append_registro(RegistroVariable* registro);
-		/*agrega un registro al final del archivo*/
+		virtual long _append_registro(RegistroVariable* registro);
+		/*agrega un registro al final del archivo y retorna el valor del offset donde
+		 * se agrego*/
 		virtual bool _registro_fue_eliminado(unsigned short numeroRegistro);
 		virtual long _get_offset_registro(unsigned short numeroRegistro);
 
@@ -74,7 +75,7 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 		/*se abre un archivo para su modificacion. Los datos se cargan al header .
 		 * En caso de que el archivo no exista se retorna RES_ERROR*/
 
-		virtual int agregar_registro(RegistroVariable* registro);
+		virtual long agregar_registro(RegistroVariable* registro);
 		/*agrega un registro donde haya espacio disponible en el archivo*/
 
 		virtual int get_cantidad_registros();
