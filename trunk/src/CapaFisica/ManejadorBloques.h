@@ -32,8 +32,12 @@ class ManejadorBloques:public ManejadorArchivos {
 
 		int __set_header();
 		int __get_header();
-		int __marcar_libre_bloque(std::string nombreArchivo, unsigned int numBloque);
-		int __marcar_usado_bloque(std::string nombreArchivo, unsigned int numBloque);
+		bool __esta_en_lista_de_libres(std::string nombreArchivo, unsigned numBloque);
+//		int __marcar_libre_bloque(std::string nombreArchivo, unsigned int numBloque);
+		int __usar_bloque(std::string nombreArchivo, unsigned int numBloque);
+		int __agregar_bloque(std::string nombreArchivo);
+		int __liberar_bloque(std::string nombreArchivo, unsigned int numBloque);
+		unsigned int __get_primer_bloque_libre(std::string nombreArchivo);
 
 	public:
 		ManejadorBloques(unsigned int tamBloque, unsigned int min, unsigned int max);
@@ -45,19 +49,26 @@ class ManejadorBloques:public ManejadorArchivos {
 		int abrir_archivo(std::string nombreArchivo, std::string modo);
 		int cerrar_archivo();
 
-		int eliminar_registro_en_bloque(std::string nombreArchivo, unsigned int numBloque, unsigned int numReg);
-		int agregar_registro_en_bloque(std::string nombreArchivo, unsigned int numBloque, RegistroVariable* reg);
-		int get_registro_de_bloque(std::string nombreArchivo, unsigned int numReg, unsigned int numBloque, RegistroVariable* reg);
+//		int eliminar_registro_en_bloque(std::string nombreArchivo, unsigned int numBloque, unsigned int numReg);
+//		int agregar_registro_en_bloque(std::string nombreArchivo, unsigned int numBloque, RegistroVariable* reg);
+//		int get_registro_de_bloque(std::string nombreArchivo, unsigned int numReg, unsigned int numBloque, RegistroVariable* reg);
+//
+//		int agregar_registro(std::string nombreArchivo, const RegistroVariable* reg);
+//		/* Devuelve el numero de bloque donde fue insertado el registro */
+//		int eliminar_registro(std::string nombreArchivo, const RegistroVariable* reg);
+//		/* Devuelve el numero de bloque donde fue insertado el registro */
+//		int actualizar_registro(std::string nombreArchivo, const RegistroVariable* reg);
+//		/* Devuelve el numero de bloque donde fue insertado el registro */
 
-		int agregar_registro(std::string nombreArchivo, const RegistroVariable* reg);
-		/* Devuelve el numero de bloque donde fue insertado el registro */
-		int eliminar_registro(std::string nombreArchivo, const RegistroVariable* reg);
-		/* Devuelve el numero de bloque donde fue insertado el registro */
-		int actualizar_registro(std::string nombreArchivo, const RegistroVariable* reg);
-		/* Devuelve el numero de bloque donde fue insertado el registro */
 
-		int actualizar_bloque(std::string nombreArchivo, Bloque* bloque, unsigned int numBloque);
+		int escribir_bloque(std::string nombreArchivo, Bloque* bloque);
+		/* Inserta un bloque en la primera posicion libre del archivo.
+		 * Si no hay espacios libres, hace un "append" del bloque al final del archivo. */
+		int sobreescribir_bloque(std::string nombreArchivo, Bloque* bloque, unsigned int numBloque);
+		/* El bloque referenciado por "numBloque" se lo sobreescribe con los contenidos del nuevo bloque.
+		 */
 		int obtener_bloque(std::string nombreArchivo,  Bloque* bloque, unsigned int numBloque);
+		/* Lee un bloque no libre del disco y lo guarda en "bloque" para operar sobre el. */
 
 		unsigned int get_cantidad_bloques();
 		int get_proximo_bloque_libre();

@@ -422,7 +422,7 @@ void Bloque::listar_registros()throw(){
 
 }/*lista el byte offset de cada registro contenido en el bloque*/
 
-int Bloque::marcar_libre_bloque(unsigned int numBloque)
+int Bloque::marcar_libre()
 {
 	return 0;
 }
@@ -432,7 +432,7 @@ int Bloque::actualizar_ref_prox_bloque(unsigned int primerBloque)
 }
 int Bloque::obtener_ref_prox_bloque()
 {
-	return 0;
+	return -1;
 }
 bool Bloque::esta_libre()
 {
