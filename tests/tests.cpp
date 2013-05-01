@@ -601,6 +601,7 @@ void test_agregar_registros_bloque(){
 	assert( b2.agregar_registro(&rv2)== RES_OK );
 	assert( b2.get_cantidad_registros_almacenados()== 1 );
 	assert( b2.get_espacio_libre()== elb2 );
+	assert( b2.esta_vacio() == false);
 
 	assert( b2.calcular_espacio_ocupado()== (rv2.get_tamanio()+sizeof(unsigned short)) );
 	/*el espacio es administrado correctamente*/
@@ -839,7 +840,7 @@ void test_manejador_bloques_crear()
 	assert (manejador.abrir_archivo("manejadorbloques.dat","rb") == RES_OK);
 
 	assert(manejador.get_cantidad_bloques() == 0);
-	assert(manejador.get_proximo_bloque_libre() == -1);
+	assert(manejador.get_primer_bloque_libre() == -1);
 	assert(manejador.get_min_regs_bloque() == minRegsPorBloque);
 	assert(manejador.get_max_regs_bloque() == maxRegsPorBloque);
 	assert(manejador.get_tamanio_bloque() == BLOQUE_TAM_DEFAULT);
@@ -850,7 +851,53 @@ void test_manejador_bloques_crear()
 
 }
 
-void test_manejador_bloques_insertar()
+void test_manejador_bloques_escribir_bloques()
+{
+	unsigned int minRegsPorBloque = 0;
+	unsigned int maxRegsPorBloque = 100;
+	ManejadorBloques manejador(BLOQUE_TAM_DEFAULT, minRegsPorBloque, maxRegsPorBloque);
+	assert (manejador.crear_archivo("manejadorbloques.dat") == RES_OK);
+	assert (manejador.abrir_archivo("manejadorbloques.dat","rb+") == RES_OK);
+
+	Bloque bloque;
+	RegistroVariable registro;
+	std::string campo  = "hola como te va? bien gracias.";
+	registro.agregar_campo(campo.c_str(),campo.size());
+	bloque.agregar_registro(&registro);
+
+	// Agrego el primer bloque del archivo
+	assert(manejador.escribir_bloque("manejadorbloques.dat",&bloque) == RES_OK);
+	assert(manejador.get_primer_bloque_libre() == -1);
+	assert(manejador.get_cantidad_bloques() == 1);
+
+	// No se puede escribir un bloque vacio
+	Bloque bloqueVacio;
+	assert(manejador.escribir_bloque("manejadorbloques.dat", &bloqueVacio) == RES_OK);
+	assert(manejador.get_primer_bloque_libre() == -1);
+	assert(manejador.get_cantidad_bloques() == 1);
+
+	// Libero el unico bloque, por ende queda marcado como "Libre"
+	assert(manejador.sobreescribir_bloque("manejadorbloques.dat",&bloqueVacio,0) == RES_OK);
+	assert(manejador.get_primer_bloque_libre() == 0);
+	assert(manejador.get_cantidad_bloques() == 1);
+
+	// Escribo en el primer bloque (que estaba liberado)
+	assert(manejador.escribir_bloque("manejadorbloques.dat",&bloque) == RES_OK);
+	assert(manejador.get_primer_bloque_libre() == -1);
+	assert(manejador.get_cantidad_bloques() == 1);
+
+	// Agrego un bloque mas
+	assert(manejador.escribir_bloque("manejadorbloques.dat",&bloque) == RES_OK);
+	assert(manejador.get_primer_bloque_libre() == -1);
+	assert(manejador.get_cantidad_bloques() == 2);
+
+
+	assert (manejador.cerrar_archivo() == RES_OK);
+
+	print_test_ok("test_manejador_bloques_escribir_bloques");
+}
+
+void test_manejador_bloques_sobreescribir_bloques()
 {
 
 	print_test_ok("test_agregar_bloques");
@@ -879,8 +926,7 @@ int main(int argc,char** args)
 	test_manejador_registros_variables();
 	test_manejador_registros_variables_recuperar_espacio_libre();
 	test_manejador_bloques_crear();
-	test_manejador_bloques_insertar();
-	test_manejador_bloques_eliminar();
+	test_manejador_bloques_escribir_bloques();
 
 	return RES_OK;
 }

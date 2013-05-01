@@ -273,7 +273,7 @@ int Bloque::recuperar_registro(RegistroVariable* registro,unsigned short numeroR
 }/*recupera el registro con numero numeroRegistro. Los registros se cuentan a partir del 0.*/
 
 
-void Bloque::empaquetar(char* copia)throw(){
+void Bloque::empaquetar(char* copia)const throw(){
 
 	stringstream stream(ios::in |ios::out);
 	stream.write(bufferBloque,tamanioBloque);

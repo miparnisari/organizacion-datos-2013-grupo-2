@@ -61,17 +61,17 @@ class ManejadorBloques:public ManejadorArchivos {
 //		/* Devuelve el numero de bloque donde fue insertado el registro */
 
 
-		int escribir_bloque(std::string nombreArchivo, Bloque* bloque);
+		int escribir_bloque(std::string nombreArchivo, const Bloque* bloque);
 		/* Inserta un bloque en la primera posicion libre del archivo.
 		 * Si no hay espacios libres, hace un "append" del bloque al final del archivo. */
-		int sobreescribir_bloque(std::string nombreArchivo, Bloque* bloque, unsigned int numBloque);
+		int sobreescribir_bloque(std::string nombreArchivo, const Bloque* bloque, unsigned int numBloque);
 		/* El bloque referenciado por "numBloque" se lo sobreescribe con los contenidos del nuevo bloque.
 		 */
 		int obtener_bloque(std::string nombreArchivo,  Bloque* bloque, unsigned int numBloque);
 		/* Lee un bloque no libre del disco y lo guarda en "bloque" para operar sobre el. */
 
 		unsigned int get_cantidad_bloques();
-		int get_proximo_bloque_libre();
+		int get_primer_bloque_libre();
 		unsigned int get_tamanio_bloque();
 		unsigned int get_max_regs_bloque();
 		unsigned int get_min_regs_bloque();

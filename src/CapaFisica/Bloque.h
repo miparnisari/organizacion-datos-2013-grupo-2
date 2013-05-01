@@ -64,7 +64,7 @@ class Bloque {
 		virtual void desempaquetar(const char* datos)throw();
 		/*reconstruye un Bloque a partir de un buffer de caracteres que contenga un bloque.
 		 * "datos" tiene que tener un tamanio igual o superior al del objeto Bloque */
-		virtual void empaquetar(char* copia)throw();
+		virtual void empaquetar(char* copia)const throw();
 		/*exporta el bloque como datos sin formato en la variable copia. La variable "copia" debe
 		 * ser un buffer de caracteres reservados en memoria de tamanio igual o superior al tamanio
 		 * del bloque.*/
