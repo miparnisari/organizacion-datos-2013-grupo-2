@@ -109,7 +109,7 @@ long ManejadorRegistrosVariables::get_registro(RegistroVariable* registro,
 
 	unsigned short tamanioRegistro;
 	archivo.read( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
-	char* bufferRegistro= new char[tamanioRegistro + sizeof(tamanioRegistro)];
+	char* bufferRegistro= new char[tamanioRegistro + sizeof(tamanioRegistro)]();
 	archivo.read( bufferRegistro , tamanioRegistro );
 
 	stringstream empaquetador;
@@ -171,6 +171,7 @@ long ManejadorRegistrosVariables::eliminar_registro(unsigned short numeroRegistr
 	char* bufferEliminacion= new char[ESPACIO_LIBERADO]();
 
 	HeaderRegistroLibre hre;
+	memset(&hre,0,sizeof(hre));
 	hre.espacioLibre= TAMANIO_REGISTRO_ELIMINAR;
 	hre.marcaBorrado= MARCA_BORRADO;
 	hre.offsetProximoRegistroLibre= header.offsetPrimerRegistroLibre;
@@ -204,7 +205,7 @@ long ManejadorRegistrosVariables::_append_registro(RegistroVariable* registro){
 	archivo.seekp(0,ios::end);
 	long offset= archivo.tellp();
 	const int TAMANIO_EMPAQUETADO= registro->get_tamanio_empaquetado();
-	char* buffer= new char[TAMANIO_EMPAQUETADO];
+	char* buffer= new char[TAMANIO_EMPAQUETADO]();
 
 	registro->empaquetar(buffer);
 	archivo.write(buffer,TAMANIO_EMPAQUETADO);
@@ -373,7 +374,7 @@ long ManejadorRegistrosVariables::agregar_registro(RegistroVariable* registro){
 	/*obtengo el resto de datos libres*/
 
 
-	char* bufferRegistro= new char[TAMANIO_EMPAQUETAMIENTO];
+	char* bufferRegistro= new char[TAMANIO_EMPAQUETAMIENTO]();
 	registro->empaquetar(bufferRegistro);
 	/*empaqueto el registro a guardar*/
 
@@ -385,7 +386,7 @@ long ManejadorRegistrosVariables::agregar_registro(RegistroVariable* registro){
 	/*guardo en el stream registroLibre|registroNuevo */
 
 
-	char* bufferEscribir= new char[tamanioEscribir];
+	char* bufferEscribir= new char[tamanioEscribir]();
 	stream.seekg(0,ios::beg);
 	stream.read(bufferEscribir , tamanioEscribir);
 
