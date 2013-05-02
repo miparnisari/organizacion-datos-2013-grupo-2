@@ -23,10 +23,11 @@ class ManejadorBloques:public ManejadorArchivos {
 
 		int __set_header();
 		int __get_header();
+		bool __num_bloque_es_valido(unsigned int numBloque);
 		bool __es_tope_de_pila(std::string nombreArchivo, unsigned numBloque);
-//		int __marcar_libre_bloque(std::string nombreArchivo, unsigned int numBloque);
-		int __usar_bloque(std::string nombreArchivo, unsigned int numBloque);
-		int __agregar_bloque(std::string nombreArchivo);
+		int __usar_bloque(std::string nombreArchivo, Bloque* bloque, unsigned int numBloque);
+		int __agregar_bloque_al_final(std::string nombreArchivo);
+		int __escribir_bloque(std::string nombreArchivo, const Bloque* bloque, unsigned int offset);
 		int __liberar_bloque(std::string nombreArchivo, Bloque* bloque, unsigned int numBloque);
 		unsigned int __get_primer_bloque_libre(std::string nombreArchivo);
 
