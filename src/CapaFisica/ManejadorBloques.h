@@ -1,10 +1,3 @@
-/*
- * ManejadorBloques.h
- *
- *  Created on: Mar 25, 2013
- *      Author: martin
- */
-
 #ifndef MANEJADORBLOQUES_H_
 #define MANEJADORBLOQUES_H_
 
@@ -12,8 +5,6 @@
 #include "Bloque.h"
 #include <stdio.h>
 #include "../Utilitarios/Utilitarios.h"
-
-using namespace std;
 
 struct mb_header
 {
@@ -49,26 +40,15 @@ class ManejadorBloques:public ManejadorArchivos {
 		int abrir_archivo(std::string nombreArchivo, std::string modo);
 		int cerrar_archivo();
 
-//		int eliminar_registro_en_bloque(std::string nombreArchivo, unsigned int numBloque, unsigned int numReg);
-//		int agregar_registro_en_bloque(std::string nombreArchivo, unsigned int numBloque, RegistroVariable* reg);
-//		int get_registro_de_bloque(std::string nombreArchivo, unsigned int numReg, unsigned int numBloque, RegistroVariable* reg);
-//
-//		int agregar_registro(std::string nombreArchivo, const RegistroVariable* reg);
-//		/* Devuelve el numero de bloque donde fue insertado el registro */
-//		int eliminar_registro(std::string nombreArchivo, const RegistroVariable* reg);
-//		/* Devuelve el numero de bloque donde fue insertado el registro */
-//		int actualizar_registro(std::string nombreArchivo, const RegistroVariable* reg);
-//		/* Devuelve el numero de bloque donde fue insertado el registro */
-
-
 		int escribir_bloque(std::string nombreArchivo, const Bloque* bloque);
 		/* Inserta un bloque en la primera posicion libre del archivo.
-		 * Si no hay espacios libres, hace un "append" del bloque al final del archivo. */
+		 * Si no hay espacios libres, hace un "append" del bloque al final del archivo.
+		 * Devuelve el numero de bloque escrito, o RES_ERROR si falló. */
 		int sobreescribir_bloque(std::string nombreArchivo, const Bloque* bloque, unsigned int numBloque);
 		/* El bloque referenciado por "numBloque" se lo sobreescribe con los contenidos del nuevo bloque.
 		 */
-		int obtener_bloque(std::string nombreArchivo,  Bloque* bloque, unsigned int numBloque);
-		/* Lee un bloque no libre del disco y lo guarda en "bloque" para operar sobre el. */
+		Bloque* obtener_bloque(std::string nombreArchivo, unsigned int numBloque);
+		/* Lee un bloque no libre del disco y lo guarda en un buffer "bloque" para operar sobre el. */
 
 		unsigned int get_cantidad_bloques();
 		int get_primer_bloque_libre();

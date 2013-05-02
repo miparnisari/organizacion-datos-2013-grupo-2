@@ -33,10 +33,8 @@ class Bloque {
 		/*Si no se le pasa un tamanio, se le asignara BLOQUE_TAM_DEFAULT.*/
 		virtual ~Bloque();
 
-		int marcar_libre(); //TODO
 		int actualizar_ref_prox_bloque(unsigned int primerBloque); //TODO
 		int obtener_ref_prox_bloque(); //TODO
-		bool esta_libre(); //TODO
 
 		virtual unsigned short get_cantidad_registros_almacenados()const throw();
 
