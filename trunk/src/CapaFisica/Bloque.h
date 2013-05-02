@@ -33,8 +33,7 @@ class Bloque {
 		/*Si no se le pasa un tamanio, se le asignara BLOQUE_TAM_DEFAULT.*/
 		virtual ~Bloque();
 
-		int actualizar_ref_prox_bloque(unsigned int primerBloque); //TODO
-		int obtener_ref_prox_bloque(); //TODO
+
 
 		virtual unsigned short get_cantidad_registros_almacenados()const throw();
 
@@ -67,7 +66,18 @@ class Bloque {
 		 * ser un buffer de caracteres reservados en memoria de tamanio igual o superior al tamanio
 		 * del bloque.*/
 
+		virtual bool fue_eliminado();
+		/*verifica si un bloque se marco como eliminado .*/
 
+		virtual int actualizar_ref_prox_bloque(unsigned int primerBloque);
+		/* si el bloque NO ESTABA ELIMINADO, la funcion lo marca como eliminado y
+		 * agrega el valor de referencia a proximo bloque libre , se retorna RES_OK .
+		 * si el bloque ESTABA ELIMINADO , se actualiza la referencia al proximo bloque
+		 * del mismo y se retorna RES_ERROR */
+
+		virtual int obtener_ref_prox_bloque();
+		/*si el bloque se marco como eliminado se retorna la referencia al proximo bloque
+		 * de lo contrario se retorna RES_BLOQUE_OCUPADO*/
 
 
 

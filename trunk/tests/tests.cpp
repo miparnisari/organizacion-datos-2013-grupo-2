@@ -633,6 +633,47 @@ CORRECTAMENTE . VALE PARA CUALQUIER TAMANIO DE BLOQUE. EN UN BLOQUE LLENO NO SE 
 AGREGAR REGISTROS. */
 
 
+void test_eliminar_bloque(){
+
+	{
+		Bloque b;
+		unsigned short CANT_DATOS= 4;
+		string datos[]= {"aa","bbbb","cccccc","dddddddd"};
+		RegistroVariable registros[CANT_DATOS];
+		assert( !b.fue_eliminado() );
+		assert( b.obtener_ref_prox_bloque()== RES_BLOQUE_NO_BORRADO );
+		assert( b.esta_vacio() );
+
+		for(int i=0;i<CANT_DATOS;i++){
+			registros[i].agregar_campo(datos[i].c_str() , datos[i].length());
+			b.agregar_registro( &registros[i] );
+		}
+		assert( !b.fue_eliminado() );
+		assert( b.obtener_ref_prox_bloque()== RES_BLOQUE_NO_BORRADO );
+		assert( !b.esta_vacio() );
+
+		int proximoBloque= 99;
+		assert( b.actualizar_ref_prox_bloque(proximoBloque)== RES_OK );
+		assert( b.obtener_ref_prox_bloque() == proximoBloque );
+
+		proximoBloque= 55;
+		assert( b.actualizar_ref_prox_bloque(proximoBloque)== RES_ERROR );
+		assert( b.obtener_ref_prox_bloque()== proximoBloque );
+
+		b.agregar_registro( &registros[0] );
+		assert( !b.fue_eliminado() );
+
+
+
+	}
+
+
+	print_test_ok("test_eliminar_bloque");
+
+
+}
+
+
 void test_remover_registros_bloque(){
 
 	const int CANTIDAD_DATOS= 4;
@@ -997,9 +1038,14 @@ int main(int argc,char** args)
 	test_empaquetar_desempaquetar_bloque();
 	test_manejador_registros_variables();
 	test_manejador_registros_variables_recuperar_espacio_libre();
+	test_eliminar_bloque();
+
+	/*
 	test_manejador_bloques_crear();
 	test_manejador_bloques_escribir_bloques();
 	test_manejador_bloques_masivo();
+*/
+//FIXME estos metodos no chequean RES_BLOQUE_OCUPADO
 
 	return RES_OK;
 }

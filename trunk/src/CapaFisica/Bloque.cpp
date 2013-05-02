@@ -1,5 +1,69 @@
 #include "Bloque.h"
 
+
+bool Bloque::fue_eliminado(){
+
+	if(!this->esta_vacio())
+		return false;
+
+	stringstream stream;
+	stream.write(bufferBloque,tamanioBloque);
+	stream.seekg(0,ios::beg);
+
+	char caracterBorrado;
+	stream.read( (char*)&caracterBorrado , sizeof(caracterBorrado) );
+
+	return caracterBorrado== MARCA_BORRADO;
+
+}
+
+
+int Bloque::actualizar_ref_prox_bloque(unsigned int primerBloque){
+
+	int res;
+
+	if(!this->fue_eliminado()){
+		this->limpiar_buffer();
+		res= RES_OK;
+	}
+	else
+		res= RES_ERROR;
+	/*vacio el bloque, marco que su espacio libre es total*/
+
+	stringstream stream;
+	stream.write(bufferBloque , tamanioBloque);
+	stream.seekp(0,ios::beg);
+	char marcaBorrado= MARCA_BORRADO;
+	stream.write( (char*)&marcaBorrado , sizeof(marcaBorrado) );
+
+	stream.write( (char*)&primerBloque , sizeof(primerBloque) );
+	stream.seekg(0,ios::beg);
+	stream.read( bufferBloque , tamanioBloque );
+
+
+	return res;
+
+}
+
+
+int Bloque::obtener_ref_prox_bloque(){
+
+	if(!this->fue_eliminado())
+		return RES_BLOQUE_NO_BORRADO;
+
+	stringstream stream;
+	stream.write( bufferBloque , tamanioBloque );
+	char caracterEliminacion;
+	stream>>caracterEliminacion;
+
+	int proximoBloque;
+	stream.read( (char*)&proximoBloque , sizeof(proximoBloque) );
+
+	return proximoBloque;
+
+}
+
+
 Bloque::Bloque(unsigned int tamBloque, unsigned int min, unsigned int max)
 {
 	this->tamanioBloque= tamBloque;
@@ -68,6 +132,13 @@ es unicamente debido al almacenamiento del espacio libre disponible en buffer */
 
 
 void Bloque::limpiar_buffer()throw(){
+
+	unsigned int espacioOcupado= this->calcular_espacio_ocupado();
+	if(espacioOcupado){
+		char* limpio= new char[espacioOcupado]();
+		memcpy( bufferBloque , limpio , espacioOcupado );
+		delete[] limpio;
+	}
 
 	espacioLibre= tamanioBloque - sizeof(espacioLibre);
 
@@ -422,11 +493,3 @@ void Bloque::listar_registros()throw(){
 
 }/*lista el byte offset de cada registro contenido en el bloque*/
 
-int Bloque::actualizar_ref_prox_bloque(unsigned int primerBloque)
-{
-	return 0;
-}
-int Bloque::obtener_ref_prox_bloque()
-{
-	return -1;
-}

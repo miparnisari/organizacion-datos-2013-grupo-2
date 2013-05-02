@@ -22,6 +22,7 @@ const int RES_ESPACIO_INSUFICIENTE = 	-12;
 const int RES_DIRECTORY_DOESNT_EXIST = 	-13;
 const int RES_INSUFFICIENT_SPACE	=	-14;
 const int RES_INVALID_OFFSET		=	-15;
+const int RES_BLOQUE_NO_BORRADO		=	-16;
 
 /*
  * Nombres de archivos
