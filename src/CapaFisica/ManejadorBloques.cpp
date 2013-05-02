@@ -96,6 +96,7 @@ int ManejadorBloques::__liberar_bloque(std::string nombreArchivo, unsigned int n
 	int res = sobreescribir_bloque(nombreArchivo,bloque,numBloque);
 	if (res == RES_OK)
 	{
+		delete(bloque);
 		header.proximoBloqueLibre = numBloque;
 		return RES_OK;
 	}
@@ -168,6 +169,8 @@ int ManejadorBloques::__usar_bloque(std::string nombreArchivo,unsigned int numBl
 
 int ManejadorBloques::escribir_bloque(std::string nombreArchivo, const Bloque* bloque)
 {
+	if (file_handler == NULL)
+		return RES_ERROR;
 	if (bloque == NULL)
 		return RES_ERROR;
 	if (bloque->esta_vacio())
@@ -183,6 +186,9 @@ int ManejadorBloques::escribir_bloque(std::string nombreArchivo, const Bloque* b
 
 int ManejadorBloques:: sobreescribir_bloque(std::string nombreArchivo, const Bloque* bloque, unsigned int numBloque)
 {
+	if (file_handler == NULL)
+		return RES_ERROR;
+
 	if (numBloque >= 1 && header.cantidadBloques == 0)
 		return RES_ERROR;
 
@@ -253,13 +259,14 @@ Bloque* ManejadorBloques :: obtener_bloque(std::string nombreArchivo, unsigned i
 	Bloque* bloqueLeido = new Bloque(header.tamanioBloque,header.minRegsBloque,header.maxRegsBloque);
 	char* buffer = new char[header.tamanioBloque];
 	res = fread(buffer,this->header.tamanioBloque,1,this->file_handler);
-	bloqueLeido->desempaquetar(buffer);
-	delete[] buffer;
 	if (res != 1)
 	{
+		delete[] buffer;
 		delete(bloqueLeido);
 		return NULL;
 	}
+	bloqueLeido->desempaquetar(buffer);
+	delete[] buffer;
 	return bloqueLeido;
 }/* Devuelve un bloque del archivo.
 PRECONDICION: el archivo se debe abrir en modo lectura.
