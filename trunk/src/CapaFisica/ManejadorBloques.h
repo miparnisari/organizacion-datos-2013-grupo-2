@@ -23,11 +23,11 @@ class ManejadorBloques:public ManejadorArchivos {
 
 		int __set_header();
 		int __get_header();
-		bool __esta_en_lista_de_libres(std::string nombreArchivo, unsigned numBloque);
+		bool __es_tope_de_pila(std::string nombreArchivo, unsigned numBloque);
 //		int __marcar_libre_bloque(std::string nombreArchivo, unsigned int numBloque);
 		int __usar_bloque(std::string nombreArchivo, unsigned int numBloque);
 		int __agregar_bloque(std::string nombreArchivo);
-		int __liberar_bloque(std::string nombreArchivo, unsigned int numBloque);
+		int __liberar_bloque(std::string nombreArchivo, Bloque* bloque, unsigned int numBloque);
 		unsigned int __get_primer_bloque_libre(std::string nombreArchivo);
 
 	public:
@@ -40,11 +40,11 @@ class ManejadorBloques:public ManejadorArchivos {
 		int abrir_archivo(std::string nombreArchivo, std::string modo);
 		int cerrar_archivo();
 
-		int escribir_bloque(std::string nombreArchivo, const Bloque* bloque);
+		int escribir_bloque(std::string nombreArchivo, Bloque* bloque);
 		/* Inserta un bloque en la primera posicion libre del archivo.
 		 * Si no hay espacios libres, hace un "append" del bloque al final del archivo.
 		 * Devuelve el numero de bloque escrito, o RES_ERROR si falló. */
-		int sobreescribir_bloque(std::string nombreArchivo, const Bloque* bloque, unsigned int numBloque);
+		int sobreescribir_bloque(std::string nombreArchivo, Bloque* bloque, unsigned int numBloque);
 		/* El bloque referenciado por "numBloque" se lo sobreescribe con los contenidos del nuevo bloque.
 		 */
 		Bloque* obtener_bloque(std::string nombreArchivo, unsigned int numBloque);
