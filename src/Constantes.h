@@ -37,7 +37,7 @@ const char FILENAME_ARCH_MAESTRO[]		= "arch_maestro.txt";
  */
 const unsigned short BLOQUE_TAM_DEFAULT				= 4096;		/*4 Kb*/
 const unsigned short REG_VAR_MAX_TAM 				= 4096;     /*4 Kb*/
-const char MARCA_BORRADO							= '*';
+const char MARCA_BORRADO							= (char)0;
 const std::string AUTOR_INVALIDO 					= "-";
 
 const char SEPARADOR_PARAMETROS						= '-';
@@ -59,6 +59,12 @@ const int DESBORDO                                  = -1;
 const int ESTA_VACIO                                = 1;
 const int YA_EXISTE                                 = 2;
 const int NO_EXISTE                                 = 3;
+
+/*
+ * ManejadorRegistrosVariables
+ * */
+
+const long FIN_PILA_REGISTROS_LIBRES = -1;
 
 #endif /* CONSTANTES_H */
 
