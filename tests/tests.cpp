@@ -634,43 +634,35 @@ AGREGAR REGISTROS. */
 
 
 void test_eliminar_bloque(){
+	Bloque b;
+	const unsigned short CANT_DATOS= 4;
+	string datos[]= {"aa","bbbb","cccccc","dddddddd"};
+	RegistroVariable registros[CANT_DATOS];
+	assert( !b.fue_eliminado() );
+	assert( b.obtener_ref_prox_bloque()== RES_BLOQUE_NO_BORRADO );
+	assert( b.esta_vacio() );
 
-	{
-		Bloque b;
-		unsigned short CANT_DATOS= 4;
-		string datos[]= {"aa","bbbb","cccccc","dddddddd"};
-		RegistroVariable registros[CANT_DATOS];
-		assert( !b.fue_eliminado() );
-		assert( b.obtener_ref_prox_bloque()== RES_BLOQUE_NO_BORRADO );
-		assert( b.esta_vacio() );
-
-		for(int i=0;i<CANT_DATOS;i++){
-			registros[i].agregar_campo(datos[i].c_str() , datos[i].length());
-			b.agregar_registro( &registros[i] );
-		}
-		assert( !b.fue_eliminado() );
-		assert( b.obtener_ref_prox_bloque()== RES_BLOQUE_NO_BORRADO );
-		assert( !b.esta_vacio() );
-
-		int proximoBloque= 99;
-		assert( b.actualizar_ref_prox_bloque(proximoBloque)== RES_OK );
-		assert( b.obtener_ref_prox_bloque() == proximoBloque );
-
-		proximoBloque= 55;
-		assert( b.actualizar_ref_prox_bloque(proximoBloque)== RES_ERROR );
-		assert( b.obtener_ref_prox_bloque()== proximoBloque );
-
-		b.agregar_registro( &registros[0] );
-		assert( !b.fue_eliminado() );
-
-
-
+	for(int i=0;i<CANT_DATOS;i++){
+		registros[i].agregar_campo(datos[i].c_str() , datos[i].length());
+		b.agregar_registro( &registros[i] );
 	}
+	assert( !b.fue_eliminado() );
+	assert( b.obtener_ref_prox_bloque()== RES_BLOQUE_NO_BORRADO );
+	assert( !b.esta_vacio() );
+
+	int proximoBloque= 99;
+	assert( b.actualizar_ref_prox_bloque(proximoBloque)== RES_OK );
+	assert( b.obtener_ref_prox_bloque() == proximoBloque );
+
+	proximoBloque= 55;
+	assert( b.actualizar_ref_prox_bloque(proximoBloque)== RES_ERROR );
+	assert( b.obtener_ref_prox_bloque()== proximoBloque );
+
+	b.agregar_registro( &registros[0] );
+	assert( !b.fue_eliminado() );
 
 
 	print_test_ok("test_eliminar_bloque");
-
-
 }
 
 
@@ -952,12 +944,15 @@ void test_manejador_bloques_escribir_bloques()
 	assert(manejador.get_primer_bloque_libre() == -1);
 	assert(manejador.get_cantidad_bloques() == 1);
 
-	// Libero el unico bloque, por ende queda marcado como "Libre". Su lectura falla.
+	// Libero el unico bloque, por ende queda marcado como "Libre".
 	Bloque bloqueVacio;
 	assert(manejador.sobreescribir_bloque("manejadorbloques.dat", &bloqueVacio,0) == RES_OK);
 	assert(manejador.get_primer_bloque_libre() == 0);
 	assert(manejador.get_cantidad_bloques() == 1);
-	assert(manejador.obtener_bloque("manejadorbloques.dat",0) == NULL);
+	Bloque* res = manejador.obtener_bloque("manejadorbloques.dat",0);
+	assert(res->fue_eliminado());
+	assert(res->obtener_ref_prox_bloque()==-1);
+	delete(res);
 
 	// Escribo en el primer bloque (que estaba liberado)
 	assert(manejador.escribir_bloque("manejadorbloques.dat",&bloque) == 0);
@@ -973,7 +968,10 @@ void test_manejador_bloques_escribir_bloques()
 	assert(manejador.sobreescribir_bloque("manejadorbloques.dat", &bloqueVacio,0) == RES_OK);
 	assert(manejador.get_primer_bloque_libre() == 0);
 	assert(manejador.get_cantidad_bloques() == 2);
-	assert(manejador.obtener_bloque("manejadorbloques.dat",0) == NULL);
+	res = manejador.obtener_bloque("manejadorbloques.dat",0);
+	assert(res->fue_eliminado());
+	assert(res->obtener_ref_prox_bloque()==-1);
+	delete(res);
 
 	assert (manejador.cerrar_archivo() == RES_OK);
 
@@ -1001,21 +999,28 @@ void test_manejador_bloques_masivo()
 		assert(num_bloque_escrito == i);
 	}
 
-	// Borro dos bloques (el 5 y el 50)
+	// Borro dos bloques, primero el 5...
 	Bloque bloqueVacio(tamBloque,minRegsPorBloque,maxRegsPorBloque);
 	assert(manejador.sobreescribir_bloque("bloquesmasivo.dat",&bloqueVacio,5) == RES_OK);
 	assert(manejador.get_primer_bloque_libre() == 5);
-	assert(manejador.obtener_bloque("bloquesmasivo.dat",5) == NULL);
+	Bloque* res = manejador.obtener_bloque("manejadorbloques.dat",5);
+	assert(res->fue_eliminado());
+	assert(res->obtener_ref_prox_bloque()==-1);
+	delete(res);
 
+	// ...y luego el 50
 	assert(manejador.sobreescribir_bloque("bloquesmasivo.dat",&bloqueVacio,50) == RES_OK);
 	assert(manejador.get_primer_bloque_libre() == 50);
-	assert(manejador.obtener_bloque("bloquesmasivo.dat",50) == NULL);
+	res = manejador.obtener_bloque("manejadorbloques.dat",50);
+	assert(res->fue_eliminado());
+	assert(res->obtener_ref_prox_bloque()==5);
+	delete(res);
 
 	//Intento escribir un bloque como usado que no es el tope de la pila de libres
-//	assert(manejador.sobreescribir_bloque("bloquesmasivo.dat",&bloque,5) == RES_ERROR);
+	assert(manejador.sobreescribir_bloque("bloquesmasivo.dat",&bloque,5) == RES_ERROR);
 
 	//Añado un bloque nuevo (debera guardarse en la posicion 50)
-//	assert(manejador.escribir_bloque("bloquesmasivo.dat",&bloque) == 50);
+	assert(manejador.escribir_bloque("bloquesmasivo.dat",&bloque) == 50);
 
 	assert(manejador.cerrar_archivo() == RES_OK);
 
@@ -1036,16 +1041,14 @@ int main(int argc,char** args)
 	test_remover_registros_bloque();
 	test_recuperar_registros_bloque();
 	test_empaquetar_desempaquetar_bloque();
-	test_manejador_registros_variables();
-	test_manejador_registros_variables_recuperar_espacio_libre();
 	test_eliminar_bloque();
 
-	/*
+	test_manejador_registros_variables();
+	test_manejador_registros_variables_recuperar_espacio_libre();
+
 	test_manejador_bloques_crear();
 	test_manejador_bloques_escribir_bloques();
 	test_manejador_bloques_masivo();
-*/
-//FIXME estos metodos no chequean RES_BLOQUE_OCUPADO
 
 	return RES_OK;
 }
