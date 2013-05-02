@@ -38,7 +38,7 @@ Bloque* obtener_bloque(string nombreArchivo, unsigned int numBloque);
 
 Esta primitiva solo devuelve un puntero a `Bloque` del archivo cuya posición es `numBloque`.
 Si falla, devuelve NULL.
-Recuerden que el `Bloque` que lean puede estar vacío (`bool Bloque::esta_vacio()) o puede que haya sido borrado (`bool Bloque::fue_eliminado()`).
+Recuerden que el `Bloque` que lean puede estar vacío (`bool Bloque::esta_vacio()`) o puede que haya sido borrado (`bool Bloque::fue_eliminado()`).
 También recuerden liberar la memoria del `Bloque` luego de usarlo!
 Ejemplo de uso:
 
@@ -46,16 +46,14 @@ Ejemplo de uso:
 	Bloque* bloqueLeido = manejador.obtener_bloque("manejadorbloques.dat",0); // Lee el bloque 0
 	assert(bloqueLeido != NULL);
 	RegistroVariable registroLeido;
-	assert(bloqueLeido->recuperar_registro(&registroLeido,0) != RES_ERROR);
+	assert(bloqueLeido->recuperar_registro(&registroLeido,0) != RES_ERROR); // Leo el registro 0 del bloque 0
 	char* buffer = new char[5000]();
-	assert(registroLeido.recuperar_campo(buffer,0) != RES_ERROR);
+	assert(registroLeido.recuperar_campo(buffer,0) != RES_ERROR); // Leo el campo 0 del registro 0 del bloque 0
         std::string campo  = "hola como te va?";
 	assert(std::string(buffer) == campo);
 	delete[] buffer;
-	delete(bloqueLeido);
+	delete(bloqueLeido); // IMPORTANTE!
 }}}
-
-
 
 
 
