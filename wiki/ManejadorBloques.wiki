@@ -1,9 +1,9 @@
-#summary Explicación de uso de la clase `ManejadorBloques`.
+#summary Explicación de uso de la clase `ManejadorBloques` (by maine)
 #labels Phase-Implementation
 
 = Introducción =
 
-`ManejadorBloques` se instancia para manejar archivos formados por `Bloques`. Cada `Bloque` es de tamaño fijo predeterminado, y pueden tener cero, uno, o más `RegistrosVariables`.
+`ManejadorBloques` es una clase que se instancia para manejar archivos formados por `Bloques`. Cada `Bloque` es de tamaño fijo predeterminado, y pueden tener cero, uno, o más `RegistrosVariables`.
 Para administrar el uso de espacios libres, los `Bloques` que se liberan se los agrega a una pila de `Bloques` libres. (Igualmente, esto último no les incumbe a ustedes...)
 
 
@@ -16,7 +16,7 @@ Para administrar el uso de espacios libres, los `Bloques` que se liberan se los 
 Los tres métodos básicos de uso son:
 
 {{{
-int escribir_bloque(string nombreArchivo, const Bloque* bloque);
+int escribir_bloque(string nombreArchivo, Bloque* bloque);
 }}}
 
 Esta primitiva se usa cuando quieren guardar un `Bloque` *no vacío* en el archivo pero no les importa dónde se guarda.
@@ -24,12 +24,12 @@ Lo que hace es insertar el `Bloque` en el primer lugar libre del archivo.
 Devuelve el número de bloque que acabaron de guardar, o RES_ERROR si falló.
 
 {{{
-int sobreescribir_bloque(string nombreArchivo, const Bloque* bloque, unsigned int numBloque);
+int sobreescribir_bloque(string nombreArchivo, Bloque* bloque, unsigned int numBloque);
 }}}
 
 Esta primitiva se usa cuando quieren pisar los contenidos de un bloque con otro `Bloque` *vacío o no*.
-Si el `Bloque` que quieren guardar está vacío, se modifica la lista de Bloques libres.
-Si el `Bloque` *no* está vacío, simplemente pisa los contenidos del `Bloque` anterior.
+Si el `Bloque` que quieren guardar está vacío, se modifica la pila de Bloques libres.
+Si el `Bloque` que quieren guardar *no* está vacío, simplemente pisa los contenidos del `Bloque` anterior.
 Devuelve RES_OK o RES_ERROR si falló.
 
 {{{
@@ -38,7 +38,8 @@ Bloque* obtener_bloque(string nombreArchivo, unsigned int numBloque);
 
 Esta primitiva solo devuelve un puntero a `Bloque` del archivo cuya posición es `numBloque`.
 Si falla, devuelve NULL.
-Recuerden liberar la memoria del `Bloque` luego de usarlo!
+Recuerden que el `Bloque` que lean puede estar vacío (`bool Bloque::esta_vacio()) o puede que haya sido borrado (`bool Bloque::fue_eliminado()`).
+También recuerden liberar la memoria del `Bloque` luego de usarlo!
 Ejemplo de uso:
 
 {{{
@@ -53,9 +54,6 @@ Ejemplo de uso:
 	delete[] buffer;
 	delete(bloqueLeido);
 }}}
-
-
-
 
 
 
