@@ -133,12 +133,15 @@ es unicamente debido al almacenamiento del espacio libre disponible en buffer */
 
 void Bloque::limpiar_buffer()throw(){
 
-	unsigned int espacioOcupado= this->calcular_espacio_ocupado();
+	/*unsigned int espacioOcupado= this->calcular_espacio_ocupado();
 	if(espacioOcupado){
-		char* limpio= new char[espacioOcupado]();
+		char* limpio= new char[espacioOcupado];
+		strcpy( limpio , "~");
 		memcpy( bufferBloque , limpio , espacioOcupado );
 		delete[] limpio;
-	}
+	}*/
+
+	strcpy( bufferBloque , "*****" );
 
 	espacioLibre= tamanioBloque - sizeof(espacioLibre);
 

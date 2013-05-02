@@ -51,7 +51,8 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 		virtual long _get_offset_registro(unsigned short numeroRegistro);
 
 
-		virtual long _buscar_registro_libre(unsigned short espacioNecesario);
+		virtual long _buscar_registro_libre(unsigned short espacioNecesario,
+				long& offsetLibreAnterior,long& offsetLibreSiguiente);
 		/*retorna el valor de offset del primer registro libre con tamanio >=
 		  espacioNecesario. En caso de no existir tal registro, se retorna RES_ERROR
 		  NOTA: espacioNecesario de un registro deberia ser el espacio de empaquetamiento*/
@@ -88,17 +89,44 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 		/*retorna el tamanio del archivo, en caso que el mismo no exista, se retorna
 		 * RES_ERROR*/
 
-		virtual long get_registro(RegistroVariable* registro,
+
+		virtual long get_registro_ocupado(RegistroVariable* registro ,
 				unsigned short numeroRegistro);
+		/*recupera un registro NO ELIMINADO por su numero de registro.*/
+
+
+		virtual int get_registro_por_offset(RegistroVariable* registro,
+				unsigned long offset);
+		/*recupera un registro del archivo a partir de su offset. Esta primitiva debe
+		 * usarse solo si el archivo esta indexado por offset, dado que si un offset
+		 * invalido se pasa como parametro se retornara un registro posiblemente
+		 * invalido . */
+
+
+		virtual long eliminar_registro_ocupado(unsigned short numeroRegistro);
+		/*se elimina un registro. Se retorna el offset del registro eliminado .
+		 * En caso de eliminar un registro se retorna el offset del registro eliminado,
+		 * en caso contrario se retorna RES_ERROR */
+
+
+		virtual int eliminar_registro_por_offset( unsigned long offset );
+		/*elimina un registro que comienza en el byte offset 'offset' del archivo.
+		 * Este metodo debe usarse si y solo si el archivo esta indexado por offsets de
+		 * registros . En caso de exito se retorna RES_OK*/
+
+
+/*-----------------NO PRESTAR ATENCION -------------------------------------------------*/
+
+		//virtual long eliminar_registro(unsigned short numeroRegistro);
+		/*elimina en un registro en la posicion numeroRegistro. En caso de no poder
+		 * hacerlo retorna RES_ERROR . En caso de lograrlo se retorna el offset del
+		 * registro eliminado*/
+//		virtual long get_registro(RegistroVariable* registro,
+//				unsigned short numeroRegistro);
 		/*recupera un registro del archivo. En caso que el mismo no se hallase se retorna
 		 * RES_ERROR . si el mismo es hallado se retorna el offset del registro en el
 		 * archivo .
 		 * Los registros se cuentan desde el 0! */
-
-		virtual long eliminar_registro(unsigned short numeroRegistro);
-		/*elimina en un registro en la posicion numeroRegistro. En caso de no poder
-		 * hacerlo retorna RES_ERROR . En caso de lograrlo se retorna el offset del
-		 * registro eliminado*/
 
 
 };/*el archivo se manejara con la politica first-fit. Los espacios libres se particionan

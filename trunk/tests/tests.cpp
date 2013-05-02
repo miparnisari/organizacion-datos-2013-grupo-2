@@ -201,211 +201,211 @@ void test_recuperar_campos_registro_variable()
 }
 
 
-void test_manejador_registros_variables()
-{
-
-	ManejadorRegistrosVariables mrv;
-	assert( mrv.abrir_archivo("nombreArchInexistente")== RES_ERROR );
-	assert( mrv.get_cantidad_registros()== RES_ERROR );
-
-	assert( mrv.eliminar_archivo("tmrv1.dat")== RES_FILE_DOESNT_EXIST );
-	assert( mrv.crear_archivo("tmrv1.dat")== RES_OK );
-	assert( mrv.get_cantidad_registros()== 0 );
-
-	const int CANT_DATOS= 3;
-	string datos[]= {"martin","mateo","hector"};
-	RegistroVariable rv;
-	rv.agregar_campo(datos[0].c_str() , datos[0].length());
-	assert( mrv.agregar_registro(&rv)!= RES_ERROR );
-
-	rv.limpiar_buffer();
-	rv.agregar_campo(datos[1].c_str() , datos[1].length());
-	mrv.agregar_registro(&rv);
-
-	rv.limpiar_buffer();
-	rv.agregar_campo(datos[2].c_str() , datos[2].length());
-	mrv.agregar_registro(&rv);
-
-	assert( mrv.get_cantidad_registros()== 3 );
-
-	RegistroVariable rv2;
-	assert( mrv.get_registro(&rv2,3)== RES_ERROR );
-	assert( mrv.get_registro(&rv2,0)== sizeof(ManejadorRegistrosVariables::Header) );
-	assert( rv2.get_tamanio()== datos[0].length()+sizeof(unsigned short) );
-	char campo[16];
-	int tamanioCampo= rv2.recuperar_campo(campo,0);
-	string s2(campo,tamanioCampo);
-	assert( s2== datos[0] );
-
-	rv2.limpiar_buffer();
-	unsigned short offsetRegistro2= sizeof(ManejadorRegistrosVariables::Header)+
-			10+9;
-	assert( mrv.get_registro(&rv2,2)==offsetRegistro2 );
-	assert( rv2.get_tamanio()== datos[2].length()+sizeof(unsigned short) );
-	tamanioCampo= rv2.recuperar_campo(campo,0);
-	string s3(campo,tamanioCampo);
-	assert( s3== datos[2] );
-
-	RegistroVariable rv3;
-	for(int i=0;i<CANT_DATOS;i++)
-		rv3.agregar_campo(datos[i].c_str() , datos[i].length());
-	mrv.agregar_registro(&rv3);
-	rv3.limpiar_buffer();
-	mrv.get_registro(&rv3,3);
-	for(int i=0;i<CANT_DATOS;i++){
-		char campo[16];
-		int tamanioCampo= rv3.recuperar_campo(campo,i);
-		string s(campo,tamanioCampo);
-		assert( s==datos[i] );
-	}
-	/*es posible recuperar un registro de varios campos */
-	assert(mrv.get_cantidad_registros()== 4);
-
-
-	long tamanioArchivo= mrv.get_tamanio_archivo();
-	assert( mrv.eliminar_registro(5)== RES_ERROR );
-	assert( mrv.eliminar_registro(0)!= RES_ERROR );
-	assert( mrv.get_tamanio_archivo()== tamanioArchivo );
-	assert( mrv.get_cantidad_registros_ocupados()== 3 );
-	assert( mrv.get_cantidad_registros()== 4 );
-	/*al eliminar un registro disminuye la cantidad de registros ocupados y
-	 * aumenta la cantidad de registros libres, la cantidad de registros totales
-	 * permanece constante. El tamanio del archivo no disminuye dado que quedan los
-	 * registros liberados en el archivo*/
-	assert( mrv.get_registro(&rv2 , 0)== RES_ERROR );
-
-
-	rv2.limpiar_buffer();
-	assert( mrv.get_registro(&rv2,1)!= RES_ERROR );
-	assert( rv2.get_tamanio()== datos[1].length()+sizeof(unsigned short) );
-	tamanioCampo= rv2.recuperar_campo(campo,0);
-	string s4(campo,tamanioCampo);
-	assert( s4== datos[1] );
-
-	rv2.limpiar_buffer();
-	assert( mrv.get_registro(&rv2,2)!= RES_ERROR );
-	assert( rv2.get_tamanio()== datos[2].length()+sizeof(unsigned short) );
-	tamanioCampo= rv2.recuperar_campo(campo,0);
-	string s5(campo,tamanioCampo);
-	assert( s5== datos[2] );
-
-	assert( mrv.eliminar_archivo("tmrv1.dat")== RES_OK);
-
-
-	print_test_ok("test_manejador_registros_variables");
-
-
-}/*funciona */
-
-
 void test_manejador_registros_variables_recuperar_espacio_libre(){
 
+
+	const int CANT_DATOS= 6;
+	string datos[] = {"aaaaaa","bbbbbbbbbbbb",
+			"cccccccccccccccccc","dddddddddddddddddddddddd",
+			"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+			"ffffffffffffffffffffffffffffffffffffffffff"};
 	ManejadorRegistrosVariables mrv;
-	string nombreArchivo= "tmrvrel.dat";
+	string nombreArchivo= "tmrv3.dat";
 	mrv.eliminar_archivo(nombreArchivo);
 	mrv.crear_archivo(nombreArchivo);
+	int offsetsRegistros[CANT_DATOS];
 	assert( mrv.get_cantidad_registros_ocupados()== 0 );
-
-	const int CANT_DATOS= 4;
-	string datos[]={ "aaaa","bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","ccccc","dddddddddddd"};
 	RegistroVariable registros[CANT_DATOS];
-	for(int i=0;i<CANT_DATOS;i++){
-		registros[i].agregar_campo( datos[i].c_str() , datos[i].length() );
-		mrv.agregar_registro(&registros[i]);
-	}
-	assert( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
-	long tamanioInicial= mrv.get_tamanio_archivo();
-
-
-	assert( mrv.eliminar_registro(1)!= RES_ERROR );
-	assert( mrv.agregar_registro(&registros[0])!= RES_ERROR );
+	int tamanioInicial;
 
 	{
-		RegistroVariable rv;
-		assert( mrv.get_registro(&rv,1)== RES_ERROR );
-		assert( mrv.get_registro(&rv,2)!= RES_ERROR );
-		char campo[64];
-		int tamanioCampo= rv.recuperar_campo(campo,0);
-		string s(campo,tamanioCampo);
-		assert( s==datos[0] );
+
+		for(int i=0;i<CANT_DATOS;i++){
+			offsetsRegistros[i]= mrv.get_tamanio_archivo();
+			registros[i].agregar_campo( datos[i].c_str() , datos[i].length() );
+			mrv.agregar_registro( &registros[i] );
+		}
+		assert( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
+		tamanioInicial= mrv.get_tamanio_archivo();
+
 	}
 
 	{
-		RegistroVariable rv;
-		assert( mrv.get_registro(&rv,3)!= RES_ERROR );
-		char campo[64];
-		int tamanioCampo= rv.recuperar_campo(campo,0);
-		string s(campo,tamanioCampo);
-		assert( s==datos[2] );
+
+		assert( mrv.eliminar_registro_ocupado(5)== offsetsRegistros[5] );
+		assert( mrv.agregar_registro( &registros[0] )>= offsetsRegistros[5] );
+		assert( mrv.get_tamanio_archivo() == tamanioInicial );
+		assert( mrv.agregar_registro( &registros[0] )== tamanioInicial );
+		assert( mrv.get_tamanio_archivo() > tamanioInicial );
+		/*el archivo se fragmenta a medida que se agregan registros y se busca
+		 * recuperar el espacio libre*/
+
 	}
 
 	{
+
+		assert( mrv.eliminar_registro_ocupado( 1 )== offsetsRegistros[1] );
 		RegistroVariable rv;
-		assert( mrv.get_registro(&rv,4)!= RES_ERROR );
+		assert( mrv.get_registro_ocupado( &rv,1 )== offsetsRegistros[2] );
 		char campo[64];
 		int tamanioCampo= rv.recuperar_campo(campo,0);
 		string s(campo,tamanioCampo);
-		assert( s==datos[3] );
-	}
+		assert( s== datos[2] );
 
-	assert( mrv.agregar_registro(&registros[0])!= RES_ERROR );
+	}
 
 	{
-		RegistroVariable rv;
-		assert( mrv.get_registro(&rv,1)== RES_ERROR );
-		assert( mrv.get_registro(&rv,2)!= RES_ERROR );
-		char campo[64];
-		int tamanioCampo= rv.recuperar_campo(campo,0);
-		string s(campo,tamanioCampo);
-		assert( s==datos[0] );
+		int tamanio= mrv.get_tamanio_archivo();
+
+		for(int i=0;i<3;i++){
+			assert( mrv.eliminar_registro_ocupado(1)== offsetsRegistros[2+i] );
+		}
+		for(int i=4;i<=2;i--){
+			assert( mrv.agregar_registro( &registros[0] ) >= offsetsRegistros[i] );
+		}
+
+
+
 	}
-
-	assert( tamanioInicial== mrv.get_tamanio_archivo() );
-
-
-	assert( mrv.eliminar_registro( mrv.get_cantidad_registros()-1 )!=RES_ERROR );
-	mrv.agregar_registro( &registros[1] );
-	assert( mrv.get_tamanio_archivo() > tamanioInicial );
-
-
 
 	ManejadorRegistrosVariables mrv2;
-	string nombreArchivo2= "tmrvre2.dat";
-	mrv2.eliminar_archivo(nombreArchivo2);
-	mrv2.crear_archivo(nombreArchivo2);
+	nombreArchivo= "tmrv4.dat";
+	mrv2.eliminar_archivo(nombreArchivo);
+	mrv2.crear_archivo(nombreArchivo);
+	int offsetsRegistros2[CANT_DATOS];
 	assert( mrv2.get_cantidad_registros_ocupados()== 0 );
-
-	string datos2[]={ "aaaaaa","bbbbbbbbbbbbbbbb","cccccc","dddddddddddddddd" };
 	RegistroVariable registros2[CANT_DATOS];
-	long offsetAppend= mrv2.get_tamanio_archivo();
-	long offsetsAppend[CANT_DATOS];
-	for(int i=0;i<CANT_DATOS;i++){
-		offsetsAppend[i]= offsetAppend;
-		registros2[i].agregar_campo( datos2[i].c_str() , datos2[i].length() );
-		assert( mrv2.agregar_registro(&registros2[i])== offsetAppend );
-		offsetAppend+= registros2[i].get_tamanio_empaquetado();
+	int tamanioInicial2;
+
+	{
+
+		for(int i=0;i<CANT_DATOS;i++){
+			offsetsRegistros2[i]= mrv2.get_tamanio_archivo();
+			registros2[i].agregar_campo( datos[i].c_str() , datos[i].length() );
+			mrv2.agregar_registro( &registros2[i] );
+		}
+		assert( mrv2.get_cantidad_registros_ocupados()== CANT_DATOS );
+		tamanioInicial2= mrv2.get_tamanio_archivo();
+
 	}
-	assert( mrv2.get_cantidad_registros_ocupados()== CANT_DATOS );
 
-	assert( mrv2.eliminar_registro(1)== offsetsAppend[1] );
-	assert( mrv2.eliminar_registro(3)== offsetsAppend[3] );
+	{
 
-	assert( mrv2.agregar_registro(&registros2[2]) > offsetsAppend[3] );
-	/*verifico que al agregar un nuevo registro el mismo se agregue cerca de donde
-	 * se removio el dato2[3]*/
-	assert( mrv2.eliminar_registro( 1 )== RES_ERROR );
+		for(int i=0;i<CANT_DATOS;i++){
+			assert( mrv2.eliminar_registro_ocupado(0)== offsetsRegistros[i] );
+		}
+		RegistroVariable rv;
+		rv.agregar_campo("x",1);
+		for(int i=0;i<CANT_DATOS-1;i++){
+			assert( mrv2.agregar_registro(&rv)< tamanioInicial2 );
+		}
+		/*el archivo se fragmenta de forma considerable*/
 
-	assert( mrv2.agregar_registro(&registros2[0]) < offsetsAppend[2] );
-
-	offsetAppend= mrv2.get_tamanio_archivo();
-	assert( mrv2.agregar_registro(&registros2[0])== offsetAppend  );
-
-	print_test_ok("test_manejador_registros_variables_recuperar_espacio_libre");
+	}
 
 
 }/*funcionaaaaa
 TODO mas tests que verifiquen que el espacio libre es recuperado sin afectar la
 integridad del archivo*/
+
+
+void test_manejador_registros_variables_eliminar_por_offset(){
+
+	const int CANT_DATOS= 4;
+	string datos[] = {"aaaa","bbbbbbbb","cccccccccccc","dddddddddddddddd"};
+	ManejadorRegistrosVariables mrv;
+	string nombreArchivo= "tmrv3.dat";
+	mrv.eliminar_archivo(nombreArchivo);
+	mrv.crear_archivo(nombreArchivo);
+	int offsetsRegistros[CANT_DATOS];
+	assert( mrv.get_cantidad_registros_ocupados()== 0 );
+	RegistroVariable registros[CANT_DATOS];
+
+
+	{
+
+		for(int i=0;i<CANT_DATOS;i++){
+			offsetsRegistros[i]= mrv.get_tamanio_archivo();
+			registros[i].agregar_campo( datos[i].c_str() , datos[i].length() );
+			mrv.agregar_registro( &registros[i] );
+		}
+		assert( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
+
+		assert( mrv.eliminar_registro_por_offset( offsetsRegistros[3] )== RES_OK );
+		assert( mrv.get_cantidad_registros_ocupados()== (CANT_DATOS - 1) );
+		assert( mrv.agregar_registro( &registros[0] ) > offsetsRegistros[3] );
+		assert( mrv.get_cantidad_registros_ocupados() == CANT_DATOS );
+		assert( mrv.get_cantidad_registros()== CANT_DATOS + 1 );
+
+	}
+
+	print_test_ok("test_manejador_registros_variables_eliminar_por_offset");
+
+
+}
+
+
+void test_manejador_registros_variables_chequear_registros_ocupados(){
+
+	const int CANT_DATOS= 4;
+	string datos[] = {"aaaa","bbbbbbbb","cccccccccccc","dddddddddddddddd"};
+	ManejadorRegistrosVariables mrv;
+	string nombreArchivo= "tmrv3.dat";
+	mrv.eliminar_archivo(nombreArchivo);
+	mrv.crear_archivo(nombreArchivo);
+	int offsetsRegistros[CANT_DATOS];
+	assert( mrv.get_cantidad_registros_ocupados()== 0 );
+	RegistroVariable registros[CANT_DATOS];
+
+
+	{
+
+		for(int i=0;i<CANT_DATOS;i++){
+			offsetsRegistros[i]= mrv.get_tamanio_archivo();
+			registros[i].agregar_campo( datos[i].c_str() , datos[i].length() );
+			mrv.agregar_registro( &registros[i] );
+		}
+		assert( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
+
+		assert( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[0] );
+		RegistroVariable rv;
+		char campo[32];
+		assert( mrv.get_registro_ocupado(&rv,0)== offsetsRegistros[1] );
+		int tamanioCampo= rv.recuperar_campo(campo,0);
+		string s(campo,tamanioCampo);
+		assert(s==datos[1]);
+
+	}
+
+	{
+
+		assert( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[1] );
+		RegistroVariable rv;
+		char campo[32];
+		assert( mrv.get_registro_ocupado(&rv,0)== offsetsRegistros[2] );
+		int tamanioCampo= rv.recuperar_campo(campo,0);
+		string s(campo,tamanioCampo);
+		assert(s==datos[2]);
+
+	}
+
+	{
+
+		assert( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[2] );
+		assert( mrv.get_cantidad_registros_ocupados()== 1 );
+		assert( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[3] );
+		assert( mrv.get_cantidad_registros_ocupados()== 0 );
+		assert( mrv.agregar_registro(&registros[0])>= offsetsRegistros[3] );
+		long offsetAgregarRegistro= mrv.agregar_registro(&registros[0]);
+		assert( offsetAgregarRegistro>= offsetsRegistros[2] &&
+				offsetAgregarRegistro < offsetsRegistros[3]);
+
+	}
+
+	print_test_ok("test_manejador_registros_variables_chequear_registros_ocupados");
+
+
+}
 
 
 void test_registro_cancion()throw(){
@@ -474,6 +474,49 @@ void test_registro_cancion()throw(){
 
 	print_test_ok("test_registro_cancion");
 }/*funcionaaa*/
+
+
+
+
+void test_manejador_registros_variables_masivo(){
+
+	string datoLargo= "este es un dato de longitud muy muy larga . Como para que ocupe mucho espacio en el archivo";
+	string datoCorto= "corto";
+
+	RegistroVariable registroLargo , registroCorto;
+	registroLargo.agregar_campo( datoLargo.c_str() , datoLargo.length() );
+	registroCorto.agregar_campo( datoCorto.c_str() , datoCorto.length() );
+
+	int const CANTIDAD_REGISTROS= 100;
+	ManejadorRegistrosVariables mrv;
+	string nombreArchivo= "tmrvm.dat";
+	mrv.eliminar_archivo(nombreArchivo);
+	mrv.crear_archivo(nombreArchivo);
+	long tamanioInicial;
+
+
+	{
+		for(int i=0;i<CANTIDAD_REGISTROS;i++){
+			assert( mrv.agregar_registro(&registroLargo)!= RES_ERROR );
+		}
+		tamanioInicial= mrv.get_tamanio_archivo();
+	}//carga de registros largos
+
+	{
+		for(int i=0;i<CANTIDAD_REGISTROS;i++)
+			assert( mrv.eliminar_registro_ocupado(0)!= RES_ERROR );
+		assert( mrv.get_tamanio_archivo()== tamanioInicial );
+
+		for(int i=0;i<CANTIDAD_REGISTROS;i++)
+			assert( mrv.agregar_registro(&registroCorto) < tamanioInicial );
+		assert( mrv.get_cantidad_registros_ocupados()== CANTIDAD_REGISTROS );
+	}
+
+	print_test_ok("test_manejador_registros_variables_masivo");
+
+
+}
+
 
 
 void test_clave_string(){
@@ -1028,6 +1071,26 @@ void test_manejador_bloques_masivo()
 
 }
 
+
+void test_probar_caracter_eliminacion(){
+
+	{
+	short numero= 42;
+	stringstream stream;
+	stream.write( (char*)&numero , sizeof(numero) );
+	stream.seekg(0,ios::beg);
+
+	char c;
+	stream.read( (char*)&numero, 1 );
+	IMPRIMIR_VARIABLE( numero );
+	}
+
+	print_test_ok("test_probar_caracter_eliminacion");
+
+
+}
+
+
 int main(int argc,char** args)
 {
 //	test_leer_de_archivo(); TODO des-comentar
@@ -1043,12 +1106,15 @@ int main(int argc,char** args)
 	test_empaquetar_desempaquetar_bloque();
 	test_eliminar_bloque();
 
-	test_manejador_registros_variables();
 	test_manejador_registros_variables_recuperar_espacio_libre();
 
 	test_manejador_bloques_crear();
 	test_manejador_bloques_escribir_bloques();
 	test_manejador_bloques_masivo();
+
+	test_manejador_registros_variables_chequear_registros_ocupados();
+	test_manejador_registros_variables_eliminar_por_offset();
+	test_manejador_registros_variables_masivo();
 
 	return RES_OK;
 }
