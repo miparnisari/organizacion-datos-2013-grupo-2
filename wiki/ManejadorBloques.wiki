@@ -1,0 +1,65 @@
+#summary Explicación de uso de la clase `ManejadorBloques`.
+#labels Phase-Implementation
+
+= Introducción =
+
+`ManejadorBloques` se instancia para manejar archivos formados por `Bloques`. Cada `Bloque` es de tamaño fijo predeterminado, y pueden tener cero, uno, o más `RegistrosVariables`.
+Para administrar el uso de espacios libres, los `Bloques` que se liberan se los agrega a una pila de `Bloques` libres. (Igualmente, esto último no les incumbe a ustedes...)
+
+
+= Detalles =
+
+*ATENCIÓN: siempre antes de usar estas primitivas DEBEN abrir el archivo en modo lectura o escritura según corresponda. Si van a leer y escribir, usen el modo "rb+".*
+
+*ATENCIÓN: siempre después de usar estas primitivas DEBEN llamar a `ManejadorBloques::cerrar_archivo()`. Si no, no se guardarán los cambios del encabezado del archivo. (No hace falta que lo llamen siempre luego de usar estas primitivas, una vez a lo último alcanza.)*
+
+Los tres métodos básicos de uso son:
+
+{{{
+int escribir_bloque(string nombreArchivo, const Bloque* bloque);
+}}}
+
+Esta primitiva se usa cuando quieren guardar un `Bloque` *no vacío* en el archivo pero no les importa dónde se guarda.
+Lo que hace es insertar el `Bloque` en el primer lugar libre del archivo.
+Devuelve el número de bloque que acabaron de guardar, o RES_ERROR si falló.
+
+{{{
+int sobreescribir_bloque(string nombreArchivo, const Bloque* bloque, unsigned int numBloque);
+}}}
+
+Esta primitiva se usa cuando quieren pisar los contenidos de un bloque con otro `Bloque` *vacío o no*.
+Si el `Bloque` que quieren guardar está vacío, se modifica la lista de Bloques libres.
+Si el `Bloque` *no* está vacío, simplemente pisa los contenidos del `Bloque` anterior.
+Devuelve RES_OK o RES_ERROR si falló.
+
+{{{
+Bloque* obtener_bloque(string nombreArchivo, unsigned int numBloque);
+}}}
+
+Esta primitiva solo devuelve un puntero a `Bloque` del archivo cuya posición es `numBloque`.
+Si falla, devuelve NULL.
+Recuerden liberar la memoria del `Bloque` luego de usarlo!
+Ejemplo de uso:
+
+{{{
+	Bloque* bloqueLeido = manejador.obtener_bloque("manejadorbloques.dat",0); // Lee el bloque 0
+	assert(bloqueLeido != NULL);
+	RegistroVariable registroLeido;
+	assert(bloqueLeido->recuperar_registro(&registroLeido,0) != RES_ERROR);
+	char* buffer = new char[5000]();
+	assert(registroLeido.recuperar_campo(buffer,0) != RES_ERROR);
+        std::string campo  = "hola como te va?";
+	assert(std::string(buffer) == campo);
+	delete[] buffer;
+	delete(bloqueLeido);
+}}}
+
+
+
+
+
+
+
+
+
+
