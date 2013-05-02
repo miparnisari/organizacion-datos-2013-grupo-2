@@ -14,6 +14,31 @@ ManejadorBloques::~ManejadorBloques()
 {
 }
 
+int ManejadorBloques::get_primer_bloque_libre()
+{
+	return this->header.proximoBloqueLibre;
+}/* precondicion: antes abrir el archivo! */
+
+unsigned int ManejadorBloques::get_tamanio_bloque()
+{
+	return this->header.tamanioBloque;
+} /* precondicion: antes abrir el archivo! */
+
+unsigned int ManejadorBloques::get_cantidad_bloques()
+{
+	return this->header.cantidadBloques;
+}/* precondicion: antes abrir el archivo! */
+
+unsigned int ManejadorBloques::get_max_regs_bloque()
+{
+	return this->header.maxRegsBloque;
+}/* precondicion: antes abrir el archivo! */
+
+unsigned int ManejadorBloques::get_min_regs_bloque()
+{
+	return this->header.minRegsBloque;
+}/* precondicion: antes abrir el archivo! */
+
 int ManejadorBloques::abrir_archivo(std::string nombreArchivo, std::string modo)
 {
 	file_handler = fopen(nombreArchivo.c_str(), modo.c_str());
@@ -25,7 +50,6 @@ int ManejadorBloques::abrir_archivo(std::string nombreArchivo, std::string modo)
 }/* Abre un archivo con un modo de apertura especifico.
 Para info sobre los modos posibles: http://www.cplusplus.com/reference/cstdio/fopen/
 */
-
 
 int ManejadorBloques::cerrar_archivo()
 {
@@ -61,20 +85,8 @@ int ManejadorBloques::eliminar_archivo(std::string nombreArchivo)
 	return RES_FILE_DOESNT_EXIST;
 } /* Borra un archivo del disco. */
 
-//int __escribir_bloque(std::string nombreArchivo, const Bloque* bloque, unsigned int offset)
-//{
-//
-//
-//}
-
-int ManejadorBloques::__agregar_bloque(std::string nombreArchivo)
+int ManejadorBloques::__escribir_bloque(std::string nombreArchivo, const Bloque* bloque, unsigned int offset)
 {
-	Bloque bloqueNuevo(this->header.tamanioBloque,header.minRegsBloque, header.maxRegsBloque);
-	bloqueNuevo.actualizar_ref_prox_bloque(header.proximoBloqueLibre);
-
-	// Salteamos el header
-	unsigned long int offset = sizeof(header) + (header.tamanioBloque *header.cantidadBloques);
-
 	// Seek al bloque
 	int res = fseek(this->file_handler,offset,SEEK_SET);
 	if (res != 0) {
@@ -83,14 +95,29 @@ int ManejadorBloques::__agregar_bloque(std::string nombreArchivo)
 
 	// Escribimos el bloque
 	char* buffer = new char[header.tamanioBloque];
-	bloqueNuevo.empaquetar(buffer);
+	bloque->empaquetar(buffer);
 	res = fwrite(buffer,this->header.tamanioBloque,1,this->file_handler);
 	delete[] buffer;
 	if (res != 1) {
 		return RES_ERROR;
 	}
+
+	return RES_OK;
+}/* Escribe un bloque dado su offset.
+PRECONDICION: el offset tiene que ser del comienzo del bloque. */
+
+int ManejadorBloques::__agregar_bloque_al_final(std::string nombreArchivo)
+{
+	Bloque bloqueNuevo(this->header.tamanioBloque,header.minRegsBloque, header.maxRegsBloque);
+	bloqueNuevo.actualizar_ref_prox_bloque(header.proximoBloqueLibre);
+
+	unsigned long int offset = sizeof(header) + (header.tamanioBloque *header.cantidadBloques);
+	int res = __escribir_bloque(nombreArchivo, &bloqueNuevo,offset);
+	if (res == RES_ERROR)
+		return res;
+
+	header.proximoBloqueLibre = header.cantidadBloques;
 	header.cantidadBloques += 1;
-	header.proximoBloqueLibre = header.cantidadBloques - 1;
 
 	return RES_OK;
 }/* Agrega un bloque nuevo al archivo. */
@@ -106,9 +133,7 @@ int ManejadorBloques::__liberar_bloque(std::string nombreArchivo, Bloque* bloque
 unsigned int ManejadorBloques::__get_primer_bloque_libre(std::string nombreArchivo)
 {
 	if (header.proximoBloqueLibre == -1)
-	{
-		__agregar_bloque(nombreArchivo);
-	}
+		__agregar_bloque_al_final(nombreArchivo);
 
 	return header.proximoBloqueLibre;
 }
@@ -131,37 +156,33 @@ int ManejadorBloques::__set_header()
 	return RES_OK;
 }
 
+bool ManejadorBloques::__num_bloque_es_valido(unsigned int numBloque)
+{
+	if (numBloque < 0 || numBloque > header.cantidadBloques)
+		return false;
+	if (header.cantidadBloques == 0)
+		return false;
+	if (header.cantidadBloques >= 1 && numBloque >= header.cantidadBloques)
+		return false;
+	return true;
+}
+
 bool ManejadorBloques::__es_tope_de_pila(std::string nombreArchivo, unsigned int numBloque)
 {
-	unsigned int puntero = header.proximoBloqueLibre;
-	return (puntero == numBloque);
-}/* Verifica si un bloque es el primero libre */
+	return (header.proximoBloqueLibre == numBloque);
+}
 
-int ManejadorBloques::__usar_bloque(std::string nombreArchivo,unsigned int numBloque)
+int ManejadorBloques::__usar_bloque(std::string nombreArchivo, Bloque* bloque, unsigned int numBloque)
 {
-	Bloque* bloqueAmodificar = obtener_bloque(nombreArchivo,numBloque);
-
-	if (! bloqueAmodificar->esta_vacio())
-	{
-		delete(bloqueAmodificar);
-		return RES_OK;
-	}
-
-	int referencia = bloqueAmodificar->obtener_ref_prox_bloque();
+	int referencia = bloque->obtener_ref_prox_bloque();
 	this->header.proximoBloqueLibre = referencia;
-	delete(bloqueAmodificar);
 	return RES_OK;
 }
 
-
 int ManejadorBloques::escribir_bloque(std::string nombreArchivo, Bloque* bloque)
 {
-	if (file_handler == NULL)
+	if (file_handler == NULL || bloque == NULL || bloque->esta_vacio())
 		return RES_ERROR;
-	if (bloque == NULL)
-		return RES_ERROR;
-	if (bloque->esta_vacio())
-		return RES_OK;
 
 	unsigned int numeroBloque = __get_primer_bloque_libre(nombreArchivo);
 	int res = sobreescribir_bloque(nombreArchivo,bloque,numeroBloque);
@@ -173,76 +194,46 @@ int ManejadorBloques::escribir_bloque(std::string nombreArchivo, Bloque* bloque)
 
 int ManejadorBloques:: sobreescribir_bloque(std::string nombreArchivo, Bloque* bloque, unsigned int numBloque)
 {
-	if (file_handler == NULL)
-		return RES_ERROR;
-
-	if (numBloque >= 1 && header.cantidadBloques == 0)
-		return RES_ERROR;
-
-	if (header.cantidadBloques >= 1 && numBloque >= header.cantidadBloques)
-		return RES_ERROR;
-
-	if (bloque == NULL || numBloque < 0)
+	if (file_handler == NULL || bloque == NULL || !__num_bloque_es_valido(numBloque))
 		return RES_ERROR;
 
 	if (bloque->get_tamanio_bloque() != this->header.tamanioBloque)
 		return RES_ERROR;
 
-	bool nuevoVacio = bloque->esta_vacio();
+	/* Fin comprobaciones de rutina */
 
-	Bloque* anterior = obtener_bloque(nombreArchivo,numBloque);
+	bool nuevoEstaVacio = bloque->esta_vacio();
+	Bloque* anterior = obtener_bloque(nombreArchivo,numBloque); // Bloque que voy a pisar
 
-	if ((!nuevoVacio) && anterior->fue_eliminado() && !__es_tope_de_pila(nombreArchivo,numBloque)){
+	// No se puede sobreescribir un bloque antes eliminado si el mismo no era el tope de la pile de libres
+	if (anterior->fue_eliminado() && !__es_tope_de_pila(nombreArchivo,numBloque)){
 		delete(anterior);
 		return RES_ERROR;
 	}
 
-	if (nuevoVacio && anterior==NULL) {
-		delete(anterior);
-		return RES_ERROR;
-	}
+	// Caso especial en que el bloque estaba libre y lo voy a marcar como usado
+	if (__es_tope_de_pila(nombreArchivo,numBloque))
+		__usar_bloque(nombreArchivo, anterior, numBloque);
 
-	delete(anterior);
-	if (nuevoVacio && anterior!=NULL)
+	// Caso especial en que el bloque estaba ocupado y lo voy a marcar como libre
+	if (nuevoEstaVacio && ! anterior->esta_vacio())
 		__liberar_bloque(nombreArchivo,bloque, numBloque);
 
-	// El bloque nuevo contiene cosas y el bloque viejo esta en la lista de libres...
-	// me fijo si lo puedo marcar como usado.
-	if (__es_tope_de_pila(nombreArchivo,numBloque))
-	{
-		int res = __usar_bloque(nombreArchivo,numBloque);
-		if (res == RES_ERROR)
-			return res;
-	}
+	delete(anterior);
 
-	// Salteamos el header
 	unsigned long int offset = sizeof(this->header) + (this->header.tamanioBloque * numBloque);
 
-	// Seek al bloque
-	int res = fseek(this->file_handler,offset,SEEK_SET);
-	if (res != 0) {
-		return RES_ERROR;
-	}
+	return __escribir_bloque(nombreArchivo,bloque,offset);
 
-	// Escribimos el bloque
-	char* buffer = new char[header.tamanioBloque];
-	bloque->empaquetar(buffer);
-	res = fwrite(buffer,this->header.tamanioBloque,1,this->file_handler);
-	delete[] buffer;
-	if (res != 1) {
-		return RES_ERROR;
-	}
 
-	return RES_OK;
 }/* Devuelve un bloque del archivo.
 PRECONDICION: el archivo se debe abrir en modo escritura.
 POSTCONDICION: se lo debe cerrar. */
 
 Bloque* ManejadorBloques :: obtener_bloque(std::string nombreArchivo, unsigned int numBloque)
 {
-	if (file_handler == NULL || numBloque < 0 || numBloque > header.cantidadBloques) {
+	if (file_handler == NULL || !__num_bloque_es_valido(numBloque))
 		return NULL;
-	}
 
 	// Salteamos el header
 	long int offset = sizeof(this->header) + (this->header.tamanioBloque * numBloque);
@@ -269,28 +260,3 @@ Bloque* ManejadorBloques :: obtener_bloque(std::string nombreArchivo, unsigned i
 }/* Devuelve un bloque del archivo.
 PRECONDICION: el archivo se debe abrir en modo lectura.
 POSTCONDICION: se lo debe cerrar. */
-
-int ManejadorBloques::get_primer_bloque_libre()
-{
-	return this->header.proximoBloqueLibre;
-}/* precondicion: antes abrir el archivo! */
-
-unsigned int ManejadorBloques::get_tamanio_bloque()
-{
-	return this->header.tamanioBloque;
-} /* precondicion: antes abrir el archivo! */
-
-unsigned int ManejadorBloques::get_cantidad_bloques()
-{
-	return this->header.cantidadBloques;
-}/* precondicion: antes abrir el archivo! */
-
-unsigned int ManejadorBloques::get_max_regs_bloque()
-{
-	return this->header.maxRegsBloque;
-}/* precondicion: antes abrir el archivo! */
-
-unsigned int ManejadorBloques::get_min_regs_bloque()
-{
-	return this->header.minRegsBloque;
-}/* precondicion: antes abrir el archivo! */
