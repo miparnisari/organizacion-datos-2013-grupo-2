@@ -53,7 +53,7 @@ class Bloque {
 		 * En caso de ocurrir un error se retorna 0 o valores negativos. */
 		/*Los registros se enumeran desde el 0!!!*/
 
-		virtual int remover_registro(unsigned short numeroRegistro)throw();
+		virtual int eliminar_registro(unsigned short numeroRegistro)throw();
 
 		virtual int agregar_registro(RegistroVariable* registro)throw();
 		/*se hace un APPEND de un registro, es decir que el mismo se agrega al final .*/

@@ -18,11 +18,13 @@ const int RES_FILE_FULL =				-8;
 const int RES_RECORD_TOO_LONG = 		-9;
 const int RES_EOF = 					-10;
 const int RES_ALL_BLOCKS_OCCUPIED =		-11;
-const int RES_ESPACIO_INSUFICIENTE = 	-12;
-const int RES_DIRECTORY_DOESNT_EXIST = 	-13;
-const int RES_INSUFFICIENT_SPACE	=	-14;
-const int RES_INVALID_OFFSET		=	-15;
-const int RES_BLOQUE_NO_BORRADO		=	-16;
+const int RES_OVERFLOW =			 	-12;
+const int RES_UNDERFLOW =				-13;
+const int RES_DIRECTORY_DOESNT_EXIST = 	-14;
+const int RES_INSUFFICIENT_SPACE =		-15;
+const int RES_INVALID_OFFSET =			-16;
+const int RES_BLOQUE_NO_BORRADO	=		-17;
+
 
 /*
  * Nombres de archivos
