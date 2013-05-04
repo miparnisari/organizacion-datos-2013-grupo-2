@@ -908,9 +908,9 @@ void test_manejador_bloques_crear()
 {
 	unsigned int minRegsPorBloque = 0;
 	unsigned int maxRegsPorBloque = 100;
-	ManejadorBloques manejador(BLOQUE_TAM_DEFAULT, minRegsPorBloque, maxRegsPorBloque);
+	ManejadorBloques manejador;
 
-	assert (manejador.crear_archivo("manejadorbloques.dat") == RES_OK);
+	assert (manejador.crear_archivo("manejadorbloques.dat", BLOQUE_TAM_DEFAULT, minRegsPorBloque, maxRegsPorBloque) == RES_OK);
 
 	assert (manejador.abrir_archivo("manejadorbloques.dat","rb") == RES_OK);
 
@@ -930,18 +930,18 @@ void test_manejador_bloques_escribir_bloques()
 {
 	unsigned int minRegsPorBloque = 0;
 	unsigned int maxRegsPorBloque = 100;
-	ManejadorBloques manejador(BLOQUE_TAM_DEFAULT, minRegsPorBloque, maxRegsPorBloque);
-	assert (manejador.crear_archivo("manejadorbloques.dat") == RES_OK);
+	ManejadorBloques manejador;
+	assert (manejador.crear_archivo("manejadorbloques.dat", BLOQUE_TAM_DEFAULT, minRegsPorBloque, maxRegsPorBloque) == RES_OK);
 	assert (manejador.abrir_archivo("manejadorbloques.dat","rb+") == RES_OK);
 
 	// El archivo no posee ningun bloque
 	assert(manejador.get_primer_bloque_libre() == -1);
 	assert(manejador.get_cantidad_bloques() == 0);
 	Bloque unBloque;
-	assert(manejador.obtener_bloque("manejadrobloques.dat",0) == NULL);
-	assert(manejador.obtener_bloque("manejadrobloques.dat",1) == NULL);
-	assert(manejador.sobreescribir_bloque("manejadorbloques.dat",&unBloque,0) == RES_ERROR);
-	assert(manejador.sobreescribir_bloque("manejadorbloques.dat",&unBloque,1) == RES_ERROR);
+	assert(manejador.obtener_bloque(0) == NULL);
+	assert(manejador.obtener_bloque(1) == NULL);
+	assert(manejador.sobreescribir_bloque(&unBloque,0) == RES_ERROR);
+	assert(manejador.sobreescribir_bloque(&unBloque,1) == RES_ERROR);
 
 	// Agrego el primer bloque del archivo
 	Bloque bloque;
@@ -949,11 +949,11 @@ void test_manejador_bloques_escribir_bloques()
 	std::string campo  = "hola como te va?";
 	registro.agregar_campo(campo.c_str(),campo.size());
 	bloque.agregar_registro(&registro);
-	assert(manejador.escribir_bloque("manejadorbloques.dat",&bloque) == 0);
+	assert(manejador.escribir_bloque(&bloque) == 0);
 	assert(manejador.get_primer_bloque_libre() == -1);
 	assert(manejador.get_cantidad_bloques() == 1);
-	assert(manejador.obtener_bloque("manejadorbloques.dat",1) == NULL);
-	Bloque* bloqueLeido = manejador.obtener_bloque("manejadorbloques.dat",0);
+	assert(manejador.obtener_bloque(1) == NULL);
+	Bloque* bloqueLeido = manejador.obtener_bloque(0);
 	assert(bloqueLeido != NULL);
 	RegistroVariable registroLeido;
 	assert(bloqueLeido->recuperar_registro(&registroLeido,0) != RES_ERROR);
@@ -969,8 +969,8 @@ void test_manejador_bloques_escribir_bloques()
 	campo  = "muy bien gracias. 123_-";
 	registro2.agregar_campo(campo.c_str(),campo.size());
 	bloque2.agregar_registro(&registro2);
-	assert(manejador.sobreescribir_bloque("manejadorbloques.dat",&bloque2,0) == RES_OK);
-	bloqueLeido = manejador.obtener_bloque("manejadorbloques.dat",0);
+	assert(manejador.sobreescribir_bloque(&bloque2,0) == RES_OK);
+	bloqueLeido = manejador.obtener_bloque(0);
 	assert(bloqueLeido != NULL);
 	assert(bloqueLeido->recuperar_registro(&registroLeido,0) != RES_ERROR);
 	buffer = new char[5000]();
@@ -983,35 +983,35 @@ void test_manejador_bloques_escribir_bloques()
 
 	// No se puede escribir un bloque vacio
 	Bloque* bloqueNulo = NULL;
-	assert(manejador.escribir_bloque("manejadorbloques.dat", bloqueNulo) == RES_ERROR);
+	assert(manejador.escribir_bloque(bloqueNulo) == RES_ERROR);
 	assert(manejador.get_primer_bloque_libre() == -1);
 	assert(manejador.get_cantidad_bloques() == 1);
 
 	// Libero el unico bloque, por ende queda marcado como "Libre".
 	Bloque bloqueVacio;
-	assert(manejador.sobreescribir_bloque("manejadorbloques.dat", &bloqueVacio,0) == RES_OK);
+	assert(manejador.sobreescribir_bloque(&bloqueVacio,0) == RES_OK);
 	assert(manejador.get_primer_bloque_libre() == 0);
 	assert(manejador.get_cantidad_bloques() == 1);
-	Bloque* res = manejador.obtener_bloque("manejadorbloques.dat",0);
+	Bloque* res = manejador.obtener_bloque(0);
 	assert(res->fue_eliminado());
 	assert(res->obtener_ref_prox_bloque()==-1);
 	delete(res);
 
 	// Escribo en el primer bloque (que estaba liberado)
-	assert(manejador.escribir_bloque("manejadorbloques.dat",&bloque) == 0);
+	assert(manejador.escribir_bloque(&bloque) == 0);
 	assert(manejador.get_primer_bloque_libre() == -1);
 	assert(manejador.get_cantidad_bloques() == 1);
 
 	// Agrego un bloque mas
-	assert(manejador.escribir_bloque("manejadorbloques.dat",&bloque2) == 1);
+	assert(manejador.escribir_bloque(&bloque2) == 1);
 	assert(manejador.get_primer_bloque_libre() == -1);
 	assert(manejador.get_cantidad_bloques() == 2);
 
 	//Libero el primer bloque que agregue
-	assert(manejador.sobreescribir_bloque("manejadorbloques.dat", &bloqueVacio,0) == RES_OK);
+	assert(manejador.sobreescribir_bloque(&bloqueVacio,0) == RES_OK);
 	assert(manejador.get_primer_bloque_libre() == 0);
 	assert(manejador.get_cantidad_bloques() == 2);
-	res = manejador.obtener_bloque("manejadorbloques.dat",0);
+	res = manejador.obtener_bloque(0);
 	assert(res->fue_eliminado());
 	assert(res->obtener_ref_prox_bloque()==-1);
 	delete(res);
@@ -1026,8 +1026,8 @@ void test_manejador_bloques_masivo()
 	unsigned int minRegsPorBloque = 0;
 	unsigned int maxRegsPorBloque = 100;
 	unsigned int tamBloque = 100;
-	ManejadorBloques manejador(tamBloque, minRegsPorBloque, maxRegsPorBloque);
-	assert (manejador.crear_archivo("bloquesmasivo.dat") == RES_OK);
+	ManejadorBloques manejador;
+	assert (manejador.crear_archivo("bloquesmasivo.dat",tamBloque, minRegsPorBloque, maxRegsPorBloque) == RES_OK);
 	assert (manejador.abrir_archivo("bloquesmasivo.dat","rb+") == RES_OK);
 
 	// Agrego 1000 bloques, todos con el mismo registro
@@ -1038,32 +1038,32 @@ void test_manejador_bloques_masivo()
 	bloque.agregar_registro(&registro);
 	for (int i = 0; i < 1000; i++)
 	{
-		int num_bloque_escrito = manejador.escribir_bloque("bloquesmasivo.dat",&bloque);
+		int num_bloque_escrito = manejador.escribir_bloque(&bloque);
 		assert(num_bloque_escrito == i);
 	}
 
 	// Borro dos bloques, primero el 5...
 	Bloque bloqueVacio(tamBloque,minRegsPorBloque,maxRegsPorBloque);
-	assert(manejador.sobreescribir_bloque("bloquesmasivo.dat",&bloqueVacio,5) == RES_OK);
+	assert(manejador.sobreescribir_bloque(&bloqueVacio,5) == RES_OK);
 	assert(manejador.get_primer_bloque_libre() == 5);
-	Bloque* res = manejador.obtener_bloque("manejadorbloques.dat",5);
+	Bloque* res = manejador.obtener_bloque(5);
 	assert(res->fue_eliminado());
 	assert(res->obtener_ref_prox_bloque()==-1);
 	delete(res);
 
 	// ...y luego el 50
-	assert(manejador.sobreescribir_bloque("bloquesmasivo.dat",&bloqueVacio,50) == RES_OK);
+	assert(manejador.sobreescribir_bloque(&bloqueVacio,50) == RES_OK);
 	assert(manejador.get_primer_bloque_libre() == 50);
-	res = manejador.obtener_bloque("manejadorbloques.dat",50);
+	res = manejador.obtener_bloque(50);
 	assert(res->fue_eliminado());
 	assert(res->obtener_ref_prox_bloque()==5);
 	delete(res);
 
 	//Intento escribir un bloque como usado que no es el tope de la pila de libres
-	assert(manejador.sobreescribir_bloque("bloquesmasivo.dat",&bloque,5) == RES_ERROR);
+	assert(manejador.sobreescribir_bloque(&bloque,5) == RES_ERROR);
 
 	//Añado un bloque nuevo (debera guardarse en la posicion 50)
-	assert(manejador.escribir_bloque("bloquesmasivo.dat",&bloque) == 50);
+	assert(manejador.escribir_bloque(&bloque) == 50);
 
 	assert(manejador.cerrar_archivo() == RES_OK);
 
