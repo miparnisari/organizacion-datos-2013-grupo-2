@@ -722,14 +722,14 @@ void test_remover_registros_bloque(){
 		b1.agregar_registro(&rv);
 	}
 	for(int i= (CANTIDAD_DATOS-1);i>=0 ;i-- ){
-		assert( b1.remover_registro(0)== RES_OK );
+		assert( b1.eliminar_registro(0)== RES_OK );
 		assert( b1.get_cantidad_registros_almacenados()== i );
 	}
 	assert( b1.esta_vacio() );
 	assert( b1.get_espacio_libre() == elb1 );
 	assert( b1.calcular_espacio_ocupado()== 0 );
 	/*bloque puede llenarse y vaciarse efectivamente*/
-	assert( b1.remover_registro(3000) == RES_OK );
+	assert( b1.eliminar_registro(3000) == RES_OK );
 	/*remover un registro de un bloque vacio devuelve ok*/
 
 
@@ -739,7 +739,7 @@ void test_remover_registros_bloque(){
 		b1.agregar_registro(&rv);
 	}
 	for(int i=CANTIDAD_DATOS; i<2*CANTIDAD_DATOS; i++)
-		assert( b1.remover_registro(i)== RES_ERROR );
+		assert( b1.eliminar_registro(i)== RES_ERROR );
 	assert( b1.get_cantidad_registros_almacenados()== CANTIDAD_DATOS );
 	/*si se busca remover un registro de una posicion mas alla de la ultima
 	 * el metodo retorna error y ningun registro es removido del bloque*/
@@ -780,7 +780,7 @@ void test_recuperar_registros_bloque(){
 	/*recuperar un registro en una posicion superior o igual a la cantidad de
 	 * registros guardados en bloque retorna error.*/
 
-	assert( b1.remover_registro(0)==RES_OK );
+	assert( b1.eliminar_registro(0)==RES_OK );
 	/*remuevo martin*/
 	RegistroVariable rv;
 	assert( b1.recuperar_registro(&rv , 0)!=RES_ERROR );
@@ -791,7 +791,7 @@ void test_recuperar_registros_bloque(){
 	assert( s==datos[1] );
 	/*en primer registro de bloque se guarda "maine"*/
 
-	b1.remover_registro(1);
+	b1.eliminar_registro(1);
 	/*remuevo "nicolas"*/
 	assert( b1.get_cantidad_registros_almacenados()== 2 );
 	assert( b1.recuperar_registro(&rv,1)!=RES_ERROR );
@@ -818,7 +818,7 @@ void test_recuperar_registros_bloque(){
 
 
 	for(int i=0;i<5;i++)
-		assert( b1.remover_registro(0)==RES_OK );
+		assert( b1.eliminar_registro(0)==RES_OK );
 	assert( b1.esta_vacio() );
 	assert( b1.get_espacio_libre()== elb1 );
 	assert( b1.calcular_espacio_ocupado()== 0 );

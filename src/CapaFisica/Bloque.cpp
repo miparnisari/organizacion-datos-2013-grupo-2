@@ -199,7 +199,7 @@ int Bloque::agregar_registro(RegistroVariable* registro)throw(){
 	if(registro->esta_limpio())
 		return RES_ERROR;
 	if (this->get_cantidad_registros_almacenados() >= maxNumeroRegistros)
-		return RES_ESPACIO_INSUFICIENTE;
+		return RES_OVERFLOW;
 
 	unsigned short tamanioDato= registro->get_tamanio();
 	return this->agregar_registro( registro->get_buffer() , tamanioDato );
@@ -257,7 +257,7 @@ int Bloque::agregar_registro(RegistroVariable* registro,unsigned short posicionR
 	if(registro->esta_limpio())
 		return RES_ERROR;
 	if (get_cantidad_registros_almacenados() >= this->maxNumeroRegistros)
-		return RES_ESPACIO_INSUFICIENTE;
+		return RES_OVERFLOW;
 	return this->agregar_registro(registro->get_buffer() , registro->get_tamanio() , posicionRegistro);
 
 }
@@ -387,12 +387,12 @@ unsigned int Bloque::obtener_offset_registro(unsigned short numeroRegistro)const
 }/*retorna el valor del byte offset de un registro determinado*/
 
 
-int Bloque::remover_registro(unsigned short numeroRegistro)throw(){
+int Bloque::eliminar_registro(unsigned short numeroRegistro)throw(){
 
 	if(this->esta_vacio())
 		return RES_OK;
-	if(get_cantidad_registros_almacenados() == minNumeroRegistros)
-		return RES_ERROR;
+	if(get_cantidad_registros_almacenados() <= minNumeroRegistros)
+		return RES_UNDERFLOW;
 
 	const unsigned int OFFSET_REGISTRO= this->obtener_offset_registro(numeroRegistro);
 	if((int)OFFSET_REGISTRO == RES_INVALID_OFFSET)
