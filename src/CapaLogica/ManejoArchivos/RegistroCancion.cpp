@@ -288,7 +288,7 @@ string RegistroCancion::get_titulo()throw(){
 
 
 int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
-
+	//FIXME este metodo no anda!!!
 	RegistroVariable::agregar_datos(dato,tamanioDato);
 	
 	bool val1 = (contar_parametros() == 0);

@@ -8,8 +8,7 @@
 #include "../Constantes.h"
 
 // Clase que modela un registro que tiene
-// campos de longitud fija, y por ende todo el registro es 
-// de longitud fija.
+// campos de longitud fija.
 
 class RegistroFijo
 {

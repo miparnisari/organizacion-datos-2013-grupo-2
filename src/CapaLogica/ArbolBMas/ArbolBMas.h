@@ -4,21 +4,30 @@
 #include <string>
 #include "../../Constantes.h"
 #include "../../CapaFisica/RegistroVariable.h"
+#include "../../CapaFisica/ManejadorBloques.h"
+#include "NodoInterno.h"
 
 class ArbolBMas
 {
+	private:
+		ManejadorBloques archivoNodosInternos;
+		ManejadorBloques archivoNodosSecuencia;
+		NodoInterno* nodoInternoRaiz;
+
 	public:
 		ArbolBMas();
-		int create (std::string dir, std::string fileName);
-		int open (std::string dir, std::string fileName, std::string mode);
-		int destroy (std::string dir, std::string fileName);
-		int close ();
+		virtual ~ArbolBMas();
+
+		int crear (std::string dir, std::string fileName);
+		int eliminar (std::string dir, std::string fileName);
+
+		int abrir (std::string dir, std::string fileName, std::string mode);
+		int cerrar ();
 		
 		int agregar(RegistroVariable & reg);
-		virtual ~ArbolBMas();
-	
-	private:
-		/* add your private declarations */
+		int eliminar(RegistroVariable & reg);
+		int buscar(RegistroVariable & reg);
+
 };
 
 #endif /* ARBOLBMAS_H */ 

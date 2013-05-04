@@ -1,98 +1,92 @@
 #include "NodoInterno.h"
 
-
-unsigned short NodoInterno::get_cantidad_claves(){
-
-	return listaClaves.size();
-
+NodoInterno::NodoInterno(unsigned int tamanioNodo)
+{
+	tamanio = tamanioNodo;
+	espacioLibre = tamanio - sizeof(espacioLibre);
 }
 
-unsigned short NodoInterno::get_cantidad_hijos(){
+NodoInterno::~NodoInterno()
+{
+	for (unsigned int i = 0; i < vectorClaves.size(); i++)
+		delete(vectorClaves.at(i));
+}
 
-	if(esta_vacio())
-		return 0;
-	return (get_cantidad_claves() + 1);
+unsigned short NodoInterno::get_cantidad_claves()
+{
+	return vectorClaves.size();
+}
 
+unsigned short NodoInterno::get_cantidad_hijos()
+{
+	return vectorHijos.size();
+}
+
+bool NodoInterno::esta_vacio()
+{
+	return (vectorClaves.size()== 0);
 }
 
 
-bool NodoInterno::esta_vacio(){
+Clave* NodoInterno::get_clave(unsigned short numeroClave)
+{
+	if (esta_vacio())
+		return NULL;
+	if (numeroClave >= this->get_cantidad_claves())
+		return NULL;
 
-	return listaClaves.size()== 0;
-
+	return vectorClaves.at(numeroClave);
 }
 
 
-int NodoInterno::get_clave(Clave* clave,unsigned short numeroClave){
-
-	if(esta_vacio())
+int NodoInterno::get_hijo(unsigned short& hijo,unsigned short numeroHijo)
+{
+	if (esta_vacio())
 		return RES_ERROR;
-	if(numeroClave >= this->get_cantidad_claves())
+	if (numeroHijo >= this->get_cantidad_hijos())
 		return RES_ERROR;
 
-	list<Clave*>::iterator it= this->listaClaves.begin();
-	for(unsigned short i=0; i< numeroClave; i++ ,it++);
-
-	clave= *it;
+	hijo = vectorHijos.at(numeroHijo);
 
 	return RES_OK;
-
 }
 
 
-int NodoInterno::get_hijo(unsigned short& hijo,unsigned short numeroHijo){
+Clave* NodoInterno::get_clave_mitad()
+{
+	if (this->esta_vacio())
+		return NULL;
 
-	if(esta_vacio())
-		return RES_ERROR;
-	if(numeroHijo > this->get_cantidad_hijos())
-		return RES_ERROR;
+	const unsigned short CANTIDAD_CLAVES = vectorClaves.size();
+	const unsigned short MITAD = (unsigned short)(CANTIDAD_CLAVES/2);
 
-	list<unsigned short>::iterator it= this->listaHijos.begin();
-	for(unsigned short i=0;i<numeroHijo;i++, it++);
-
-	hijo= *it;
-
-	return RES_OK;
+	return this->get_clave(MITAD);
 
 }
 
-
-int NodoInterno::get_clave_mitad(Clave* clave){
-
-	if(this->esta_vacio())
-		return RES_ERROR;
-
-	const unsigned short CANTIDAD_CLAVES= listaClaves.size();
-	const unsigned short MITAD= (unsigned short)(CANTIDAD_CLAVES/2);
-
-	return this->get_clave(clave,MITAD);
-
-}
-
-
-int NodoInterno::buscar_clave(Clave* clave,unsigned short& posicionClave){
-
-	if(this->esta_vacio())
+int NodoInterno::buscar_clave(const Clave* clave,unsigned short& posicionClave)
+{
+	if (this->esta_vacio())
 		return RES_ERROR;
 
 	Clave* c= NULL;
 
 	for(unsigned short i=0; i< this->get_cantidad_claves() ; i++){
 
-		this->get_clave(c,i);
+		c = this->get_clave(i);
 		if( (*c)==(*clave) ){
 			posicionClave= i;
-			return posicionClave;
+			return RES_OK;
 		}
 
 	}
 
 	return RES_ERROR;
 
-}
+}//FIXME Para que sirve este metodo!? Es lo mismo que get_clave(pos)...
 
 
-int NodoInterno::get_hijo_izquierdo(unsigned short& hijo,Clave* clave){
+int NodoInterno::get_hijo_izquierdo(unsigned short& hijo, Clave* clave){
 
 	if(this->esta_vacio())
 		return RES_ERROR;
@@ -119,9 +113,9 @@ int NodoInterno::get_hijo_derecho(unsigned short& hijo,Clave* clave){
 }
 
 
-int NodoInterno::remover_clave(Clave* clave,unsigned short numeroClave){
+int NodoInterno::remover_clave(const Clave* clave,unsigned short numeroClave){
 
-	if(this->get_clave(clave,numeroClave)== RES_ERROR)
+	if(this->get_clave(numeroClave)== NULL)
 		return RES_ERROR;
 
 	return this->remover_clave(clave);
@@ -129,28 +123,14 @@ int NodoInterno::remover_clave(Clave* clave,unsigned short numeroClave){
 }
 
 
-int NodoInterno::remover_clave(Clave* clave){
+int NodoInterno::remover_clave(const Clave* clave){
 
 	unsigned short posicionClave;
-	if(this->buscar_clave(clave,posicionClave)== RES_ERROR)
+	if (this->buscar_clave(clave,posicionClave)== RES_ERROR)
 		return RES_ERROR;
 
-	list<Clave*>::iterator it= listaClaves.begin();
-	for(int i=0;i<posicionClave;i++ , it++);
-	listaClaves.erase(it);
+	vectorClaves.erase(vectorClaves.begin() + posicionClave);
 
 	return posicionClave;
-
-}
-
-
-NodoInterno::NodoInterno(unsigned int t){
-
-	this->tamanio= t;
-	espacioLibre= tamanio - sizeof(espacioLibre);
-
-}
-
-NodoInterno::~NodoInterno(){
 
 }

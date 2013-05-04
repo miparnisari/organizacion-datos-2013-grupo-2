@@ -7,7 +7,11 @@
 #include "RegistroVariable.h"
 #include "../Constantes.h"
 
-/*los registros se guardan de la siguietne manera: tamanioRegistro|datosRegistro */
+/*
+ * INFO:
+ * Los registros se guardan de la siguiente manera:
+ * tamanioRegistro|datosRegistro
+ */
 
 class Bloque {
 
@@ -33,8 +37,6 @@ class Bloque {
 		Bloque(unsigned int tamBloque = BLOQUE_TAM_DEFAULT, unsigned int min = 0, unsigned int max = BLOQUE_TAM_DEFAULT);
 		/*Si no se le pasa un tamanio, se le asignara BLOQUE_TAM_DEFAULT.*/
 		virtual ~Bloque();
-
-
 
 		virtual unsigned short get_cantidad_registros_almacenados()const throw();
 
@@ -81,33 +83,19 @@ class Bloque {
 		 * de lo contrario se retorna RES_BLOQUE_OCUPADO*/
 
 
-
 /*---------------------------------------------------------------------------------------------------*/
 /*LOS SIGUIENTES METODOS SON PUBLICOS EXCLUSIVAMENTE POR CUESTION DE PRUEBAS O PARA CUMPLIR CON
- * CONSIGNAS DEL TP0. */
+ * CONSIGNAS DEL TP 0. */
 
-		/*LA SIGUIENTE PRIMITIVA ES USADA POR ManejadorBloques. Servia para resolver una consigna
-		 * del TP0, NO PRESTAR ATENCION!!!*/
-		virtual void listar_registros()throw();
+		virtual void _listar_registros()throw();
 		/*lista el byte offset de cada registro contenido en el bloque*/
-		virtual unsigned int calcular_espacio_usable()const throw();
+		virtual unsigned int _calcular_espacio_usable()const throw();
 		/*calcula espacio asignado al bloque para guardar registros exclusivamente*/
-		virtual unsigned int calcular_espacio_ocupado()const throw();
+		virtual unsigned int _calcular_espacio_ocupado()const throw();
 		/*calcula espacio ocupado por registros exclusivamente*/
-		virtual unsigned int calcular_espacio_libre()const throw();
+		virtual unsigned int _calcular_espacio_libre()const throw();
 		/*este metodo puede ser alterado en clases hijas para agregar un colchon de amortiguacion de
 		 * datos de 75% por ejemplo*/
-
-
-		virtual int agregar_registro(char* dato,unsigned short tamanioDato,unsigned short posicionRegistro)throw();
-		/*en caso de no tener los registros guardados en variables RegistroVariable, es posible guardarlos desde un
-		 * buffer de caracteres con datos .*/
-		//TODO (by maine) creo que este metodo se deberia eliminar
-
-		virtual int agregar_registro(RegistroVariable* registro, unsigned short posicionRegistro)throw();
-		/*se agrega un registro en una posicion deseada. Los registros se enumeran desde el 0 */
-		//TODO (by maine) creo que este metodo se deberia eliminar
-
 
 };
 
