@@ -23,7 +23,7 @@ int Bloque::actualizar_ref_prox_bloque(unsigned int primerBloque){
 	int res;
 
 	if(!this->fue_eliminado()){
-		this->limpiar_buffer();
+		this->_limpiar_buffer();
 		res= RES_OK;
 	}
 	else
@@ -72,7 +72,7 @@ Bloque::Bloque(unsigned int tamBloque, unsigned int min, unsigned int max)
 	this->bufferBloque= new char[tamanioBloque]();
 	this->minNumeroRegistros = min;
 	this->maxNumeroRegistros = max;
-	limpiar_buffer();
+	_limpiar_buffer();
 }
 
 Bloque::~Bloque()
@@ -81,7 +81,7 @@ Bloque::~Bloque()
 }
 
 
-unsigned int Bloque::calcular_resto_bloque(unsigned int offsetRegistro)const throw()
+unsigned int Bloque::_calcular_resto_bloque(unsigned int offsetRegistro)const throw()
 {
 	const unsigned int ESPACIO_OCUPADO = this->calcular_espacio_ocupado();
 	return (ESPACIO_OCUPADO - offsetRegistro);
@@ -113,7 +113,7 @@ unsigned int Bloque::calcular_espacio_ocupado()const throw(){
 }/*retorna el espacio usado por registros*/
 
 
-unsigned int Bloque::obtener_offset_final()const throw(){
+unsigned int Bloque::_obtener_offset_final()const throw(){
 
 	unsigned int offsetFinal;
 	offsetFinal= tamanioBloque - espacioLibre - sizeof(espacioLibre);
@@ -131,7 +131,7 @@ bool Bloque::esta_vacio()const throw()
 es unicamente debido al almacenamiento del espacio libre disponible en buffer */
 
 
-void Bloque::limpiar_buffer()throw(){
+void Bloque::_limpiar_buffer()throw(){
 
 	/*unsigned int espacioOcupado= this->calcular_espacio_ocupado();
 	if(espacioOcupado){
@@ -145,7 +145,7 @@ void Bloque::limpiar_buffer()throw(){
 
 	espacioLibre= tamanioBloque - sizeof(espacioLibre);
 
-	escribir_espacio_libre();
+	_escribir_espacio_libre();
 
 }/*limpia el buffer*/
 
@@ -157,12 +157,12 @@ void Bloque::desempaquetar(const char* datos)throw(){
 	stream.write(datos,tamanioBloque);
 	stream.seekg(0,stream.beg);
 	stream.read(bufferBloque,tamanioBloque);
-	obtener_espacio_libre();
+	_obtener_espacio_libre();
 
 }/*carga un bloque contenido en datos en la estructura*/
 
 
-int Bloque::agregar_registro(char* dato, unsigned short tamanioDato)throw(){
+int Bloque::_agregar_registro(char* dato, unsigned short tamanioDato)throw(){
 
 	if(dato== NULL)
 		return RES_ERROR;
@@ -172,7 +172,7 @@ int Bloque::agregar_registro(char* dato, unsigned short tamanioDato)throw(){
 	stringstream stream(ios::in |ios::out);
 	stream.write(bufferBloque,tamanioBloque); //copia en stream lo de bufferBloque
 
-	unsigned int offsetFinal= this->obtener_offset_final();
+	unsigned int offsetFinal= this->_obtener_offset_final();
 	if(!this->esta_vacio())
 		stream.seekp(offsetFinal,stream.beg);
 	else
@@ -185,7 +185,7 @@ int Bloque::agregar_registro(char* dato, unsigned short tamanioDato)throw(){
 	stream.seekg(0,stream.beg);
 	stream.read(bufferBloque,tamanioBloque);
 
-	escribir_espacio_libre();
+	_escribir_espacio_libre();
 	return RES_OK;
 
 }/*agrega los datos contenidos en dato como un registro de tamanio variable.
@@ -202,7 +202,7 @@ int Bloque::agregar_registro(RegistroVariable* registro)throw(){
 		return RES_OVERFLOW;
 
 	unsigned short tamanioDato= registro->get_tamanio();
-	return this->agregar_registro( registro->get_buffer() , tamanioDato );
+	return this->_agregar_registro( registro->get_buffer() , tamanioDato );
 
 }/*agrega un registro variable al bloque*/
 
@@ -212,7 +212,7 @@ int Bloque::agregar_registro(char* dato,unsigned short tamanioDato,unsigned shor
 
 	const unsigned short CANTIDAD_REGISTROS= this->get_cantidad_registros_almacenados();
 	if(posicionRegistro>= CANTIDAD_REGISTROS || this->esta_vacio())
-		return this->agregar_registro(dato,tamanioDato);
+		return this->_agregar_registro(dato,tamanioDato);
 
 	if(!dato)
 		return RES_ERROR;
@@ -221,8 +221,8 @@ int Bloque::agregar_registro(char* dato,unsigned short tamanioDato,unsigned shor
 	/*puesto a que antes de guardar el dato se guarda el tamanio del mismo se verifica que en el
 	 * bloque quede espacio suficiente para guardar ambos elementos*/
 
-	const unsigned int OFFSET_REGISTRO_AGREGAR= this->obtener_offset_registro(posicionRegistro);
-	const unsigned int TAMANIO_RESTO_BLOQUE= this->calcular_resto_bloque(OFFSET_REGISTRO_AGREGAR);
+	const unsigned int OFFSET_REGISTRO_AGREGAR= this->_obtener_offset_registro(posicionRegistro);
+	const unsigned int TAMANIO_RESTO_BLOQUE= this->_calcular_resto_bloque(OFFSET_REGISTRO_AGREGAR);
 
 	stringstream stream;
 	stream.write(bufferBloque,tamanioBloque);
@@ -239,7 +239,7 @@ int Bloque::agregar_registro(char* dato,unsigned short tamanioDato,unsigned shor
 	stream.read(bufferBloque,tamanioBloque);
 	espacioLibre-= sizeof(tamanioDato);
 	espacioLibre-= tamanioDato;
-	this->escribir_espacio_libre();
+	this->_escribir_espacio_libre();
 
 	delete[] bufferRestoBloque;
 	return RES_OK;
@@ -270,7 +270,7 @@ unsigned short Bloque::get_cantidad_registros_almacenados()const throw(){
 	if(this->esta_vacio())
 		return 0;
 
-	unsigned int espacioUsado= this->obtener_offset_final();
+	unsigned int espacioUsado= this->_obtener_offset_final();
 	unsigned int cuentaBytes= 0;
 	unsigned short cuentaRegistros= 0;
 	stringstream stream(ios::in | ios::out);
@@ -358,7 +358,7 @@ void Bloque::empaquetar(char* copia)const throw(){
 }/*exporta los datos del buffer en copia. Se exporta el bloque COMPLETO. copia debe tener datos reservados*/
 
 
-unsigned int Bloque::obtener_offset_registro(unsigned short numeroRegistro)const throw(){
+unsigned int Bloque::_obtener_offset_registro(unsigned short numeroRegistro)const throw(){
 
 	if(numeroRegistro>= get_cantidad_registros_almacenados())
 		return RES_INVALID_OFFSET;
@@ -394,7 +394,7 @@ int Bloque::eliminar_registro(unsigned short numeroRegistro)throw(){
 	if(get_cantidad_registros_almacenados() <= minNumeroRegistros)
 		return RES_UNDERFLOW;
 
-	const unsigned int OFFSET_REGISTRO= this->obtener_offset_registro(numeroRegistro);
+	const unsigned int OFFSET_REGISTRO= this->_obtener_offset_registro(numeroRegistro);
 	if((int)OFFSET_REGISTRO == RES_INVALID_OFFSET)
 		return RES_ERROR;
 
@@ -432,7 +432,7 @@ int Bloque::eliminar_registro(unsigned short numeroRegistro)throw(){
 	stream.seekg(0,stream.beg);
 	stream.read(bufferBloque,tamanioBloque);
 	espacioLibre+= tamanioRegistroGrabado;
-	escribir_espacio_libre();
+	_escribir_espacio_libre();
 
 	return RES_OK;
 
@@ -441,7 +441,7 @@ int Bloque::eliminar_registro(unsigned short numeroRegistro)throw(){
 
 
 
-void Bloque::obtener_espacio_libre()const throw(){
+void Bloque::_obtener_espacio_libre()const throw(){
 
 	stringstream stream(ios::in | ios::out);
 	stream.write(bufferBloque,tamanioBloque);
@@ -452,7 +452,7 @@ void Bloque::obtener_espacio_libre()const throw(){
 }/*recupera el valor de espacio libre guardado en buffer y lo almacena en espacioLibre*/
 
 
-void Bloque::escribir_espacio_libre()throw(){
+void Bloque::_escribir_espacio_libre()throw(){
 
 	stringstream stream(ios::in | ios::out);
 

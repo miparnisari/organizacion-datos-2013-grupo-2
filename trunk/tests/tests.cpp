@@ -944,12 +944,12 @@ void test_manejador_bloques_escribir_bloques()
 	assert(manejador.sobreescribir_bloque(&unBloque,1) == RES_ERROR);
 
 	// Agrego el primer bloque del archivo
-	Bloque bloque;
+	Bloque* bloque = manejador.crear_bloque();
 	RegistroVariable registro;
 	std::string campo  = "hola como te va?";
 	registro.agregar_campo(campo.c_str(),campo.size());
-	bloque.agregar_registro(&registro);
-	assert(manejador.escribir_bloque(&bloque) == 0);
+	bloque->agregar_registro(&registro);
+	assert(manejador.escribir_bloque(bloque) == 0);
 	assert(manejador.get_primer_bloque_libre() == -1);
 	assert(manejador.get_cantidad_bloques() == 1);
 	assert(manejador.obtener_bloque(1) == NULL);
@@ -998,7 +998,7 @@ void test_manejador_bloques_escribir_bloques()
 	delete(res);
 
 	// Escribo en el primer bloque (que estaba liberado)
-	assert(manejador.escribir_bloque(&bloque) == 0);
+	assert(manejador.escribir_bloque(bloque) == 0);
 	assert(manejador.get_primer_bloque_libre() == -1);
 	assert(manejador.get_cantidad_bloques() == 1);
 
@@ -1015,6 +1015,8 @@ void test_manejador_bloques_escribir_bloques()
 	assert(res->fue_eliminado());
 	assert(res->obtener_ref_prox_bloque()==-1);
 	delete(res);
+
+	delete(bloque);
 
 	assert (manejador.cerrar_archivo() == RES_OK);
 
