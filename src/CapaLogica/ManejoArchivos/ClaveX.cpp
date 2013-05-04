@@ -7,9 +7,9 @@
 
 #include "ClaveX.h"
 
-ClaveX::ClaveX(ClaveX::TipoClave tipoClave){
+ClaveX::ClaveX(){
 
-	this->tipoClave= tipoClave;
+	this->tipoClave = CLAVE_STRING; //tipo por defecto
 	claves[CLAVE_NUMERICA]= new ClaveNumerica;
 	claves[CLAVE_STRING]= new ClaveString;
 
@@ -18,9 +18,8 @@ ClaveX::ClaveX(ClaveX::TipoClave tipoClave){
 
 ClaveX::~ClaveX(){
 
-	delete claves[CLAVE_NUMERICA];
-	delete claves[CLAVE_STRING];
-
+	for (unsigned int i = 0; i < CANTIDAD_TIPOS_CLAVE; i++)
+		delete(claves[i]);
 }
 
 
@@ -33,19 +32,10 @@ ClaveX::TipoClave ClaveX::get_tipo_clave(){
 
 void ClaveX::_resetear_datos(){
 
-	for(int i=0;i<CANTIDAD_TIPOS_CLAVE;i++)
+	for(unsigned int i=0;i<CANTIDAD_TIPOS_CLAVE;i++)
 		claves[i]->resetear();
 
 }
-
-
-void ClaveX::set_tipo_clave(TipoClave tc){
-
-	tipoClave= tc;
-	_resetear_datos();
-
-}
-
 
 int ClaveX::empaquetar(char* buffer){
 

@@ -7,9 +7,16 @@
 #include "../../CapaFisica/ManejadorBloques.h"
 #include "NodoInterno.h"
 
+typedef struct header_arbol
+{
+	unsigned int minCantBytesClaves;
+	unsigned int maxCantBytesClaves;
+}header_arbol;
+
 class ArbolBMas
 {
 	private:
+		header_arbol header;
 		ManejadorBloques archivoNodosInternos;
 		ManejadorBloques archivoNodosSecuencia;
 		NodoInterno* nodoInternoRaiz;

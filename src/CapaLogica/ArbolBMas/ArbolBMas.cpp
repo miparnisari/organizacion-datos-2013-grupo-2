@@ -9,6 +9,12 @@ ArbolBMas::~ArbolBMas()
 
 int ArbolBMas::crear (std::string dir, std::string fileName)
 {
+	unsigned int tamanioBloque = BLOQUE_TAM_DEFAULT;
+	unsigned int minCantidadBytes = 0;
+	unsigned int maxCantidadBytes = 0;
+	Bloque* bloque = new Bloque(tamanioBloque);
+	NodoInterno raiz (minCantidadBytes, maxCantidadBytes);
+	raiz.empaquetar(bloque);
 	return RES_OK;
 }
 

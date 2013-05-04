@@ -64,14 +64,12 @@ int Bloque::obtener_ref_prox_bloque(){
 }
 
 
-Bloque::Bloque(unsigned int tamBloque, unsigned int min, unsigned int max)
+Bloque::Bloque(unsigned int tamBloque)
 {
 	this->tamanioBloque= tamBloque;
 	this->espacioLibre= tamanioBloque - sizeof(espacioLibre);
 	this->espacioLibreOffset= espacioLibre;
 	this->bufferBloque= new char[tamanioBloque]();
-	this->minNumeroRegistros = min;
-	this->maxNumeroRegistros = max;
 	_limpiar_buffer();
 }
 
@@ -198,8 +196,6 @@ int Bloque::agregar_registro(RegistroVariable* registro)throw(){
 		return RES_ERROR;
 	if(registro->esta_limpio())
 		return RES_ERROR;
-	if (this->get_cantidad_registros_almacenados() >= maxNumeroRegistros)
-		return RES_OVERFLOW;
 
 	unsigned short tamanioDato= registro->get_tamanio();
 	return this->_agregar_registro( registro->get_buffer() , tamanioDato );
@@ -332,8 +328,6 @@ int Bloque::eliminar_registro(unsigned short numeroRegistro)throw(){
 
 	if(this->esta_vacio())
 		return RES_OK;
-	if(get_cantidad_registros_almacenados() <= minNumeroRegistros)
-		return RES_UNDERFLOW;
 
 	const unsigned int OFFSET_REGISTRO= this->_obtener_offset_registro(numeroRegistro);
 	if((int)OFFSET_REGISTRO == RES_INVALID_OFFSET)

@@ -889,18 +889,14 @@ void test_empaquetar_desempaquetar_bloque(){
 
 void test_manejador_bloques_crear()
 {
-	unsigned int minRegsPorBloque = 0;
-	unsigned int maxRegsPorBloque = 100;
 	ManejadorBloques manejador;
 
-	assert (manejador.crear_archivo("manejadorbloques.dat", BLOQUE_TAM_DEFAULT, minRegsPorBloque, maxRegsPorBloque) == RES_OK);
+	assert (manejador.crear_archivo("manejadorbloques.dat", BLOQUE_TAM_DEFAULT) == RES_OK);
 
 	assert (manejador.abrir_archivo("manejadorbloques.dat","rb") == RES_OK);
 
 	assert(manejador.get_cantidad_bloques() == 0);
 	assert(manejador.get_primer_bloque_libre() == -1);
-	assert(manejador.get_min_regs_bloque() == minRegsPorBloque);
-	assert(manejador.get_max_regs_bloque() == maxRegsPorBloque);
 	assert(manejador.get_tamanio_bloque() == BLOQUE_TAM_DEFAULT);
 
 	assert (manejador.cerrar_archivo() == RES_OK);
@@ -911,10 +907,8 @@ void test_manejador_bloques_crear()
 
 void test_manejador_bloques_escribir_bloques()
 {
-	unsigned int minRegsPorBloque = 0;
-	unsigned int maxRegsPorBloque = 100;
 	ManejadorBloques manejador;
-	assert (manejador.crear_archivo("manejadorbloques.dat", BLOQUE_TAM_DEFAULT, minRegsPorBloque, maxRegsPorBloque) == RES_OK);
+	assert (manejador.crear_archivo("manejadorbloques.dat", BLOQUE_TAM_DEFAULT) == RES_OK);
 	assert (manejador.abrir_archivo("manejadorbloques.dat","rb+") == RES_OK);
 
 	// El archivo no posee ningun bloque
@@ -1008,15 +1002,13 @@ void test_manejador_bloques_escribir_bloques()
 
 void test_manejador_bloques_masivo()
 {
-	unsigned int minRegsPorBloque = 0;
-	unsigned int maxRegsPorBloque = 100;
 	unsigned int tamBloque = 100;
 	ManejadorBloques manejador;
-	assert (manejador.crear_archivo("bloquesmasivo.dat",tamBloque, minRegsPorBloque, maxRegsPorBloque) == RES_OK);
+	assert (manejador.crear_archivo("bloquesmasivo.dat",tamBloque) == RES_OK);
 	assert (manejador.abrir_archivo("bloquesmasivo.dat","rb+") == RES_OK);
 
 	// Agrego 1000 bloques, todos con el mismo registro
-	Bloque bloque(tamBloque,minRegsPorBloque,maxRegsPorBloque);
+	Bloque bloque(tamBloque);
 	RegistroVariable registro;
 	std::string campo  = "123456789 abcdefghijklmnopqrstuvwxyz ,.-_¬|@·~½¬{[]}";
 	registro.agregar_campo(campo.c_str(),campo.size());
@@ -1028,7 +1020,7 @@ void test_manejador_bloques_masivo()
 	}
 
 	// Borro dos bloques, primero el 5...
-	Bloque bloqueVacio(tamBloque,minRegsPorBloque,maxRegsPorBloque);
+	Bloque bloqueVacio(tamBloque);
 	assert(manejador.sobreescribir_bloque(&bloqueVacio,5) == RES_OK);
 	assert(manejador.get_primer_bloque_libre() == 5);
 	Bloque* res = manejador.obtener_bloque(5);

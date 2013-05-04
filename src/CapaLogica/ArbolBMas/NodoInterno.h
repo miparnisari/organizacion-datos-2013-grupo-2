@@ -6,26 +6,29 @@
 #include "../ManejoArchivos/Clave.h"
 #include "../../Constantes.h"
 #include "../../CapaFisica/Bloque.h"
+#include "../ManejoArchivos/ClaveX.h"
 
 class NodoInterno {
 
 	protected:
-		unsigned int espacioLibre;
-		unsigned int tamanio;
-		std::vector<Clave*> vectorClaves;
+//		unsigned int espacioLibre;
+//		unsigned int tamanio;
+		unsigned int minCantidadBytesClaves;
+		unsigned int maxCantidadBytesClaves;
+		std::vector<ClaveX*> vectorClaves;
 		std::vector<unsigned short> vectorHijos;
 
-		Clave* get_clave(unsigned short numeroClave);
+		ClaveX* get_clave(unsigned short numeroClave);
 		virtual int get_hijo(unsigned short& hijo,unsigned short numeroHijo);
-		Clave* get_clave_mitad();
-		virtual int buscar_clave(const Clave* clave,unsigned short& posicionClave);
-		virtual int get_hijo_izquierdo(unsigned short& hijo, Clave* clave);
-		virtual int get_hijo_derecho(unsigned short& hijo,Clave* clave);
-		virtual int remover_clave(const Clave* clave,unsigned short numeroClave);
-		virtual int remover_clave(const Clave* clave);
+		ClaveX* get_clave_mitad();
+		virtual int buscar_clave(const ClaveX* clave,unsigned short& posicionClave);
+		virtual int get_hijo_izquierdo(unsigned short& hijo, ClaveX* clave);
+		virtual int get_hijo_derecho(unsigned short& hijo,ClaveX* clave);
+		virtual int remover_clave(const ClaveX* clave,unsigned short numeroClave);
+		virtual int remover_clave(const ClaveX* clave);
 
 	public:
-		NodoInterno(unsigned int tamanioNodo);
+		NodoInterno(unsigned int minCantidadBytesClaves, unsigned int maxCantidadBytesClaves);
 		virtual ~NodoInterno();
 
 		bool esta_vacio();

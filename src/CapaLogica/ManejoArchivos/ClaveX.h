@@ -14,7 +14,7 @@
 class ClaveX {
 
 	public:
-		static const int CANTIDAD_TIPOS_CLAVE= 2;
+		static const unsigned int CANTIDAD_TIPOS_CLAVE= 2;
 		enum TipoClave {CLAVE_STRING , CLAVE_NUMERICA};
 
 	protected:
@@ -24,8 +24,7 @@ class ClaveX {
 		void _resetear_datos();
 
 	public:
-
-		ClaveX(TipoClave tipoClave= CLAVE_STRING);
+		ClaveX();
 		/*por defecto una ClaveX es de string*/
 
 		virtual ~ClaveX();
@@ -39,12 +38,7 @@ class ClaveX {
 		/* reconstruye un objeto ClaveX a partir de un buffer de caracteres que tenga el
 		 * formato: tipoClave|clave . */
 
-
-		virtual void set_tipo_clave(TipoClave tc);
-		/*cambia el tipo de clave a manejar y resetea el dato de la clave*/
-
 		virtual TipoClave get_tipo_clave();
-
 
 		virtual void set_clave(string clave);
 		virtual void set_clave(int clave);
