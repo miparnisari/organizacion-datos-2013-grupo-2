@@ -16,7 +16,7 @@ int Indexador::indexar (std::string directorioEntrada, std::string directorioSal
 {
 	// clave = autor + id cancion
 	ArbolBMas indiceSecundarioAutor;
-	indiceSecundarioAutor.create(directorioSalida, std::string(FILENAME_IDX_SECUN_AUTOR));
+	indiceSecundarioAutor.crear(directorioSalida, std::string(FILENAME_IDX_SECUN_AUTOR));
 	
 	// clave = titulo
 	HashingExtensible indiceSecundarioTitulo;
@@ -29,7 +29,7 @@ int Indexador::indexar (std::string directorioEntrada, std::string directorioSal
 	ManejadorRegistrosVariables archivoMaestro;	
 	
 	ParserCanciones parser;
-	parser.create(directorioEntrada);
+	parser.crear(directorioEntrada);
 	RegistroCancion regCancion;
 	
 	CompresorPPMC compresor;

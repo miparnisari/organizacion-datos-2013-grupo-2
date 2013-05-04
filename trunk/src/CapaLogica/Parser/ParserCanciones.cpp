@@ -21,13 +21,13 @@ int	ParserCanciones::getCantidadCancionesLeidas()
 	return contadorArchivosLeidos;
 }
 
-char ParserCanciones::estandarizar (char caracter)
+char ParserCanciones::_estandarizar (char caracter)
 {
-	//TODO: quitar acentos, dieresis, etc.
+	//TODO Martin: quitar acentos, dieresis, etc.
 	return caracter;	
 }
 
-int ParserCanciones::create (std::string dir)
+int ParserCanciones::crear (std::string dir)
 {
 	char cwd[1024];
 	getcwd(cwd, sizeof(cwd));
@@ -49,7 +49,7 @@ int ParserCanciones::getNextCancion(RegistroCancion& reg)
 	while (archivo.good())
 	{
 		char c = archivo.get();
-		estandarizar(c);
+		_estandarizar(c);
 		if (archivo.good())
 			s_contenidoArchivo.push_back(c);
 	}

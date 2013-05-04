@@ -32,7 +32,7 @@ void print_test_ok(std::string nombreTest)
 void test_leer_de_archivo()
 {
 	ParserCanciones parser;
-	parser.create("../songs");
+	assert(parser.crear("../songs") == RES_OK);
 	RegistroCancion regCancion;
 	std::string parametro = "xxxxx";
 		
@@ -66,25 +66,11 @@ void test_leer_de_archivo()
 			std::cout << "..." << std::endl;
 		}
 	}
-
 	print_test_ok("test_leer_de_archivo");
 }
 
-void test_create_file(){
-	ofstream file("../new.txt");
-	assert(file.is_open() == true);
-
-	file.close();
-	assert(file.is_open() == false);
-
-	print_test_ok("test_create_file");
-
-}/*un nombre de archivo puede incluir un path!*/
-
 void test_manejador_archivos_texto()
 {
-
-	std::cout<<"------test_manejador_archivos_texto---------"<<std::endl;
 	ManejadorArchivosTexto mat;
 	assert(mat.agregar_linea("noexiste.txt","lalal") == RES_FILE_DOESNT_EXIST);
 	
@@ -475,9 +461,6 @@ void test_registro_cancion()throw(){
 	print_test_ok("test_registro_cancion");
 }/*funcionaaa*/
 
-
-
-
 void test_manejador_registros_variables_masivo(){
 
 	string datoLargo= "este es un dato de longitud muy muy larga . Como para que ocupe mucho espacio en el archivo";
@@ -612,7 +595,7 @@ void test_agregar_registros_bloque(){
 	Bloque b1(2500);
 	assert(b1.get_cantidad_registros_almacenados()== 0);
 	assert( b1.esta_vacio() );
-	assert( b1.calcular_espacio_usable()== b1.get_espacio_libre() );
+	assert( b1._calcular_espacio_usable()== b1.get_espacio_libre() );
 
 	const int CANTIDAD_DATOS= 4;
 	string datos[CANTIDAD_DATOS]= {"martin","ines","nicolas","ricardo"};
@@ -645,7 +628,7 @@ void test_agregar_registros_bloque(){
 	assert( b2.get_espacio_libre()== elb2 );
 	assert( b2.esta_vacio() == false);
 
-	assert( b2.calcular_espacio_ocupado()== (rv2.get_tamanio()+sizeof(unsigned short)) );
+	assert( b2._calcular_espacio_ocupado()== (rv2.get_tamanio()+sizeof(unsigned short)) );
 	/*el espacio es administrado correctamente*/
 
 	RegistroVariable rv3;
@@ -727,7 +710,7 @@ void test_remover_registros_bloque(){
 	}
 	assert( b1.esta_vacio() );
 	assert( b1.get_espacio_libre() == elb1 );
-	assert( b1.calcular_espacio_ocupado()== 0 );
+	assert( b1._calcular_espacio_ocupado()== 0 );
 	/*bloque puede llenarse y vaciarse efectivamente*/
 	assert( b1.eliminar_registro(3000) == RES_OK );
 	/*remover un registro de un bloque vacio devuelve ok*/
@@ -821,7 +804,7 @@ void test_recuperar_registros_bloque(){
 		assert( b1.eliminar_registro(0)==RES_OK );
 	assert( b1.esta_vacio() );
 	assert( b1.get_espacio_libre()== elb1 );
-	assert( b1.calcular_espacio_ocupado()== 0 );
+	assert( b1._calcular_espacio_ocupado()== 0 );
 	/*despues de agregar y remover varios registros, el espacio libre se recupera*/
 
 
@@ -880,7 +863,7 @@ void test_empaquetar_desempaquetar_bloque(){
 
 	assert( b1.get_cantidad_registros_almacenados()== b2.get_cantidad_registros_almacenados() );
 	assert( b1.get_espacio_libre()== b2.get_espacio_libre() );
-	assert( b1.calcular_espacio_ocupado()== b2.calcular_espacio_ocupado() );
+	assert( b1._calcular_espacio_ocupado()== b2._calcular_espacio_ocupado() );
 
 
 	for(int i=0;i<CANTIDAD_DATOS;i++){
@@ -922,7 +905,7 @@ void test_manejador_bloques_crear()
 
 	assert (manejador.cerrar_archivo() == RES_OK);
 
-	print_test_ok("test_crear_archivo_bloques");
+	print_test_ok("test_manejador_bloques_crear");
 
 }
 
@@ -1095,7 +1078,7 @@ void test_probar_caracter_eliminacion(){
 
 int main(int argc,char** args)
 {
-//	test_leer_de_archivo(); TODO des-comentar
+	test_leer_de_archivo();
 	test_eliminar_registro_variable();
 	test_agregar_campos_registro_variable();
 	test_empaquetar_desempaquetar_registro_variable();
