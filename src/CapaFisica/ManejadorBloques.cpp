@@ -150,7 +150,7 @@ PRECONDICION: el archivo debe estar abierto. */
 unsigned int ManejadorBloques::__get_primer_bloque_libre()
 {
 	if (header.proximoBloqueLibre == -1)
-		__agregar_bloque_al_final();
+		__agregar_bloque_al_final(); //Aca se modifica header.proximoBloqueLibre
 
 	return header.proximoBloqueLibre;
 }/* PRECONDICION: el archivo debe estar abierto. */
@@ -246,6 +246,13 @@ int ManejadorBloques:: sobreescribir_bloque(Bloque* bloque, unsigned int numBloq
 }/* Devuelve un bloque del archivo.
 PRECONDICION: el archivo se debe abrir en modo escritura.
 POSTCONDICION: se lo debe cerrar. */
+
+Bloque* ManejadorBloques::crear_bloque()
+{
+	if (this->file_handler == NULL)
+		return NULL;
+	return new Bloque(header.tamanioBloque,header.minRegsBloque,header.maxRegsBloque);
+}
 
 Bloque* ManejadorBloques :: obtener_bloque(unsigned int numBloque)
 {

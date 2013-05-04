@@ -301,10 +301,13 @@ long ManejadorRegistrosVariables::eliminar_registro_ocupado(unsigned short numer
 	/*creo el header que ocupara el espacio del registro eliminado*/
 
 	fstream archivoEscribir(nombreArchivo.c_str());
-	archivoEscribir.seekp( offsetRegistroEliminar , ios::beg );
-	archivoEscribir.write( (char*)&hrl , sizeof(hrl) );
-	_cerrar_archivo(&archivoEscribir);
-	/*se escribe la marca de borrado */
+	if (archivoEscribir.good())
+	{
+		archivoEscribir.seekp( offsetRegistroEliminar , ios::beg );
+		archivoEscribir.write( (char*)&hrl , sizeof(hrl) );
+		_cerrar_archivo(&archivoEscribir);
+		/*se escribe la marca de borrado */
+	}
 
 	header.cantidadRegistrosLibres++;
 	_guardar_header();
@@ -344,7 +347,7 @@ void ManejadorRegistrosVariables::_desvincular(){
 
 void ManejadorRegistrosVariables::_cerrar_archivo(fstream* archivo){
 
-	archivo->seekg(0,ios::end);
+	//archivo->seekg(0,ios::end);
 	archivo->close();
 
 }
@@ -363,9 +366,11 @@ void ManejadorRegistrosVariables::_resetear_header(){
 void ManejadorRegistrosVariables::_guardar_header(){
 
 	fstream archivo(nombreArchivo.c_str());
-	archivo.write( (char*)&header , sizeof(header) );
+	if (archivo.good()) {
+		archivo.write( (char*)&header , sizeof(header) );
 
-	_cerrar_archivo(&archivo);
+		_cerrar_archivo(&archivo);
+	}
 
 }
 

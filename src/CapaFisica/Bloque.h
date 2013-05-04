@@ -21,12 +21,13 @@ class Bloque {
 		unsigned int minNumeroRegistros;
 		unsigned int maxNumeroRegistros;
 
-		virtual void obtener_espacio_libre()const throw();
-		virtual void escribir_espacio_libre()throw();
-		virtual unsigned int obtener_offset_final()const throw();
-		virtual unsigned int obtener_offset_registro(unsigned short numeroRegistro)const throw();
-		virtual unsigned int calcular_resto_bloque(unsigned int offsetRegistro)const throw();
-		virtual void limpiar_buffer()throw();
+		virtual void _obtener_espacio_libre()const throw();
+		virtual void _escribir_espacio_libre()throw();
+		virtual unsigned int _obtener_offset_final()const throw();
+		virtual unsigned int _obtener_offset_registro(unsigned short numeroRegistro)const throw();
+		virtual unsigned int _calcular_resto_bloque(unsigned int offsetRegistro)const throw();
+		virtual void _limpiar_buffer()throw();
+		virtual int _agregar_registro(char* dato,unsigned short tamanioDato)throw();
 
 	public:
 		Bloque(unsigned int tamBloque = BLOQUE_TAM_DEFAULT, unsigned int min = 0, unsigned int max = BLOQUE_TAM_DEFAULT);
@@ -96,8 +97,7 @@ class Bloque {
 		virtual unsigned int calcular_espacio_libre()const throw();
 		/*este metodo puede ser alterado en clases hijas para agregar un colchon de amortiguacion de
 		 * datos de 75% por ejemplo*/
-		virtual int agregar_registro(char* dato,unsigned short tamanioDato)throw();
-		//TODO hacerlo private
+
 
 		virtual int agregar_registro(char* dato,unsigned short tamanioDato,unsigned short posicionRegistro)throw();
 		/*en caso de no tener los registros guardados en variables RegistroVariable, es posible guardarlos desde un
