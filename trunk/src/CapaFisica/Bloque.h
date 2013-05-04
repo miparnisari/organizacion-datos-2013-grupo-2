@@ -22,9 +22,6 @@ class Bloque {
 		unsigned int tamanioBloque;
 		unsigned int espacioLibreOffset;
 
-		unsigned int minNumeroRegistros;
-		unsigned int maxNumeroRegistros;
-
 		virtual void _obtener_espacio_libre()const throw();
 		virtual void _escribir_espacio_libre()throw();
 		virtual unsigned int _obtener_offset_final()const throw();
@@ -34,7 +31,7 @@ class Bloque {
 		virtual int _agregar_registro(char* dato,unsigned short tamanioDato)throw();
 
 	public:
-		Bloque(unsigned int tamBloque = BLOQUE_TAM_DEFAULT, unsigned int min = 0, unsigned int max = BLOQUE_TAM_DEFAULT);
+		Bloque(unsigned int tamBloque = BLOQUE_TAM_DEFAULT);
 		/*Si no se le pasa un tamanio, se le asignara BLOQUE_TAM_DEFAULT.*/
 		virtual ~Bloque();
 

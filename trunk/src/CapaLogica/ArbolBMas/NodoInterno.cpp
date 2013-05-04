@@ -1,9 +1,11 @@
 #include "NodoInterno.h"
 
-NodoInterno::NodoInterno(unsigned int tamanioNodo)
+NodoInterno::NodoInterno(unsigned int p_minCantidadBytesClaves, unsigned int p_maxCantidadBytesClaves)
 {
-	tamanio = tamanioNodo;
-	espacioLibre = tamanio - sizeof(espacioLibre);
+//	tamanio = tamanioNodo;
+//	espacioLibre = tamanio - sizeof(espacioLibre);
+	unsigned int minCantidadBytesClaves = p_minCantidadBytesClaves;
+	unsigned int maxCantidadBytesClaves = p_maxCantidadBytesClaves;
 }
 
 NodoInterno::~NodoInterno()
@@ -28,7 +30,7 @@ bool NodoInterno::esta_vacio()
 }
 
 
-Clave* NodoInterno::get_clave(unsigned short numeroClave)
+ClaveX* NodoInterno::get_clave(unsigned short numeroClave)
 {
 	if (esta_vacio())
 		return NULL;
@@ -52,7 +54,7 @@ int NodoInterno::get_hijo(unsigned short& hijo,unsigned short numeroHijo)
 }
 
 
-Clave* NodoInterno::get_clave_mitad()
+ClaveX* NodoInterno::get_clave_mitad()
 {
 	if (this->esta_vacio())
 		return NULL;
@@ -64,20 +66,20 @@ Clave* NodoInterno::get_clave_mitad()
 
 }
 
-int NodoInterno::buscar_clave(const Clave* clave,unsigned short& posicionClave)
+int NodoInterno::buscar_clave(const ClaveX* clave,unsigned short& posicionClave)
 {
 	if (this->esta_vacio())
 		return RES_ERROR;
 
-	Clave* c= NULL;
+	ClaveX* c= NULL;
 
 	for(unsigned short i=0; i< this->get_cantidad_claves() ; i++){
-
-		c = this->get_clave(i);
-		if( (*c)==(*clave) ){
-			posicionClave= i;
+//
+//		c = this->get_clave(i);
+//		if( (*c)==(*clave) ){
+//			posicionClave= i;
 			return RES_OK;
-		}
+//		}
 
 	}
 
@@ -86,7 +88,7 @@ int NodoInterno::buscar_clave(const Clave* clave,unsigned short& posicionClave)
 }//FIXME Para que sirve este metodo!? Es lo mismo que get_clave(pos)...
 
 
-int NodoInterno::get_hijo_izquierdo(unsigned short& hijo, Clave* clave){
+int NodoInterno::get_hijo_izquierdo(unsigned short& hijo, ClaveX* clave){
 
 	if(this->esta_vacio())
 		return RES_ERROR;
@@ -99,7 +101,7 @@ int NodoInterno::get_hijo_izquierdo(unsigned short& hijo, Clave* clave){
 
 }
 
-int NodoInterno::get_hijo_derecho(unsigned short& hijo,Clave* clave){
+int NodoInterno::get_hijo_derecho(unsigned short& hijo,ClaveX* clave){
 
 	if(this->esta_vacio())
 		return RES_ERROR;
@@ -113,7 +115,7 @@ int NodoInterno::get_hijo_derecho(unsigned short& hijo,Clave* clave){
 }
 
 
-int NodoInterno::remover_clave(const Clave* clave,unsigned short numeroClave){
+int NodoInterno::remover_clave(const ClaveX* clave,unsigned short numeroClave){
 
 	if(this->get_clave(numeroClave)== NULL)
 		return RES_ERROR;
@@ -123,7 +125,7 @@ int NodoInterno::remover_clave(const Clave* clave,unsigned short numeroClave){
 }
 
 
-int NodoInterno::remover_clave(const Clave* clave){
+int NodoInterno::remover_clave(const ClaveX* clave){
 
 	unsigned short posicionClave;
 	if (this->buscar_clave(clave,posicionClave)== RES_ERROR)
@@ -133,4 +135,14 @@ int NodoInterno::remover_clave(const Clave* clave){
 
 	return posicionClave;
 
+}
+
+int NodoInterno::empaquetar(Bloque* bloque)
+{
+	return RES_OK;
+}
+
+int NodoInterno::desempaquetar(const Bloque* bloque)
+{
+	return RES_OK;
 }

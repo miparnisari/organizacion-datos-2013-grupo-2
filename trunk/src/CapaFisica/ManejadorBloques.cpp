@@ -5,8 +5,6 @@ ManejadorBloques::ManejadorBloques()
 	header.tamanioBloque = 0;
 	header.cantidadBloques = 0;
 	header.proximoBloqueLibre = -1;
-	header.minRegsBloque = 0;
-	header.maxRegsBloque = 0;
 	file_handler = NULL;
 	nombreArchivo = "";
 }
@@ -28,16 +26,6 @@ unsigned int ManejadorBloques::get_tamanio_bloque()
 unsigned int ManejadorBloques::get_cantidad_bloques()
 {
 	return this->header.cantidadBloques;
-}/* precondicion: antes abrir el archivo! */
-
-unsigned int ManejadorBloques::get_max_regs_bloque()
-{
-	return this->header.maxRegsBloque;
-}/* precondicion: antes abrir el archivo! */
-
-unsigned int ManejadorBloques::get_min_regs_bloque()
-{
-	return this->header.minRegsBloque;
 }/* precondicion: antes abrir el archivo! */
 
 int ManejadorBloques::abrir_archivo(std::string p_nombreArchivo, std::string modo)
@@ -67,7 +55,7 @@ int ManejadorBloques::cerrar_archivo()
 	return RES_ERROR;
 }
 
-int ManejadorBloques::crear_archivo(std::string p_nombreArchivo, unsigned int tamBloque, unsigned int min, unsigned int max)
+int ManejadorBloques::crear_archivo(std::string p_nombreArchivo, unsigned int tamBloque)
 {
 	if (! utilitarios::validFileName(p_nombreArchivo))
 		return RES_INVALID_FILENAME;
@@ -78,8 +66,6 @@ int ManejadorBloques::crear_archivo(std::string p_nombreArchivo, unsigned int ta
 		return RES_ERROR;
 
 	header.tamanioBloque = tamBloque;
-	header.minRegsBloque = min;
-	header.maxRegsBloque = max;
 
 	int res = __set_header();
 	if (res == RES_ERROR)
@@ -123,7 +109,7 @@ PRECONDICION: el offset tiene que ser del comienzo del bloque. El archivo debe e
 
 int ManejadorBloques::__agregar_bloque_al_final()
 {
-	Bloque bloqueNuevo(this->header.tamanioBloque,header.minRegsBloque, header.maxRegsBloque);
+	Bloque bloqueNuevo(this->header.tamanioBloque);
 	bloqueNuevo.actualizar_ref_prox_bloque(header.proximoBloqueLibre);
 
 	unsigned long int offset = sizeof(header) + (header.tamanioBloque *header.cantidadBloques);
@@ -251,7 +237,7 @@ Bloque* ManejadorBloques::crear_bloque()
 {
 	if (this->file_handler == NULL)
 		return NULL;
-	return new Bloque(header.tamanioBloque,header.minRegsBloque,header.maxRegsBloque);
+	return new Bloque(header.tamanioBloque);
 }
 
 Bloque* ManejadorBloques :: obtener_bloque(unsigned int numBloque)
@@ -269,7 +255,7 @@ Bloque* ManejadorBloques :: obtener_bloque(unsigned int numBloque)
 		return NULL;
 
 	// Leemos el bloque
-	Bloque* bloqueLeido = new Bloque(header.tamanioBloque,header.minRegsBloque,header.maxRegsBloque);
+	Bloque* bloqueLeido = new Bloque(header.tamanioBloque);
 	char* buffer = new char[header.tamanioBloque];
 	res = fread(buffer,this->header.tamanioBloque,1,this->file_handler);
 	if (res != 1)

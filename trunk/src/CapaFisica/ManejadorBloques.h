@@ -9,8 +9,6 @@
 struct mb_header
 {
 	unsigned int tamanioBloque;
-	unsigned int minRegsBloque;
-	unsigned int maxRegsBloque;
 	unsigned int cantidadBloques;
 	int proximoBloqueLibre;
 };
@@ -36,7 +34,7 @@ class ManejadorBloques:public ManejadorArchivos {
 		ManejadorBloques();
 		~ManejadorBloques();
 		
-		int crear_archivo(std::string nombreArchivo, unsigned int tamBloque, unsigned int min, unsigned int max);
+		int crear_archivo(std::string nombreArchivo, unsigned int tamBloque);
 		int eliminar_archivo(std::string nombreArchivo);
 
 		int abrir_archivo(std::string nombreArchivo, std::string modo);
@@ -63,8 +61,6 @@ class ManejadorBloques:public ManejadorArchivos {
 		unsigned int get_cantidad_bloques();
 		int get_primer_bloque_libre();
 		unsigned int get_tamanio_bloque();
-		unsigned int get_max_regs_bloque();
-		unsigned int get_min_regs_bloque();
 
 };
 
