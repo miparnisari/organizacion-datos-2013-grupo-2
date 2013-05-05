@@ -1,17 +1,19 @@
 #include "NodoInterno.h"
 
 NodoInterno::NodoInterno(unsigned int p_minCantidadBytesClaves, unsigned int p_maxCantidadBytesClaves)
+	:Nodo('I')
 {
 //	tamanio = tamanioNodo;
 //	espacioLibre = tamanio - sizeof(espacioLibre);
 	unsigned int minCantidadBytesClaves = p_minCantidadBytesClaves;
 	unsigned int maxCantidadBytesClaves = p_maxCantidadBytesClaves;
+	unsigned int cantidadBytesOcupadosClaves = 0;
+	vectorHijos.push_back(HIJO_INVALIDO);
+	/* Primer hijo, para que cuando agreguemos una clave solo halla que agregar un hijo */
 }
 
 NodoInterno::~NodoInterno()
 {
-	for (unsigned int i = 0; i < vectorClaves.size(); i++)
-		delete(vectorClaves.at(i));
 }
 
 unsigned short NodoInterno::get_cantidad_claves()
@@ -37,7 +39,7 @@ ClaveX* NodoInterno::get_clave(unsigned short numeroClave)
 	if (numeroClave >= this->get_cantidad_claves())
 		return NULL;
 
-	return vectorClaves.at(numeroClave);
+	return &vectorClaves.at(numeroClave);
 }
 
 
@@ -64,6 +66,11 @@ ClaveX* NodoInterno::get_clave_mitad()
 
 	return this->get_clave(MITAD);
 
+}
+
+int NodoInterno::get_tamanio_ocupado()
+{
+	return (cantidadBytesOcupadosClaves + vectorHijos.size()*sizeof(unsigned short));
 }
 
 int NodoInterno::buscar_clave(const ClaveX* clave,unsigned short& posicionClave)
@@ -99,7 +106,7 @@ int NodoInterno::get_hijo_izquierdo(unsigned short& hijo, ClaveX* clave){
 
 }
 
-int NodoInterno::get_hijo_derecho(unsigned short& hijo,ClaveX* clave){
+int NodoInterno::get_hijo_derecho(unsigned short& hijo, ClaveX* clave){
 
 	if(this->esta_vacio())
 		return RES_ERROR;
@@ -135,12 +142,73 @@ int NodoInterno::remover_clave(const ClaveX* clave){
 
 }
 
+int NodoInterno::agregar_clave(ClaveX* clave)
+{
+	if (clave == NULL)
+		return RES_ERROR;
+	if (clave->get_tamanio_empaquetado() + cantidadBytesOcupadosClaves > maxCantidadBytesClaves )
+		return RES_OVERFLOW;
+	unsigned short var;
+	if (buscar_clave(clave, var) == RES_ERROR)
+		return RES_RECORD_EXISTS;
+
+	vectorClaves.push_back(*clave);
+	std::sort(vectorClaves.begin(), vectorClaves.end());
+
+
+	set_hijo_izquierdo(clave,HIJO_INVALIDO);
+	set_hijo_derecho(clave,HIJO_INVALIDO);
+
+	cantidadBytesOcupadosClaves += clave->get_tamanio_empaquetado();
+	return RES_OK;
+}
+
+int NodoInterno::set_hijo_izquierdo(ClaveX* clave, unsigned short valor)
+{
+	//TODO
+	return RES_OK;
+}
+
+int NodoInterno::set_hijo_derecho(ClaveX* clave, unsigned short valor)
+{
+	//TODO
+	return RES_OK;
+}
+
 int NodoInterno::empaquetar(Bloque* bloque)
 {
+	if (bloque == NULL)
+		return RES_ERROR;
+
+	RegistroVariable registro;
+
+	registro.agregar_campo((char*)&tipoNodo,sizeof(tipoNodo));
+
+	unsigned int contadorClaves = 0;
+	unsigned int contadorHijos = 1;
+	unsigned short hijo = vectorHijos.at(0);
+	registro.agregar_campo((char*)&hijo,sizeof(hijo));
+	while (contadorClaves < get_cantidad_claves() && contadorHijos < get_cantidad_hijos())
+	{
+		ClaveX clave = vectorClaves.at(contadorClaves);
+		unsigned short hijo = vectorHijos.at(contadorHijos);
+
+		char* buffer = new char[clave.get_tamanio_empaquetado()]();
+		clave.empaquetar(buffer);
+		registro.agregar_campo(buffer,strlen(buffer));
+		registro.agregar_campo((char*)&hijo,sizeof(hijo));
+
+		delete[](buffer);
+		contadorClaves++;
+		contadorHijos++;
+	}
+
 	return RES_OK;
 }
 
 int NodoInterno::desempaquetar(const Bloque* bloque)
 {
+	if (bloque == NULL)
+		return RES_ERROR;
 	return RES_OK;
 }

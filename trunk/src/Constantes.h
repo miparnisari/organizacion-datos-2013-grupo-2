@@ -44,6 +44,7 @@ const std::string AUTOR_INVALIDO 					= "-";
 
 const char SEPARADOR_PARAMETROS						= '-';
 const char IDIOMA_INVALIDO[]						= "IDIOMA_INVALIDO";
+const unsigned short HIJO_INVALIDO					= 0;
 
 
 /*
