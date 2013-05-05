@@ -142,6 +142,40 @@ int NodoInterno::remover_clave(const ClaveX* clave){
 
 }
 
+
+int NodoInterno::_insertar_clave(ClaveX* claveInsertar,ClaveX& claveMitad ,
+		unsigned short& posicionInsercion){
+
+	if(claveInsertar== NULL)
+		return RES_ERROR;
+	unsigned short espacioDisponible= maxCantidadBytesClaves - cantidadBytesOcupadosClaves;
+	bool overflow = ( espacioDisponible < claveInsertar->get_tamanio_empaquetado() );
+
+	vectorClaves.push_back( (*claveInsertar) );
+	std::sort( vectorClaves.begin() , vectorClaves.end() );
+
+	if(overflow){
+
+		unsigned short mitad= ceil(vectorClaves.size() / 2.0);
+		IteradorVectorClaves it;
+		for(int i=0;i<mitad;i++, it++);
+		claveMitad= vectorClaves.at(mitad);
+		vectorClaves.erase(it);
+
+	}
+
+	this->buscar_clave(claveInsertar , posicionInsercion);
+
+	if(overflow)
+		return RES_OVERFLOW;
+
+	return RES_OK;
+
+
+
+}
+
+
 int NodoInterno::agregar_clave(ClaveX* clave)
 {
 	if (clave == NULL)
