@@ -9,8 +9,12 @@
 #include "../../CapaFisica/Bloque.h"
 #include "../ManejoArchivos/ClaveX.h"
 #include "Nodo.h"
+#include <cmath>
 
 class NodoInterno : public Nodo {
+
+	public:
+		typedef vector<ClaveX>::iterator IteradorVectorClaves;
 
 	protected:
 //		unsigned int espacioLibre;
@@ -29,6 +33,10 @@ class NodoInterno : public Nodo {
 		virtual int get_hijo_derecho(unsigned short& hijo,ClaveX* clave);
 		virtual int remover_clave(const ClaveX* clave,unsigned short numeroClave);
 		virtual int remover_clave(const ClaveX* clave);
+		virtual int _insertar_clave( ClaveX* claveInsertar ,
+				ClaveX& claveMitad , unsigned short& posicionInsercion);
+		/*inserta una clave en el nodo . Si ocurre overflow, la clave del medio es
+		 * expulsada y guardada en ClaveMitad*/
 
 	public:
 		NodoInterno(unsigned int minCantidadBytesClaves, unsigned int maxCantidadBytesClaves);
