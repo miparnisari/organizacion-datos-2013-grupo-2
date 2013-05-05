@@ -2,7 +2,8 @@ include ../src/makefile.inc
 
 DIRS	= ../src/CapaFisica ../src/CapaLogica ../src/CapaInterfaz ../src/Utilitarios
 SUBDIRS = ../src/CapaLogica/ArbolBMas ../src/CapaLogica/Compresor ../src/CapaLogica/HashingExtensible ../src/CapaLogica/Indexador ../src/CapaLogica/ManejoArchivos ../src/CapaLogica/Parser
-OBJLIBS	= CapaFisica.a CapaLogica.a CapaInterfaz.a Utilitarios.a
+OBJS = TestNodoInterno.o
+OBJLIBS	= CapaFisica.a CapaLogica.a CapaInterfaz.a Utilitarios.a 
 
 EXTERNOBJ =  $(foreach path, $(DIRS), $(wildcard $(path)/*.o))
 EXTERNOBJ-CAPALOGICA = $(foreach path, $(SUBDIRS), $(wildcard $(path)/*.o))
@@ -12,12 +13,15 @@ EXE	= tests
 
 all : $(EXE)
 
+%.o: %.cpp %.h
+	$(CC) -c $(CFLAGS) $<
+
 %.a :
 	-for d in $(DIRS); do (cd $$d; $(MAKE)); done
 	ar cr $@ $^
 
-tests:  $(OBJLIBS)
-	$(CC) $(CFLAGS) $(EXTERNOBJ) $(EXTERNOBJ-CAPALOGICA) -o $@ $(TARGETS)
+tests:  $(OBJLIBS) $(OBJS)
+	$(CC) $(CFLAGS) $(EXTERNOBJ) $(OBJS) $(EXTERNOBJ-CAPALOGICA) -o $@ $(TARGETS)
 
 clean :
 	-$(RM) -f ./tests

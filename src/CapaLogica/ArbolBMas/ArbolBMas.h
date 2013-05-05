@@ -5,6 +5,7 @@
 #include "../../Constantes.h"
 #include "../../CapaFisica/RegistroVariable.h"
 #include "../../CapaFisica/ManejadorBloques.h"
+#include "../../CapaFisica/Bloque.h"
 #include "NodoInterno.h"
 
 typedef struct header_arbol

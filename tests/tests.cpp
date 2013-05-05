@@ -11,6 +11,8 @@
 
 #include "../src/Constantes.h"
 
+#include "TestNodoInterno.h"
+
 #include <cassert>
 #include <iostream>
 #include <cstdio>
@@ -1157,6 +1159,9 @@ int main(int argc,char** args)
 	test_manejador_registros_variables_masivo();
 
 	test_clavex();
+
+	TestNodoInterno test1;
+	test1.ejecutar();
 
 	return RES_OK;
 }

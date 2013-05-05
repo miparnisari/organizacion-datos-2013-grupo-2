@@ -3,19 +3,22 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>    // std::sort
 #include "../ManejoArchivos/Clave.h"
 #include "../../Constantes.h"
 #include "../../CapaFisica/Bloque.h"
 #include "../ManejoArchivos/ClaveX.h"
+#include "Nodo.h"
 
-class NodoInterno {
+class NodoInterno : public Nodo {
 
 	protected:
 //		unsigned int espacioLibre;
 //		unsigned int tamanio;
 		unsigned int minCantidadBytesClaves;
 		unsigned int maxCantidadBytesClaves;
-		std::vector<ClaveX*> vectorClaves;
+		unsigned int cantidadBytesOcupadosClaves;
+		std::vector<ClaveX> vectorClaves;
 		std::vector<unsigned short> vectorHijos;
 
 		ClaveX* get_clave(unsigned short numeroClave);
@@ -32,9 +35,13 @@ class NodoInterno {
 		virtual ~NodoInterno();
 
 		bool esta_vacio();
+		int agregar_clave(ClaveX* clave);
+		int get_tamanio_ocupado();
 
 		unsigned short get_cantidad_claves();
 		unsigned short get_cantidad_hijos();
+		int set_hijo_izquierdo(ClaveX* clave, unsigned short valor);
+		int set_hijo_derecho(ClaveX* clave, unsigned short valor);
 
 		int empaquetar(Bloque* bloque); //TODO
 		int desempaquetar(const Bloque* bloque); //TODO
