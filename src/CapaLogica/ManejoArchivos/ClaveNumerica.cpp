@@ -14,7 +14,7 @@ void ClaveNumerica::desempaquetar(char* buffer,unsigned short tamanioBuffer){
 	stream.write(buffer,tamanioBuffer);
 	stream.seekg(0,ios::beg);
 
-	stream.write((char*)&dato,sizeof(int));
+	stream.read((char*)&dato,sizeof(int));
 
 }
 
