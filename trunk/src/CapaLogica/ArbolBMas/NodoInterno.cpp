@@ -68,22 +68,20 @@ ClaveX* NodoInterno::get_clave_mitad()
 
 int NodoInterno::buscar_clave(const ClaveX* clave,unsigned short& posicionClave)
 {
-	if (this->esta_vacio())
-		return RES_ERROR;
 
-	ClaveX* c= NULL;
+	const unsigned short CANTIDAD_CLAVES= this->get_cantidad_claves();
+	for(int i=0;i<CANTIDAD_CLAVES;i++){
 
-	for(unsigned short i=0; i< this->get_cantidad_claves() ; i++){
-//
-//		c = this->get_clave(i);
-//		if( (*c)==(*clave) ){
-//			posicionClave= i;
-			return RES_OK;
-//		}
+		ClaveX* unaClave= this->get_clave(i);
+		if( (*clave)== (*unaClave) ){
+			posicionClave= i;
+			return i;
+		}
 
 	}
 
 	return RES_ERROR;
+
 
 }//FIXME Para que sirve este metodo!? Es lo mismo que get_clave(pos)...
 

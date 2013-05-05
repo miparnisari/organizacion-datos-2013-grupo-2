@@ -7,6 +7,7 @@
 #include "../src/CapaLogica/Parser/ParserCanciones.h"
 #include "../src/CapaLogica/ManejoArchivos/ClaveString.h"
 #include "../src/CapaLogica/ManejoArchivos/ClaveNumerica.h"
+#include "../src/CapaLogica/ManejoArchivos/ClaveX.h"
 
 #include "../src/Constantes.h"
 
@@ -1068,9 +1069,71 @@ void test_probar_caracter_eliminacion(){
 }
 
 
+void test_clavex(){
+
+	ClaveX cx1,cx2;
+	string s= "hola mi nombre es martin";
+	int n= 45;
+	assert( cx1==cx2 );
+
+	cx1.set_clave(s);
+	assert( cx1!=cx2 );
+	cx1.set_clave(n);
+	assert( cx1!=cx2 );
+
+
+	cx1.set_clave(n);
+	cx2.set_clave(n);
+	assert( cx1==cx2 );
+	cx1.set_clave(s);
+	cx2.set_clave(s);
+	assert( cx1==cx2 );
+
+	cx1.set_clave(s);
+	cx2.set_clave(n);
+	assert( cx2!=cx1  );
+	/*el statement anterior retornara falso dado q se establecio que cx1 guarda
+	 * la clave s y cx2 guarda la clave n que son diferentes en TIPO*/
+
+	ClaveX cx3;
+	char empaquetado[64];
+	int tamanioEmpaquetado= cx1.empaquetar(empaquetado);
+	cx3.desempaquetar(empaquetado , tamanioEmpaquetado);
+	assert( cx3==cx1 );
+
+	cx1.set_clave(n);
+	tamanioEmpaquetado = cx1.empaquetar(empaquetado);
+	cx3.desempaquetar(empaquetado , tamanioEmpaquetado);
+	assert( cx1==cx3 );
+
+	ClaveX cx4;
+	cx4= cx1;
+	assert( cx4==cx1 );
+	cx1.set_clave(s);
+	cx4= cx1;
+	assert( cx4==cx1 );
+
+	ClaveX cx5(cx1);
+	assert( cx1==cx5 );
+	cx1.set_clave(n);
+	ClaveX cx6(cx1);
+	assert(cx1==cx6);
+
+	cx1.set_clave(1);
+	cx2.set_clave(2);
+	assert( cx2>= cx1 && cx1<= cx2 );
+	cx2.set_clave(1);
+	assert( cx2<= cx1 && cx2>= cx1 );
+
+	print_test_ok("test_clavex");
+
+
+}
+
+
 int main(int argc,char** args)
 {
-	test_leer_de_archivo();
+//	test_leer_de_archivo();
 	test_eliminar_registro_variable();
 	test_agregar_campos_registro_variable();
 	test_empaquetar_desempaquetar_registro_variable();
@@ -1092,6 +1155,8 @@ int main(int argc,char** args)
 	test_manejador_registros_variables_chequear_registros_ocupados();
 	test_manejador_registros_variables_eliminar_por_offset();
 	test_manejador_registros_variables_masivo();
+
+	test_clavex();
 
 	return RES_OK;
 }

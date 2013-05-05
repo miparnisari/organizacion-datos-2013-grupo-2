@@ -26,6 +26,7 @@ class ClaveX {
 	public:
 		ClaveX();
 		/*por defecto una ClaveX es de string*/
+		ClaveX( const ClaveX& clavex );
 
 		virtual ~ClaveX();
 
@@ -36,7 +37,8 @@ class ClaveX {
 
 		virtual void desempaquetar(char* buffer,unsigned short tamanioBuffer);
 		/* reconstruye un objeto ClaveX a partir de un buffer de caracteres que tenga el
-		 * formato: tipoClave|clave . */
+		 * formato: tipoClave|clave . tamanioBuffer debe ser efectivamente el tamanio en
+		 * bytes del buffer (tamanioClave + tamanioTipoClave) */
 
 		virtual TipoClave get_tipo_clave();
 
@@ -45,10 +47,21 @@ class ClaveX {
 		/*se establece el valor de la clave y su tipo cambia automaticamente.
 		 * Si la clave era CLAVE_NUMERICA y se invoca set_clave(string) , tipoClave
 		 * cambia a CLAVE_STRING y la clave es guardada*/
+		virtual int get_tamanio_empaquetado();
+		virtual int get_tamanio_clave();
 
-		virtual bool operator<(const ClaveX& clavex);
-		virtual bool operator>(const ClaveX& clavex);
-		virtual bool operator==(const ClaveX& clavex);
+		virtual int get_clave(int &clave)const;
+		virtual int get_clave(string& clave)const;
+		/*se recupera la clave en el formato deseado. En caso que tipoClave sea
+		 * incompatible se retorna RES_ERROR y el parametro pasado no se altera*/
+
+		virtual bool operator <(const ClaveX& clavex)const;
+		virtual bool operator >(const ClaveX& clavex)const;
+		virtual bool operator >=(const ClaveX& clavex)const;
+		virtual bool operator <=(const ClaveX& clavex)const;
+		virtual bool operator ==(const ClaveX& clavex)const;
+		virtual bool operator !=(const ClaveX& clavex)const;
+		virtual void operator =(const ClaveX& clavex);
 
 };
 
