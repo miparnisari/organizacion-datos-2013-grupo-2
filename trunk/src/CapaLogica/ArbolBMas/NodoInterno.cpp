@@ -244,5 +244,6 @@ int NodoInterno::desempaquetar(const Bloque* bloque)
 {
 	if (bloque == NULL)
 		return RES_ERROR;
+
 	return RES_OK;
 }
