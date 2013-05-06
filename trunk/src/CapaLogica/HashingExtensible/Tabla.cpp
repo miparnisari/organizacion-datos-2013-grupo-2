@@ -55,7 +55,7 @@ void Tabla::dividir_tabla(){
 		this->getBloques()->eliminar_ultimo();
 	}
 
-	this->setTamanio(cantPosiciones);
+	this->set_tamanio(cantPosiciones);
 }
 
 void Tabla::duplicar_tabla(){
@@ -71,3 +71,4 @@ void Tabla::duplicar_tabla(){
 
 }
 
+string persistir_tabla(){}

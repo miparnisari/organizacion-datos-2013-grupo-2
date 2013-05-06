@@ -29,7 +29,7 @@ public:
 	void set_tamanio(int cantidad);
 	int get_tamanio();
 
-
+    string persistir_tabla(); //Esta me dijo nico que iba....
 	int obtener_valor(int posicion);
 	void cambiar_valor(int posicion, int nuevoValor);
 	void dividir_tabla();
