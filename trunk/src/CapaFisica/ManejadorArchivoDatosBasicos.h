@@ -9,11 +9,11 @@ struct mdb_header
 };
 
 template<typename TipoDato>
-class ManejadorDatosBasicos: public ManejadorArchivos {
+class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 
 	public:
-		ManejadorDatosBasicos();
-		virtual ~ManejadorDatosBasicos();
+		ManejadorArchivoDatosBasicos();
+		virtual ~ManejadorArchivoDatosBasicos();
 
 		int truncar(long longitudDeseada);
 		int agregar(const TipoDato dato);
