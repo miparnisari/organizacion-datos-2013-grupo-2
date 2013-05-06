@@ -70,8 +70,12 @@ class HashingExtensible
         //dentro de un bloque
 
         virtual int obtener_posicion_bloque(ClaveX elemN);
+        //Dependiendo del tipo de clave que guarde aplica una funcion para sacar un numero
+        //al cual le aplica la funcion de hashing para sacar la posicion del bloque para esa clave
 
-        virtual int dividir_bloques(Bloque bloque, RegistroClave reg);
+        virtual int agregar_registros_bloques(Bloque bloque, RegistroClave reg);
+        //Lo que basicamente es tomar todos los registros del bloque que desbordo junto al nuevo
+        //registro y los guarda en el hashing como cualquier registro
 };
 
 #endif /* HASHINGEXTENSIBLE_H */
