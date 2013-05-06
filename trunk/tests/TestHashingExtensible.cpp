@@ -1,37 +1,29 @@
-#include "CapaLogica/HashingExtensible/HashingExtensible.h"
-#include "CapaFisica/ManejadorArchivos.h"
-#include "CapaFisica/RegistroVariable.h"
-
-#include <cassert>
-#include <iostream>
-#include <cstdio>
-#include <cstring>
-#include <sstream>
-#include <unistd.h>
-#include <climits>
-
-#define IMPRIMIR_VARIABLE(var)\
-	std::cout<<#var<<" = "<<var<<'\n';
-
 #define DIRECCION "HashingDePrueba.txt"
+
+#include "TestHashingExtensible.h"
 
 /***Revisar todo una vez que tengamos el registro clave correcto*/
 
 using namespace std;
 using namespace utilitarios;
 
-void print_test_ok1(std::string nombreTest)
+TestHashingExtensible::TestHashingExtensible()
+	: Test()
 {
-	std::cout << "OK: " << nombreTest << std::endl;
+
+}
+TestHashingExtensible::~TestHashingExtensible()
+{
+
 }
 
-void eliminar_archivo(std::string direccion)
+void TestHashingExtensible::eliminar_archivo(std::string direccion)
 {
     ManejadorArchivos manejador;
     manejador.eliminar_archivo(direccion);
 }
 
-void crear_hashing()
+void TestHashingExtensible::test_crear_hashing()
 {
     //Probamos que se cree la tabla y el primer bloque de registros cuando se cree el hashing
     HashingExtensible hash1("",DIRECCION);
@@ -40,13 +32,13 @@ void crear_hashing()
     assert (manejador_bloques.get_cantidad_bloques() == 2);
     //Ya que el primer bloque es la tabla y el segundo es el primer bloque de registros
 
-    print_test_ok1("crear_hashing");
+    print_test_ok("crear_hashing");
     eliminar_archivo(DIRECCION);
     hash1.~HashingExtensible();
     manejador_bloques.~ManejadorArchivos();
 }
 
-void eliminar_registro()
+void TestHashingExtensible::test_eliminar_registro()
 {
     //Probamos eliminar un registro y ver si nos devuelve algo
     HashingExtensible hash1("",DIRECCION);
@@ -58,7 +50,7 @@ void eliminar_registro()
     hash1.eliminar(clave);
     assert(hash1.devolver(clave, &reg2) == NO_EXISTE);
 
-    print_test_ok1("eliminar_registro");
+    print_test_ok("test_eliminar_registro");
     eliminar_archivo(DIRECCION);
     hash1.~HashingExtensible();
     reg.~RegistroVariable();
@@ -66,7 +58,7 @@ void eliminar_registro()
     clave.~ClaveX();
 }
 
-void agregar_y_devolver_registro()
+void TestHashingExtensible::test_agregar_y_devolver_registro()
 {
     //probamos que se agregue y se devuelva correctamente los datos
     HashingExtensible hash1("",DIRECCION);
@@ -81,7 +73,7 @@ void agregar_y_devolver_registro()
 
     *****desbloquear cuando tenga el registro correspondiente*/
 
-    print_test_ok1("agregar_y_devolver_registro");
+    print_test_ok("test_agregar_y_devolver_registro");
     eliminar_archivo(DIRECCION);
     hash1.~HashingExtensible();
     reg.~RegistroVariable();
@@ -89,7 +81,7 @@ void agregar_y_devolver_registro()
     clave.~ClaveX();
 }
 
-void crear_hashing_cerrarlo_y_abrirlo()
+void TestHashingExtensible::test_crear_hashing_cerrarlo_y_abrirlo()
 {
     //Probamos de guardar un registro en un archivo y ver si al abrirlo sigue estando
     HashingExtensible hash1("",DIRECCION);
@@ -112,7 +104,7 @@ void crear_hashing_cerrarlo_y_abrirlo()
     assert (strcmp(copia,campo.c_str()) == 0);
     delete campoRecuperado;
 
-    print_test_ok1("crear_hashing_cerrarlo_y_abrirlo");
+    print_test_ok("test_crear_hashing_cerrarlo_y_abrirlo");
 
     eliminar_archivo(DIRECCION);
     hash2.~HashingExtensible();
@@ -121,8 +113,18 @@ void crear_hashing_cerrarlo_y_abrirlo()
     clave.~ClaveX();
 }
 
-void agregar_reg_y_duplicar_tabla()
+void TestHashingExtensible::test_agregar_reg_y_duplicar_tabla()
 {
     //Probamos llenando el primer bloque y vemos si se duplica la tabla, si se crean solo dos bloques
-    print_test_ok1("agregar_reg_y_duplicar_tabla");
+	// TODO
+    print_test_ok("test_agregar_reg_y_duplicar_tabla");
+}
+
+void TestHashingExtensible::ejecutar()
+{
+	test_agregar_reg_y_duplicar_tabla();
+	test_eliminar_registro();
+	test_crear_hashing_cerrarlo_y_abrirlo();
+	test_agregar_y_devolver_registro();
+	test_crear_hashing();
 }

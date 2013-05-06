@@ -1,17 +1,15 @@
-/*
- * ManejadorArchivos.cpp
- *
- *  Created on: Mar 21, 2013
- *      Author: martin
- */
+#include "ManejadorArchivos.h"
 
-#include"ManejadorArchivos.h"
-#include<iostream>
-#include<fstream>
+ManejadorArchivos::ManejadorArchivos()
+{
+}
 
-int ManejadorArchivos::crear_archivo(std::string nombreArchivo){
+int ManejadorArchivos::crear_archivo(std::string p_nombreArchivo)
+{
+	if (! utilitarios::validFileName(p_nombreArchivo) )
+		return RES_ERROR;
 
-	std::ofstream archivoNuevo(nombreArchivo.c_str());
+	std::ofstream archivoNuevo(p_nombreArchivo.c_str());
 	if (!archivoNuevo.is_open())
 		return RES_ERROR;
 
@@ -19,11 +17,13 @@ int ManejadorArchivos::crear_archivo(std::string nombreArchivo){
 
 	return RES_OK;
 
+}
 
-}/*crea un archivo sin extension .txt en un archivo de texto*/
 
-
-bool ManejadorArchivos::archivo_existe(std::string nombreArchivo)const throw(){
+bool ManejadorArchivos::archivo_existe(std::string nombreArchivo)const throw()
+{
+	if (! utilitarios::validFileName(nombreArchivo) )
+		return RES_ERROR;
 
 	std::ifstream archivo;
 	archivo.open(nombreArchivo.c_str(),std::ios::in);
@@ -35,19 +35,19 @@ bool ManejadorArchivos::archivo_existe(std::string nombreArchivo)const throw(){
 	}
 
 	return resultado;
+}
 
-}/*chequea si un archivo existe*/
 
-
-int ManejadorArchivos::eliminar_archivo(std::string nombreArchivo)const throw(){
+int ManejadorArchivos::eliminar_archivo(std::string nombreArchivo)const throw()
+{
+	if (! utilitarios::validFileName(nombreArchivo) )
+		return RES_ERROR;
 
 	if(!archivo_existe(nombreArchivo))
 		return RES_FILE_DOESNT_EXIST;
 
-	std::string comando= "rm ";
-	comando += nombreArchivo;
-	system(comando.c_str());
+	if (remove(nombreArchivo.c_str()) == 0)
+		return RES_OK;
 
-	return RES_OK;
-
-}/*elimina un archivo dada una ruta*/
+	return RES_ERROR;
+}
