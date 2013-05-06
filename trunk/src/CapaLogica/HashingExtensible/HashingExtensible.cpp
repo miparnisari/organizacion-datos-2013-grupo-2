@@ -3,16 +3,7 @@
 
 HashingExtensible::HashingExtensible(){}
 
-/**************Recordar que tabla va a tener que extender de registro variable
-o hacer algo para poder guardarlo en un bloque, al igual que los registros del hashing
-
-Diagrama de bloques en el archivo:
-0: tabla
-1..*: bloques de registros
-
-No se necesita guardar nada del Hash porque todo se puede recuperar con el constructor
-
-Falta modificar tabla cuando se elimina un bloque y cuando se agrega: eliminar_registro*/
+/**No se necesita guardar nada del Hash porque todo se puede recuperar con el constructor*/
 
 HashingExtensible::HashingExtensible(std::string directorioSalida, std::string fileNamee)
 {
@@ -124,7 +115,7 @@ int HashingExtensible::agregar(RegistroClave reg)
         manejador_bloques.sobreescribir_bloque(&bloqueAux, posBloque); //guardamos uno vacion con el tamaño de dispersion que corresponde
         manejador_bloques.sobreescribir_bloque(&bloqueNuevo, posBloqueNuevo);
         guardar_tabla(&tabla); //Actualizamos la tabla del archivo
-        dividir_bloques(bloque, reg);
+        agregar_registros_bloques(bloque, reg);
         resultado= RES_OK;
     }
     bloque.~Bloque();
@@ -302,7 +293,7 @@ int HashingExtensible::obtener_posicion_bloque(ClaveX registro)
     return funcion_dispersion(clave);
 }
 
-int HashingExtensible::dividir_bloques(Bloque bloque, RegistroClave reg)
+int HashingExtensible::agregar_registros_bloques(Bloque bloque, RegistroClave reg)
 {   //lo que hacemos es volver a insertar todos los registros y en caso que se desborde el agregar ya se encarga de arreglarlo
     RegistroClave regAux;
     int i, cant = bloque.get_cantidad_registros_almacenados();
