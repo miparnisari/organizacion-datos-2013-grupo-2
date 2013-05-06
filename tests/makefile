@@ -2,7 +2,7 @@ include ../src/makefile.inc
 
 DIRS	= ../src/CapaFisica ../src/CapaLogica ../src/CapaInterfaz ../src/Utilitarios
 SUBDIRS = ../src/CapaLogica/ArbolBMas ../src/CapaLogica/Compresor ../src/CapaLogica/HashingExtensible ../src/CapaLogica/Indexador ../src/CapaLogica/ManejoArchivos ../src/CapaLogica/Parser
-OBJS = TestNodoInterno.o
+OBJS = Test.o TestNodoInterno.o TestBloque.o TestHashingExtensible.o TestManejadorBloques.o TestManejadorRegistrosVariables.o TestRegistroVariable.o
 OBJLIBS	= CapaFisica.a CapaLogica.a CapaInterfaz.a Utilitarios.a 
 
 EXTERNOBJ =  $(foreach path, $(DIRS), $(wildcard $(path)/*.o))

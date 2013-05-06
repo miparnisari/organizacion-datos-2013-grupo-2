@@ -6,12 +6,23 @@
  */
 
 #include "TestNodoInterno.h"
-#include "../src/CapaLogica/ArbolBMas/NodoInterno.h"
-#include "../src/CapaFisica/ManejadorBloques.h"
-#include "../src/CapaFisica/Bloque.h"
 
-TestNodoInterno::TestNodoInterno() {
+TestNodoInterno::TestNodoInterno()
+	:Test()
+{
 }
+
+TestNodoInterno::~TestNodoInterno()
+{
+}
+
+void TestNodoInterno::ejecutar()
+{
+	crear_nodo_con_demasiadas_claves_falla();
+	empaquetar_en_bloque_chico_falla();
+	empaquetar_en_bloque_da_ok();
+}
+
 
 void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 {
@@ -39,13 +50,10 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 	assert(nodoI.set_hijo_izquierdo(&clave4,5) == RES_ERROR);
 	assert(nodoI.set_hijo_derecho(&clave4,6) == RES_ERROR);
 
-	unsigned int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
+	int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
 	assert(nodoI.get_tamanio_ocupado() == tamanioOcupado);
 }
 
-TestNodoInterno::~TestNodoInterno()
-{
-}
 
 void TestNodoInterno::empaquetar_en_bloque_chico_falla()
 {
@@ -68,10 +76,10 @@ void TestNodoInterno::empaquetar_en_bloque_chico_falla()
 	nodoI.set_hijo_izquierdo(&clave3,5);
 	nodoI.set_hijo_derecho(&clave3,6);
 
-	unsigned int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
+	int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
 	assert(nodoI.get_tamanio_ocupado() == tamanioOcupado);
 
-	unsigned int tamBloque = 5;
+	int tamBloque = 5;
 	assert(nodoI.get_tamanio_ocupado() > tamBloque);
 	ManejadorBloques manejadorBloques;
 	manejadorBloques.crear_archivo("testnodos.dat",tamBloque);
@@ -104,10 +112,10 @@ void TestNodoInterno::empaquetar_en_bloque_da_ok()
 	nodoI.set_hijo_izquierdo(&clave3,5);
 	nodoI.set_hijo_derecho(&clave3,6);
 
-	unsigned int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
+	int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
 	assert(nodoI.get_tamanio_ocupado() == tamanioOcupado);
 
-	unsigned int tamBloque = tamanioOcupado + 5;
+	int tamBloque = tamanioOcupado + 5;
 	ManejadorBloques manejadorBloques;
 	manejadorBloques.crear_archivo("testnodos.dat",tamBloque);
 	Bloque* bloque = manejadorBloques.crear_bloque();
@@ -128,14 +136,3 @@ void TestNodoInterno::empaquetar_en_bloque_da_ok()
 	delete(bloque);
 	manejadorBloques.cerrar_archivo();
 }
-
-void TestNodoInterno::ejecutar()
-{
-	crear_nodo_con_demasiadas_claves_falla();
-	empaquetar_en_bloque_chico_falla();
-	empaquetar_en_bloque_da_ok();
-
-}
-
-
-

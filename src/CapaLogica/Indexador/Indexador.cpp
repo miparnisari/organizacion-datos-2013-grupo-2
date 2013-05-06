@@ -50,7 +50,7 @@ int Indexador::indexar (std::string directorioEntrada, std::string directorioSal
 		RegistroVariable regOffset;
 		//~ FIXME RegistroFijo regOffset(1, longitudCampo); //Un registro tiene un solo campo de 1 int
 		//~ FIXME regOffset.pack((char*)offsetInicialRegCancion);
-		indicePrimario.agregar(regOffset);
+//		indicePrimario.agregar(regOffset);
 		
 		// Creamos el indice secundario por autor
 		// <autor,ID cancion> van a los nodos hoja del arbol B+
@@ -66,7 +66,7 @@ int Indexador::indexar (std::string directorioEntrada, std::string directorioSal
 		RegistroVariable regVar;
 		//~ FIXME regVar.pack(regCancion.getTitulo());
 		//FIXME regVar.pack(std::string(identificadorCancion));
-		indiceSecundarioTitulo.agregar(regVar);
+//		indiceSecundarioTitulo.agregar(regVar);
 		
 		// Incrementamos la clave
 		
