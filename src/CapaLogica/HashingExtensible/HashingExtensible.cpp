@@ -21,21 +21,25 @@ HashingExtensible::HashingExtensible(std::string directorioSalida, std::string f
 
     //Creo el archivo
     fileName=directorioSalida+fileNamee;
+    fileNameTabla=directorioSalida+fileNamee+"Tabla";
     if (manejador_bloques.abrir_archivo(fileName, "r+") != RES_OK){ //Si no existe es porque estamos creando un nuevo Hash
         manejador_bloques.crear_archivo(fileName, BLOQUE_TAM_DEFAULT);
-        // manejador_bloques.abrir_archivo(this.fileName, archivo);
 
-        //La tabla sera el primer bloque del hash
-        tabla.modificar_pos(0, 0); // la pos 0 de la tabla se le coloca el num de bloque 1
-        guardar_tabla(&tabla); //guardo la tabla en el archivo
+        /**esto ya no va mas*///La tabla sera el primer bloque del hash
+        /**tabla(fileNameTabla);*/
+        tabla.cambiar_valor(0, 0); // la pos 0 de la tabla se le coloca el num de bloque 1
+        /**tabla.guardar_cambios();     ya que la tabla ya sabe como guardarlo*/
+    /**/    guardar_tabla(&tabla); //guardo la tabla en el archivo
 
         crear_bloque(1, &bloqueNuevo); //Creamos un nuevo bloque con dispersion 1
+        /**con los cambios el primer bloque va a estar en la posicion 0*/
         manejador_bloques.escribir_bloque(&bloqueNuevo);//va a estar en la posicion 1 porque en el 0 esta la tabla
         cant_bloques = 1; //En realidad es la cantidad de bloques con registro
         //Debo guardar los bloques y la tabla
     }else{
         //Como ya existe suponemos que es el archivo del hash
         cant_bloques = manejador_bloques.get_cantidad_bloques();
+        /**tabla(fileNameTabla);       y ya la guardamos para trabajar*/
     }
     tabla.~Tabla();
     bloqueNuevo.~Bloque();
@@ -44,6 +48,7 @@ HashingExtensible::HashingExtensible(std::string directorioSalida, std::string f
 HashingExtensible::~HashingExtensible()
 {
     manejador_bloques.~ManejadorBloques();
+//    tabla.~Tabla();
 }
 
 
@@ -52,26 +57,27 @@ int HashingExtensible::funcion_dispersion(int clave)
     char* c_tabla = obtener_tabla();
     int tam_tabla;
     Tabla tabla(c_tabla);
-    tam_tabla = tabla.tam();
+    tam_tabla = tabla.get_tamanio();
     tabla.~Tabla();
     return (clave%tam_tabla);
 }
 
 int HashingExtensible::agregar(RegistroClave reg)
-{
-  /*  int posBloque, tamDispersion, i, resultado, posBloqueNuevo, posReg, tamTabla;
-    Bloque bloque, bloqueNuevo;
+{   /**Este metodo no se puede desbloquear hasta que no este definida la clase registro clave*/
+   /* int posBloque, tamDispersion, i, resultado, posBloqueNuevo, posReg, tamTabla, posTabla;
+    Bloque bloque, bloqueNuevo, bloqueAux;
     RegistroVariable tamDispBloque;
     ClaveX clave_reg;
     char *valor;
     //Obtenemos la tabla
     char* c_tabla = obtener_tabla();
     Tabla tabla(c_tabla);
-    tamTabla = tabla.tam();
+    tamTabla = tabla.get_tamanio();
 
     //obtengo el bloque en donde se guardara el registro
     reg.get_clave(&clave_reg);
     posBloque = obtener_bloque(clave_reg, &bloque);
+    posTabla = obtener_posicion_bloque(clave_reg);
 
     //Verificamos que no exista la clave del registro que queremos guardar
     posReg = obtener_posicion_reg_bloque(clave_reg, bloque);
@@ -94,25 +100,31 @@ int HashingExtensible::agregar(RegistroClave reg)
 
             //Duplicamos la tabla
             tabla.duplicar_tabla();
-            tabla.modificar_pos(posBloque, posBloqueNuevo);
+            tabla.cambiar_valor(posTabla, posBloqueNuevo);
 
             //Creamos el bloque con el tam de dispersion del tamaño de la tabla
-            crear_bloque(tamTabla, &bloqueNuevo);
+            crear_bloque(tamTabla*2, &bloqueNuevo);
+            crear_bloque(tamTabla*2, &bloqueAux);
 
         }else{
 
-            tamDispersion = 2*tamDispersion;
             //Modifico en la tabla las posicion por cantidad de tamDispersion
-           /******* for(i=0; i<tamTabla; i=i+tamDispersion){     //revisar***********************
-                tabla.cambiar_valor(posBloque+i, posBloqueNuevo);
-            }*/
+/**/     /*      for(i=posTabla; i<tabla.get_tamanio(); i=i+tamDispersion*2){ //hacia la derecha
+                tabla.cambiar_valor(i,posBloqueNuevo);
+            }
+            for(i=posTabla; i>=0; i=i-tamDispersion*2){ // hacia la izquierda
+                tabla.cambiar_valor(i,posBloqueNuevo);
+            }
             //Creo un bloque con la dispersion que corresponde
- /*           crear_bloque(tamDispersion, &bloqueNuevo);
+            crear_bloque(tamDispersion*2, &bloqueNuevo);
+            crear_bloque(tamDispersion*2, &bloqueAux);
         }
         cant_bloques++;
-        bloqueNuevo.agregar_registro(&reg);
-        manejador_bloques.sobreescribir_bloque(&bloqueNuevo, posBloqueNuevo); //Agrego el bloque al archivo
+        //agrego los bloques modificados
+        manejador_bloques.sobreescribir_bloque(&bloqueAux, posBloque); //guardamos uno vacion con el tamaño de dispersion que corresponde
+        manejador_bloques.sobreescribir_bloque(&bloqueNuevo, posBloqueNuevo);
         guardar_tabla(&tabla); //Actualizamos la tabla del archivo
+        dividir_bloques(bloque, reg);
         resultado= RES_OK;
     }
     bloque.~Bloque();
@@ -144,8 +156,8 @@ int HashingExtensible::devolver(ClaveX clave, RegistroClave *reg)
 }
 
 int HashingExtensible::modificar(RegistroClave elemN)
-{
- /*   Bloque bloque;
+{    /**Este metodo no se puede desbloquear hasta que no este definida la clase registro clave*/
+  /*  Bloque bloque;
     int i=1, posReg, clave_hash, posBloque;
     ClaveX clave_reg;
     elemN.get_clave(&clave_reg);
@@ -157,18 +169,19 @@ int HashingExtensible::modificar(RegistroClave elemN)
     //Modifico el bloque en los bloques
     manejador_bloques.sobreescribir_bloque(&bloque, posBloque);
     bloque.~Bloque();
-    clave_reg.~ClaveX();*/
-    return RES_OK;
+    clave_reg.~ClaveX();
+    return RES_OK;*/
 }
 
 int HashingExtensible::eliminar(ClaveX clave)
 {
-    int posBloque, tamDispersion, i, posDer, posIzq, posReg;
+    int posBloque, tamDispersion, i, posDer, posIzq, posReg, posTabla;
     Bloque bloque;
     Tabla tabla;
     char *tam, *c_tabla;
     RegistroVariable tamDisp;
     //Busco el bloque para agregar el elemento
+    posTabla = obtener_posicion_bloque(clave);
     posBloque = obtener_bloque(clave, &bloque);
     posReg = obtener_posicion_reg_bloque(clave, bloque);
     if (posReg == RES_ERROR)    return RES_OK; // No esta la clave en el archivo, es lo mismo que borrarla
@@ -182,16 +195,19 @@ int HashingExtensible::eliminar(ClaveX clave)
         //me muevo tamDispersion para un lado y para el otro de la lista, si son iguales cambio cada tam disp *2 los bloques de la tabla
         c_tabla = obtener_tabla();
         Tabla tabla(c_tabla);
-        posDer = tabla.mover_der(tamDispersion);
-        posIzq = tabla.mover_izq(tamDispersion*2);
+        posDer = tabla.obtener_valor(posTabla+tamDispersion);
+        posIzq = tabla.obtener_valor(posTabla-tamDispersion);
         if (posDer == posIzq){
            // Eliminamos el bloque
             Bloque* bloqueVacio = manejador_bloques.crear_bloque();
             manejador_bloques.sobreescribir_bloque(bloqueVacio,posBloque);
             cant_bloques --;
-            for(i=posBloque; i<tabla.tam(); i=i+tamDispersion*2){
-                //revisar, o sea deberia dar vueltas con la tabla*************************
-                //************************************************************************
+            //reemplazamos en donde estaba la posicion del bloque viejo por la posicion que corresponda
+ /**/           for(i=posTabla; i<tabla.get_tamanio(); i=i+tamDispersion*2){ //hacia la derecha
+                tabla.cambiar_valor(i,posDer);
+            }
+            for(i=posTabla; i>=0; i=i-tamDispersion*2){ // hacia la izquierda
+                tabla.cambiar_valor(i,posDer);
             }
             guardar_tabla(&tabla);
         }
@@ -228,10 +244,10 @@ char *HashingExtensible::obtener_tabla()
 }
 
 int HashingExtensible::guardar_tabla(Tabla *tabla)
-{
-    Bloque bloqueTabla;
+{   /***Este metodo no va a servir mas ya que se va a encargar la tabla**/
+   /* Bloque bloqueTabla;
     RegistroVariable reg_tabla;
-    char *c_tabla = (*tabla).devolver_string();
+    string c_tabla = (*tabla).persistir_tabla();
     //Guardo la tabla en un registro variable
     reg_tabla.agregar_campo(c_tabla,sizeof(c_tabla));
     //Guardo la tabla en un bloque
@@ -240,7 +256,7 @@ int HashingExtensible::guardar_tabla(Tabla *tabla)
     manejador_bloques.sobreescribir_bloque(&bloqueTabla, 0);
     bloqueTabla.~Bloque();
     reg_tabla.~RegistroVariable();
-    return RES_OK;
+    return RES_OK;*/
 }
 
 int HashingExtensible::obtener_bloque(ClaveX clave, Bloque *bloque)
@@ -258,8 +274,8 @@ int HashingExtensible::obtener_bloque(ClaveX clave, Bloque *bloque)
 }
 
 int HashingExtensible::obtener_posicion_reg_bloque(ClaveX clave, Bloque bloque)
-{
-   /* int i=0,se_encontro = RES_ERROR;
+{   /**Este metodo no se puede desbloquear hasta que no este definida la clase registro clave*/
+  /*  int i=0,se_encontro = RES_ERROR;
     ClaveX clave_reg;
     RegistroClave reg;
     while((se_encontro!=RES_OK)&&(i< bloque.get_cantidad_registros_almacenados())){
@@ -284,4 +300,16 @@ int HashingExtensible::obtener_posicion_bloque(ClaveX registro)
         registro.get_clave(clave);
     }
     return funcion_dispersion(clave);
+}
+
+int HashingExtensible::dividir_bloques(Bloque bloque, RegistroClave reg)
+{   //lo que hacemos es volver a insertar todos los registros y en caso que se desborde el agregar ya se encarga de arreglarlo
+    RegistroClave regAux;
+    int i, cant = bloque.get_cantidad_registros_almacenados();
+    for(i=1; i<cant; i++){
+        bloque.recuperar_registro(&regAux, i);
+        agregar(regAux);
+    }
+    agregar(reg);
+    return RES_OK;
 }

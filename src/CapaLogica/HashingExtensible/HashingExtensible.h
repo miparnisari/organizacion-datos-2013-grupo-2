@@ -17,8 +17,10 @@ class HashingExtensible
     private:
 
         std::string fileName;
+        std::string fileNameTabla;
         int cant_bloques;
         ManejadorBloques manejador_bloques;
+      //  Tabla tabla;
 
 
 	public:
@@ -68,6 +70,8 @@ class HashingExtensible
         //dentro de un bloque
 
         virtual int obtener_posicion_bloque(ClaveX elemN);
+
+        virtual int dividir_bloques(Bloque bloque, RegistroClave reg);
 };
 
 #endif /* HASHINGEXTENSIBLE_H */
