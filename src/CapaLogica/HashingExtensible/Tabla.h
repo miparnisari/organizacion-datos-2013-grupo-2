@@ -1,35 +1,40 @@
-#ifndef TABLA_H
-#define TABLA_H
+/*
+ * Tabla.h
+ *
+ *  Created on: Apr 22, 2013
+ *      Author: nico
+ */
+
+#ifndef TABLA_H_
+#define TABLA_H_
+#include <iostream>
+#include "ListaDE.h"
 
 
-class Tabla
-{
-	private:
-		/* add your declarations */
+using namespace std;
 
-	public:
 
-        Tabla();
+class Tabla {
+private:
+	int tamanio;
+	ListaDE<int>* bloques;
 
-        Tabla(char *c_tabla);
+public:
+	Tabla();
+	Tabla(string tablaPersistida);
+	virtual ~Tabla();
 
-        ~Tabla();
+	ListaDE<int>* getBloques();
 
-        virtual int modificar_pos(int pos, int dato);
+	void set_tamanio(int cantidad);
+	int get_tamanio();
 
-        virtual int tam();
 
-        virtual int obtener_valor(int pos);
-
-        virtual char *devolver_string();
-
-        virtual int mover_der(int cantPos);
-
-        virtual int mover_izq(int cantPos);
-
-        virtual int duplicar_tabla();
-		/* add your declarations */
+	int obtener_valor(int posicion);
+	void cambiar_valor(int posicion, int nuevoValor);
+	void dividir_tabla();
+	void duplicar_tabla();
 
 };
 
-#endif // TABLA_H
+#endif /* TABLA_H_ */
