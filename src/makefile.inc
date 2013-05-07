@@ -1,7 +1,7 @@
 # Definiciones comunes a todos los make
 
 CC	= g++
-CFLAGS = -Wall -pedantic -pedantic-errors -g -ggdb
+CFLAGS = -Wall -pedantic -pedantic-errors -Wunused -g -ggdb
 
 #Comando para remover
 RM	= rm

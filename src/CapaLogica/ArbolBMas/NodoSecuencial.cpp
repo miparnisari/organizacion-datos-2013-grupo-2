@@ -44,7 +44,7 @@ void NodoSecuencial::set_proximo_nodo(TipoPuntero p_prox)
 void NodoSecuencial::__resolver_underflow(std::vector<RegistroClave> & regsUnderflow)
 {
 	bytesOcupados = 0;
-	for (int i = 0; i < vectorRegistros.size(); i ++)
+	for (unsigned int i = 0; i < vectorRegistros.size(); i ++)
 	{
 		regsUnderflow.push_back(vectorRegistros.at(i));
 	}
@@ -66,7 +66,7 @@ void NodoSecuencial::__resolver_overflow(std::vector<RegistroClave> & regsOverfl
 		regsQueQuedan ++;
 	}
 
-	for (int i = regsQueQuedan; i < vectorRegistros.size() - 1; i ++ )
+	for (unsigned int i = regsQueQuedan; i < vectorRegistros.size() - 1; i ++ )
 	{
 		regsOverflow.push_back(vectorRegistros.at(i));
 	}
@@ -111,7 +111,7 @@ int NodoSecuencial::eliminar(ClaveX* clave, std::vector<RegistroClave>& regsUnde
 		return RES_ERROR;
 
 	RegistroClave registro;
-	registro.set_clave(clave);
+	registro.set_clave(*clave);
 	int posicionEliminar = buscar(&registro);
 	if (posicionEliminar >= 0)
 	{
@@ -138,14 +138,13 @@ int NodoSecuencial::buscar(RegistroClave* regDevuelto)
 	if (regDevuelto == NULL)
 		return RES_ERROR;
 	ClaveX clave;
-	if (regDevuelto->get_clave(&clave) != RES_OK)
-		return RES_ERROR;
+	regDevuelto->get_clave(clave);
 
 	for (unsigned int i = 0; i < vectorRegistros.size(); i++)
 	{
 		RegistroClave registroAlmacenado = vectorRegistros.at(i);
 		ClaveX claveAlmacenada;
-		registroAlmacenado.get_clave(&claveAlmacenada);
+		registroAlmacenado.get_clave(claveAlmacenada);
 		if (clave == claveAlmacenada)
 		{
 			for (unsigned int j = 1; j < registroAlmacenado.get_cantidad_campos(); j++)
@@ -189,7 +188,7 @@ int NodoSecuencial::empaquetar(Bloque* bloque)
 int NodoSecuencial::desempaquetar(const Bloque* bloque)
 {
 	if (bloque == NULL)
-		return NULL;
+		return RES_ERROR;
 	if (bloque->esta_vacio())
 		return RES_OK;
 

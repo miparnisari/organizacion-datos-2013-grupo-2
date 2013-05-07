@@ -64,25 +64,6 @@ void test_leer_de_archivo()
 	print_test_ok("test_leer_de_archivo");
 }
 
-void test_manejador_archivos_texto()
-{
-	ManejadorArchivosTexto mat;
-	assert(mat.agregar_linea("noexiste.txt","lalal") == RES_FILE_DOESNT_EXIST);
-	
-	mat.crear_archivo("nuevo.txt");
-	mat.agregar_linea("nuevo.txt","hola como estas");
-	mat.agregar_linea("nuevo.txt","mas lineas y mas lineas, muy muy largas");
-	mat.agregar_linea("nuevo.txt","sigo agregando lineas!!");
-	
-	assert( mat.mostrar_archivo("nuevo.txt") == RES_OK );
-
-	assert( mat.hallar_lineas("nuevo.txt","lineas") ); //FIXME No se que devuelve esto
-	assert( mat.hallar_lineas("nuevo.txt", "muy muy") ); //FIXME No se que devuelve esto
-
-	assert( mat.eliminar_archivo("nuevo.txt") == RES_OK );
-	print_test_ok("test_manejador_archivos_texto");
-}
-
 void test_registro_cancion()throw(){
 
 	std::cout<<"----------test_registro_cancion-------------"<<std::endl;
@@ -237,28 +218,6 @@ void test_clave_numerica(){
 
 }/*funcionaaa*/
 
-
-
-
-void test_probar_caracter_eliminacion(){
-
-	{
-	short numero= 42;
-	stringstream stream;
-	stream.write( (char*)&numero , sizeof(numero) );
-	stream.seekg(0,ios::beg);
-
-	char c;
-	stream.read( (char*)&numero, 1 );
-	IMPRIMIR_VARIABLE( numero );
-	}
-
-	print_test_ok("test_probar_caracter_eliminacion");
-
-
-}
-
-
 void test_clavex(){
 
 	ClaveX cx1,cx2;
@@ -323,9 +282,10 @@ void test_clavex(){
 
 int main(int argc,char** args)
 {
-//	test_leer_de_archivo();
+	test_leer_de_archivo();
+	test_clave_numerica();
 	test_clave_string();
-//	test_registro_cancion(); TODO poner asserts en vez de cout
+	test_registro_cancion(); //TODO poner asserts en vez de couts
 	test_clavex();
 
 	TestRegistroVariable test;

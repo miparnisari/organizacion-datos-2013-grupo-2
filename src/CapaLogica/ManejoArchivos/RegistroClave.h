@@ -30,7 +30,7 @@ class RegistroClave:public RegistroVariable {
 		virtual void set_clave(const ClaveX& clave);
 		virtual void get_clave(ClaveX& clave);
 
-		void limpiar_buffer()throw();
+		void limpiar_buffer() throw();
 		/*limpia el buffer e inserta la clave en el primer campo del registro .
 		 * Esto obliga a que la clave SIEMPRE ESTE EN EL PRIMER CAMPO.*/
 

@@ -116,8 +116,6 @@ void TestManejadorRegistrosVariables::test_recuperar_espacio_libre()
 	}
 
 	{
-		int tamanio= mrv.get_tamanio_archivo();
-
 		for(int i=0;i<3;i++){
 			assert( mrv.eliminar_registro_ocupado(1)== offsetsRegistros[2+i] );
 		}
@@ -133,7 +131,6 @@ void TestManejadorRegistrosVariables::test_recuperar_espacio_libre()
 	nombreArchivo= "tmrv4.dat";
 	mrv2.eliminar_archivo(nombreArchivo);
 	mrv2.crear_archivo(nombreArchivo);
-	int offsetsRegistros2[CANT_DATOS];
 	assert( mrv2.get_cantidad_registros_ocupados()== 0 );
 	RegistroVariable registros2[CANT_DATOS];
 	int tamanioInicial2;
@@ -141,7 +138,6 @@ void TestManejadorRegistrosVariables::test_recuperar_espacio_libre()
 	{
 
 		for(int i=0;i<CANT_DATOS;i++){
-			offsetsRegistros2[i]= mrv2.get_tamanio_archivo();
 			registros2[i].agregar_campo( datos[i].c_str() , datos[i].length() );
 			mrv2.agregar_registro( &registros2[i] );
 		}

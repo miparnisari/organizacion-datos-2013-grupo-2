@@ -102,7 +102,7 @@ void TestHashingExtensible::test_crear_hashing_cerrarlo_y_abrirlo()
 
     copia = campoRecuperado;
     assert (strcmp(copia,campo.c_str()) == 0);
-    delete campoRecuperado;
+    delete[] campoRecuperado;
 
     print_test_ok("test_crear_hashing_cerrarlo_y_abrirlo");
 

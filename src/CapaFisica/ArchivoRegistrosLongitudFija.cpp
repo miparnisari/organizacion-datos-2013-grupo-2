@@ -3,6 +3,9 @@
 ArchivoRegistrosLongitudFija :: ArchivoRegistrosLongitudFija ()
 {
 	file = NULL;
+	recordSize = 0;
+	maxRecs = 0;
+	currentRecord = 0;
 }
 
 // Crea un archivo vacio con header en 0 y flags bandera para cada reg.

@@ -6,8 +6,10 @@
 #include "../../CapaFisica/RegistroVariable.h"
 #include "../../CapaFisica/ManejadorBloques.h"
 #include "../../CapaFisica/Bloque.h"
-#include "NodoInterno.h"
-#include "NodoSecuencial.h"
+#include "../ManejoArchivos/RegistroClave.h"
+
+class NodoInterno;
+class NodoSecuencial;
 
 struct header_arbol
 {

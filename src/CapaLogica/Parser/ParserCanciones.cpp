@@ -16,11 +16,6 @@ bool ParserCanciones::finDirectorio()
 	return (contadorArchivosLeidos > archivos.size());
 }
 
-int	ParserCanciones::getCantidadCancionesLeidas()
-{
-	return contadorArchivosLeidos;
-}
-
 char ParserCanciones::_estandarizar (char caracter)
 {
 	//TODO Martin: quitar acentos, dieresis, etc.

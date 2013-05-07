@@ -36,7 +36,7 @@ class NodoInterno : public Nodo {
 
 
 	public:
-		NodoInterno(unsigned int minCantidadBytesClaves, unsigned int maxCantidadBytesClaves);
+		NodoInterno(unsigned int minCantidadBytes, unsigned int maxCantidadBytes);
 		virtual ~NodoInterno();
 
 		bool esta_vacio();
