@@ -70,6 +70,10 @@ int RegistroFijo :: getFieldNumber (int number, std::string & field)
 	for (int i = 0; i < number - 1; i++)
 		pos += fieldSizes[i];
 	
+	//FIXME
+	for (int i = pos; i < fieldSizes[number] + pos; i++)
+		field += record[i];
+
 	return RES_OK;
 }
 
@@ -178,7 +182,7 @@ bool RegistroFijo :: unpack (char* string)
 	nextByte += bytesToUnpack;
 	nextField ++;
 	
-	if (nextField == numFields);
+	if (nextField == numFields)
 		clear();
 		
 	return true;

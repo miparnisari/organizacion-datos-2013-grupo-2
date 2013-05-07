@@ -23,8 +23,6 @@ class ManejadorArchivosTexto:public ManejadorArchivos {
 		int mostrar_archivo(std::string nombreArchivo);
 		int hallar_lineas(std::string nombreArchivo, std::string linea)const throw();
 
-		int manejar(int argc,char** args);
-
 };
 
 #endif /* MANEJADORARCHIVOSTEXTO_H_ */

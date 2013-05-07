@@ -1,13 +1,11 @@
 #include "NodoInterno.h"
 
-NodoInterno::NodoInterno(unsigned int p_minCantidadBytesClaves, unsigned int p_maxCantidadBytesClaves)
+NodoInterno::NodoInterno(unsigned int p_minCantidadBytes, unsigned int p_maxCantidadBytes)
 	:Nodo('I')
 {
-//	tamanio = tamanioNodo;
-//	espacioLibre = tamanio - sizeof(espacioLibre);
-	unsigned int minCantidadBytesClaves = p_minCantidadBytesClaves;
-	unsigned int maxCantidadBytesClaves = p_maxCantidadBytesClaves;
-	unsigned int cantidadBytesOcupadosClaves = 0;
+	maxCantidadBytes = p_minCantidadBytes;
+	minCantidadBytes = p_maxCantidadBytes;
+	cantidadBytesOcupados = 0;
 	vectorHijos.push_back(HIJO_INVALIDO);
 	/* Primer hijo, para que cuando agreguemos una clave solo halla que agregar un hijo */
 }
@@ -193,12 +191,8 @@ int NodoInterno::_insertar_clave(ClaveX* claveInsertar,ClaveX& claveMitad ,
 	std::sort( vectorClaves.begin() , vectorClaves.end() );
 
 	if(overflow){
-
 		unsigned short mitad= ceil(vectorClaves.size() / 2.0);
-		IteradorVectorClaves it;
-		for(int i=0;i<mitad;i++, it++);
-		claveMitad= vectorClaves.at(mitad);
-		vectorClaves.erase(it);
+		vectorClaves.erase(vectorClaves.begin()+mitad);
 
 	}
 

@@ -23,7 +23,6 @@ class ParserCanciones
 		~ParserCanciones();
 		int crear (std::string dir);
 		
-		int	getCantidadCancionesLeidas();
 		bool finDirectorio();
 		int setFile(std::string path);
 		int	getNextCancion(RegistroCancion & reg);

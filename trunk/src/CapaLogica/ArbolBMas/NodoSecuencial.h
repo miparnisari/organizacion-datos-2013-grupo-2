@@ -1,10 +1,3 @@
-/*
- * NodoSecuencial.h
- *
- *  Created on: May 5, 2013
- *      Author: maine
- */
-
 #ifndef NODOSECUENCIAL_H_
 #define NODOSECUENCIAL_H_
 

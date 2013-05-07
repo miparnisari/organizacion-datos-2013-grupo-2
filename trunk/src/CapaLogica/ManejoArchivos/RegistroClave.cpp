@@ -29,7 +29,7 @@ RegistroClave::RegistroClave():RegistroVariable(){
 
 
 
-void RegistroClave::limpiar_buffer(){
+void RegistroClave::limpiar_buffer() throw(){
 
 	RegistroVariable::limpiar_buffer();
 	_agregar_campo_clave();

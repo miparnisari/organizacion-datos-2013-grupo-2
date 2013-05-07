@@ -161,7 +161,7 @@ int ManejadorBloques::__set_header()
 
 bool ManejadorBloques::__num_bloque_es_valido(unsigned int numBloque)
 {
-	if (numBloque < 0 || numBloque > header.cantidadBloques)
+	if (numBloque > header.cantidadBloques)
 		return false;
 	if (header.cantidadBloques == 0)
 		return false;
