@@ -37,7 +37,7 @@ bool NodoInterno::_hay_overflow(){
 
 }
 
-bool NodoInterno::_hay_underflow(unsigned int tamanioSiguienteRemocion){
+bool NodoInterno::_hay_underflow(){
 
 	return ( cantidadBytesOcupados < minCantidadBytes );
 
@@ -60,7 +60,8 @@ int NodoInterno::_insertar_si_overflow(ClaveX* claveInsertar,unsigned short& pos
 
 	}
 
-
+	//FIXME
+	return RES_OK;
 
 
 }
@@ -104,7 +105,7 @@ ClaveX* NodoInterno::get_clave_mitad()
 
 int NodoInterno::get_tamanio_ocupado()
 {
-	return (cantidadBytesOcupadosClaves + vectorHijos.size()*sizeof(unsigned short));
+	return (cantidadBytesOcupados + vectorHijos.size()*sizeof(unsigned short));
 }
 
 int NodoInterno::buscar_clave(const ClaveX* clave,unsigned short& posicionClave)
@@ -185,7 +186,7 @@ int NodoInterno::_insertar_clave(ClaveX* claveInsertar,ClaveX& claveMitad ,
 
 	if(claveInsertar== NULL)
 		return RES_ERROR;
-	unsigned short espacioDisponible= maxCantidadBytesClaves - cantidadBytesOcupadosClaves;
+	unsigned short espacioDisponible = maxCantidadBytes - cantidadBytesOcupados;
 	bool overflow = ( espacioDisponible < claveInsertar->get_tamanio_empaquetado() );
 
 	vectorClaves.push_back( (*claveInsertar) );
@@ -212,8 +213,10 @@ int NodoInterno::_insertar_clave(ClaveX* claveInsertar,ClaveX& claveMitad ,
 
 }
 
-
-int NodoInterno::agregar_clave(ClaveX* clave)
+int NodoInterno::agregar_clave(ClaveX* clave,
+		ClaveX* clavePromocion,
+		std::vector<Clave> clavesSplit,
+		std::vector<unsigned short> hijosClaveSplit)
 {
 	if (clave == NULL)
 		return RES_ERROR;
@@ -243,7 +246,7 @@ int NodoInterno::set_hijo_izquierdo(ClaveX* clave, unsigned short valor)
 	return RES_OK;
 }
 
-int NodoInterno::set_hijo_derecho(const ClaveX* clave, unsigned short valor)
+int NodoInterno::set_hijo_derecho(ClaveX* clave, unsigned short valor)
 {
 	unsigned short posicion;
 	if( this->buscar_clave(clave,posicion) ==RES_ERROR)

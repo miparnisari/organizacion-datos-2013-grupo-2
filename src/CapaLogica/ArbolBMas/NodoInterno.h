@@ -48,8 +48,8 @@ class NodoInterno : public Nodo {
 
 		unsigned short get_cantidad_claves();
 		unsigned short get_cantidad_hijos();
-		int set_hijo_izquierdo(const ClaveX* clave, unsigned short valor);
-		int set_hijo_derecho(const ClaveX* clave, unsigned short valor);
+		int set_hijo_izquierdo(ClaveX* clave, unsigned short valor);
+		int set_hijo_derecho(ClaveX* clave, unsigned short valor);
 
 		int empaquetar(Bloque* bloque); //TODO
 		int desempaquetar(const Bloque* bloque); //TODO

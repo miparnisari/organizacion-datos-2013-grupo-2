@@ -11,12 +11,12 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>    // std::sort
-#include <cmath>
+#include <math.h>		// ceil( )
 
 #include "../../Constantes.h"
-#include "../ManejoArchivos/Clave.h"
 #include "../../CapaFisica/RegistroVariable.h"
 #include "../../CapaFisica/Bloque.h"
+#include "../ManejoArchivos/Clave.h"
 #include "../ManejoArchivos/ClaveX.h"
 #include "../ManejoArchivos/RegistroClave.h"
 
