@@ -7,87 +7,120 @@
 
 #include "RegistroClave.h"
 
-RegistroClave::RegistroClave():RegistroVariable(){}
 
+void RegistroClave::_agregar_campo_clave(){
 
-RegistroClave::RegistroClave(Clave* c):RegistroVariable(){
+	unsigned short tamanioClaveEmpaquetada= clave.get_tamanio_empaquetado();
+	char* bufferClaveEmpaquetada= new char[tamanioClaveEmpaquetada];
 
-	int const TAMANIO_CLAVE= c->get_tamanio();
-	char* bufferClave= new char[TAMANIO_CLAVE];
+	clave.empaquetar(bufferClaveEmpaquetada);
+	this->agregar_campo(bufferClaveEmpaquetada,tamanioClaveEmpaquetada);
 
-	c->empaquetar(bufferClave);
-	this->agregar_campo(bufferClave,TAMANIO_CLAVE);
-
-	delete[] bufferClave;
-
-}
-
-RegistroClave::~RegistroClave(){}
-
-
-bool RegistroClave::solo_clave(){
-
-	return this->get_cantidad_campos()== 1;
+	delete[] bufferClaveEmpaquetada;
 
 }
 
 
-int RegistroClave::get_clave(Clave* clave){
+RegistroClave::RegistroClave():RegistroVariable(){
 
-	if(buffer== NULL)
-		return RES_ERROR;
-	if(this->fue_eliminado() || clave== NULL)
+	_agregar_campo_clave();
+
+}
+
+
+
+void RegistroClave::limpiar_buffer(){
+
+	RegistroVariable::limpiar_buffer();
+	_agregar_campo_clave();
+
+}
+
+
+void RegistroClave::set_clave(const ClaveX& clave){
+
+	this->clave= clave;
+	const unsigned short CANTIDAD_CAMPOS= this->get_cantidad_campos();
+	RegistroVariable registroCopia;
+	unsigned short tamanioEmpaquetamiento= this->get_tamanio_empaquetado();
+	char* bufferRegistroCopia= new char[tamanioEmpaquetamiento];
+	this->empaquetar(bufferRegistroCopia);
+	registroCopia.desempaquetar(bufferRegistroCopia);
+	//hago una copia del registro original
+
+	this->limpiar_buffer();
+
+
+	if(CANTIDAD_CAMPOS>1)
+		for(unsigned short i=1;i<CANTIDAD_CAMPOS;i++){
+
+			unsigned short tamanioCampo= registroCopia.get_tamanio_campo(i);
+			char* bufferCampo= new char[tamanioCampo];
+			registroCopia.recuperar_campo(bufferCampo,i);
+			this->agregar_campo(bufferCampo,tamanioCampo);
+
+			delete[] bufferCampo;
+
+		}
+		//agrego los campos viejos en el registro nuevamente
+
+	delete[] bufferRegistroCopia;
+
+}
+
+
+void RegistroClave::get_clave(ClaveX& clave){
+
+	clave= this->clave;
+
+}
+
+
+int RegistroClave::desempaquetar(const char* copia)throw(){
+
+	int resultado= RegistroVariable::desempaquetar(copia);
+	if(resultado== RES_ERROR)
 		return RES_ERROR;
 
-	int const TAMANIO_CAMPO_CLAVE= this->get_tamanio_campo(NUMERO_CAMPO_CLAVE);
-	char* bufferClave= new char[TAMANIO_CAMPO_CLAVE];
-	this->recuperar_campo(bufferClave,NUMERO_CAMPO_CLAVE);
-	clave->desempaquetar(bufferClave,TAMANIO_CAMPO_CLAVE);
+	unsigned short tamanioCampoClave= this->get_tamanio_campo(NUMERO_CAMPO_CLAVE);
+	char* bufferClave= new char[tamanioCampoClave];
+	this->recuperar_campo(bufferClave , tamanioCampoClave);
+
+	this->clave.desempaquetar(bufferClave,tamanioCampoClave);
 
 	delete[] bufferClave;
-
 	return RES_OK;
 
 }
 
 
-int RegistroClave::set_clave(Clave* clave){
 
-	if(this->fue_eliminado())
-		return RES_ERROR;
+bool RegistroClave::operator <(const RegistroClave& rc)const{
 
-	const int TAMANIO_CLAVE= clave->get_tamanio();
-	char* bufferClave= new char[TAMANIO_CLAVE];
-	clave->empaquetar(bufferClave);
+	return (this->clave < rc.clave);
 
-	if(buffer== NULL){
-		this->agregar_campo(bufferClave,TAMANIO_CLAVE);
-		delete[] bufferClave;
-		return RES_OK;
-	}
+}
 
+bool RegistroClave::operator >(const RegistroClave& rc)const{
 
-	RegistroVariable registroAuxiliar;
-	const int CANTIDAD_CAMPOS= this->get_cantidad_campos();
-	registroAuxiliar.agregar_campo(bufferClave,TAMANIO_CLAVE);
+	return (this->clave > rc.clave);
 
-	for(int i=1;i<CANTIDAD_CAMPOS;i++){
-		int tamanioCampo= this->get_tamanio_campo(i);
-		char* campo= new char[tamanioCampo];
-		this->recuperar_campo(campo,i);
-		registroAuxiliar.agregar_campo(campo,tamanioCampo);
-		delete[] campo;
-	}
+}
 
+bool RegistroClave::operator ==(const RegistroClave& rc)const{
 
-	int const TAMANIO_REGISTRO_AUXILIAR= registroAuxiliar.get_tamanio();
-	char* bufferRegistroAuxiliar= new char[TAMANIO_REGISTRO_AUXILIAR];
-	registroAuxiliar.empaquetar(bufferRegistroAuxiliar);
-	this->desempaquetar(bufferRegistroAuxiliar);
-	delete[] bufferRegistroAuxiliar;
+	return (this->clave == rc.clave);
 
-	delete[] bufferClave;
+}
 
-	return RES_OK;
+bool RegistroClave::operator <=(const RegistroClave& rc)const{
+
+	return (this->clave <= rc.clave);
+
+}
+
+bool RegistroClave::operator >=(const RegistroClave& rc)const{
+
+	return (this->clave >= rc.clave);
 
 }

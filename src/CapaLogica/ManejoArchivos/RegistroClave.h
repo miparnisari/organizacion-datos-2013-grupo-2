@@ -10,29 +10,38 @@
 
 
 #include "../../CapaFisica/RegistroVariable.h"
-#include "Clave.h"
+#include "ClaveX.h"
 
 
 class RegistroClave:public RegistroVariable {
 
 	protected:
+		ClaveX clave;
+
+		void _agregar_campo_clave();
+		/*la clave se agrega como el primer campo del registro. Se considera el
+		 * buffer del registro limpio*/
 
 	public:
 		static const unsigned short NUMERO_CAMPO_CLAVE= 0;
 
 		RegistroClave();
-		RegistroClave(Clave* c);
-		virtual ~RegistroClave();
 
-		virtual int get_clave(Clave* clave);
-		/*recupera la clave del registro del primer campo y lo almacena en la variable
-		 * clave*/
-		virtual int set_clave(Clave* clave);
-		/*guarda la clave en el primer campo del registro sobreescribiendo el primer
-		 * campo ya existente*/
+		virtual void set_clave(const ClaveX& clave);
+		virtual void get_clave(ClaveX& clave);
 
-		bool solo_clave();
-		/*retorna true si el registro unicamente es una clave*/
+		void limpiar_buffer()throw();
+		/*limpia el buffer e inserta la clave en el primer campo del registro .
+		 * Esto obliga a que la clave SIEMPRE ESTE EN EL PRIMER CAMPO.*/
+
+		virtual int desempaquetar(const char* copia)throw();
+		//desempaqueta un RegistroClave recuperando la clave y los demas campos
+
+		virtual bool operator <(const RegistroClave& rc)const;
+		virtual bool operator >(const RegistroClave& rc)const;
+		virtual bool operator ==(const RegistroClave& rc)const;
+		virtual bool operator <=(const RegistroClave& rc)const;
+		virtual bool operator >=(const RegistroClave& rc)const;
 
 
 };/*registro variable donde el primer campo coincide con una clave de identificacion*/
