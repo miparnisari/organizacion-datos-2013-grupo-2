@@ -234,7 +234,7 @@ unsigned short Bloque::get_cantidad_registros_almacenados()const throw(){
 }/*cuenta la cantidad de registros variables guardados*/
 
 
-int Bloque::recuperar_registro(RegistroVariable* registro,unsigned short numeroRegistro)throw()
+int Bloque::recuperar_registro(RegistroVariable* registro,unsigned short numeroRegistro)const throw()
 {
 	if(registro== NULL)
 		return RES_ERROR;

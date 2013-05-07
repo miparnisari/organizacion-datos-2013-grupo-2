@@ -8,6 +8,18 @@
 #ifndef NODO_H_
 #define NODO_H_
 
+#include <vector>
+#include <iostream>
+#include <algorithm>    // std::sort
+#include <cmath>
+
+#include "../../Constantes.h"
+#include "../ManejoArchivos/Clave.h"
+#include "../../CapaFisica/RegistroVariable.h"
+#include "../../CapaFisica/Bloque.h"
+#include "../ManejoArchivos/ClaveX.h"
+#include "../ManejoArchivos/RegistroClave.h"
+
 class Nodo {
 	public:
 		Nodo(char tipoNodo);

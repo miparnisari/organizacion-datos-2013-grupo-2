@@ -1,15 +1,7 @@
 #ifndef NODOINTERNO_H_
 #define NODOINTERNO_H_
 
-#include <iostream>
-#include <vector>
-#include <algorithm>    // std::sort
-#include "../ManejoArchivos/Clave.h"
-#include "../../Constantes.h"
-#include "../../CapaFisica/Bloque.h"
-#include "../ManejoArchivos/ClaveX.h"
 #include "Nodo.h"
-#include <cmath>
 
 class NodoInterno : public Nodo {
 
@@ -17,11 +9,10 @@ class NodoInterno : public Nodo {
 		typedef vector<ClaveX>::iterator IteradorVectorClaves;
 
 	protected:
-//		unsigned int espacioLibre;
-//		unsigned int tamanio;
-		unsigned int minCantidadBytesClaves;
-		unsigned int maxCantidadBytesClaves;
-		unsigned int cantidadBytesOcupadosClaves;
+
+		unsigned int maxCantidadBytes;
+		unsigned int minCantidadBytes;
+		unsigned int cantidadBytesOcupados;
 		std::vector<ClaveX> vectorClaves;
 		std::vector<unsigned short> vectorHijos;
 
@@ -38,18 +29,27 @@ class NodoInterno : public Nodo {
 		/*inserta una clave en el nodo . Si ocurre overflow, la clave del medio es
 		 * expulsada y guardada en ClaveMitad*/
 
+		virtual int _insertar_si_overflow(ClaveX* claveInsertar,unsigned short& posicionInsertar ,
+				unsigned short& posicionClavePromocionar);
+		virtual bool _hay_overflow();
+		virtual bool _hay_underflow();
+
+
 	public:
 		NodoInterno(unsigned int minCantidadBytesClaves, unsigned int maxCantidadBytesClaves);
 		virtual ~NodoInterno();
 
 		bool esta_vacio();
-		int agregar_clave(ClaveX* clave);
+		int agregar_clave(ClaveX* clave,
+				ClaveX* clavePromocion,
+				std::vector<Clave> clavesSplit,
+				std::vector<unsigned short> hijosClaveSplit);
 		int get_tamanio_ocupado();
 
 		unsigned short get_cantidad_claves();
 		unsigned short get_cantidad_hijos();
-		int set_hijo_izquierdo(ClaveX* clave, unsigned short valor);
-		int set_hijo_derecho(ClaveX* clave, unsigned short valor);
+		int set_hijo_izquierdo(const ClaveX* clave, unsigned short valor);
+		int set_hijo_derecho(const ClaveX* clave, unsigned short valor);
 
 		int empaquetar(Bloque* bloque); //TODO
 		int desempaquetar(const Bloque* bloque); //TODO

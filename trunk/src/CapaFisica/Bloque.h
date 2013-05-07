@@ -48,7 +48,7 @@ class Bloque {
 
 		virtual bool esta_vacio()const throw();
 
-		virtual int recuperar_registro(RegistroVariable* registro, unsigned short numeroRegistro)throw();
+		virtual int recuperar_registro(RegistroVariable* registro, unsigned short numeroRegistro)const throw();
 		/*se recupera un registro de una posicion determinada y se retorna la cantidad de bytes leidos.
 		 * En caso de ocurrir un error se retorna 0 o valores negativos. */
 		/*Los registros se enumeran desde el 0!!!*/

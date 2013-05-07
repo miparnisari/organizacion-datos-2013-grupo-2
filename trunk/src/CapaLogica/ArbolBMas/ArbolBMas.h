@@ -7,12 +7,13 @@
 #include "../../CapaFisica/ManejadorBloques.h"
 #include "../../CapaFisica/Bloque.h"
 #include "NodoInterno.h"
+#include "NodoSecuencial.h"
 
-typedef struct header_arbol
+struct header_arbol
 {
 	unsigned int minCantBytesClaves;
 	unsigned int maxCantBytesClaves;
-}header_arbol;
+};
 
 class ArbolBMas
 {
@@ -20,7 +21,7 @@ class ArbolBMas
 		header_arbol header;
 		ManejadorBloques archivoNodosInternos;
 		ManejadorBloques archivoNodosSecuencia;
-		NodoInterno* nodoInternoRaiz;
+		NodoInterno* raiz;
 
 	public:
 		ArbolBMas();
@@ -34,7 +35,8 @@ class ArbolBMas
 		
 		int agregar(RegistroVariable & reg);
 		int eliminar(RegistroVariable & reg);
-		int buscar(RegistroVariable & reg);
+		int buscar(RegistroClave & reg);
+		/* Devuelve el numero de nodo secuencial donde esta o deberia estar reg. */
 
 };
 
