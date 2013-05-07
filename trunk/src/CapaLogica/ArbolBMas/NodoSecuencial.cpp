@@ -6,7 +6,6 @@
  */
 
 #include "NodoSecuencial.h"
-#include "../../CapaFisica/RegistroVariable.h"
 
 NodoSecuencial::NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBytesOcupados)
 	:Nodo('S')
@@ -116,7 +115,7 @@ int NodoSecuencial::eliminar(ClaveX* clave, std::vector<RegistroClave>& regsUnde
 	int posicionEliminar = buscar(&registro);
 	if (posicionEliminar >= 0)
 	{
-		bytesOcupados -= vectorRegistros.at(posicionEliminar);
+		bytesOcupados -= vectorRegistros.at(posicionEliminar).get_tamanio_empaquetado();
 		vectorRegistros.erase(vectorRegistros.begin()+posicionEliminar);
 
 		if (bytesOcupados < minCantidadBytesOcupados)
