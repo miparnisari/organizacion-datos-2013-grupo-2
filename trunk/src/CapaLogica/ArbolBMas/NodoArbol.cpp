@@ -5,14 +5,14 @@
  *      Author: maine
  */
 
-#include "Nodo.h"
+#include "NodoArbol.h"
 
-Nodo::Nodo(char p_tipoNodo) {
+NodoArbol::NodoArbol(char p_tipoNodo) {
 	this->tipoNodo = p_tipoNodo;
 
 }
 
-Nodo::~Nodo() {
+NodoArbol::~NodoArbol() {
 	// TODO Auto-generated destructor stub
 }
 

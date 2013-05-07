@@ -1,9 +1,9 @@
 #ifndef NODOINTERNO_H_
 #define NODOINTERNO_H_
 
-#include "Nodo.h"
+#include "NodoArbol.h"
 
-class NodoInterno : public Nodo {
+class NodoInterno : public NodoArbol {
 
 	public:
 		typedef vector<ClaveX>::iterator IteradorVectorClaves;

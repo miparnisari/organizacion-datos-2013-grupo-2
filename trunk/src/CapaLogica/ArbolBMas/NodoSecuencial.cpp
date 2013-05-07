@@ -8,7 +8,7 @@
 #include "NodoSecuencial.h"
 
 NodoSecuencial::NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBytesOcupados)
-	:Nodo('S')
+	:NodoArbol('S')
 {
 	minCantidadBytesOcupados = minBytesOcupados;
 	maxCantidadBytesOcupados = maxBytesOcupados;

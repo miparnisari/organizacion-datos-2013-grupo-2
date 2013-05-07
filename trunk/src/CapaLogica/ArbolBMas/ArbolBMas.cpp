@@ -1,10 +1,8 @@
 #include "ArbolBMas.h"
-#include "NodoInterno.cpp"
-#include "NodoSecuencial.cpp"
 
 ArbolBMas::ArbolBMas()
 {
-
+	raiz = NULL;
 }
 ArbolBMas::~ArbolBMas()
 {
