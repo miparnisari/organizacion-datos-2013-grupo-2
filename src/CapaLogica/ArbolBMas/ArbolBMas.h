@@ -7,9 +7,8 @@
 #include "../../CapaFisica/ManejadorBloques.h"
 #include "../../CapaFisica/Bloque.h"
 #include "../ManejoArchivos/RegistroClave.h"
-
-class NodoInterno;
-class NodoSecuencial;
+#include "NodoInterno.h"
+#include "NodoSecuencial.h"
 
 struct header_arbol
 {

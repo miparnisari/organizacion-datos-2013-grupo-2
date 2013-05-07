@@ -5,8 +5,8 @@
  *      Author: maine
  */
 
-#ifndef NODO_H_
-#define NODO_H_
+#ifndef NODOARBOL_H_
+#define NODOARBOL_H_
 
 #include <vector>
 #include <iostream>
@@ -20,13 +20,13 @@
 #include "../ManejoArchivos/ClaveX.h"
 #include "../ManejoArchivos/RegistroClave.h"
 
-class Nodo {
+class NodoArbol {
 	public:
-		Nodo(char tipoNodo);
-		virtual ~Nodo();
+		NodoArbol(char tipoNodo);
+		virtual ~NodoArbol();
 
 	protected:
 		char tipoNodo; //Si es interno o de secuencia
 };
 
-#endif /* NODO_H_ */
+#endif /* NODOARBOL_H_ */

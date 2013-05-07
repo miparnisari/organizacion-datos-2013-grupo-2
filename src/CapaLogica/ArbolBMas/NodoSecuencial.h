@@ -1,11 +1,11 @@
 #ifndef NODOSECUENCIAL_H_
 #define NODOSECUENCIAL_H_
 
-#include "Nodo.h"
+#include "NodoArbol.h"
 
 typedef int TipoPuntero;
 
-class NodoSecuencial : public Nodo {
+class NodoSecuencial : public NodoArbol {
 
 	private:
 		// En memoria
