@@ -5,7 +5,9 @@ ArbolBMas::ArbolBMas()
 
 }
 ArbolBMas::~ArbolBMas()
-{}
+{
+	delete raiz;
+}
 
 int ArbolBMas::crear (std::string dir, std::string fileName)
 {
@@ -13,8 +15,8 @@ int ArbolBMas::crear (std::string dir, std::string fileName)
 	unsigned int minCantidadBytes = 0;
 	unsigned int maxCantidadBytes = 0;
 	Bloque* bloque = new Bloque(tamanioBloque);
-	NodoInterno raiz (minCantidadBytes, maxCantidadBytes);
-	raiz.empaquetar(bloque);
+	raiz = new NodoInterno(minCantidadBytes, maxCantidadBytes);
+	raiz->empaquetar(bloque);
 	return RES_OK;
 }
 
@@ -37,12 +39,13 @@ int ArbolBMas::agregar(RegistroVariable & reg)
 {
 	return RES_OK;
 }
+
 int ArbolBMas::eliminar(RegistroVariable & reg)
 {
 	return RES_OK;
 }
 
-int ArbolBMas::buscar(RegistroVariable & reg)
+int ArbolBMas::buscar(RegistroClave & reg)
 {
-	return RES_OK;
+	return 0;
 }

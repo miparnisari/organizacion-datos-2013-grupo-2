@@ -31,6 +31,40 @@ bool NodoInterno::esta_vacio()
 	return (vectorClaves.size()== 0);
 }
 
+bool NodoInterno::_hay_overflow(){
+
+	return (cantidadBytesOcupados > maxCantidadBytes);
+
+}
+
+bool NodoInterno::_hay_underflow(unsigned int tamanioSiguienteRemocion){
+
+	return ( cantidadBytesOcupados < minCantidadBytes );
+
+}
+
+int NodoInterno::_insertar_si_overflow(ClaveX* claveInsertar,unsigned short& posicionInsertar ,
+		unsigned short& posicionClavePromocionar){
+
+	const unsigned short CANTIDAD_CLAVES= vectorClaves.size();
+	bool posicionHallada= false;
+	posicionInsertar= CANTIDAD_CLAVES;
+
+	for(unsigned short i= 0; i<CANTIDAD_CLAVES && !posicionHallada ; i++){
+
+		ClaveX unaClave= vectorClaves.at(i);
+		if(unaClave > (*claveInsertar)){
+			posicionInsertar= i;
+			posicionHallada= true;
+		}
+
+	}
+
+
+
+
+}
+
 
 ClaveX* NodoInterno::get_clave(unsigned short numeroClave)
 {
@@ -120,6 +154,9 @@ int NodoInterno::get_hijo_derecho(unsigned short& hijo, ClaveX* clave){
 }
 
 
+
+
+
 int NodoInterno::remover_clave(const ClaveX* clave,unsigned short numeroClave){
 
 	if(this->get_clave(numeroClave)== NULL)
@@ -180,8 +217,6 @@ int NodoInterno::agregar_clave(ClaveX* clave)
 {
 	if (clave == NULL)
 		return RES_ERROR;
-	if (clave->get_tamanio_empaquetado() + cantidadBytesOcupadosClaves > maxCantidadBytesClaves )
-		return RES_OVERFLOW;
 	unsigned short var;
 	if (buscar_clave(clave, var) == RES_ERROR)
 		return RES_RECORD_EXISTS;
@@ -190,22 +225,34 @@ int NodoInterno::agregar_clave(ClaveX* clave)
 	std::sort(vectorClaves.begin(), vectorClaves.end());
 
 
-	set_hijo_izquierdo(clave,HIJO_INVALIDO);
 	set_hijo_derecho(clave,HIJO_INVALIDO);
 
-	cantidadBytesOcupadosClaves += clave->get_tamanio_empaquetado();
+
 	return RES_OK;
 }
 
 int NodoInterno::set_hijo_izquierdo(ClaveX* clave, unsigned short valor)
 {
-	//TODO
+
+	unsigned short posicion;
+	if( this->buscar_clave(clave,posicion) ==RES_ERROR)
+		return RES_ERROR;
+
+	vectorHijos[posicion]= valor;
+
 	return RES_OK;
 }
 
-int NodoInterno::set_hijo_derecho(ClaveX* clave, unsigned short valor)
+int NodoInterno::set_hijo_derecho(const ClaveX* clave, unsigned short valor)
 {
-	//TODO
+	unsigned short posicion;
+	if( this->buscar_clave(clave,posicion) ==RES_ERROR)
+		return RES_ERROR;
+
+	vector<unsigned short>::iterator it= vectorHijos.begin();
+	for(int i=0;i<=posicion;i++, it++);
+	vectorHijos.insert(it,valor);
+
 	return RES_OK;
 }
 
