@@ -33,7 +33,7 @@ ClaveX::~ClaveX(){
 }
 
 
-ClaveX::TipoClave ClaveX::get_tipo_clave(){
+TipoClave ClaveX::get_tipo_clave(){
 
 	return tipoClave;
 

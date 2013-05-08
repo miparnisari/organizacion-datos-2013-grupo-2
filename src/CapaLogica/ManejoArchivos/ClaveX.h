@@ -8,14 +8,13 @@
 #ifndef CLAVEX_H_
 #define CLAVEX_H_
 
+#include "../../Constantes.h"
 #include "ClaveString.h"
 #include "ClaveNumerica.h"
 
 class ClaveX {
 
 	public:
-		static const unsigned int CANTIDAD_TIPOS_CLAVE= 2;
-		enum TipoClave {CLAVE_STRING , CLAVE_NUMERICA};
 
 	protected:
 		TipoClave tipoClave;

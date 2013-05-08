@@ -24,7 +24,7 @@ class ListaDE
     Nodo<T>* inicio;
 
     Nodo<T>* cargarSiguienteNodo(Nodo<T>* unNodo){
-    	Nodo<T>* nuevoNodo;
+    	Nodo<T>* nuevoNodo = NULL;
     	nuevoNodo->setDato(unNodo->getSiguiente()->getDato());
     	nuevoNodo->setSiguiente(unNodo->getSiguiente()->getSiguiente());
     	nuevoNodo->setAnterior(unNodo->getSiguiente()->getAnterior());

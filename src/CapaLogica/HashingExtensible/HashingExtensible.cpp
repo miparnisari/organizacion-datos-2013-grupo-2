@@ -52,7 +52,7 @@ int HashingExtensible::agregar(RegistroClave reg)
     Bloque bloque;
     RegistroVariable tamDispBloque;
     ClaveX clave_reg;
-    char *valor;
+    char* valor = NULL;
 
     tamTabla = tabla.get_tamanio();
     //Obtengo el bloque en donde se guardara el registro
@@ -161,7 +161,7 @@ int HashingExtensible::eliminar(ClaveX clave)
 {
     int posBloque, tamDispersion, i, posDer, posIzq, posReg, posTabla;
     Bloque bloque;
-    char* tam;
+    char* tam = NULL;
     RegistroVariable tamDisp;
     //Busco el bloque para agregar el elemento
     posTabla = this->obtener_posicion_tabla(clave);
@@ -241,7 +241,7 @@ int HashingExtensible::obtener_posicion_reg_bloque(ClaveX clave, Bloque bloque)
 int HashingExtensible::obtener_posicion_tabla(ClaveX registro)
 {   //Se devuelve la clave pasada por la funcion dispersion
     int clave;
-    if(registro.get_tipo_clave() == 'CLAVE_STRING'){
+    if(registro.get_tipo_clave() == CLAVE_STRING){
         string claveS;
         registro.get_clave(claveS);
         clave = (int)(claveS.data());
