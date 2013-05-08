@@ -20,16 +20,43 @@ private:
 	Nodo* anterior;
 
   public:
-    Nodo();
-    Nodo(T);
-    ~Nodo();
+	Nodo()
+	{
+	  dato = NULL;
+	  siguiente = NULL;
+	  anterior = NULL;
+	}
+    Nodo(T unDato)
+    {
+      dato = unDato;
+      siguiente = NULL;
+      anterior = NULL;
+    }
+    ~Nodo()
+    {
 
-    T getDato();
-    Nodo<T>* getSiguiente();
-    Nodo<T>* getAnterior();
-    void setAnterior(Nodo* nodoAnterior);
-    void setDato(T dato);
-    void setSiguiente(Nodo* nodoSiguiente);
+    }
+
+    T getDato()
+    {
+     return this->dato;
+    }
+
+    Nodo<T>* getSiguiente(){
+    	return this->siguiente;
+    }
+    Nodo<T>* getAnterior(){
+    	return this->anterior;
+    }
+    void setAnterior(Nodo* nodoAnterior){
+    	this->anterior = nodoAnterior;
+    }
+    void setDato(T dato) {
+    	this->dato = dato;
+    }
+    void setSiguiente(Nodo* nodoSiguiente){
+    	this->siguiente = nodoSiguiente;
+    }
 };
 
 #endif /* NODO_H_ */
