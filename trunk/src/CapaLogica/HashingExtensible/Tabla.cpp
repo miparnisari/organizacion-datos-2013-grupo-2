@@ -28,6 +28,9 @@ int Tabla::get_tamanio(){
 	return this->tamanio;
 }
 
+ListaDE<int>* Tabla::getBloques(){
+	return this->bloques;
+}
 
 int Tabla::obtener_valor(int posicion){
 	//devuelve el contenido de una posicion de la tabla
