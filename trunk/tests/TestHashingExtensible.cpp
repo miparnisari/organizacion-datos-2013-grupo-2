@@ -190,6 +190,6 @@ void TestHashingExtensible::recuperar_dato_registro(char *campoRecuperado, Clave
 {
     RegistroClave reg;
     hash1.devolver(clave,&reg);
-    campoRecuperado = new char[reg.get_tamanio_campo(0) +1]();
-    reg.recuperar_campo(campoRecuperado,0);
+    campoRecuperado = new char[reg.get_tamanio_campo(1) +1]();
+    reg.recuperar_campo(campoRecuperado,1);
 }
