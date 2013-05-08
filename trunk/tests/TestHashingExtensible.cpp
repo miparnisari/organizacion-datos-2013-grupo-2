@@ -62,7 +62,7 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     HashingExtensible hash1("",DIRECCION);
     RegistroClave reg;
     int claveNum;
-    char *dato;
+    char *dato = NULL;
     ClaveX clave, clave2;
     //Creo un nuevo registro
     clave.set_clave(23);
@@ -94,7 +94,7 @@ void TestHashingExtensible::test_crear_hashing_cerrarlo_y_abrirlo()
     //Probamos de guardar un registro en un archivo y ver si al abrirlo sigue estando
     HashingExtensible hash1("",DIRECCION);
     ClaveX clave;
-    char* campoRecuperado;
+    char* campoRecuperado = NULL;
     clave.set_clave(23);
     std::string campo = "Hola";
     crear_registro_y_agregar(&hash1, campo, clave);
@@ -126,7 +126,7 @@ void TestHashingExtensible::test_agregar_varios_registros_y_devolver()
     HashingExtensible hash1("",DIRECCION);
     RegistroClave reg;
     int claveNum;
-    char *dato;
+    char *dato = NULL;
     std::string campo;
     ClaveX clave, clave2;
     //Creo varios registro
