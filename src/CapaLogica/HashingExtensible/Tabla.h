@@ -9,6 +9,7 @@
 #define TABLA_H_
 #include <iostream>
 #include "ListaDE.h"
+#include "../../CapaFisica/ManejadorArchivoDatosBasicos.h"
 
 
 using namespace std;
@@ -34,6 +35,9 @@ public:
 	void cambiar_valor(int posicion, int nuevoValor);
 	void dividir_tabla();
 	void duplicar_tabla();
+
+	void persistir_tabla(string rutaArchivo);
+	void cargar_tabla(string rutaArchivo);
 
 };
 
