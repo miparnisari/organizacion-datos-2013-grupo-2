@@ -8,6 +8,7 @@
 #ifndef NODO_H_
 #define NODO_H_
 #include <iostream>
+#include <cstddef>
 
 using namespace std;
 template <class T>

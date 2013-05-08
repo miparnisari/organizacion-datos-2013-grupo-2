@@ -8,6 +8,7 @@
 #ifndef TABLA_H_
 #define TABLA_H_
 #include <iostream>
+#include <cstddef>
 #include "ListaDE.h"
 #include "../../CapaFisica/ManejadorArchivoDatosBasicos.h"
 

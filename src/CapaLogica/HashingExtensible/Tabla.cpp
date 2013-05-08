@@ -10,7 +10,7 @@
 Tabla::Tabla() {
 	//en principio la tabla se crea con tamanio 1
 	int valorNulo = -1;
-
+	this->bloques = NULL;
 	this->tamanio = 1;
 	this->getBloques()->agregar_nuevo_dato(valorNulo);
 

@@ -40,10 +40,11 @@ class NodoInterno : public NodoArbol {
 		virtual ~NodoInterno();
 
 		bool esta_vacio();
-		int agregar_clave(ClaveX* clave,
-				ClaveX* clavePromocion,
-				std::vector<Clave> clavesSplit,
-				std::vector<unsigned short> hijosClaveSplit);
+		int agregar_clave(ClaveX* clave);
+//		int agregar_clave(ClaveX* clave,
+//				ClaveX* clavePromocion,
+//				std::vector<Clave> clavesSplit,
+//				std::vector<unsigned short> hijosClaveSplit);
 		int get_tamanio_ocupado();
 
 		unsigned short get_cantidad_claves();
