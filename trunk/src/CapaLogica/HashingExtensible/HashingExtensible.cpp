@@ -44,29 +44,30 @@ HashingExtensible::~HashingExtensible()
 
 
 int HashingExtensible::funcion_dispersion(int clave)
-{
-    char* c_tabla = obtener_tabla();
+{   /**Bloqueado hasta tener la nueva clase de tabla*/
+ /*   char* c_tabla = obtener_tabla();
     int tam_tabla;
     Tabla tabla(c_tabla);
     tam_tabla = tabla.get_tamanio();
     tabla.~Tabla();
-    return (clave%tam_tabla);
+    return (clave%tam_tabla);*/
 }
 
 int HashingExtensible::agregar(RegistroClave reg)
-{   /**Este metodo no se puede desbloquear hasta que no este definida la clase registro clave*/
-   /* int posBloque, tamDispersion, i, resultado, posBloqueNuevo, posReg, tamTabla, posTabla;
+{
+    int posBloque, tamDispersion, i, resultado, posBloqueNuevo, posReg, tamTabla, posTabla;
     Bloque bloque, bloqueNuevo, bloqueAux;
     RegistroVariable tamDispBloque;
     ClaveX clave_reg;
     char *valor;
+    Tabla tabla;
     //Obtenemos la tabla
     char* c_tabla = obtener_tabla();
-    Tabla tabla(c_tabla);
+    /**Tabla tabla(c_tabla);*/
     tamTabla = tabla.get_tamanio();
 
     //obtengo el bloque en donde se guardara el registro
-    reg.get_clave(&clave_reg);
+    reg.get_clave(clave_reg);
     posBloque = obtener_bloque(clave_reg, &bloque);
     posTabla = obtener_posicion_bloque(clave_reg);
 
@@ -100,7 +101,7 @@ int HashingExtensible::agregar(RegistroClave reg)
         }else{
 
             //Modifico en la tabla las posicion por cantidad de tamDispersion
-/**/     /*      for(i=posTabla; i<tabla.get_tamanio(); i=i+tamDispersion*2){ //hacia la derecha
+/**/           for(i=posTabla; i<tabla.get_tamanio(); i=i+tamDispersion*2){ //hacia la derecha
                 tabla.cambiar_valor(i,posBloqueNuevo);
             }
             for(i=posTabla; i>=0; i=i-tamDispersion*2){ // hacia la izquierda
@@ -123,8 +124,7 @@ int HashingExtensible::agregar(RegistroClave reg)
     tabla.~Tabla();
     tamDispBloque.~RegistroVariable();
     clave_reg.~ClaveX();
-    return resultado;*/
-    return RES_OK;
+    return resultado;
 }
 
 int HashingExtensible::create(std::string directorioSalida, std::string fileName)
@@ -147,11 +147,11 @@ int HashingExtensible::devolver(ClaveX clave, RegistroClave *reg)
 }
 
 int HashingExtensible::modificar(RegistroClave elemN)
-{    /**Este metodo no se puede desbloquear hasta que no este definida la clase registro clave*/
-  /*  Bloque bloque;
+{
+    Bloque bloque;
     int i=1, posReg, clave_hash, posBloque;
     ClaveX clave_reg;
-    elemN.get_clave(&clave_reg);
+    elemN.get_clave(clave_reg);
     obtener_bloque(clave_reg, &bloque); //obtengo el bloque
     //Busco el registro a modificar
     posReg = obtener_posicion_reg_bloque(clave_reg, bloque);
@@ -161,7 +161,7 @@ int HashingExtensible::modificar(RegistroClave elemN)
     manejador_bloques.sobreescribir_bloque(&bloque, posBloque);
     bloque.~Bloque();
     clave_reg.~ClaveX();
-    return RES_OK;*/
+    return RES_OK;
 }
 
 int HashingExtensible::eliminar(ClaveX clave)
@@ -185,7 +185,7 @@ int HashingExtensible::eliminar(ClaveX clave)
 
         //me muevo tamDispersion para un lado y para el otro de la lista, si son iguales cambio cada tam disp *2 los bloques de la tabla
         c_tabla = obtener_tabla();
-        Tabla tabla(c_tabla);
+/**        Tabla tabla(c_tabla);*/
         posDer = tabla.obtener_valor(posTabla+tamDispersion);
         posIzq = tabla.obtener_valor(posTabla-tamDispersion);
         if (posDer == posIzq){
@@ -255,7 +255,8 @@ int HashingExtensible::obtener_bloque(ClaveX clave, Bloque *bloque)
     int posBloque;
     //Obtengo la tabla
     char* c_tabla = obtener_tabla();
-    Tabla tabla(c_tabla);
+    Tabla tabla;
+/**    Tabla tabla(c_tabla);*/
     //Busco el numero de bloque que necesitamos
     posBloque = tabla.obtener_valor(obtener_posicion_bloque(clave));
     //Busco el bloque para agregar el elemento
@@ -265,18 +266,18 @@ int HashingExtensible::obtener_bloque(ClaveX clave, Bloque *bloque)
 }
 
 int HashingExtensible::obtener_posicion_reg_bloque(ClaveX clave, Bloque bloque)
-{   /**Este metodo no se puede desbloquear hasta que no este definida la clase registro clave*/
-  /*  int i=0,se_encontro = RES_ERROR;
+{
+    int i=0,se_encontro = RES_ERROR;
     ClaveX clave_reg;
     RegistroClave reg;
     while((se_encontro!=RES_OK)&&(i< bloque.get_cantidad_registros_almacenados())){
         bloque.recuperar_registro(&reg, i);
-        reg.get_clave(&clave_reg); //Saco la clave del registro
+        reg.get_clave(clave_reg); //Saco la clave del registro
         if(clave_reg == clave) return i;
         i++;
     }
     clave_reg.~ClaveX();
-    reg.~RegistroClave();*/
+    reg.~RegistroClave();
     return RES_ERROR;
 }
 
