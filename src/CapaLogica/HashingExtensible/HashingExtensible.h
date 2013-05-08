@@ -20,7 +20,7 @@ class HashingExtensible
         std::string fileNameTabla;
         int cant_bloques;
         ManejadorBloques manejador_bloques;
-      //  Tabla tabla;
+        Tabla tabla;
 
 
 	public:
@@ -55,13 +55,6 @@ class HashingExtensible
         virtual int crear_bloque(int tam, Bloque *bloqueNuevo);
         //Crea un nuevo bloque del Hashing
 
-        virtual int guardar_tabla(Tabla *tabla);
-        //Guarda la tabla en el archivo del Hashing
-
-        virtual char* obtener_tabla();
-        //virtual int obtener_tabla(Tabla *tabla);
-        //Nos devuelve la tabla que esta guardada en el archivo del Hashing
-
         virtual int obtener_bloque(ClaveX clave, Bloque *bloque);
         //Obtenemos el bloque que corresponde a la clave pasada por parametro
 
@@ -69,9 +62,9 @@ class HashingExtensible
         //Obtenemos en que posicion se encuentra el registro con la clave que buscamos
         //dentro de un bloque
 
-        virtual int obtener_posicion_bloque(ClaveX elemN);
+        virtual int obtener_posicion_tabla(ClaveX elemN);
         //Dependiendo del tipo de clave que guarde aplica una funcion para sacar un numero
-        //al cual le aplica la funcion de hashing para sacar la posicion del bloque para esa clave
+        //al cual le aplica la funcion de hashing para sacar la posicion de la tabla para esa clave
 
         virtual int agregar_registros_bloques(Bloque bloque, RegistroClave reg);
         //Lo que basicamente es tomar todos los registros del bloque que desbordo junto al nuevo
