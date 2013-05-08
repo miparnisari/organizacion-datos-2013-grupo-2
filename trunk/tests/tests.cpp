@@ -1,4 +1,5 @@
 #include "TestNodoInterno.h"
+#include "TestNodoSecuencial.h"
 #include "TestHashingExtensible.h"
 #include "TestManejadorBloques.h"
 #include "TestManejadorRegistrosVariables.h"

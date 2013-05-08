@@ -19,12 +19,12 @@ int Indexador::indexar (std::string directorioEntrada, std::string directorioSal
 	indiceSecundarioAutor.crear(directorioSalida, std::string(FILENAME_IDX_SECUN_AUTOR));
 	
 	// clave = titulo
-	HashingExtensible indiceSecundarioTitulo;
-	indiceSecundarioTitulo.create(directorioSalida, std::string(FILENAME_IDX_SECUN_TITULO));
+//	HashingExtensible indiceSecundarioTitulo;
+//	indiceSecundarioTitulo.create(directorioSalida, std::string(FILENAME_IDX_SECUN_TITULO));
 	
 	// clave = id cancion
-	HashingExtensible indicePrimario;
-	indicePrimario.create(directorioSalida, std::string(FILENAME_IDX_PRIM));	
+//	HashingExtensible indicePrimario;
+//	indicePrimario.create(directorioSalida, std::string(FILENAME_IDX_PRIM));
 	
 	ManejadorRegistrosVariables archivoMaestro;	
 	

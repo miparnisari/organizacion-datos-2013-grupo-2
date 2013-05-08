@@ -207,10 +207,7 @@ int NodoInterno::_insertar_clave(ClaveX* claveInsertar,ClaveX& claveMitad ,
 
 }
 
-int NodoInterno::agregar_clave(ClaveX* clave,
-		ClaveX* clavePromocion,
-		std::vector<Clave> clavesSplit,
-		std::vector<unsigned short> hijosClaveSplit)
+int NodoInterno::agregar_clave(ClaveX* clave)
 {
 	if (clave == NULL)
 		return RES_ERROR;

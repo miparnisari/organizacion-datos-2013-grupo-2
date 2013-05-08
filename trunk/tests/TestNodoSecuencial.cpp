@@ -59,7 +59,7 @@ void TestNodoSecuencial::test_empaquetar_desempaquetar()
 	ClaveX claveLeida;
 	registroLeido.set_clave(claveEscrita);
 	assert(nodoLeido->buscar(&registroLeido) == 0);
-	assert(registroLeido.get_clave(&claveLeida) == RES_OK);
+	registroLeido.get_clave(claveLeida);
 	assert(claveLeida == claveEscrita);
 
 	char* campoLeido = new char[registroLeido.get_tamanio_campo(1)];
@@ -123,8 +123,8 @@ void TestNodoSecuencial::test_insertar_eliminar()
 	campo2 = "2";
 	reg1.agregar_campo(campo1.c_str(), campo1.size());
 	reg2.agregar_campo(campo2.c_str(), campo2.size());
-	reg1.set_clave(&clave1);
-	reg2.set_clave(&clave2);
+	reg1.set_clave(clave1);
+	reg2.set_clave(clave2);
 
 	assert(nodo->insertar(&reg2,regsOverflow) == RES_OK);
 	assert(regsOverflow.empty() == true);
@@ -140,7 +140,7 @@ void TestNodoSecuencial::test_insertar_eliminar()
 	assert(regsUnderflow.empty() == false);
 
 	ClaveX claveDeUnderflow;
-	regsUnderflow.at(0).get_clave(&claveDeUnderflow);
+	regsUnderflow.at(0).get_clave(claveDeUnderflow);
 	assert (claveDeUnderflow == clave2);
 
 	assert(nodo->get_cantidad_registros() == 1);
