@@ -2,8 +2,6 @@
 
 #include "TestHashingExtensible.h"
 
-/***Revisar todo una vez que tengamos el registro clave correcto*/
-
 using namespace std;
 using namespace utilitarios;
 
@@ -42,42 +40,52 @@ void TestHashingExtensible::test_eliminar_registro()
 {
     //Probamos eliminar un registro y ver si nos devuelve algo
     HashingExtensible hash1("",DIRECCION);
-    RegistroClave reg, reg2;
-    ClaveX clave; //esta clave debe ser la del reg***********************
-    //*************bueno aca deberia crear el registro con la clave y agregarla al hash**************
-    //el reg debe tener clave 23
-    hash1.agregar(reg);
+    RegistroClave reg;
+    ClaveX clave;
+    clave.set_clave(23);
+    std::string campo = "Hola";
+    crear_registro_y_agregar(&hash1, campo, clave);
+
     hash1.eliminar(clave);
-    assert(hash1.devolver(clave, &reg2) == NO_EXISTE);
+    assert(hash1.devolver(clave, &reg) == NO_EXISTE);
 
     print_test_ok("test_eliminar_registro");
     eliminar_archivo(DIRECCION);
     hash1.~HashingExtensible();
     reg.~RegistroVariable();
-    reg2.~RegistroVariable();
     clave.~ClaveX();
 }
 
 void TestHashingExtensible::test_agregar_y_devolver_registro()
 {
-    //probamos que se agregue y se devuelva correctamente los datos
+    //Probamos que se agregue y se devuelva correctamente los datos
     HashingExtensible hash1("",DIRECCION);
-    RegistroClave reg, reg2;
-    ClaveX clave; //esta clave debe ser la del reg***********************
-    //*************bueno aca deberia crear el registro con la clave y agregarla al hash**************
-    //el reg debe tener clave 23 y dato "texto"
-    hash1.agregar(reg);
-    assert(hash1.devolver(clave, &reg2) == RES_OK);
-   /* assert(reg2.clave() == 23);
-    assert(strcmp(re2.dato(), "texto"));
+    RegistroClave reg;
+    int claveNum;
+    char *dato;
+    ClaveX clave, clave2;
+    //Creo un nuevo registro
+    clave.set_clave(23);
+    std::string campo = "Hola";
+    crear_registro_y_agregar(&hash1, campo, clave);
 
-    *****desbloquear cuando tenga el registro correspondiente*/
+    //Pruebo a ver si encuentra el registro en el hash
+    assert(hash1.devolver(clave, &reg) == RES_OK);
+
+    //Pruebo si saco el registro correcto
+    reg.get_clave(clave2);
+    clave2.get_clave(claveNum);
+    assert(claveNum == 23);
+
+    //Pruebo si se guardo el dato correcto
+    recuperar_dato_registro(dato, clave, hash1);
+    assert (strcmp(dato,campo.c_str()) == 0);
+    delete[] dato;
 
     print_test_ok("test_agregar_y_devolver_registro");
     eliminar_archivo(DIRECCION);
     hash1.~HashingExtensible();
     reg.~RegistroVariable();
-    reg2.~RegistroVariable();
     clave.~ClaveX();
 }
 
@@ -85,31 +93,23 @@ void TestHashingExtensible::test_crear_hashing_cerrarlo_y_abrirlo()
 {
     //Probamos de guardar un registro en un archivo y ver si al abrirlo sigue estando
     HashingExtensible hash1("",DIRECCION);
-    RegistroClave reg, reg2;
-    ClaveX clave; //esta clave debe ser la del reg*****************
+    ClaveX clave;
     char* campoRecuperado;
-    const char* copia;
+    clave.set_clave(23);
     std::string campo = "Hola";
-    reg.agregar_campo(campo.c_str(), strlen(campo.c_str()));
-    /**En realidad deberia estar el registro que corresponda con la clave 23*/
-    hash1.agregar(reg);
+    crear_registro_y_agregar(&hash1, campo, clave);
     hash1.~HashingExtensible();
 
     HashingExtensible hash2("",DIRECCION);
-    hash2.devolver(clave,&reg2);
-    campoRecuperado = new char[reg2.get_tamanio_campo(0) +1]();
-    reg2.recuperar_campo(campoRecuperado,0);
+    recuperar_dato_registro(campoRecuperado, clave, hash2);
 
-    copia = campoRecuperado;
-    assert (strcmp(copia,campo.c_str()) == 0);
+    assert (strcmp(campoRecuperado,campo.c_str()) == 0);
     delete[] campoRecuperado;
 
     print_test_ok("test_crear_hashing_cerrarlo_y_abrirlo");
 
     eliminar_archivo(DIRECCION);
     hash2.~HashingExtensible();
-    reg.~RegistroVariable();
-    reg2.~RegistroVariable();
     clave.~ClaveX();
 }
 
@@ -120,6 +120,54 @@ void TestHashingExtensible::test_agregar_reg_y_duplicar_tabla()
     print_test_ok("test_agregar_reg_y_duplicar_tabla");
 }
 
+void TestHashingExtensible::test_agregar_varios_registros_y_devolver()
+{
+    //Probamos que se agregue y se devuelva correctamente los datos
+    HashingExtensible hash1("",DIRECCION);
+    RegistroClave reg;
+    int claveNum;
+    char *dato;
+    std::string campo;
+    ClaveX clave, clave2;
+    //Creo varios registro
+    clave.set_clave(23);
+    campo = "Hola";
+    crear_registro_y_agregar(&hash1, campo, clave);
+
+    clave.set_clave(32);
+    campo = "Chau";
+    crear_registro_y_agregar(&hash1, campo, clave);
+
+    clave.set_clave(72);
+    campo = "Hola mundo";
+    crear_registro_y_agregar(&hash1, campo, clave);
+
+    clave.set_clave(55);
+    campo = "Hola chau";
+    crear_registro_y_agregar(&hash1, campo, clave);
+
+    //Pruebo a ver si encuentra el registro en el hash
+    clave.set_clave(72);
+    assert(hash1.devolver(clave, &reg) == RES_OK);
+
+    //Pruebo si saco el registro correcto
+    reg.get_clave(clave2);
+    clave2.get_clave(claveNum);
+    assert(claveNum == 72);
+
+    //Pruebo si se guardo el dato correcto
+    recuperar_dato_registro(dato, clave, hash1);
+    campo = "Hola mundo";
+    assert (strcmp(dato,campo.c_str()) == 0);
+    delete[] dato;
+
+    print_test_ok("test_agregar_varios_registros_y_devolver");
+    eliminar_archivo(DIRECCION);
+    hash1.~HashingExtensible();
+    reg.~RegistroVariable();
+    clave.~ClaveX();
+}
+
 void TestHashingExtensible::ejecutar()
 {
 	test_agregar_reg_y_duplicar_tabla();
@@ -127,4 +175,21 @@ void TestHashingExtensible::ejecutar()
 	test_crear_hashing_cerrarlo_y_abrirlo();
 	test_agregar_y_devolver_registro();
 	test_crear_hashing();
+	test_agregar_varios_registros_y_devolver();
+}
+
+void TestHashingExtensible::crear_registro_y_agregar(HashingExtensible *hash1, std::string campo, ClaveX clave)
+{
+    RegistroClave reg;
+    reg.agregar_campo(campo.c_str(), strlen(campo.c_str()));
+    reg.set_clave(clave);
+    hash1->agregar(reg);
+}
+
+void TestHashingExtensible::recuperar_dato_registro(char *campoRecuperado, ClaveX clave, HashingExtensible hash1)
+{
+    RegistroClave reg;
+    hash1.devolver(clave,&reg);
+    campoRecuperado = new char[reg.get_tamanio_campo(0) +1]();
+    reg.recuperar_campo(campoRecuperado,0);
 }

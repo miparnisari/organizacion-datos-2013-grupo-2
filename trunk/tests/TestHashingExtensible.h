@@ -24,6 +24,10 @@ class TestHashingExtensible : public Test {
 		void test_agregar_y_devolver_registro();
 		void test_crear_hashing_cerrarlo_y_abrirlo();
 		void test_agregar_reg_y_duplicar_tabla();
+		void test_agregar_varios_registros_y_devolver();
+		//Son para el funcionamiento de los test
+		void crear_registro_y_agregar(HashingExtensible *hash1, std::string campo, ClaveX clave);
+		void recuperar_dato_registro(char *campoRecuperado, ClaveX clave, HashingExtensible hash1);
 };
 
 #endif /* TESTHASHINGEXTENSIBLE_H_ */
