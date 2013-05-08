@@ -65,10 +65,30 @@ void Tabla::duplicar_tabla(){
 	for (int i = 1; i < this->getBloques()->getCantidadNodos(); ++i) {
 		nuevaLista->agregar_nuevo_dato(this->getBloques()->obtener_nodo(i)->getDato());
 	}
-
 	//uno las listas
 	this->getBloques()->concatenar_listas(nuevaLista);
 
 }
 
-string persistir_tabla(){}
+void Tabla::persistir_tabla(string rutaArchivo){
+	ManejadorArchivoDatosBasicos<int> archivo;
+
+	if(archivo.abrir_archivo(rutaArchivo,"wb") == -1){
+		archivo.crear_archivo(rutaArchivo);
+		archivo.abrir_archivo(rutaArchivo,"wb");
+	}
+
+	//luego de esto, el archivo se habra creado o estara abierto para escritura.
+
+	//priemro guardo el tamanio de la tabla
+	archivo.agregar(this->get_tamanio());
+
+	//ahora agrego los nodos
+	for (int i = 0; i < this->get_tamanio(); i++) {
+		archivo.agregar(this->getBloques()->obtener_nodo(i)->getDato());
+	}
+}
+
+void Tabla::cargar_tabla(string rutaArchivo){
+
+}

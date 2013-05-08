@@ -80,7 +80,7 @@ int HashingExtensible::agregar(RegistroClave reg)
 
     if (resultado == RES_INSUFFICIENT_SPACE){   //Si desborda el bloque
 
-        //Recupero el tamaño de dispersion del bloque
+        //Recupero el tamaï¿½o de dispersion del bloque
         bloque.recuperar_registro(&tamDispBloque,0);
         tamDispBloque.recuperar_campo(valor,0);
         tamDispersion = (int)valor;
@@ -94,7 +94,7 @@ int HashingExtensible::agregar(RegistroClave reg)
             tabla.duplicar_tabla();
             tabla.cambiar_valor(posTabla, posBloqueNuevo);
 
-            //Creamos el bloque con el tam de dispersion del tamaño de la tabla
+            //Creamos el bloque con el tam de dispersion del tamaï¿½o de la tabla
             crear_bloque(tamTabla*2, &bloqueNuevo);
             crear_bloque(tamTabla*2, &bloqueAux);
 
@@ -113,7 +113,7 @@ int HashingExtensible::agregar(RegistroClave reg)
         }
         cant_bloques++;
         //agrego los bloques modificados
-        manejador_bloques.sobreescribir_bloque(&bloqueAux, posBloque); //guardamos uno vacion con el tamaño de dispersion que corresponde
+        manejador_bloques.sobreescribir_bloque(&bloqueAux, posBloque); //guardamos uno vacion con el tamaï¿½o de dispersion que corresponde
         manejador_bloques.sobreescribir_bloque(&bloqueNuevo, posBloqueNuevo);
         guardar_tabla(&tabla); //Actualizamos la tabla del archivo
         agregar_registros_bloques(bloque, reg);
@@ -178,7 +178,7 @@ int HashingExtensible::eliminar(ClaveX clave)
     if (posReg == RES_ERROR)    return RES_OK; // No esta la clave en el archivo, es lo mismo que borrarla
     bloque.eliminar_registro(posReg);    //Elimino el registro
    if (bloque.get_cantidad_registros_almacenados() == 1){ // o sea que solo esta el tam dispersion
-        //Busco el tamaño de dispersion del bloque
+        //Busco el tamaï¿½o de dispersion del bloque
         bloque.recuperar_registro(&tamDisp, 0);
         tamDisp.recuperar_campo(tam, 0);
         tamDispersion = ((int)tam)/2;
@@ -211,7 +211,7 @@ int HashingExtensible::eliminar(ClaveX clave)
 
 int HashingExtensible::crear_bloque(int tam, Bloque *bloqueNuevo)
 {
-//Creamos el bloque con el tam de dispersion del tamaño de la tabla
+//Creamos el bloque con el tam de dispersion del tamaï¿½o de la tabla
     RegistroVariable tamDispBloque;
     char *tamDisp;
     tamDisp = (char *)tam;
@@ -277,7 +277,7 @@ int HashingExtensible::obtener_posicion_reg_bloque(ClaveX clave, Bloque bloque)
         i++;
     }
     clave_reg.~ClaveX();
-    reg.~RegistroClave();
+    //reg.~RegistroClave();
     return RES_ERROR;
 }
 
