@@ -283,7 +283,7 @@ void test_clavex(){
 
 int main(int argc,char** args)
 {
-	test_leer_de_archivo();
+//	test_leer_de_archivo();
 	test_clave_numerica();
 	test_clave_string();
 	test_registro_cancion(); //TODO poner asserts en vez de couts
@@ -304,8 +304,11 @@ int main(int argc,char** args)
 	TestHashingExtensible test4;
 	test4.ejecutar();
 
+
 	TestNodoInterno test5;
 	test5.ejecutar();
+
+	cout<<"fin tests!!!"<<endl;
 
 	return 0;
 }
