@@ -33,25 +33,28 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 	clave3.set_clave("abba");
 	clave4.set_clave("clave que no entra");
 
-//	assert(nodoI.agregar_clave(&clave1) == RES_OK);
-//	assert(nodoI.agregar_clave(&clave2) == RES_OK);
-//	assert(nodoI.agregar_clave(&clave3) == RES_OK);
-//	assert(nodoI.agregar_clave(&clave4) == RES_ERROR);
+	unsigned short pos= 0;
+	assert(nodoI.insertar_clave(clave1,pos) == RES_OK);
+	assert(nodoI.insertar_clave(clave2,pos) == RES_OK);
+	assert(nodoI.insertar_clave(clave3,pos) == RES_OVERFLOW);
+	assert(nodoI.insertar_clave(clave4,pos) == RES_OVERFLOW);
 
-	assert(nodoI.set_hijo_izquierdo(&clave1,1) == RES_OK);
-	assert(nodoI.set_hijo_derecho(&clave1,2) == RES_OK);
+	assert(nodoI.set_hijo_izquierdo(clave1,1) == RES_OK);
+	assert(nodoI.set_hijo_derecho(clave1,2) == RES_OK);
 
-	assert(nodoI.set_hijo_izquierdo(&clave2,3) == RES_OK);
-	assert(nodoI.set_hijo_derecho(&clave2,4) == RES_OK);
+	assert(nodoI.set_hijo_izquierdo(clave2,3) == RES_OK);
+	assert(nodoI.set_hijo_derecho(clave2,4) == RES_OK);
 
-	assert(nodoI.set_hijo_izquierdo(&clave3,5) == RES_OK);
-	assert(nodoI.set_hijo_derecho(&clave3,6) == RES_OK);
+	assert(nodoI.set_hijo_izquierdo(clave3,5) == RES_OK);
+	assert(nodoI.set_hijo_derecho(clave3,6) == RES_OK);
 
-	assert(nodoI.set_hijo_izquierdo(&clave4,5) == RES_ERROR);
-	assert(nodoI.set_hijo_derecho(&clave4,6) == RES_ERROR);
+	/*
+	assert(nodoI.set_hijo_izquierdo(clave4,5) == RES_ERROR);
+	assert(nodoI.set_hijo_derecho(clave4,6) == RES_ERROR);
+	*/
 
-	int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
-	assert(nodoI.get_tamanio_ocupado() == tamanioOcupado);
+	//int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
+	//assert(nodoI.get_tamanio_ocupado() == tamanioOcupado);
 }
 
 
@@ -67,14 +70,14 @@ void TestNodoInterno::empaquetar_en_bloque_chico_falla()
 //	nodoI.agregar_clave(&clave2);
 //	nodoI.agregar_clave(&clave3);
 
-	nodoI.set_hijo_izquierdo(&clave1,1);
-	nodoI.set_hijo_derecho(&clave1,2);
+	nodoI.set_hijo_izquierdo(clave1,1);
+	nodoI.set_hijo_derecho(clave1,2);
 
-	nodoI.set_hijo_izquierdo(&clave2,3);
-	nodoI.set_hijo_derecho(&clave2,4);
+	nodoI.set_hijo_izquierdo(clave2,3);
+	nodoI.set_hijo_derecho(clave2,4);
 
-	nodoI.set_hijo_izquierdo(&clave3,5);
-	nodoI.set_hijo_derecho(&clave3,6);
+	nodoI.set_hijo_izquierdo(clave3,5);
+	nodoI.set_hijo_derecho(clave3,6);
 
 	int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
 	assert(nodoI.get_tamanio_ocupado() == tamanioOcupado);
@@ -103,14 +106,14 @@ void TestNodoInterno::empaquetar_en_bloque_da_ok()
 //	nodoI.agregar_clave(&clave2);
 //	nodoI.agregar_clave(&clave3);
 
-	nodoI.set_hijo_izquierdo(&clave1,1);
-	nodoI.set_hijo_derecho(&clave1,2);
+	nodoI.set_hijo_izquierdo(clave1,1);
+	nodoI.set_hijo_derecho(clave1,2);
 
-	nodoI.set_hijo_izquierdo(&clave2,3);
-	nodoI.set_hijo_derecho(&clave2,4);
+	nodoI.set_hijo_izquierdo(clave2,3);
+	nodoI.set_hijo_derecho(clave2,4);
 
-	nodoI.set_hijo_izquierdo(&clave3,5);
-	nodoI.set_hijo_derecho(&clave3,6);
+	nodoI.set_hijo_izquierdo(clave3,5);
+	nodoI.set_hijo_derecho(clave3,6);
 
 	int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
 	assert(nodoI.get_tamanio_ocupado() == tamanioOcupado);

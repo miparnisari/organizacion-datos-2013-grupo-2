@@ -3,8 +3,8 @@
 NodoInterno::NodoInterno(unsigned int p_minCantidadBytes, unsigned int p_maxCantidadBytes)
 	:NodoArbol('I')
 {
-	maxCantidadBytes = p_minCantidadBytes;
-	minCantidadBytes = p_maxCantidadBytes;
+	maxCantidadBytes = p_maxCantidadBytes;
+	minCantidadBytes = p_minCantidadBytes;
 	cantidadBytesOcupados = 0;
 	vectorHijos.push_back(HIJO_INVALIDO);
 	/* Primer hijo, para que cuando agreguemos una clave solo halla que agregar un hijo */
@@ -65,14 +65,14 @@ int NodoInterno::_insertar_si_overflow(ClaveX* claveInsertar,unsigned short& pos
 }
 
 
-ClaveX* NodoInterno::get_clave(unsigned short numeroClave)
-{
-	if (esta_vacio())
-		return NULL;
-	if (numeroClave >= this->get_cantidad_claves())
-		return NULL;
+int NodoInterno::get_clave(unsigned short numeroClave,ClaveX& clave){
 
-	return &vectorClaves.at(numeroClave);
+	if(numeroClave >= vectorClaves.size())
+		return RES_ERROR;
+
+	clave= vectorClaves.at(numeroClave);
+	return RES_OK;
+
 }
 
 
@@ -89,15 +89,16 @@ int NodoInterno::get_hijo(unsigned short& hijo,unsigned short numeroHijo)
 }
 
 
-ClaveX* NodoInterno::get_clave_mitad()
-{
+int NodoInterno::get_clave_mitad(ClaveX& clave){
+
 	if (this->esta_vacio())
-		return NULL;
+		return RES_ERROR;
 
 	const unsigned short CANTIDAD_CLAVES = vectorClaves.size();
-	const unsigned short MITAD = (unsigned short)(CANTIDAD_CLAVES/2);
+	const unsigned short MITAD = (unsigned short)ceil( CANTIDAD_CLAVES/2 );
+	this->get_clave(MITAD, clave);
 
-	return this->get_clave(MITAD);
+	return RES_OK;
 
 }
 
@@ -106,14 +107,17 @@ int NodoInterno::get_tamanio_ocupado()
 	return (cantidadBytesOcupados + vectorHijos.size()*sizeof(unsigned short));
 }
 
-int NodoInterno::buscar_clave(const ClaveX* clave,unsigned short& posicionClave)
+int NodoInterno::buscar_clave(const ClaveX& clave,unsigned short& posicionClave)
 {
+	if(this->esta_vacio())
+		return RES_ERROR;
 
+	ClaveX unaClave;
 	const unsigned short CANTIDAD_CLAVES= this->get_cantidad_claves();
 	for(int i=0;i<CANTIDAD_CLAVES;i++){
 
-		ClaveX* unaClave= this->get_clave(i);
-		if( (*clave)== (*unaClave) ){
+		this->get_clave(i,unaClave);
+		if( (clave)== (unaClave) ){
 			posicionClave= i;
 			return i;
 		}
@@ -126,7 +130,7 @@ int NodoInterno::buscar_clave(const ClaveX* clave,unsigned short& posicionClave)
 }//FIXME Para que sirve este metodo!? Es lo mismo que get_clave(pos)...
 
 
-int NodoInterno::get_hijo_izquierdo(unsigned short& hijo, ClaveX* clave){
+int NodoInterno::get_hijo_izquierdo(unsigned short& hijo,const ClaveX& clave){
 
 	if(this->esta_vacio())
 		return RES_ERROR;
@@ -139,7 +143,7 @@ int NodoInterno::get_hijo_izquierdo(unsigned short& hijo, ClaveX* clave){
 
 }
 
-int NodoInterno::get_hijo_derecho(unsigned short& hijo, ClaveX* clave){
+int NodoInterno::get_hijo_derecho(unsigned short& hijo,const ClaveX& clave){
 
 	if(this->esta_vacio())
 		return RES_ERROR;
@@ -156,9 +160,10 @@ int NodoInterno::get_hijo_derecho(unsigned short& hijo, ClaveX* clave){
 
 
 
-int NodoInterno::remover_clave(const ClaveX* clave,unsigned short numeroClave){
+int NodoInterno::remover_clave(ClaveX& clave,unsigned short numeroClave){
 
-	if(this->get_clave(numeroClave)== NULL)
+	int res= this->get_clave(numeroClave,clave);
+	if(res== RES_ERROR)
 		return RES_ERROR;
 
 	return this->remover_clave(clave);
@@ -166,7 +171,7 @@ int NodoInterno::remover_clave(const ClaveX* clave,unsigned short numeroClave){
 }
 
 
-int NodoInterno::remover_clave(const ClaveX* clave){
+int NodoInterno::remover_clave(const ClaveX& clave){
 
 	unsigned short posicionClave;
 	if (this->buscar_clave(clave,posicionClave)== RES_ERROR)
@@ -178,16 +183,14 @@ int NodoInterno::remover_clave(const ClaveX* clave){
 
 }
 
-
-int NodoInterno::_insertar_clave(ClaveX* claveInsertar,ClaveX& claveMitad ,
+/*
+int NodoInterno::_insertar_clave(const ClaveX& claveInsertar,ClaveX& claveMitad ,
 		unsigned short& posicionInsercion){
 
-	if(claveInsertar== NULL)
-		return RES_ERROR;
 	unsigned short espacioDisponible = maxCantidadBytes - cantidadBytesOcupados;
-	bool overflow = ( espacioDisponible < claveInsertar->get_tamanio_empaquetado() );
+	bool overflow = ( espacioDisponible < claveInsertar.get_tamanio_empaquetado() );
 
-	vectorClaves.push_back( (*claveInsertar) );
+	vectorClaves.push_back( claveInsertar );
 	std::sort( vectorClaves.begin() , vectorClaves.end() );
 
 	if(overflow){
@@ -206,16 +209,15 @@ int NodoInterno::_insertar_clave(ClaveX* claveInsertar,ClaveX& claveMitad ,
 
 
 }
+*/
 
-int NodoInterno::agregar_clave(ClaveX* clave)
+int NodoInterno::agregar_clave(const ClaveX& clave)
 {
-	if (clave == NULL)
-		return RES_ERROR;
 	unsigned short var;
-	if (buscar_clave(clave, var) == RES_ERROR)
+	if (buscar_clave(clave, var) != RES_ERROR)
 		return RES_RECORD_EXISTS;
 
-	vectorClaves.push_back(*clave);
+	vectorClaves.push_back(clave);
 	std::sort(vectorClaves.begin(), vectorClaves.end());
 
 
@@ -225,7 +227,7 @@ int NodoInterno::agregar_clave(ClaveX* clave)
 	return RES_OK;
 }
 
-int NodoInterno::set_hijo_izquierdo(ClaveX* clave, unsigned short valor)
+int NodoInterno::set_hijo_izquierdo(const ClaveX& clave, unsigned short valor)
 {
 
 	unsigned short posicion;
@@ -237,15 +239,13 @@ int NodoInterno::set_hijo_izquierdo(ClaveX* clave, unsigned short valor)
 	return RES_OK;
 }
 
-int NodoInterno::set_hijo_derecho(ClaveX* clave, unsigned short valor)
+int NodoInterno::set_hijo_derecho(const ClaveX& clave, unsigned short valor)
 {
 	unsigned short posicion;
 	if( this->buscar_clave(clave,posicion) ==RES_ERROR)
 		return RES_ERROR;
 
-	vector<unsigned short>::iterator it= vectorHijos.begin();
-	for(int i=0;i<=posicion;i++, it++);
-	vectorHijos.insert(it,valor);
+	vectorHijos.insert( vectorHijos.begin() + posicion ,valor);
 
 	return RES_OK;
 }
@@ -288,3 +288,62 @@ int NodoInterno::desempaquetar(const Bloque* bloque)
 
 	return RES_OK;
 }
+
+/*METODOS AGREGADOS POR MARTIN -----------------------------------------------*/
+
+int NodoInterno::insertar_clave(const ClaveX& clave,
+		unsigned short& posicionInsercion){
+
+	vectorClaves.push_back(clave);
+	std::sort( vectorClaves.begin() , vectorClaves.end() );
+	this->buscar_clave(clave , posicionInsercion);
+	const unsigned short TAMANIO_EMPAQUETADO_CLAVE= clave.get_tamanio_empaquetado();
+	this->cantidadBytesOcupados+= TAMANIO_EMPAQUETADO_CLAVE;
+
+	bool overflow= _hay_overflow();
+	if(overflow)
+		return RES_OVERFLOW;
+
+	return RES_OK;
+
+
+}
+
+
+int NodoInterno::insertar_hijo(unsigned short hijo,unsigned short posicion){
+
+	if(posicion == this->POSICION_FIN_VECTOR_HIJOS){
+		vectorHijos.push_back(hijo);
+		this->cantidadBytesOcupados+= sizeof(hijo);
+		if(_hay_overflow())
+			return RES_OVERFLOW;
+		else
+			return RES_OK;
+	}
+
+	if(posicion>= vectorClaves.size())
+		return RES_ERROR;
+
+	vectorHijos.insert( vectorHijos.begin() + posicion , hijo );
+	this->cantidadBytesOcupados+= sizeof(hijo);
+	if(_hay_overflow())
+		return RES_OVERFLOW;
+	else
+		return RES_OK;
+
+}
+
+
+int NodoInterno::modificar_hijo(unsigned short valor,unsigned short numeroHijo){
+
+	if(numeroHijo >= vectorHijos.size())
+		return RES_ERROR;
+
+	this->vectorHijos[numeroHijo]= valor;
+	return RES_OK;
+
+}
+
+/*METODOS AGREGADOS POR MARTIN -----------------------------------------------*/
+
+

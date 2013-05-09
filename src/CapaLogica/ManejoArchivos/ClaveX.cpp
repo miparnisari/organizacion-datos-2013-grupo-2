@@ -33,7 +33,7 @@ ClaveX::~ClaveX(){
 }
 
 
-TipoClave ClaveX::get_tipo_clave(){
+TipoClave ClaveX::get_tipo_clave()const{
 
 	return tipoClave;
 
@@ -48,13 +48,13 @@ void ClaveX::_resetear_datos(){
 }
 
 
-int ClaveX::get_tamanio_empaquetado(){
+int ClaveX::get_tamanio_empaquetado()const{
 
 	return this->get_tamanio_clave() + sizeof(char);
 
 }
 
-int ClaveX::get_tamanio_clave(){
+int ClaveX::get_tamanio_clave()const{
 
 	return this->claves[tipoClave]->get_tamanio();
 

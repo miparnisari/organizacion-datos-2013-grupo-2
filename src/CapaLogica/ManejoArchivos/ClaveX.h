@@ -39,15 +39,15 @@ class ClaveX {
 		 * formato: tipoClave|clave . tamanioBuffer debe ser efectivamente el tamanio en
 		 * bytes del buffer (tamanioClave + tamanioTipoClave) */
 
-		virtual TipoClave get_tipo_clave();
+		virtual TipoClave get_tipo_clave()const ;
 
 		virtual void set_clave(string clave);
 		virtual void set_clave(int clave);
 		/*se establece el valor de la clave y su tipo cambia automaticamente.
 		 * Si la clave era CLAVE_NUMERICA y se invoca set_clave(string) , tipoClave
 		 * cambia a CLAVE_STRING y la clave es guardada*/
-		virtual int get_tamanio_empaquetado();
-		virtual int get_tamanio_clave();
+		virtual int get_tamanio_empaquetado()const;
+		virtual int get_tamanio_clave()const;
 
 		virtual int get_clave(int &clave)const;
 		virtual int get_clave(string& clave)const;
