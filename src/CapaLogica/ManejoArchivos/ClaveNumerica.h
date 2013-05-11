@@ -2,7 +2,8 @@
 #define CLAVENUMERICA_H_
 
 #include"Clave.h"
-#include<sstream>
+#include <sstream>
+#include <iostream>
 
 using namespace std;
 

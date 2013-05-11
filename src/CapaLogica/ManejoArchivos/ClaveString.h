@@ -43,7 +43,7 @@ class ClaveString:public Clave{
 		/*redefino los operadores para que antes de comparar las cadenas remueva los espacios
 		 * de las mismas*/
 
-		static string remover_espacios(string linea);
+		static string remover_espacios(const std::string linea);
 		/*remueve los espacios en blanco de linea y retorna un nuevo string*/
 
 		void remover_espacios();

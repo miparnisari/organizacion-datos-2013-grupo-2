@@ -39,15 +39,16 @@ int ClaveString::empaquetar(char* buffer){
 }
 
 
-string ClaveString::remover_espacios(string linea){
+string ClaveString::remover_espacios(const string linea){
 
-	for(unsigned short i=0;i<linea.length();i++){
-		char c= linea.at(i);
-		if( c== ' ' )
-			linea.erase(i,1);
+	std::string resultado;
+	for (unsigned int i = 0; i < linea.size(); i++)
+	{
+		if (linea.at(i) != ' ')
+			resultado.push_back(linea.at(i));
 	}
 
-	return linea;
+	return resultado;
 
 }
 

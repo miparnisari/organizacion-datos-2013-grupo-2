@@ -69,7 +69,7 @@ int ClaveX::empaquetar(char* buffer){
 
 	stringstream stream;
 	stream.write( (char*)&tipoClaveChar , sizeof(tipoClaveChar) );
-	char* empaquetado= new char[tamanioClave];
+	char* empaquetado= new char[tamanioClave]();
 	claves[tipoClave]->empaquetar(empaquetado);
 	stream.write( empaquetado,tamanioClave );
 
@@ -86,7 +86,7 @@ int ClaveX::empaquetar(char* buffer){
 void ClaveX::desempaquetar(char* buffer,unsigned short tamanioBuffer){
 
 	unsigned short tamanioClave= tamanioBuffer - sizeof(char);
-	char* bufferClave= new char[tamanioClave];
+	char* bufferClave= new char[tamanioClave]();
 
 	stringstream stream;
 	stream.write( buffer,tamanioBuffer );

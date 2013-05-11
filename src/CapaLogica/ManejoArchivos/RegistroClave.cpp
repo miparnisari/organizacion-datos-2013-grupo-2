@@ -7,30 +7,28 @@
 
 #include "RegistroClave.h"
 
+RegistroClave::RegistroClave():RegistroVariable()
+{
+	_agregar_campo_clave();
+}
 
-void RegistroClave::_agregar_campo_clave(){
 
+void RegistroClave::_agregar_campo_clave()
+{
 	unsigned short tamanioClaveEmpaquetada= clave.get_tamanio_empaquetado();
-	char* bufferClaveEmpaquetada= new char[tamanioClaveEmpaquetada];
+	std::cout << "tamanio clave empaquetada" << tamanioClaveEmpaquetada << std::endl;
+	char* bufferClaveEmpaquetada= new char[tamanioClaveEmpaquetada]();
 
 	clave.empaquetar(bufferClaveEmpaquetada);
+
 	this->agregar_campo(bufferClaveEmpaquetada,tamanioClaveEmpaquetada);
 
 	delete[] bufferClaveEmpaquetada;
-
 }
-
-
-RegistroClave::RegistroClave():RegistroVariable(){
-
-	_agregar_campo_clave();
-
-}
-
-
 
 void RegistroClave::limpiar_buffer() throw(){
 
+	std::cout << "limpiar bufferrrrrrrrr"<<std::endl;
 	RegistroVariable::limpiar_buffer();
 	_agregar_campo_clave();
 
@@ -43,7 +41,7 @@ void RegistroClave::set_clave(const ClaveX& clave){
 	const unsigned short CANTIDAD_CAMPOS= this->get_cantidad_campos();
 	RegistroVariable registroCopia;
 	unsigned short tamanioEmpaquetamiento= this->get_tamanio_empaquetado();
-	char* bufferRegistroCopia= new char[tamanioEmpaquetamiento];
+	char* bufferRegistroCopia= new char[tamanioEmpaquetamiento]();
 	this->empaquetar(bufferRegistroCopia);
 	registroCopia.desempaquetar(bufferRegistroCopia);
 	//hago una copia del registro original
@@ -55,7 +53,7 @@ void RegistroClave::set_clave(const ClaveX& clave){
 		for(unsigned short i=1;i<CANTIDAD_CAMPOS;i++){
 
 			unsigned short tamanioCampo= registroCopia.get_tamanio_campo(i);
-			char* bufferCampo= new char[tamanioCampo];
+			char* bufferCampo= new char[tamanioCampo]();
 			registroCopia.recuperar_campo(bufferCampo,i);
 			this->agregar_campo(bufferCampo,tamanioCampo);
 
@@ -83,7 +81,7 @@ int RegistroClave::desempaquetar(const char* copia)throw(){
 		return RES_ERROR;
 
 	unsigned short tamanioCampoClave= this->get_tamanio_campo(NUMERO_CAMPO_CLAVE);
-	char* bufferClave= new char[tamanioCampoClave];
+	char* bufferClave= new char[tamanioCampoClave]();
 	this->recuperar_campo(bufferClave , tamanioCampoClave);
 
 	this->clave.desempaquetar(bufferClave,tamanioCampoClave);

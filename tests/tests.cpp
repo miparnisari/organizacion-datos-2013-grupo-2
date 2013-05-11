@@ -289,24 +289,20 @@ int main(int argc,char** args)
 	test_registro_cancion(); //TODO poner asserts en vez de couts
 	test_clavex();
 
-	TestRegistroVariable test;
-	test.ejecutar();
+	std::vector<Test*> tests;
+	tests.push_back(new TestRegistroVariable);
+	tests.push_back(new TestBloque);
+	tests.push_back(new TestManejadorRegistrosVariables);
+	tests.push_back(new TestManejadorBloques);
+	tests.push_back(new TestNodoSecuencial);
+	tests.push_back(new TestNodoInterno);
+//	tests.push_back(new TestHashingExtensible);
 
-	TestBloque test1;
-	test1.ejecutar();
-
-	TestManejadorRegistrosVariables test2;
-	test2.ejecutar();
-
-	TestManejadorBloques test3;
-	test3.ejecutar();
-
-	TestHashingExtensible test4;
-	test4.ejecutar();
-
-
-	TestNodoInterno test5;
-	test5.ejecutar();
+	for (unsigned int i = 0; i < tests.size(); i++)
+	{
+		tests.at(i)->ejecutar();
+		delete(tests.at(i));
+	}
 
 	cout<<"fin tests!!!"<<endl;
 

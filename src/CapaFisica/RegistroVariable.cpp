@@ -23,7 +23,7 @@ RegistroVariable::~RegistroVariable(){
 
 int RegistroVariable::agregar_datos(const char* datos,unsigned short tamanioDatos)throw(){
 
-	if (this->fue_eliminado() || datos == NULL)
+	if (this->fue_eliminado() )
 	{
 		return RES_ERROR;
 	}
@@ -37,7 +37,7 @@ int RegistroVariable::agregar_datos(const char* datos,unsigned short tamanioDato
 	if (buffer)
 		stream.write(buffer,tamanio); //Inserts the first n characters of the array pointed by s into the stream.
 	stream.write(datos,tamanioDatos);
-	limpiar_buffer();
+	RegistroVariable::limpiar_buffer();
 
 	tamanio= tamanioFinal;
 	buffer= new char[tamanioFinal +1];
