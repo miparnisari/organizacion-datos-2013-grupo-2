@@ -1,7 +1,7 @@
 #include "NodoInterno.h"
 
 NodoInterno::NodoInterno(unsigned int p_minCantidadBytes, unsigned int p_maxCantidadBytes)
-	:NodoArbol('I')
+	:NodoArbol(TIPO_INTERNO)
 {
 	maxCantidadBytes = p_maxCantidadBytes;
 	minCantidadBytes = p_minCantidadBytes;

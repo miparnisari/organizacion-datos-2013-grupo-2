@@ -8,7 +8,7 @@
 #include "NodoSecuencial.h"
 
 NodoSecuencial::NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBytesOcupados)
-	:NodoArbol('S')
+	:NodoArbol(TIPO_HOJA)
 {
 	minCantidadBytesOcupados = minBytesOcupados;
 	maxCantidadBytesOcupados = maxBytesOcupados;
@@ -105,13 +105,10 @@ Si no estaba, lo inserta. Si al insertar hubo overflow, devuelve RES_OVERFLOW.
 Si no, devuelve RES_OK.
 Si hubo error, devuelve RES_ERROR. */
 
-int NodoSecuencial::eliminar(ClaveX* clave, std::vector<RegistroClave>& regsUnderflow)
+int NodoSecuencial::eliminar(const ClaveX clave, std::vector<RegistroClave>& regsUnderflow)
 {
-	if (clave == NULL)
-		return RES_ERROR;
-
 	RegistroClave registro;
-	registro.set_clave(*clave);
+	registro.set_clave(clave);
 	int posicionEliminar = buscar(&registro);
 	if (posicionEliminar >= 0)
 	{
