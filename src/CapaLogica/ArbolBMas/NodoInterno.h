@@ -19,8 +19,7 @@ class NodoInterno : public NodoArbol {
 
 
 
-		virtual int remover_clave(ClaveX& clave,unsigned short numeroClave);
-		/*se remueve la clave en la posicion numeroClave, su valor es devuelto en la variable clave*/
+
 		virtual int remover_clave(const ClaveX& clave);
 		/*se remueve la clave que sea igual al parametro 'clave' */
 		/*virtual int _insertar_clave( const ClaveX& claveInsertar ,
@@ -58,6 +57,8 @@ class NodoInterno : public NodoArbol {
 
 		int get_clave(unsigned short numeroClave,ClaveX& clave);
 		virtual int get_hijo(unsigned short& hijo,unsigned short numeroHijo);
+		/*se recupera el hijo en la posicion numeroHijo y se guarda en el parametro
+		 * 'hijo'*/
 		int get_clave_mitad(ClaveX& clave);
 		virtual int buscar_clave(const ClaveX& clave,unsigned short& posicionClave);
 		/*se busca la posicion donde se encuentra la clave 'clave' y su valor es devuelto
@@ -82,13 +83,27 @@ class NodoInterno : public NodoArbol {
 		int modificar_hijo(unsigned short valor , unsigned short numeroHijo);
 		/*el hijo en la posicion 'numeroHijo' es modificado por el valor 'valor'.
 		 * en caso de pasar un numeroHijo invalido se retorna RES_ERROR */
+		int remover_clave( const ClaveX& clave, unsigned short& posicionEliminacion );
+		/*elimina la clave 'clave' del nodo interno, se retorna su posicion de eliminacion
+		 * en la variable posicionEliminacion . En caso q el nodo quede en UNDERFLOW, se
+		 * retrorna RES_UNDERFLOW*/
+		int remover_clave(unsigned short numeroClave , ClaveX& clave);
+		/*se remueve la clave en la posicion numeroClave, su valor es devuelto en la variable clave.
+		 * Retorna RES_UNDERFLOW en caso que el nodo quede en estado de underflow*/
+		int remover_hijo(unsigned short numeroHijo);
+		/*se remueve el hijo en la posicion numeroHijo. en caso de pasar un parametro
+		 * invalido se retorna RES_ERROR . En caso que el nodo interno quede en estado
+		 * underflow se retorna RES_UNDERFLOW.*/
+		bool es_hoja(){return false;}
+		bool es_interno(){return true;}
+
 
 		/*METODOS AGREGADOS POR MARTIN -----------------------------------------------*/
 
 
 
-		int empaquetar(Bloque* bloque); //TODO
-		int desempaquetar(const Bloque* bloque); //TODO
+		int empaquetar(Bloque* bloque); //FIXME
+		int desempaquetar(const Bloque* bloque); //FIXME
 
 
 };

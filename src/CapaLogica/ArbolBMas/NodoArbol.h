@@ -27,6 +27,11 @@ class NodoArbol {
 
 	protected:
 		char tipoNodo; //Si es interno o de secuencia
+
+		virtual int desempaquetar(const Bloque* bloque);
+
+		virtual bool es_hoja();
+		virtual bool es_interno();
 };
 
 #endif /* NODOARBOL_H_ */

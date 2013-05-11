@@ -160,13 +160,13 @@ int NodoInterno::get_hijo_derecho(unsigned short& hijo,const ClaveX& clave){
 
 
 
-int NodoInterno::remover_clave(ClaveX& clave,unsigned short numeroClave){
+int NodoInterno::remover_clave(unsigned short numeroClave , ClaveX& clave){
 
 	int res= this->get_clave(numeroClave,clave);
 	if(res== RES_ERROR)
 		return RES_ERROR;
 
-	return this->remover_clave(clave);
+	return this->remover_clave(clave , numeroClave);
 
 }
 
@@ -343,6 +343,42 @@ int NodoInterno::modificar_hijo(unsigned short valor,unsigned short numeroHijo){
 	return RES_OK;
 
 }
+
+
+int NodoInterno::remover_clave(const ClaveX& clave,unsigned short& posicionEliminacion){
+
+	unsigned short posicionBusqueda;
+	int busqueda= this->buscar_clave(clave , posicionBusqueda);
+
+	if(busqueda== RES_ERROR)
+		return RES_ERROR;
+
+	this->vectorClaves.erase(vectorClaves.begin()+posicionBusqueda);
+	this->cantidadBytesOcupados-= clave.get_tamanio_empaquetado();
+	posicionEliminacion= posicionBusqueda;
+
+	if(this->_hay_underflow())
+		return RES_UNDERFLOW;
+	else
+		return RES_OK;
+
+}
+
+
+int NodoInterno::remover_hijo(unsigned short numeroHijo){
+
+	if(numeroHijo >= vectorHijos.size())
+		return RES_ERROR;
+
+	this->vectorHijos.erase( vectorHijos.begin() + numeroHijo );
+	this->cantidadBytesOcupados-= sizeof(numeroHijo);
+	if(_hay_underflow())
+		return RES_UNDERFLOW;
+	else
+		return RES_OK;
+
+}
+
 
 /*METODOS AGREGADOS POR MARTIN -----------------------------------------------*/
 
