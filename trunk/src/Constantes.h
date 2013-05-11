@@ -71,6 +71,13 @@ enum TipoClave {CLAVE_STRING , CLAVE_NUMERICA};
  * ManejadorRegistrosVariables
  * */
 
+/*
+ * ArbolBMas
+ * */
+
+const char TIPO_HOJA= 'h';
+const char TIPO_INTERNO= 'i';
+
 const long FIN_PILA_REGISTROS_LIBRES = -1;
 
 #endif /* CONSTANTES_H */
