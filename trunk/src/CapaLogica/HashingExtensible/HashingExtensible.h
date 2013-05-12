@@ -35,9 +35,6 @@ class HashingExtensible
 		virtual int agregar(RegistroClave reg);
 		//Guarda el elemento en el hash, en caso de que ya existe el elemento devuelve YA_EXISTE
 
-		virtual int create(std::string directorioSalida, std::string fileName);
-		//NO SE PARA QUE LO PUSIERON*************************
-
         virtual int devolver(ClaveX clave, RegistroClave *reg);
         //Devuelve el elemento del hash, en caso de que no exista devuelve NO_EXISTE
 

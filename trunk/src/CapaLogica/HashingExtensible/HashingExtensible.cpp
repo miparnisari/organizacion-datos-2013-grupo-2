@@ -119,11 +119,6 @@ int HashingExtensible::agregar(RegistroClave reg)
     return resultado;
 }
 
-int HashingExtensible::create(std::string directorioSalida, std::string fileName)
-{
-	return RES_OK;
-}
-
 int HashingExtensible::devolver(ClaveX clave, RegistroClave *reg)
 {
     int posReg;
