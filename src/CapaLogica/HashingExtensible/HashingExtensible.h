@@ -25,12 +25,12 @@ class HashingExtensible
 
 	public:
 
-        HashingExtensible();
-        //EN REALIDAD ESTE NO ME SIRVE, PERO LO DEJO PARA QUE NO FALLEN LOS OTROS ARCHIVOS*********
-
 		HashingExtensible(std::string directorioSalida, std::string fileName);
 
 		virtual ~HashingExtensible();
+
+		virtual int eliminar_hashing_extensible();
+		//Eliminamos el hashing extensible junto a todos sus documentos
 
 		virtual int agregar(RegistroClave reg);
 		//Guarda el elemento en el hash, en caso de que ya existe el elemento devuelve YA_EXISTE

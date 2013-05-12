@@ -1,8 +1,6 @@
 #include "../HashingExtensible/HashingExtensible.h"
 
 
-HashingExtensible::HashingExtensible(){}
-
 /**No se necesita guardar nada del Hash porque todo se puede recuperar con el constructor
 
 Falta revisar como se guardan los tamanios de dispersion de los bloques*/
@@ -38,6 +36,12 @@ HashingExtensible::~HashingExtensible()
     this->tabla.~Tabla();
 }
 
+int HashingExtensible::eliminar_hashing_extensible()
+{
+    this->manejador_bloques.eliminar_archivo(fileName);
+  //  this->tabla.eliminar_tabla();
+    return RES_OK;
+}
 
 int HashingExtensible::funcion_dispersion(int clave)
 {
