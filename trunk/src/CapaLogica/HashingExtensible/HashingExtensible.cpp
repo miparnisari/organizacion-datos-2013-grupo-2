@@ -1,5 +1,6 @@
 #include "../HashingExtensible/HashingExtensible.h"
-
+//#include <stringstream>
+#include <sstream>
 
 /**No se necesita guardar nada del Hash porque todo se puede recuperar con el constructor
 
@@ -7,30 +8,27 @@ Falta revisar como se guardan los tamanios de dispersion de los bloques*/
 
 HashingExtensible::HashingExtensible(std::string directorioSalida, std::string fileNamee)
 {
-    Bloque *bloqueNuevo;
+    Bloque *bloqueNuevo = NULL;
 
     this->fileName=directorioSalida+fileNamee;
     this->fileNameTabla=directorioSalida+fileNamee+"Tabla";
-    if (this->manejador_bloques.abrir_archivo(fileName, "r+") != RES_OK){ //Si no existe es porque estamos creando un nuevo Hash
+    if (this->manejador_bloques.abrir_archivo(fileName, "rb+") != RES_OK){ //Si no existe es porque estamos creando un nuevo Hash
         this->manejador_bloques.crear_archivo(fileName, BLOQUE_TAM_DEFAULT);
         //Creamos la tabla
         //no es necesario cargar tabla
         this->tabla = new Tabla(fileNameTabla);
         this->tabla->cambiar_valor(0, 0); // la pos 0 de la tabla se le coloca el num de bloque 0
-        //Guardamos los cambios de la tabla
-        //saco el persistir tabla, no necesitamos guartdarla
-        //this->tabla.persistir_tabla(fileNameTabla);
         //Creamos un nuevo bloque con dispersion 1 y lo guardamos en el archivo de bloques del Hash
         bloqueNuevo = this->manejador_bloques.crear_bloque();
         this->crear_bloque(1, bloqueNuevo);
         this->manejador_bloques.escribir_bloque(bloqueNuevo);//Va a estar en la posicion 0
+
+        printf("cant de bloques.... %d", this->manejador_bloques.get_cantidad_bloques());
+
         this->cant_bloques = 1;
     }else{
         //Ya abrimos el archivo de bloques
         this->cant_bloques = manejador_bloques.get_cantidad_bloques();
-
-        //saco el metodo, pues no necesitamos cargar tabla, esta siempre en archivo
-        //this->tabla.cargar_tabla(fileNameTabla);
     }
 }
 
@@ -113,9 +111,6 @@ int HashingExtensible::agregar(RegistroClave reg)
         //agrego los bloques vacios con el tamanio de dispersion que corresponde
         this->manejador_bloques.sobreescribir_bloque(&bloqueAux, posBloque);
         this->manejador_bloques.sobreescribir_bloque(&bloqueNuevo, posBloqueNuevo);
-        //Actualizamos la tabla del archivo
-        //nuevamente, saco persistir tabla
-        //this->tabla.persistir_tabla(fileNameTabla);
         //Agrego todos los registros del bloque que desbordo junto con el nuevo registro
         this->agregar_registros_bloques(bloque, reg);
         bloqueNuevo.~Bloque();
@@ -196,8 +191,6 @@ int HashingExtensible::eliminar(ClaveX clave)
                 this->tabla->cambiar_valor(i,posDer);
             }
             this->dividir_tabla();
-            //saco esto, pues ya no hay necesidad de persistir
-            //this->tabla.persistir_tabla(fileNameTabla);
         }
     }
     bloque.~Bloque();
@@ -209,12 +202,24 @@ int HashingExtensible::crear_bloque(int tam, Bloque *bloqueNuevo)
 {
 //Creamos el bloque con el tam de dispersion del tama�o de la tabla
     RegistroVariable tamDispBloque;
-    char *tamDisp;
-    tamDisp = (char *)tam;
+
+    //agregamos el tamanio al bloque
+    std::stringstream ss ;
+    std::string campo;
+    ss << tam;
+    campo = ss . str ();
+
+
+    if (bloqueNuevo == NULL)    printf("puntero nulo"); //para borrar cuando pase test
+
+
+
     //Le guardo el tamaño de dispersion
-    tamDispBloque.agregar_campo(tamDisp,sizeof(tamDisp));
+    tamDispBloque.agregar_campo(campo.c_str(),campo.size());
     bloqueNuevo->agregar_registro(&tamDispBloque);
-    tamDispBloque.~RegistroVariable();
+
+    printf("paso crear bloque");
+ //   tamDispBloque.~RegistroVariable();
     return RES_OK;
 }
 
