@@ -21,7 +21,7 @@ ClaveX::ClaveX(const ClaveX& clavex){
 	claves[CLAVE_NUMERICA]= new ClaveNumerica;
 	claves[CLAVE_STRING]= new ClaveString;
 
-	(*this)= clavex;
+//	(*this)= clavex;
 
 }
 

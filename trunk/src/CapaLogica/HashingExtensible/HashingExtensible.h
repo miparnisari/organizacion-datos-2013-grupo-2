@@ -20,7 +20,7 @@ class HashingExtensible
         std::string fileNameTabla;
         int cant_bloques;
         ManejadorBloques manejador_bloques;
-        Tabla tabla;
+        Tabla* tabla;
 
 
 	public:

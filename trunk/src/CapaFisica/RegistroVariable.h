@@ -33,6 +33,7 @@ class RegistroVariable {
 
 		RegistroVariable();
 		virtual ~RegistroVariable();
+		RegistroVariable(const RegistroVariable& otro);
 
 		virtual unsigned short get_cantidad_campos()throw();
 		virtual char* get_buffer()throw();

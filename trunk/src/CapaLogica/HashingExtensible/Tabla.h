@@ -18,20 +18,25 @@ using namespace std;
 
 class Tabla {
 private:
+	string rutaTabla;
 	int tamanio;
 
 public:
 	Tabla(string rutaArchivo);
+	Tabla();
 	virtual ~Tabla();
 
 	void set_tamanio(int cantidad);
 	int get_tamanio();
 
-	int obtener_valor(string rutaArchivo, int posicion);
-	void cambiar_valor(string rutaArchivo, int posicion, int nuevoValor);
-	void dividir_tabla(string rutaArchivo);
-	void duplicar_tabla(string rutaArchivo);
-	void eliminar_tabla(string rutaArchivo);
+	void set_rutaTabla(string ruta);
+	string get_rutaTabla();
+
+	int obtener_valor(int posicion);
+	void cambiar_valor(int posicion, int nuevoValor);
+	void dividir_tabla();
+	void duplicar_tabla();
+	void eliminar_tabla();
 };
 
 #endif /* TABLA_H_ */

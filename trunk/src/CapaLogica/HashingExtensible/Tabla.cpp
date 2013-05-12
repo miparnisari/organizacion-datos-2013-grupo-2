@@ -7,6 +7,11 @@
 
 #include "Tabla.h"
 
+Tabla::Tabla()
+{
+
+}
+
 /*Crea la tabla si no esta en la ruta especificada, con tamanio 1, y contenido -1,
  * en caso de estar el archivo, carga su tamanio.
  * */
@@ -38,12 +43,19 @@ int Tabla::get_tamanio(){
 	return this->tamanio;
 }
 
+void Tabla::set_rutaTabla(string ruta){
+	this->rutaTabla = ruta;
+}
 
-int Tabla::obtener_valor(string rutaArchivo, int posicion){
+string Tabla::get_rutaTabla(){
+	return this->rutaTabla;
+}
+
+int Tabla::obtener_valor(int posicion){
 	ManejadorArchivoDatosBasicos<int> archivo;
 	int contenido;
 
-	archivo.abrir_archivo(rutaArchivo, "rb");
+	archivo.abrir_archivo(this->get_rutaTabla(), "rb");
 
 	archivo.leer(&contenido,posicion);
 
@@ -51,27 +63,27 @@ int Tabla::obtener_valor(string rutaArchivo, int posicion){
 	archivo.cerrar_archivo();
 }
 
-void Tabla::cambiar_valor(string rutaArchivo, int posicion, int nuevoValor){
+void Tabla::cambiar_valor(int posicion, int nuevoValor){
 	ManejadorArchivoDatosBasicos<int> archivo;
 	int contenido;
 
-	archivo.abrir_archivo(rutaArchivo, "wb");
+	archivo.abrir_archivo(this->get_rutaTabla(), "wb");
 
 	archivo.escribir(contenido,posicion);
 
 	archivo.cerrar_archivo();
 }
 
-void Tabla::dividir_tabla(string rutaArchivo){
+void Tabla::dividir_tabla(){
 
 	this->set_tamanio((this->get_tamanio() / 2));
 }
 
-void Tabla::duplicar_tabla(string rutaArchivo){
+void Tabla::duplicar_tabla(){
 	int unDato;
 	ManejadorArchivoDatosBasicos<int> archivo;
 
-	archivo.abrir_archivo(rutaArchivo, "wb");
+	archivo.abrir_archivo(this->get_rutaTabla(), "wb");
 
 	for (int i = 1; i < this->get_tamanio(); ++i) {
 		archivo.leer(&unDato, sizeof(int)*i);
@@ -84,8 +96,8 @@ void Tabla::duplicar_tabla(string rutaArchivo){
 	archivo.cerrar_archivo();
 }
 
-void eliminar_tabla(string rutaArchivo){
+void Tabla::eliminar_tabla(){
 	ManejadorArchivoDatosBasicos<int> archivo;
 
-	archivo.eliminar_archivo(rutaArchivo);
+	archivo.eliminar_archivo(this->get_rutaTabla());
 }

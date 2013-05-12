@@ -15,8 +15,8 @@ HashingExtensible::HashingExtensible(std::string directorioSalida, std::string f
         this->manejador_bloques.crear_archivo(fileName, BLOQUE_TAM_DEFAULT);
         //Creamos la tabla
         //no es necesario cargar tabla
-        //this->tabla.cargar_tabla(fileNameTabla);
-        this->tabla.cambiar_valor(fileName,0, 0); // la pos 0 de la tabla se le coloca el num de bloque 0
+        this->tabla = new Tabla(fileNameTabla);
+        this->tabla->cambiar_valor(0, 0); // la pos 0 de la tabla se le coloca el num de bloque 0
         //Guardamos los cambios de la tabla
         //saco el persistir tabla, no necesitamos guartdarla
         //this->tabla.persistir_tabla(fileNameTabla);
@@ -37,7 +37,7 @@ HashingExtensible::HashingExtensible(std::string directorioSalida, std::string f
 HashingExtensible::~HashingExtensible()
 {
     this->manejador_bloques.~ManejadorBloques();
-    this->tabla.~Tabla();
+    delete(tabla);
 }
 
 int HashingExtensible::eliminar_hashing_extensible()
@@ -50,7 +50,7 @@ int HashingExtensible::eliminar_hashing_extensible()
 int HashingExtensible::funcion_dispersion(int clave)
 {
     int tam_tabla;
-    tam_tabla = this->tabla.get_tamanio();
+    tam_tabla = this->tabla->get_tamanio();
     return (clave%tam_tabla);
 }
 
@@ -62,7 +62,7 @@ int HashingExtensible::agregar(RegistroClave reg)
     ClaveX clave_reg;
     char* valor = NULL;
 
-    tamTabla = tabla.get_tamanio();
+    tamTabla = tabla->get_tamanio();
     //Obtengo el bloque en donde se guardara el registro
     reg.get_clave(clave_reg);
     posBloque = this->obtener_bloque(clave_reg, &bloque);
@@ -89,8 +89,8 @@ int HashingExtensible::agregar(RegistroClave reg)
         if(tamDispersion == tamTabla){
 
             //Duplicamos la tabla
-            this->tabla.duplicar_tabla(fileNameTabla);
-            this->tabla.cambiar_valor(fileNameTabla,posTabla, posBloqueNuevo);
+            this->tabla->duplicar_tabla();
+            this->tabla->cambiar_valor(posTabla, posBloqueNuevo);
 
             //Creamos el bloque con el tam de dispersion del tamanio de la tabla
             this->crear_bloque(tamTabla*2, &bloqueNuevo);
@@ -99,11 +99,11 @@ int HashingExtensible::agregar(RegistroClave reg)
         }else{
 
             //Modifico en la tabla las posicion por cantidad de tamDispersion
-/**/           for(i=posTabla; i<tabla.get_tamanio(); i=i+tamDispersion*2){ //hacia la derecha
-                this->tabla.cambiar_valor(fileNameTabla,i,posBloqueNuevo);
+/**/           for(i=posTabla; i<tabla->get_tamanio(); i=i+tamDispersion*2){ //hacia la derecha
+                this->tabla->cambiar_valor(i,posBloqueNuevo);
             }
             for(i=posTabla; i>=0; i=i-tamDispersion*2){ // hacia la izquierda
-                this->tabla.cambiar_valor(fileNameTabla,i,posBloqueNuevo);
+                this->tabla->cambiar_valor(i,posBloqueNuevo);
             }
             //Creo un bloque con la dispersion que corresponde
             this->crear_bloque(tamDispersion*2, &bloqueNuevo);
@@ -181,19 +181,19 @@ int HashingExtensible::eliminar(ClaveX clave)
         tamDispersion = ((int)tam)/2;
 
         //Me muevo tamDispersion para un lado y para el otro de la lista, si son iguales cambio cada tam disp *2 los bloques de la tabla
-        posDer = this->tabla.obtener_valor(fileNameTabla, posTabla+tamDispersion);
-        posIzq = this->tabla.obtener_valor(fileNameTabla, posTabla-tamDispersion);
+        posDer = this->tabla->obtener_valor(posTabla+tamDispersion);
+        posIzq = this->tabla->obtener_valor(posTabla-tamDispersion);
         if (posDer == posIzq){
             //Eliminamos el bloque
             Bloque* bloqueVacio = this->manejador_bloques.crear_bloque();
             this->manejador_bloques.sobreescribir_bloque(bloqueVacio,posBloque);
             this->cant_bloques --;
             //Reemplazamos en donde estaba la posicion del bloque viejo por la posicion que corresponda
- /**/           for(i=posTabla; i<tabla.get_tamanio(); i=i+tamDispersion*2){ //hacia la derecha
-                this->tabla.cambiar_valor(fileNameTabla, i,posDer);
+ /**/           for(i=posTabla; i<tabla->get_tamanio(); i=i+tamDispersion*2){ //hacia la derecha
+                this->tabla->cambiar_valor(i,posDer);
             }
             for(i=posTabla; i>=0; i=i-tamDispersion*2){ // hacia la izquierda
-                this->tabla.cambiar_valor(fileNameTabla,i,posDer);
+                this->tabla->cambiar_valor(i,posDer);
             }
             this->dividir_tabla();
             //saco esto, pues ya no hay necesidad de persistir
@@ -222,7 +222,7 @@ int HashingExtensible::obtener_bloque(ClaveX clave, Bloque *bloque)
 {
     int posBloque;
     //Busco el numero de bloque que necesitamos
-    posBloque = this->tabla.obtener_valor(fileNameTabla, this->obtener_posicion_tabla(clave));
+    posBloque = this->tabla->obtener_valor(this->obtener_posicion_tabla(clave));
     //Busco el bloque para agregar el elemento
     bloque = this->manejador_bloques.obtener_bloque(posBloque);
     return posBloque;
@@ -271,9 +271,9 @@ int HashingExtensible::agregar_registros_bloques(Bloque bloque, RegistroClave re
 
 int HashingExtensible::dividir_tabla()
 {
-    int i=0, mitad=(this->tabla.get_tamanio())/2, resultado=RES_OK;
+    int i=0, mitad=(this->tabla->get_tamanio())/2, resultado=RES_OK;
     while ((resultado == RES_OK)&&(i < mitad)){
-        if((this->tabla.obtener_valor(fileNameTabla, i)) != (this->tabla.obtener_valor(fileNameTabla, (i+mitad))))
+        if((this->tabla->obtener_valor(i)) != (this->tabla->obtener_valor(i+mitad)))
             resultado = RES_ERROR;
         i++;
     }
