@@ -2,9 +2,7 @@
 #define HEAP_H
 
 #include <iostream>
-//cambiar estos include de *******
-#include "C:\Users\Juan\workspace\TpDatos\organizacion-datos-2013-grupo-2\src\CapaLogica\ManejoArchivos\RegistroClave.h"
-#include "C:\Users\Juan\workspace\TpDatos\organizacion-datos-2013-grupo-2\src\CapaFisica\RegistroVariable.h"
+#include "../CapaLogica/ManejoArchivos/RegistroClave.h"
 
 using namespace std;
 

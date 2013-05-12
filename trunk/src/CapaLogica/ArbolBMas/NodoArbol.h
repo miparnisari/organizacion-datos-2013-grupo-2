@@ -25,13 +25,15 @@ class NodoArbol {
 		NodoArbol(char tipoNodo);
 		virtual ~NodoArbol();
 
-	protected:
-		char tipoNodo; //Si es interno o de secuencia
-
 		virtual int desempaquetar(const Bloque* bloque);
 
 		virtual bool es_hoja();
 		virtual bool es_interno();
+
+	protected:
+		char tipoNodo; //Si es interno o de secuencia
+
+
 };
 
 #endif /* NODOARBOL_H_ */

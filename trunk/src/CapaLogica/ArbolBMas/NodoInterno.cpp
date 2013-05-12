@@ -76,7 +76,7 @@ int NodoInterno::get_clave(unsigned short numeroClave,ClaveX& clave){
 }
 
 
-int NodoInterno::get_hijo(unsigned short& hijo,unsigned short numeroHijo)
+int NodoInterno::get_hijo(TipoHijo& hijo,unsigned short numeroHijo)
 {
 	if (esta_vacio())
 		return RES_ERROR;
@@ -104,7 +104,7 @@ int NodoInterno::get_clave_mitad(ClaveX& clave){
 
 int NodoInterno::get_tamanio_ocupado()
 {
-	return (cantidadBytesOcupados + vectorHijos.size()*sizeof(unsigned short));
+	return (cantidadBytesOcupados + vectorHijos.size()*sizeof(TipoHijo));
 }
 
 int NodoInterno::buscar_clave(const ClaveX& clave,unsigned short& posicionClave)
@@ -130,7 +130,7 @@ int NodoInterno::buscar_clave(const ClaveX& clave,unsigned short& posicionClave)
 }//FIXME Para que sirve este metodo!? Es lo mismo que get_clave(pos)...
 
 
-int NodoInterno::get_hijo_izquierdo(unsigned short& hijo,const ClaveX& clave){
+int NodoInterno::get_hijo_izquierdo(TipoHijo& hijo,const ClaveX& clave){
 
 	if(this->esta_vacio())
 		return RES_ERROR;
@@ -143,7 +143,7 @@ int NodoInterno::get_hijo_izquierdo(unsigned short& hijo,const ClaveX& clave){
 
 }
 
-int NodoInterno::get_hijo_derecho(unsigned short& hijo,const ClaveX& clave){
+int NodoInterno::get_hijo_derecho(TipoHijo& hijo,const ClaveX& clave){
 
 	if(this->esta_vacio())
 		return RES_ERROR;
@@ -227,7 +227,7 @@ int NodoInterno::agregar_clave(const ClaveX& clave)
 	return RES_OK;
 }
 
-int NodoInterno::set_hijo_izquierdo(const ClaveX& clave, unsigned short valor)
+int NodoInterno::set_hijo_izquierdo(const ClaveX& clave, TipoHijo valor)
 {
 
 	unsigned short posicion;
@@ -239,7 +239,7 @@ int NodoInterno::set_hijo_izquierdo(const ClaveX& clave, unsigned short valor)
 	return RES_OK;
 }
 
-int NodoInterno::set_hijo_derecho(const ClaveX& clave, unsigned short valor)
+int NodoInterno::set_hijo_derecho(const ClaveX& clave, TipoHijo valor)
 {
 	unsigned short posicion;
 	if( this->buscar_clave(clave,posicion) ==RES_ERROR)
@@ -261,12 +261,12 @@ int NodoInterno::empaquetar(Bloque* bloque)
 
 	unsigned int contadorClaves = 0;
 	unsigned int contadorHijos = 1;
-	unsigned short hijo = vectorHijos.at(0);
+	TipoHijo hijo = vectorHijos.at(0);
 	registro.agregar_campo((char*)&hijo,sizeof(hijo));
 	while (contadorClaves < get_cantidad_claves() && contadorHijos < get_cantidad_hijos())
 	{
 		ClaveX clave = vectorClaves.at(contadorClaves);
-		unsigned short hijo = vectorHijos.at(contadorHijos);
+		TipoHijo hijo = vectorHijos.at(contadorHijos);
 
 		char* buffer = new char[clave.get_tamanio_empaquetado()]();
 		clave.empaquetar(buffer);
@@ -310,7 +310,7 @@ int NodoInterno::insertar_clave(const ClaveX& clave,
 }
 
 
-int NodoInterno::insertar_hijo(unsigned short hijo,unsigned short posicion){
+int NodoInterno::insertar_hijo(TipoHijo hijo,unsigned short posicion){
 
 	if(posicion == this->POSICION_FIN_VECTOR_HIJOS){
 		vectorHijos.push_back(hijo);
@@ -334,7 +334,7 @@ int NodoInterno::insertar_hijo(unsigned short hijo,unsigned short posicion){
 }
 
 
-int NodoInterno::modificar_hijo(unsigned short valor,unsigned short numeroHijo){
+int NodoInterno::modificar_hijo(TipoHijo valor,unsigned short numeroHijo){
 
 	if(numeroHijo >= vectorHijos.size())
 		return RES_ERROR;

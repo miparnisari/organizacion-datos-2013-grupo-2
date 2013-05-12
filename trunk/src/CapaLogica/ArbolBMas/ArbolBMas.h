@@ -18,11 +18,23 @@ struct header_arbol
 
 class ArbolBMas
 {
+	public:
+		typedef NodoInterno::TipoHijo TipoHijo;
+
 	private:
 		header_arbol header;
-		ManejadorBloques archivoNodosInternos;
-		ManejadorBloques archivoNodosSecuencia;
+		ManejadorBloques archivoNodos;
 		NodoInterno* raiz;
+		unsigned int numeroBloqueRaiz;
+
+		int _hallar_hijo_correspondiente(RegistroClave* registro,
+				NodoInterno* nodoBuscar,TipoHijo& numeroBloqueHijoCorrespondiente);
+		/*dado un nodoInterno y un registro, se busca el siguiente hijo a explorar*/
+		int _insertar_recursivo(unsigned int& numeroBloqueActual ,
+				 RegistroClave* registro , TipoHijo& hijoPromocionado);
+		int _hallar_hoja(RegistroClave* registro,unsigned int& numeroBloque);
+		/*retorna el numero de bloque donde el registro 'registro se encuentra .
+		 * En caso de no hallarlo retorna RES_ERROR'*/
 
 	public:
 		ArbolBMas();
