@@ -7,13 +7,23 @@
 
 #include "Tabla.h"
 
-Tabla::Tabla() {
+/*Crea la tabla si no esta en la ruta especificada, con tamanio 1, y contenido -1,
+ * en caso de estar el archivo, carga su tamanio.
+ * */
+Tabla::Tabla(string rutaArchivo) {
 	//en principio la tabla se crea con tamanio 1
-	int valorNulo = -1;
-	this->bloques = NULL;
-	this->tamanio = 1;
-	this->getBloques()->agregar_nuevo_dato(valorNulo);
+	ManejadorArchivoDatosBasicos<int> archivo;
+	int tamanio;
 
+	if(archivo.abrir_archivo(rutaArchivo, "rb") == RES_ERROR){
+		archivo.crear_archivo(rutaArchivo);
+	}else{
+		this->set_tamanio(archivo.leer(&tamanio, 0));
+	}
+
+	this->set_tamanio(tamanio);
+
+	archivo.cerrar_archivo();
 }
 
 Tabla::~Tabla() {
@@ -28,70 +38,54 @@ int Tabla::get_tamanio(){
 	return this->tamanio;
 }
 
-ListaDE<int>* Tabla::getBloques(){
-	return this->bloques;
+
+int Tabla::obtener_valor(string rutaArchivo, int posicion){
+	ManejadorArchivoDatosBasicos<int> archivo;
+	int contenido;
+
+	archivo.abrir_archivo(rutaArchivo, "rb");
+
+	archivo.leer(&contenido,posicion);
+
+	return contenido;
+	archivo.cerrar_archivo();
 }
 
-int Tabla::obtener_valor(int posicion){
-	//devuelve el contenido de una posicion de la tabla
+void Tabla::cambiar_valor(string rutaArchivo, int posicion, int nuevoValor){
+	ManejadorArchivoDatosBasicos<int> archivo;
+	int contenido;
 
-	int bloqueReferenciado;
+	archivo.abrir_archivo(rutaArchivo, "wb");
 
-	if (posicion > this->tamanio){
-		bloqueReferenciado = -1;
-		return bloqueReferenciado;
-	}else{
-		bloqueReferenciado = this->getBloques()->obtener_valor(posicion);
-		return bloqueReferenciado;
-	}
+	archivo.escribir(contenido,posicion);
+
+	archivo.cerrar_archivo();
 }
 
-void Tabla::cambiar_valor(int posicion, int nuevoValor){
-	this->getBloques()->cambiar_valor(posicion, nuevoValor);
+void Tabla::dividir_tabla(string rutaArchivo){
+
+	this->set_tamanio((this->get_tamanio() / 2));
 }
 
-void Tabla::dividir_tabla(){
-
-	int cantPosiciones = (this->getBloques()->getCantidadNodos()) / 2;
-
-	for (int i = 1; i < cantPosiciones; ++i) {
-		this->getBloques()->eliminar_ultimo();
-	}
-
-	this->set_tamanio(cantPosiciones);
-}
-
-void Tabla::duplicar_tabla(){
-	ListaDE<int>* nuevaLista = new ListaDE<int>();
-
-	//creo una nueva lista con los datos de la que ya tengo
-	for (int i = 1; i < this->getBloques()->getCantidadNodos(); ++i) {
-		nuevaLista->agregar_nuevo_dato(this->getBloques()->obtener_nodo(i)->getDato());
-	}
-	//uno las listas
-	this->getBloques()->concatenar_listas(nuevaLista);
-
-}
-
-void Tabla::persistir_tabla(string rutaArchivo){
+void Tabla::duplicar_tabla(string rutaArchivo){
+	int unDato;
 	ManejadorArchivoDatosBasicos<int> archivo;
 
-	if(archivo.abrir_archivo(rutaArchivo,"wb") == -1){
-		archivo.crear_archivo(rutaArchivo);
-		archivo.abrir_archivo(rutaArchivo,"wb");
+	archivo.abrir_archivo(rutaArchivo, "wb");
+
+	for (int i = 1; i < this->get_tamanio(); ++i) {
+		archivo.leer(&unDato, sizeof(int)*i);
+		archivo.escribir(unDato, sizeof(int)*(i + this->get_tamanio()));
 	}
 
-	//luego de esto, el archivo se habra creado o estara abierto para escritura.
+	//modifico el tamanio
+	this->set_tamanio((this->get_tamanio() * 2));
 
-	//priemro guardo el tamanio de la tabla
-	archivo.agregar(this->get_tamanio());
-
-	//ahora agrego los nodos
-	for (int i = 0; i < this->get_tamanio(); i++) {
-		archivo.agregar(this->getBloques()->obtener_nodo(i)->getDato());
-	}
+	archivo.cerrar_archivo();
 }
 
-void Tabla::cargar_tabla(string rutaArchivo){
+void eliminar_tabla(string rutaArchivo){
+	ManejadorArchivoDatosBasicos<int> archivo;
 
+	archivo.eliminar_archivo(rutaArchivo);
 }
