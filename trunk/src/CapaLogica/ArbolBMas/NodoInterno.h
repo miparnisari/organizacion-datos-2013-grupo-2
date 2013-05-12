@@ -30,8 +30,6 @@ class NodoInterno : public NodoArbol {
 
 		virtual int _insertar_si_overflow(ClaveX* claveInsertar,unsigned short& posicionInsertar ,
 				unsigned short& posicionClavePromocionar);
-		virtual bool _hay_overflow();
-		virtual bool _hay_underflow();
 
 
 	public:
@@ -101,6 +99,9 @@ class NodoInterno : public NodoArbol {
 		 * underflow se retorna RES_UNDERFLOW.*/
 		bool es_hoja(){return false;}
 		bool es_interno(){return true;}
+		virtual bool hay_overflow();
+		virtual bool hay_underflow();
+
 
 
 
