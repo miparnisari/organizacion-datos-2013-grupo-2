@@ -11,14 +11,15 @@
 #include "../src/Utilitarios/Heap.h"
 #include"Test.h"
 
-class TestHeap {
+class TestHeap : public Test{
 
 	public:
-	void ejecutar();
+		TestHeap();
+		virtual ~TestHeap();
+		void ejecutar();
 
 	private:
-
-	void testHeapsort();
+		void testHeapsort();
 
 };
 

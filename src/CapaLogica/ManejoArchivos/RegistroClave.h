@@ -26,6 +26,7 @@ class RegistroClave:public RegistroVariable {
 		static const unsigned short NUMERO_CAMPO_CLAVE= 0;
 
 		RegistroClave();
+		RegistroClave(const RegistroClave& otro);
 
 		virtual void set_clave(const ClaveX& clave);
 		virtual void get_clave(ClaveX& clave);
@@ -42,7 +43,6 @@ class RegistroClave:public RegistroVariable {
 		virtual bool operator ==(const RegistroClave& rc)const;
 		virtual bool operator <=(const RegistroClave& rc)const;
 		virtual bool operator >=(const RegistroClave& rc)const;
-
 
 };/*registro variable donde el primer campo coincide con una clave de identificacion*/
 

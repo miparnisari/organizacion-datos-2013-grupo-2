@@ -7,6 +7,15 @@
 
 #include "TestHeap.h"
 
+TestHeap::TestHeap()
+	: Test()
+{
+}
+
+TestHeap::~TestHeap()
+{
+}
+
 void TestHeap::ejecutar()
 {
 	testHeapsort();

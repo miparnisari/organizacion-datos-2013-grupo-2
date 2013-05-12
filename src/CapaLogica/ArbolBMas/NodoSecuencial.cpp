@@ -71,21 +71,23 @@ void NodoSecuencial::__resolver_overflow(std::vector<RegistroClave> & regsOverfl
 		regsOverflow.push_back(vectorRegistros.at(i));
 	}
 	vectorRegistros.erase(vectorRegistros.begin()+regsQueQuedan,vectorRegistros.end());
-}/* Devuelve en un vector los registros que se sacaron del nodo. */
+}
 
 int NodoSecuencial::insertar(RegistroClave registro, std::vector<RegistroClave> & regsOverflow)
 {
-	RegistroClave regAbuscar;
+	RegistroClave* regAbuscar = new RegistroClave();
 	ClaveX claveAbuscar;
 	registro.get_clave(claveAbuscar);
-	regAbuscar.set_clave(claveAbuscar);
-	int resBuscar = buscar(&regAbuscar);
+	regAbuscar->set_clave(claveAbuscar);
+	int resBuscar = buscar(regAbuscar);
 	if (resBuscar == RES_ERROR)
 	{
+		delete (regAbuscar);
 		return RES_ERROR;
 	}
 	else if (resBuscar == RES_OK)
 	{
+		delete (regAbuscar);
 		return RES_RECORD_EXISTS;
 	}
 	else // (NO ESTA)
@@ -94,6 +96,7 @@ int NodoSecuencial::insertar(RegistroClave registro, std::vector<RegistroClave> 
 		bytesOcupados += registro.get_tamanio_empaquetado();
 		std::sort(vectorRegistros.begin(), vectorRegistros.end());
 
+		delete (regAbuscar);
 		if (bytesOcupados > maxCantidadBytesOcupados)
 		{
 			__resolver_overflow(regsOverflow);
@@ -101,21 +104,18 @@ int NodoSecuencial::insertar(RegistroClave registro, std::vector<RegistroClave> 
 		}
 		return RES_OK;
 	}
-} /* Inserta un registro en el nodo. Si ya estaba, devuelve RES_RECORD_EXISTS.
-Si no estaba, lo inserta. Si al insertar hubo overflow, devuelve RES_OVERFLOW.
-Si no, devuelve RES_OK.
-Si hubo error, devuelve RES_ERROR. */
+}
 
 int NodoSecuencial::eliminar(const ClaveX clave, std::vector<RegistroClave>& regsUnderflow)
 {
-	RegistroClave registro;
-	registro.set_clave(clave);
-	int posicionEliminar = buscar(&registro);
+	RegistroClave* registro = new RegistroClave();
+	registro->set_clave(clave);
+	int posicionEliminar = buscar(registro);
 	if (posicionEliminar >= 0)
 	{
 		bytesOcupados -= vectorRegistros.at(posicionEliminar).get_tamanio_empaquetado();
 		vectorRegistros.erase(vectorRegistros.begin()+posicionEliminar);
-
+		delete(registro);
 		if (bytesOcupados < minCantidadBytesOcupados)
 		{
 			__resolver_underflow(regsUnderflow);
@@ -126,6 +126,7 @@ int NodoSecuencial::eliminar(const ClaveX clave, std::vector<RegistroClave>& reg
 	}
 	else // Se quiso eliminar algo que no estaba
 	{
+		delete(registro);
 		return RES_RECORD_DOESNT_EXIST;
 	}
 

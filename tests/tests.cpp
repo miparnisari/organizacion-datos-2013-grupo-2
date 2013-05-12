@@ -313,6 +313,7 @@ int main(int argc,char** args)
 	tests.push_back(new TestManejadorBloques);
 //	tests.push_back(new TestNodoSecuencial);
 	tests.push_back(new TestNodoInterno);
+//	tests.push_back(new TestHeap);
 //	tests.push_back(new TestHashingExtensible);
 
 	for (unsigned int i = 0; i < tests.size(); i++)
@@ -321,11 +322,6 @@ int main(int argc,char** args)
 		delete(tests.at(i));
 	}
 
-/*	TestHeap test6;
-	test6.ejecutar();
-
-	TestNodoSecuencial test7;
-	test7.ejecutar();*/
 
 	//test_vector_clavex();
 

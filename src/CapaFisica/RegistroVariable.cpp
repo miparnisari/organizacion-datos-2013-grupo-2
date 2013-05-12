@@ -21,6 +21,13 @@ RegistroVariable::~RegistroVariable(){
 
 }/*destructor*/
 
+RegistroVariable::RegistroVariable(const RegistroVariable& otro)
+{
+	tamanio = otro.tamanio;
+	buffer = new char[strlen(otro.buffer)+1];
+	strcpy(buffer,otro.buffer);
+}
+
 int RegistroVariable::agregar_datos(const char* datos,unsigned short tamanioDatos)throw(){
 
 	if (this->fue_eliminado() )

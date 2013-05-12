@@ -12,6 +12,13 @@ RegistroClave::RegistroClave():RegistroVariable()
 	_agregar_campo_clave();
 }
 
+RegistroClave::RegistroClave(const RegistroClave& otro)
+{
+	clave = otro.clave;
+}
+
+
+
 
 void RegistroClave::_agregar_campo_clave()
 {
