@@ -104,8 +104,6 @@ int ClaveNumerica::incrementar(){
 
 
 void ClaveNumerica::set_dato(int p_dato){
-	std::cout << "this->dato" << this->dato << std::endl;
-	std::cout << "dato" << p_dato << std::endl;
 	this->dato= p_dato;
 
 }

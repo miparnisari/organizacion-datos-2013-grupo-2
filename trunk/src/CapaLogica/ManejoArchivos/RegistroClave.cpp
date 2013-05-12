@@ -23,7 +23,6 @@ RegistroClave::RegistroClave(const RegistroClave& otro)
 void RegistroClave::_agregar_campo_clave()
 {
 	unsigned short tamanioClaveEmpaquetada= clave.get_tamanio_empaquetado();
-	std::cout << "tamanio clave empaquetada" << tamanioClaveEmpaquetada << std::endl;
 	char* bufferClaveEmpaquetada= new char[tamanioClaveEmpaquetada]();
 
 	clave.empaquetar(bufferClaveEmpaquetada);
@@ -35,7 +34,6 @@ void RegistroClave::_agregar_campo_clave()
 
 void RegistroClave::limpiar_buffer() throw(){
 
-	std::cout << "limpiar bufferrrrrrrrr"<<std::endl;
 	RegistroVariable::limpiar_buffer();
 	_agregar_campo_clave();
 
