@@ -19,14 +19,14 @@ TestNodoInterno::~TestNodoInterno()
 void TestNodoInterno::ejecutar()
 {
 	crear_nodo_con_demasiadas_claves_falla();
-	empaquetar_en_bloque_chico_falla();
-	empaquetar_en_bloque_da_ok();
+	cout<<"OK: test_nodo_interno"<<endl;
+
 }
 
 
 void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 {
-	NodoInterno nodoI(0,11);
+	NodoInterno nodoI(0,16);
 	ClaveX clave1, clave2, clave3, clave4;
 	clave1.set_clave("aca");
 	clave2.set_clave("alla");
@@ -34,27 +34,16 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 	clave4.set_clave("clave que no entra");
 
 	unsigned short pos= 0;
-	assert(nodoI.insertar_clave(clave1,pos) == RES_OK);
-	assert(nodoI.insertar_clave(clave2,pos) == RES_OK);
-	assert(nodoI.insertar_clave(clave3,pos) == RES_OVERFLOW);
-	assert(nodoI.insertar_clave(clave4,pos) == RES_OVERFLOW);
+	assert(nodoI.insertar_clave(clave1,pos)== RES_OK && pos==0);
+	assert(nodoI.insertar_clave(clave2,pos)== RES_OK && pos==1);
+	assert(nodoI.insertar_clave(clave3,pos)== RES_OK && pos== 0);
+	assert(nodoI.insertar_clave(clave4,pos)== RES_OVERFLOW && pos==3);
+	assert(nodoI.get_cantidad_claves() == 4);
 
-	assert(nodoI.set_hijo_izquierdo(clave1,1) == RES_OK);
-	assert(nodoI.set_hijo_derecho(clave1,2) == RES_OK);
+	assert(nodoI.remover_clave(clave1,pos)== RES_OVERFLOW);
+	//al remover la clave mas pequenia, el nodo sigue en estado overflow
 
-	assert(nodoI.set_hijo_izquierdo(clave2,3) == RES_OK);
-	assert(nodoI.set_hijo_derecho(clave2,4) == RES_OK);
 
-	assert(nodoI.set_hijo_izquierdo(clave3,5) == RES_OK);
-	assert(nodoI.set_hijo_derecho(clave3,6) == RES_OK);
-
-	/*
-	assert(nodoI.set_hijo_izquierdo(clave4,5) == RES_ERROR);
-	assert(nodoI.set_hijo_derecho(clave4,6) == RES_ERROR);
-	*/
-
-	//int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
-	//assert(nodoI.get_tamanio_ocupado() == tamanioOcupado);
 }
 
 
