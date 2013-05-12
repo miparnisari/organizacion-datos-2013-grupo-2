@@ -12,6 +12,7 @@
 #include <string>
 #include <sstream>
 #include <cstring>
+#include <iostream>
 
 using std::string;
 using std::stringstream;
@@ -40,6 +41,7 @@ class ClaveString:public Clave{
 		virtual bool operator !=(const Clave& otraClave);
 		virtual void operator =(const Clave& otraClave);
 		virtual void operator = (const string& unString);
+		virtual std::ostream& operator<<(std::ostream& os)const;
 		/*redefino los operadores para que antes de comparar las cadenas remueva los espacios
 		 * de las mismas*/
 
@@ -48,6 +50,8 @@ class ClaveString:public Clave{
 
 		void remover_espacios();
 		/*remueve los espacios del string contenido definitivamente*/
+
+		virtual void imprimir_dato() const;
 
 		void set_dato(const string&);
 		string get_dato();

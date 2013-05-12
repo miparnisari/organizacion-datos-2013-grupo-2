@@ -31,6 +31,16 @@ int ClaveNumerica::empaquetar(char* buffer){
 
 }
 
+ostream& ClaveNumerica::operator<<(ostream& os)const
+{
+	os << dato;
+	return os;
+}
+
+void ClaveNumerica::imprimir_dato()const
+{
+	std::cout << dato << std::endl;
+}
 
 bool ClaveNumerica::operator <(const Clave& otraClave){
 

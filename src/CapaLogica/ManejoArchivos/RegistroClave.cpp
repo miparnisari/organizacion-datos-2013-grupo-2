@@ -91,10 +91,14 @@ int RegistroClave::desempaquetar(const char* copia)throw(){
 
 }
 
-
-
-bool RegistroClave::operator <(const RegistroClave& rc)const{
-
+bool RegistroClave::operator <(const RegistroClave& rc)const
+{
+	std::cout << "una clave =";
+	(this->clave.imprimir_dato());
+	std::cout << std::endl;
+	std::cout << "otra clave =";
+	(rc.clave.imprimir_dato());
+	std::cout << std::endl;
 	return (this->clave < rc.clave);
 
 }

@@ -25,6 +25,11 @@ void ClaveString::desempaquetar(char* buffer,unsigned short tamanioBuffer){
 
 }
 
+void ClaveString::imprimir_dato() const
+{
+	std::cout << dato << std::endl;
+}
+
 
 int ClaveString::empaquetar(char* buffer){
 
@@ -50,6 +55,12 @@ string ClaveString::remover_espacios(const string linea){
 
 	return resultado;
 
+}
+
+std::ostream& ClaveString::operator<<(std::ostream& os)const
+{
+	os << dato;
+	return os;
 }
 
 

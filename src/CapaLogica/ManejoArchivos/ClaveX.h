@@ -41,6 +41,8 @@ class ClaveX {
 
 		virtual TipoClave get_tipo_clave()const ;
 
+		virtual void imprimir_dato()const;
+
 		virtual void set_clave(string clave);
 		virtual void set_clave(int clave);
 		/*se establece el valor de la clave y su tipo cambia automaticamente.
@@ -55,6 +57,7 @@ class ClaveX {
 		 * incompatible se retorna RES_ERROR y el parametro pasado no se altera*/
 
 		virtual bool operator <(const ClaveX& clavex)const;
+		virtual std::ostream& operator << (std::ostream& os)const;
 		virtual bool operator >(const ClaveX& clavex)const;
 		virtual bool operator >=(const ClaveX& clavex)const;
 		virtual bool operator <=(const ClaveX& clavex)const;
