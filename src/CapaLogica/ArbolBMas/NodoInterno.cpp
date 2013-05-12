@@ -29,13 +29,13 @@ bool NodoInterno::esta_vacio()
 	return (vectorClaves.size()== 0);
 }
 
-bool NodoInterno::_hay_overflow(){
+bool NodoInterno::hay_overflow(){
 
 	return (cantidadBytesOcupados > maxCantidadBytes);
 
 }
 
-bool NodoInterno::_hay_underflow(){
+bool NodoInterno::hay_underflow(){
 
 	return ( cantidadBytesOcupados < minCantidadBytes );
 
@@ -252,7 +252,7 @@ int NodoInterno::set_hijo_derecho(const ClaveX& clave, TipoHijo valor)
 
 int NodoInterno::empaquetar(Bloque* bloque)
 {
-	if (bloque == NULL)
+	/*if (bloque == NULL)
 		return RES_ERROR;
 
 	RegistroVariable registro;
@@ -278,15 +278,88 @@ int NodoInterno::empaquetar(Bloque* bloque)
 		contadorHijos++;
 	}
 
+	return RES_OK;*/
+
+	if(bloque== NULL)
+		return RES_ERROR;
+
+	RegistroVariable registroTipoNodo, registroClaves, registroHijos;
+
+	registroTipoNodo.agregar_campo( (char*)&tipoNodo , sizeof(tipoNodo) );
+
+	const unsigned short CANTIDAD_CLAVES= vectorClaves.size();
+	for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
+
+		ClaveX unaClave= vectorClaves[i];
+		unsigned short tamanioClaveEmpaquetada= unaClave.get_tamanio_empaquetado();
+		char* bufferClaveEmpaquetada= new char[tamanioClaveEmpaquetada];
+		unaClave.empaquetar(bufferClaveEmpaquetada);
+		registroClaves.agregar_campo(bufferClaveEmpaquetada,tamanioClaveEmpaquetada);
+
+		delete[] bufferClaveEmpaquetada;
+
+	}
+
+	const unsigned short CANTIDAD_HIJOS= vectorHijos.size();
+	for(unsigned short i=0;i<CANTIDAD_HIJOS;i++){
+
+		TipoHijo unHijo= vectorHijos[i];
+		registroHijos.agregar_campo( (char*)&unHijo , sizeof(unHijo) );
+
+	}
+
+	bloque->agregar_registro(&registroTipoNodo);
+	bloque->agregar_registro(&registroClaves);
+	bloque->agregar_registro(&registroHijos);
+
 	return RES_OK;
+
 }
 
 int NodoInterno::desempaquetar(const Bloque* bloque)
 {
-	if (bloque == NULL)
+
+	if(bloque== NULL)
 		return RES_ERROR;
 
+	RegistroVariable registroTipoNodo,registroClaves,registroHijos;
+	bloque->recuperar_registro(&registroTipoNodo,0);
+	bloque->recuperar_registro(&registroClaves,1);
+	bloque->recuperar_registro(&registroHijos,2);
+
+	registroTipoNodo.recuperar_campo((char*)&tipoNodo , 0);
+
+	const unsigned short CANTIDAD_CLAVES= registroClaves.get_cantidad_campos();
+	for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
+
+		ClaveX unaClave;
+		unsigned short tamanioClaveEmpaquetada= registroClaves.get_tamanio_campo(i);
+		char* bufferClaveEmpaquetada= new char[tamanioClaveEmpaquetada];
+		registroClaves.recuperar_campo(bufferClaveEmpaquetada,i);
+		unaClave.desempaquetar(bufferClaveEmpaquetada,tamanioClaveEmpaquetada);
+		this->vectorClaves.push_back(unaClave);
+
+		cantidadBytesOcupados+= tamanioClaveEmpaquetada;
+
+		delete[] bufferClaveEmpaquetada;
+
+	}
+
+	const unsigned short CANTIDAD_HIJOS= registroHijos.get_cantidad_campos();
+	for(unsigned short i=0;i<CANTIDAD_HIJOS;i++){
+
+		TipoHijo unHijo;
+		registroHijos.recuperar_campo( (char*)&unHijo , i );
+		vectorHijos.push_back(unHijo);
+
+		cantidadBytesOcupados+= sizeof(unHijo);
+
+	}
+
+	cantidadBytesOcupados+= sizeof(tipoNodo);
+
 	return RES_OK;
+
 }
 
 /*METODOS AGREGADOS POR MARTIN -----------------------------------------------*/
@@ -300,9 +373,11 @@ int NodoInterno::insertar_clave(const ClaveX& clave,
 	const unsigned short TAMANIO_EMPAQUETADO_CLAVE= clave.get_tamanio_empaquetado();
 	this->cantidadBytesOcupados+= TAMANIO_EMPAQUETADO_CLAVE;
 
-	bool overflow= _hay_overflow();
+	bool overflow= hay_overflow();
 	if(overflow)
 		return RES_OVERFLOW;
+	if(hay_underflow())
+		return RES_UNDERFLOW;
 
 	return RES_OK;
 
@@ -315,7 +390,7 @@ int NodoInterno::insertar_hijo(TipoHijo hijo,unsigned short posicion){
 	if(posicion == this->POSICION_FIN_VECTOR_HIJOS){
 		vectorHijos.push_back(hijo);
 		this->cantidadBytesOcupados+= sizeof(hijo);
-		if(_hay_overflow())
+		if(hay_overflow())
 			return RES_OVERFLOW;
 		else
 			return RES_OK;
@@ -326,10 +401,11 @@ int NodoInterno::insertar_hijo(TipoHijo hijo,unsigned short posicion){
 
 	vectorHijos.insert( vectorHijos.begin() + posicion , hijo );
 	this->cantidadBytesOcupados+= sizeof(hijo);
-	if(_hay_overflow())
+	if(hay_overflow())
 		return RES_OVERFLOW;
-	else
-		return RES_OK;
+	if(hay_underflow())
+		return RES_UNDERFLOW;
+	return RES_OK;
 
 }
 
@@ -357,10 +433,12 @@ int NodoInterno::remover_clave(const ClaveX& clave,unsigned short& posicionElimi
 	this->cantidadBytesOcupados-= clave.get_tamanio_empaquetado();
 	posicionEliminacion= posicionBusqueda;
 
-	if(this->_hay_underflow())
+	if(this->hay_overflow())
+		return RES_OVERFLOW;
+	if(this->hay_underflow())
 		return RES_UNDERFLOW;
-	else
-		return RES_OK;
+
+	return RES_OK;
 
 }
 
@@ -372,10 +450,12 @@ int NodoInterno::remover_hijo(unsigned short numeroHijo){
 
 	this->vectorHijos.erase( vectorHijos.begin() + numeroHijo );
 	this->cantidadBytesOcupados-= sizeof(numeroHijo);
-	if(_hay_underflow())
+	if(this->hay_underflow())
 		return RES_UNDERFLOW;
-	else
-		return RES_OK;
+	if(this->hay_overflow())
+		return RES_OVERFLOW;
+
+	return RES_OK;
 
 }
 

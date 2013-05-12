@@ -34,13 +34,12 @@ int NodoArbol::desempaquetar(const Bloque* bloque){
 	if(bloque== NULL)
 		return RES_ERROR;
 
-	const unsigned int TAMANIO_BLOQUE= bloque->get_tamanio_bloque();
-	char* bloqueEmpaquetado= new char[TAMANIO_BLOQUE];
-	bloque->empaquetar(bloqueEmpaquetado);
+	RegistroVariable registroTipoNodo;
+	bloque->recuperar_registro(&registroTipoNodo,0);
+	char tipoNodoLeido;
+	registroTipoNodo.recuperar_campo( (char*)&tipoNodoLeido , sizeof(tipoNodoLeido) );
 
-	this->tipoNodo= bloqueEmpaquetado[0];
-
-	delete[] bloqueEmpaquetado;
+	this->tipoNodo= tipoNodoLeido;
 	return RES_OK;
 
 
