@@ -311,10 +311,10 @@ int main(int argc,char** args)
 	tests.push_back(new TestBloque);
 	tests.push_back(new TestManejadorRegistrosVariables);
 	tests.push_back(new TestManejadorBloques);
-//	tests.push_back(new TestNodoSecuencial);
 	tests.push_back(new TestNodoInterno);
-//	tests.push_back(new TestHeap);
-//	tests.push_back(new TestHashingExtensible);
+	tests.push_back(new TestNodoSecuencial);
+	tests.push_back(new TestHeap);
+	tests.push_back(new TestHashingExtensible);
 
 	for (unsigned int i = 0; i < tests.size(); i++)
 	{
