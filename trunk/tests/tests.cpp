@@ -283,6 +283,21 @@ void test_clavex(){
 }
 
 
+void test_vector_clavex(){
+
+	vector<ClaveX> vcx;
+
+	for(int i=0;i<3;i++){
+		ClaveX cx;
+		cx.set_clave(i);
+		vcx.push_back(cx);
+	}
+
+	for(int i=0;i<3;i++)
+		vcx[i].imprimir_dato();
+
+}
+
 int main(int argc,char** args)
 {
 //	test_leer_de_archivo();
@@ -296,7 +311,7 @@ int main(int argc,char** args)
 	tests.push_back(new TestBloque);
 	tests.push_back(new TestManejadorRegistrosVariables);
 	tests.push_back(new TestManejadorBloques);
-	tests.push_back(new TestNodoSecuencial);
+//	tests.push_back(new TestNodoSecuencial);
 	tests.push_back(new TestNodoInterno);
 //	tests.push_back(new TestHashingExtensible);
 
@@ -306,11 +321,13 @@ int main(int argc,char** args)
 		delete(tests.at(i));
 	}
 
-	TestHeap test6;
+/*	TestHeap test6;
 	test6.ejecutar();
-*/
+
 	TestNodoSecuencial test7;
-	test7.ejecutar();
+	test7.ejecutar();*/
+
+	//test_vector_clavex();
 
 	cout<<"fin tests!!!"<<endl;
 
