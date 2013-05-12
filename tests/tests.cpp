@@ -5,6 +5,8 @@
 #include "TestManejadorRegistrosVariables.h"
 #include "TestBloque.h"
 #include "TestRegistroVariable.h"
+#include "TestHeap.h"
+#include "TestNodoSecuencial.h"
 
 #include <cassert>
 #include <iostream>
@@ -303,6 +305,12 @@ int main(int argc,char** args)
 		tests.at(i)->ejecutar();
 		delete(tests.at(i));
 	}
+
+	TestHeap test6;
+	test6.ejecutar();
+*/
+	TestNodoSecuencial test7;
+	test7.ejecutar();
 
 	cout<<"fin tests!!!"<<endl;
 
