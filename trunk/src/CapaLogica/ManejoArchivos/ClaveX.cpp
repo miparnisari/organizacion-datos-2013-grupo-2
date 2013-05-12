@@ -32,6 +32,22 @@ ClaveX::~ClaveX(){
 		delete(claves[i]);
 }
 
+void ClaveX::imprimir_dato()const
+{
+
+	if (tipoClave == CLAVE_STRING)
+	{
+		string s;
+		this->get_clave(s);
+		std::cout<<s;
+	}
+	else {
+		int i;
+		this->get_clave(i);
+		std::cout<<i;
+	}
+}
+
 
 TipoClave ClaveX::get_tipo_clave()const{
 
@@ -122,11 +138,13 @@ void ClaveX::set_clave(int clave){
 
 }
 
-
+std::ostream& ClaveX::operator << (std::ostream& os)const
+{
+	return os;
+}
 
 
 bool ClaveX::operator <(const ClaveX& clavex)const{
-
 
 	return ( (*claves[tipoClave]) < (*clavex.claves[tipoClave]) );
 

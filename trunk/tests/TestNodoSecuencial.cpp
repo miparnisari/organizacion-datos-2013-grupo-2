@@ -39,7 +39,7 @@ void TestNodoSecuencial::test_empaquetar_desempaquetar()
 	registro.set_clave(claveEscrita);
 	registro.agregar_campo(campoEscrito.c_str(),campoEscrito.size());
 	std::vector<RegistroClave> regsOverflow;
-	nodo->insertar(&registro,regsOverflow);
+	nodo->insertar(registro,regsOverflow);
 
 	assert(nodo->get_proximo_nodo() == -1);
 	assert(nodo->buscar(&registro) == 1);
@@ -100,11 +100,11 @@ void TestNodoSecuencial::test_insertar_eliminar()
 	registro.set_clave(clave);
 	std::string campo = "un campo";
 	registro.agregar_campo(campo.c_str(), campo.size());
-	assert(nodo->insertar(&registro,regsOverflow) == RES_OK);
+	assert(nodo->insertar(registro,regsOverflow) == RES_OK);
 	assert(regsOverflow.empty() == true);
 
 	// Pruebo insertar una clave que ya estaba
-	assert(nodo->insertar(&registro,regsOverflow) == RES_RECORD_EXISTS);
+	assert(nodo->insertar(registro,regsOverflow) == RES_RECORD_EXISTS);
 	assert(regsOverflow.empty() == true);
 
 	assert(nodo->eliminar(clave,regsUnderflow) == RES_UNDERFLOW);
@@ -126,9 +126,11 @@ void TestNodoSecuencial::test_insertar_eliminar()
 	reg1.set_clave(clave1);
 	reg2.set_clave(clave2);
 
-	assert(nodo->insertar(&reg2,regsOverflow) == RES_OK);
+	// El nodo tiene "una clave|un campo"
+	assert(nodo->insertar(reg2,regsOverflow) == RES_OK);
+	// El nodo tiene "una clave|un campo" y "aa|2"
 	assert(regsOverflow.empty() == true);
-	assert(nodo->insertar(&reg1,regsOverflow) == RES_OK);
+	assert(nodo->insertar(reg1,regsOverflow) == RES_OK);
 	assert(regsOverflow.empty() == true);
 
 	// Los registros deben estar ordenados dentro del nodo
@@ -176,7 +178,7 @@ void TestNodoSecuencial::test_overflow()
 	NodoSecuencial* nodo = new NodoSecuencial(5,tamRegTotal+sizeof(int));
 	for (int i = 0; i<1000;i++)
 	{
-		assert(nodo->insertar(&(registros.at(i)),regsOverflow) == RES_OK);
+		assert(nodo->insertar(registros.at(i),regsOverflow) == RES_OK);
 		assert(regsOverflow.empty() == true);
 	}
 
@@ -186,7 +188,7 @@ void TestNodoSecuencial::test_overflow()
 	regOverflow.set_clave(clave);
 	regOverflow.agregar_campo(campo.c_str(), campo.size());
 
-	assert(nodo->insertar(&regOverflow,regsOverflow) == RES_OVERFLOW);
+	assert(nodo->insertar(regOverflow,regsOverflow) == RES_OVERFLOW);
 	assert(regsOverflow.empty() == false);
 	assert(regsOverflow.size() == 500);
 

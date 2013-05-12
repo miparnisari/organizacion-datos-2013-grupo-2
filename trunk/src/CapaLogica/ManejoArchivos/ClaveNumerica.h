@@ -20,6 +20,7 @@ class ClaveNumerica:public Clave {
 		virtual bool operator <=(const Clave&);
 		virtual bool operator !=(const Clave&);
 		virtual void operator =(const Clave&);
+		virtual ostream& operator<<(ostream& os)const;
 		/*se redefinen operatores*/
 
 
@@ -35,6 +36,8 @@ class ClaveNumerica:public Clave {
 		void set_dato(int dato);
 		int get_dato();
 		/*getters y setters*/
+
+		virtual void imprimir_dato() const;
 
 		int get_tamanio();
 

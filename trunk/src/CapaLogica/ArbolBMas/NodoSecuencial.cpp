@@ -73,12 +73,13 @@ void NodoSecuencial::__resolver_overflow(std::vector<RegistroClave> & regsOverfl
 	vectorRegistros.erase(vectorRegistros.begin()+regsQueQuedan,vectorRegistros.end());
 }/* Devuelve en un vector los registros que se sacaron del nodo. */
 
-int NodoSecuencial::insertar(RegistroClave* registro, std::vector<RegistroClave> & regsOverflow)
+int NodoSecuencial::insertar(RegistroClave registro, std::vector<RegistroClave> & regsOverflow)
 {
-	if (registro == NULL)
-		return RES_ERROR;
-
-	int resBuscar = buscar(registro);
+	RegistroClave regAbuscar;
+	ClaveX claveAbuscar;
+	registro.get_clave(claveAbuscar);
+	regAbuscar.set_clave(claveAbuscar);
+	int resBuscar = buscar(&regAbuscar);
 	if (resBuscar == RES_ERROR)
 	{
 		return RES_ERROR;
@@ -89,8 +90,8 @@ int NodoSecuencial::insertar(RegistroClave* registro, std::vector<RegistroClave>
 	}
 	else // (NO ESTA)
 	{
-		vectorRegistros.push_back(*registro);
-		bytesOcupados += registro->get_tamanio_empaquetado();
+		vectorRegistros.push_back(registro);
+		bytesOcupados += registro.get_tamanio_empaquetado();
 		std::sort(vectorRegistros.begin(), vectorRegistros.end());
 
 		if (bytesOcupados > maxCantidadBytesOcupados)
@@ -139,15 +140,18 @@ int NodoSecuencial::buscar(RegistroClave* regDevuelto)
 
 	for (unsigned int i = 0; i < vectorRegistros.size(); i++)
 	{
-		RegistroClave registroAlmacenado = vectorRegistros.at(i);
 		ClaveX claveAlmacenada;
-		registroAlmacenado.get_clave(claveAlmacenada);
+		vectorRegistros.at(i).get_clave(claveAlmacenada);
 		if (clave == claveAlmacenada)
 		{
-			for (unsigned int j = 1; j < registroAlmacenado.get_cantidad_campos(); j++)
+			for (unsigned int j = 1; j < vectorRegistros.at(i).get_cantidad_campos(); j++)
 			{
-				char* buffer = new char[registroAlmacenado.get_tamanio_campo(j)]();
-				registroAlmacenado.recuperar_campo(buffer, j);
+//				std::cout << "tamanio campo = " << registroAlmacenado.get_tamanio_campo(j) << std::endl;
+				char* buffer = new char[vectorRegistros.at(i).get_tamanio_campo(j)+1]();
+				buffer[vectorRegistros.at(i).get_tamanio_campo(j)] = '\0';
+				vectorRegistros.at(i).recuperar_campo(buffer, j);
+//				std:: cout << "buffer" << buffer << std::endl;
+//				std:: cout << "strlen" << strlen(buffer) << std::endl;
 				regDevuelto->agregar_campo(buffer,strlen(buffer));
 				delete[] buffer;
 			}

@@ -24,7 +24,7 @@ class NodoSecuencial : public NodoArbol {
 		NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBytesOcupados);
 		virtual ~NodoSecuencial();
 
-		int insertar(RegistroClave* registro, std::vector<RegistroClave> & regsOveflow);
+		int insertar(RegistroClave registro, std::vector<RegistroClave> & regsOveflow);
 		int eliminar(const ClaveX clave, std::vector<RegistroClave>& regsUnderflow);
 		int buscar(RegistroClave* regDevuelto);
 
