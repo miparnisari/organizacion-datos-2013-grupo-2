@@ -69,6 +69,9 @@ class HashingExtensible
         virtual int agregar_registros_bloques(Bloque bloque, RegistroClave reg);
         //Lo que basicamente es tomar todos los registros del bloque que desbordo junto al nuevo
         //registro y los guarda en el hashing como cualquier registro
+
+        virtual int dividir_tabla();
+        //Vemos si se puede dividir la tabla, si se puede entonces la divide sino no pasa nada
 };
 
 #endif /* HASHINGEXTENSIBLE_H */

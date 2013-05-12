@@ -191,6 +191,7 @@ int HashingExtensible::eliminar(ClaveX clave)
             for(i=posTabla; i>=0; i=i-tamDispersion*2){ // hacia la izquierda
                 this->tabla.cambiar_valor(i,posDer);
             }
+            this->dividir_tabla();
             this->tabla.persistir_tabla(fileNameTabla);
         }
     }
@@ -260,5 +261,16 @@ int HashingExtensible::agregar_registros_bloques(Bloque bloque, RegistroClave re
         this->agregar(regAux);
     }
     this->agregar(reg);
+    return RES_OK;
+}
+
+int HashingExtensible::dividir_tabla()
+{
+    int i=0, mitad=(this->tabla.get_tamanio())/2, resultado=RES_OK;
+    while ((resultado == RES_OK)&&(i < mitad)){
+        if((this->tabla.obtener_valor(i)) != (this->tabla.obtener_valor(i+mitad)))
+            resultado = RES_ERROR;
+        i++;
+    }
     return RES_OK;
 }
