@@ -22,10 +22,9 @@ void TestHashingExtensible::test_crear_hashing()
     ManejadorBloques manejador_bloques;
     manejador_bloques.abrir_archivo(DIRECCION, "rb+");
     assert (manejador_bloques.get_cantidad_bloques() == 1);
-    //Debe guardar un bloque de registros
-
-    print_test_ok("crear_hashing");
     hash1.eliminar_hashing_extensible();
+    printf("entro");
+    print_test_ok("crear_hashing");
 }
 
 void TestHashingExtensible::test_eliminar_registro()
@@ -43,8 +42,8 @@ void TestHashingExtensible::test_eliminar_registro()
     hash1.eliminar(clave);
     assert(hash1.devolver(clave, &reg) == NO_EXISTE);
 
-    print_test_ok("test_eliminar_registro");
     hash1.eliminar_hashing_extensible();
+    print_test_ok("test_eliminar_registro");
 }
 
 void TestHashingExtensible::test_agregar_y_devolver_registro()
@@ -72,8 +71,8 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     assert (strcmp(dato,campo.c_str()) == 0);
     delete[] dato;
 
-    print_test_ok("test_agregar_y_devolver_registro");
     hash1.eliminar_hashing_extensible();
+    print_test_ok("test_agregar_y_devolver_registro");
 }
 
 void TestHashingExtensible::test_crear_hashing_cerrarlo_y_abrirlo()
@@ -92,9 +91,8 @@ void TestHashingExtensible::test_crear_hashing_cerrarlo_y_abrirlo()
     assert (strcmp(campoRecuperado,campo.c_str()) == 0);
     delete[] campoRecuperado;
 
-    print_test_ok("test_crear_hashing_cerrarlo_y_abrirlo");
-
     hash1.eliminar_hashing_extensible();
+    print_test_ok("test_crear_hashing_cerrarlo_y_abrirlo");
 }
 
 void TestHashingExtensible::test_agregar_varios_registros_y_devolver()
@@ -137,8 +135,8 @@ void TestHashingExtensible::test_agregar_varios_registros_y_devolver()
     assert (strcmp(dato,campo.c_str()) == 0);
     delete[] dato;
 
-    print_test_ok("test_agregar_varios_registros_y_devolver");
     hash1.eliminar_hashing_extensible();
+    print_test_ok("test_agregar_varios_registros_y_devolver");
 }
 
 void TestHashingExtensible::test_agregar_reg_y_duplicar_tabla()
