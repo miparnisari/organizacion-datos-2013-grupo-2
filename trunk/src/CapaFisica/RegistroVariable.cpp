@@ -28,6 +28,16 @@ RegistroVariable::RegistroVariable(const RegistroVariable& otro)
 	strcpy(buffer,otro.buffer);
 }
 
+
+void RegistroVariable::_inicializar_buffer(){
+
+	for(unsigned short i=0;i<this->tamanio;i++)
+		buffer[i]= '*';
+
+}
+
+
+
 int RegistroVariable::agregar_datos(const char* datos,unsigned short tamanioDatos)throw(){
 
 	if (this->fue_eliminado() )
@@ -47,10 +57,12 @@ int RegistroVariable::agregar_datos(const char* datos,unsigned short tamanioDato
 	RegistroVariable::limpiar_buffer();
 
 	tamanio= tamanioFinal;
-	buffer= new char[tamanioFinal +1];
+	//buffer= new char[tamanioFinal +1];
+	buffer= new char[tamanioFinal];
+	_inicializar_buffer();
 	stream.seekg(0,ios::beg);
 	stream.read(buffer,tamanio);
-	buffer[tamanioFinal] = '\0';
+	//buffer[tamanioFinal] = '\0';
 
 	return RES_OK;
 
@@ -235,7 +247,7 @@ bool RegistroVariable::fue_eliminado()throw(){
 	stream.write(buffer,tamanio);
 	stream.seekg(0,stream.beg);
 	unsigned short tamanioPrimerCampo= 0;
-	char primerCampo=0;
+	char primerCampo=1;
 
 	stream.read( (char*)(&tamanioPrimerCampo) , sizeof(tamanioPrimerCampo) );
 	if(tamanioPrimerCampo > 1)

@@ -65,7 +65,7 @@ const int NO_EXISTE                                 = 3;
 
 
 const unsigned int CANTIDAD_TIPOS_CLAVE= 2;
-enum TipoClave {CLAVE_STRING , CLAVE_NUMERICA};
+enum TipoClave {CLAVE_STRING=0 , CLAVE_NUMERICA};
 
 /*
  * ManejadorRegistrosVariables

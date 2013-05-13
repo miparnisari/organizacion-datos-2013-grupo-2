@@ -124,7 +124,9 @@ void ClaveX::set_clave(string clave){
 
 	tipoClave= CLAVE_STRING;
 
-	*(ClaveString*)claves[CLAVE_STRING] = clave;
+	//*(ClaveString*)claves[CLAVE_STRING] = clave;
+	ClaveString* cs= (ClaveString*)claves[CLAVE_STRING];
+	cs->set_dato(clave);
 
 }
 
@@ -216,7 +218,10 @@ int ClaveX::get_clave(string& clave)const{
 		return RES_ERROR;
 
 	ClaveString* cs= (ClaveString*)claves[CLAVE_STRING];
-	clave= cs->get_dato();
+	string s= cs->get_dato();
+	string ss(s);
+	clave= ss;
+
 
 	return RES_OK;
 

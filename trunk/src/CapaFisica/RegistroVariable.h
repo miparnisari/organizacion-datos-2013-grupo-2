@@ -27,6 +27,7 @@ class RegistroVariable {
 		virtual int seek_numero_campo(unsigned short numeroCampo);
 
 		virtual std::string mostrar_campo(unsigned short numeroCampo);
+		void _inicializar_buffer();
 
 	public:
 		static const unsigned short CAMPO_ENCADENAMIENTO_LIBRES= 1;
