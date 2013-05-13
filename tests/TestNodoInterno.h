@@ -17,11 +17,12 @@ class TestNodoInterno : public Test
 		TestNodoInterno();
 		virtual ~TestNodoInterno();
 		void ejecutar();
+		void todo_tipo_empaquetado();
+
 
 	private:
 		void crear_nodo_con_demasiadas_claves_falla();
-		void empaquetar_en_bloque_chico_falla();
-		void empaquetar_en_bloque_da_ok();
+		void insertar_hijos();
 };
 
 #endif /* TESTNODOINTERNO_H_ */

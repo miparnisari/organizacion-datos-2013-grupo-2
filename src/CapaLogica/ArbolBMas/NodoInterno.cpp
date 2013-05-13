@@ -7,6 +7,7 @@ NodoInterno::NodoInterno(unsigned int p_minCantidadBytes, unsigned int p_maxCant
 	minCantidadBytes = p_minCantidadBytes;
 	cantidadBytesOcupados = 0;
 	vectorHijos.push_back(HIJO_INVALIDO);
+	cantidadBytesOcupados+= sizeof(TipoHijo);
 	/* Primer hijo, para que cuando agreguemos una clave solo halla que agregar un hijo */
 }
 
@@ -16,53 +17,34 @@ NodoInterno::~NodoInterno()
 
 unsigned short NodoInterno::get_cantidad_claves()
 {
-	return vectorClaves.size();
+	unsigned short retornar= vectorClaves.size();
+	return retornar;
 }
 
 unsigned short NodoInterno::get_cantidad_hijos()
 {
-	return vectorHijos.size();
+	unsigned short retornar= vectorHijos.size();
+	return retornar;
 }
 
-bool NodoInterno::esta_vacio()
+bool NodoInterno::esta_vacio()const
 {
 	return (vectorClaves.size()== 0);
 }
 
-bool NodoInterno::hay_overflow(){
+bool NodoInterno::hay_overflow()const{
 
 	return (cantidadBytesOcupados > maxCantidadBytes);
 
 }
 
-bool NodoInterno::hay_underflow(){
+bool NodoInterno::hay_underflow()const{
 
 	return ( cantidadBytesOcupados < minCantidadBytes );
 
 }
 
-int NodoInterno::_insertar_si_overflow(ClaveX* claveInsertar,unsigned short& posicionInsertar ,
-		unsigned short& posicionClavePromocionar){
 
-	const unsigned short CANTIDAD_CLAVES= vectorClaves.size();
-	bool posicionHallada= false;
-	posicionInsertar= CANTIDAD_CLAVES;
-
-	for(unsigned short i= 0; i<CANTIDAD_CLAVES && !posicionHallada ; i++){
-
-		ClaveX unaClave= vectorClaves.at(i);
-		if(unaClave > (*claveInsertar)){
-			posicionInsertar= i;
-			posicionHallada= true;
-		}
-
-	}
-
-	//FIXME
-	return RES_OK;
-
-
-}
 
 
 int NodoInterno::get_clave(unsigned short numeroClave,ClaveX& clave){
@@ -78,8 +60,6 @@ int NodoInterno::get_clave(unsigned short numeroClave,ClaveX& clave){
 
 int NodoInterno::get_hijo(TipoHijo& hijo,unsigned short numeroHijo)
 {
-	if (esta_vacio())
-		return RES_ERROR;
 	if (numeroHijo >= this->get_cantidad_hijos())
 		return RES_ERROR;
 
@@ -104,7 +84,7 @@ int NodoInterno::get_clave_mitad(ClaveX& clave){
 
 int NodoInterno::get_tamanio_ocupado()
 {
-	return (cantidadBytesOcupados + vectorHijos.size()*sizeof(TipoHijo));
+	return (cantidadBytesOcupados );
 }
 
 int NodoInterno::buscar_clave(const ClaveX& clave,unsigned short& posicionClave)
@@ -171,61 +151,6 @@ int NodoInterno::remover_clave(unsigned short numeroClave , ClaveX& clave){
 }
 
 
-int NodoInterno::remover_clave(const ClaveX& clave){
-
-	unsigned short posicionClave;
-	if (this->buscar_clave(clave,posicionClave)== RES_ERROR)
-		return RES_ERROR;
-
-	vectorClaves.erase(vectorClaves.begin() + posicionClave);
-
-	return posicionClave;
-
-}
-
-/*
-int NodoInterno::_insertar_clave(const ClaveX& claveInsertar,ClaveX& claveMitad ,
-		unsigned short& posicionInsercion){
-
-	unsigned short espacioDisponible = maxCantidadBytes - cantidadBytesOcupados;
-	bool overflow = ( espacioDisponible < claveInsertar.get_tamanio_empaquetado() );
-
-	vectorClaves.push_back( claveInsertar );
-	std::sort( vectorClaves.begin() , vectorClaves.end() );
-
-	if(overflow){
-		unsigned short mitad= ceil(vectorClaves.size() / 2.0);
-		vectorClaves.erase(vectorClaves.begin()+mitad);
-
-	}
-
-	this->buscar_clave(claveInsertar , posicionInsercion);
-
-	if(overflow)
-		return RES_OVERFLOW;
-
-	return RES_OK;
-
-
-
-}
-*/
-
-int NodoInterno::agregar_clave(const ClaveX& clave)
-{
-	unsigned short var;
-	if (buscar_clave(clave, var) != RES_ERROR)
-		return RES_RECORD_EXISTS;
-
-	vectorClaves.push_back(clave);
-	std::sort(vectorClaves.begin(), vectorClaves.end());
-
-
-	set_hijo_derecho(clave,HIJO_INVALIDO);
-
-
-	return RES_OK;
-}
 
 int NodoInterno::set_hijo_izquierdo(const ClaveX& clave, TipoHijo valor)
 {
@@ -283,9 +208,14 @@ int NodoInterno::empaquetar(Bloque* bloque)
 	if(bloque== NULL)
 		return RES_ERROR;
 
-	RegistroVariable registroTipoNodo, registroClaves, registroHijos;
+	RegistroVariable registroTipoNodo;
+	RegistroVariable registroClaves;
+	RegistroVariable registroHijos;
 
 	registroTipoNodo.agregar_campo( (char*)&tipoNodo , sizeof(tipoNodo) );
+	char tn;
+	registroTipoNodo.recuperar_campo( (char*)&tn,0 );
+	cout<<"tn= "<<tn<<endl;
 
 	const unsigned short CANTIDAD_CLAVES= vectorClaves.size();
 	for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
@@ -306,7 +236,10 @@ int NodoInterno::empaquetar(Bloque* bloque)
 		TipoHijo unHijo= vectorHijos[i];
 		registroHijos.agregar_campo( (char*)&unHijo , sizeof(unHijo) );
 
+
 	}
+
+	cout<<registroTipoNodo.get_cantidad_campos()<<endl;
 
 	bloque->agregar_registro(&registroTipoNodo);
 	bloque->agregar_registro(&registroClaves);
@@ -367,6 +300,9 @@ int NodoInterno::desempaquetar(const Bloque* bloque)
 int NodoInterno::insertar_clave(const ClaveX& clave,
 		unsigned short& posicionInsercion){
 
+	if( this->buscar_clave(clave,posicionInsercion)!= RES_ERROR )
+		return RES_ERROR;
+
 	vectorClaves.push_back(clave);
 	std::sort( vectorClaves.begin() , vectorClaves.end() );
 	this->buscar_clave(clave , posicionInsercion);
@@ -387,16 +323,20 @@ int NodoInterno::insertar_clave(const ClaveX& clave,
 
 int NodoInterno::insertar_hijo(TipoHijo hijo,unsigned short posicion){
 
-	if(posicion == this->POSICION_FIN_VECTOR_HIJOS){
+	const unsigned short CANTIDAD_HIJOS= vectorHijos.size();
+
+	if(posicion == this->POSICION_FIN_VECTOR_HIJOS || posicion== CANTIDAD_HIJOS){
 		vectorHijos.push_back(hijo);
 		this->cantidadBytesOcupados+= sizeof(hijo);
 		if(hay_overflow())
 			return RES_OVERFLOW;
-		else
-			return RES_OK;
+		if(hay_underflow())
+			return RES_UNDERFLOW;
+
+		return RES_OK;
 	}
 
-	if(posicion>= vectorClaves.size())
+	if(posicion> CANTIDAD_HIJOS)
 		return RES_ERROR;
 
 	vectorHijos.insert( vectorHijos.begin() + posicion , hijo );
@@ -456,6 +396,63 @@ int NodoInterno::remover_hijo(unsigned short numeroHijo){
 		return RES_OVERFLOW;
 
 	return RES_OK;
+
+}
+
+
+void NodoInterno::imprimir_claves()const{
+
+	if(this->esta_vacio())
+		cout<<"NODO_VACIO"<<endl;
+
+	const unsigned short CANTIDAD_CLAVES= vectorClaves.size();
+	for(unsigned short i=0;i<CANTIDAD_CLAVES;i++)
+		vectorClaves.at(i).imprimir_dato();
+
+}
+
+int NodoInterno::insertar_hijo_derecho(const ClaveX& clave,
+		TipoHijo valor){
+
+
+	unsigned short posClave;
+	if(this->buscar_clave(clave,posClave)== RES_ERROR)
+		return RES_ERROR;
+
+	return this->insertar_hijo(valor,posClave+1);
+
+}
+
+
+int NodoInterno::insertar_hijo_izquierdo(const ClaveX& clave,
+		TipoHijo valor= HIJO_INVALIDO){
+
+	unsigned short posClave;
+	if(this->buscar_clave(clave,posClave)== RES_ERROR)
+		return RES_ERROR;
+
+	return this->insertar_hijo(valor,posClave);
+
+}
+
+int NodoInterno::modificar_hijo_derecho(const ClaveX& clave,TipoHijo valor){
+
+	unsigned short posClave;
+	if(this->buscar_clave(clave,posClave)== RES_ERROR)
+		return RES_ERROR;
+
+	return this->modificar_hijo(valor,posClave+1);
+
+}
+
+
+int NodoInterno::modificar_hijo_izquierdo(const ClaveX& clave,TipoHijo valor){
+
+	unsigned short posClave;
+	if(this->buscar_clave(clave,posClave)== RES_ERROR)
+		return RES_ERROR;
+
+	return this->modificar_hijo(valor,posClave);
 
 }
 

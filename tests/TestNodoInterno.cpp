@@ -6,6 +6,8 @@
  */
 
 #include "TestNodoInterno.h"
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 
 TestNodoInterno::TestNodoInterno()
 	:Test()
@@ -19,7 +21,140 @@ TestNodoInterno::~TestNodoInterno()
 void TestNodoInterno::ejecutar()
 {
 	crear_nodo_con_demasiadas_claves_falla();
+	insertar_hijos();
+	todo_tipo_empaquetado();
+
 	cout<<"OK: test_nodo_interno"<<endl;
+
+}
+
+
+void TestNodoInterno::insertar_hijos(){
+
+	typedef NodoInterno::TipoHijo TipoHijo;
+	srand(time(NULL));
+
+
+	{
+		const unsigned short LIMITE_RANDOM= 32;
+		const unsigned short TAMANIO_HIJO= sizeof(TipoHijo);
+
+		const unsigned int MAX_CANT_BYTES= 32;
+		const unsigned int MIN_CANT_BYTES= 16;
+		NodoInterno ni(MIN_CANT_BYTES,MAX_CANT_BYTES);
+		const unsigned short CANTIDAD_HIJOS= 5;
+		TipoHijo hijos[CANTIDAD_HIJOS];
+		for(unsigned short i=0;i<CANTIDAD_HIJOS;i++)
+			hijos[i]= rand()%LIMITE_RANDOM;
+
+		const unsigned int TAMANIO_INICIAL= ni.get_tamanio_ocupado();
+		assert( ni.insertar_hijo(99,2)== RES_ERROR );
+		assert( ni.get_tamanio_ocupado()== TAMANIO_INICIAL);
+		for(unsigned short i=0;i<2;i++)
+			assert( ni.insertar_hijo(hijos[i],i+1)==RES_UNDERFLOW );
+		assert( ni.insertar_hijo(hijos[2],3)== RES_OK );
+
+		assert( ni.insertar_hijo(hijos[3],0)== RES_OK );
+
+		NodoInterno ni2;
+		for(unsigned short i=0;i<CANTIDAD_HIJOS;i++)
+			ni2.insertar_hijo(hijos[i],0);
+
+		for(unsigned short i=0;i<CANTIDAD_HIJOS;i++){
+
+			unsigned short elHijo= CANTIDAD_HIJOS-1-i;
+			TipoHijo unHijo;
+			ni2.get_hijo(unHijo,i);
+			assert( unHijo== hijos[elHijo] );
+
+		}
+
+
+	}
+
+	{
+
+		NodoInterno ni;
+		const unsigned int TAMANIO_INICIAL= ni.get_tamanio_ocupado();
+		const unsigned short CANTIDAD_CLAVES_INICIAL= ni.get_cantidad_claves();
+		const unsigned short CANTIDAD_HIJOS_INICIAL= ni.get_cantidad_hijos();
+
+		const unsigned short CANTIDAD_DATOS= 5;
+		string datos[CANTIDAD_DATOS]={"martin","mateo","chindasvinto","farinelo",
+		"extraterrestre"};
+		ClaveX claves[CANTIDAD_DATOS];
+		for(unsigned short i=0;i<CANTIDAD_DATOS;i++)
+			claves[i].set_clave(datos[i]);
+
+		TipoHijo hijos[CANTIDAD_DATOS+1]= {1, 5 , 20 , 21 , 34,86};
+		const unsigned short CANTIDAD_HIJOS= CANTIDAD_DATOS+1;
+
+		TipoHijo unHijo;
+		assert( ni.get_hijo(unHijo,0) == RES_OK && unHijo== HIJO_INVALIDO );
+		assert( ni.get_hijo(unHijo,1)== RES_ERROR );
+		assert( ni.insertar_hijo_derecho(claves[0], hijos[0])== RES_ERROR );
+		assert( ni.get_cantidad_claves()== CANTIDAD_CLAVES_INICIAL );
+		assert( ni.get_cantidad_hijos()== CANTIDAD_HIJOS_INICIAL );
+		assert( ni.modificar_hijo(hijos[0],0) == RES_OK );
+		assert( ni.modificar_hijo(hijos[0],1) == RES_ERROR );
+
+
+		for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
+			unsigned short us;
+			assert( ni.insertar_clave(claves[i],us)==RES_OK );
+			assert( ni.insertar_hijo(HIJO_INVALIDO)== RES_OK );
+
+		}
+
+		for(unsigned short i=0;i<CANTIDAD_DATOS;i++)
+			assert( ni.modificar_hijo_derecho(claves[i],hijos[i+1])== RES_OK );
+		for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
+			TipoHijo unHijo;
+			assert( ni.get_hijo_derecho(unHijo , claves[i])== RES_OK );
+			assert( unHijo== hijos[i+1] );
+		}
+		assert( ni.get_cantidad_claves()== CANTIDAD_DATOS &&
+				ni.get_cantidad_hijos()== CANTIDAD_HIJOS );
+
+		for(unsigned int i=0;i<CANTIDAD_DATOS;i++){
+			ClaveX unaClave;
+			ni.remover_clave(0,unaClave);
+			ni.remover_hijo(0);
+		}
+
+		for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
+			unsigned short us;
+			assert( ni.insertar_clave(claves[i],us)==RES_OK );
+			assert( ni.insertar_hijo_derecho(claves[i]) == RES_OK );
+
+		}
+
+		for(unsigned short i=0;i<CANTIDAD_DATOS;i++)
+			assert( ni.modificar_hijo_derecho(claves[i],hijos[i+1])== RES_OK );
+		for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
+			TipoHijo unHijo;
+			assert( ni.get_hijo_derecho(unHijo , claves[i])== RES_OK );
+			assert( unHijo== hijos[i+1] );
+		}
+		assert( ni.get_cantidad_claves()== CANTIDAD_DATOS &&
+				ni.get_cantidad_hijos()== CANTIDAD_HIJOS );
+
+		NodoInterno ni2;
+		for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
+			unsigned short us;
+			ni2.insertar_clave(claves[i],us);
+			ni2.insertar_hijo(hijos[i+1]);
+		}
+
+		for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
+			ni2.modificar_hijo_izquierdo(claves[i],hijos[i]);
+			TipoHijo unHijo;
+			ni2.get_hijo_izquierdo(unHijo,claves[i]);
+			assert( unHijo== hijos[i] );
+		}
+
+
+	}
 
 }
 
@@ -36,95 +171,142 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 	unsigned short pos= 0;
 	assert(nodoI.insertar_clave(clave1,pos)== RES_OK && pos==0);
 	assert(nodoI.insertar_clave(clave2,pos)== RES_OK && pos==1);
-	assert(nodoI.insertar_clave(clave3,pos)== RES_OK && pos== 0);
+	assert(nodoI.insertar_clave(clave3,pos)== RES_OVERFLOW && pos== 0);
 	assert(nodoI.insertar_clave(clave4,pos)== RES_OVERFLOW && pos==3);
 	assert(nodoI.get_cantidad_claves() == 4);
 
 	assert(nodoI.remover_clave(clave1,pos)== RES_OVERFLOW);
 	//al remover la clave mas pequenia, el nodo sigue en estado overflow
 
+	{
+		const unsigned short CANTIDAD_CLAVES= 5;
+		ClaveX claves[CANTIDAD_CLAVES];
+		for(unsigned short i=0;i<CANTIDAD_CLAVES;i++)
+			claves[i].set_clave((int)(2*i));
+
+
+		NodoInterno ni;
+		const unsigned int TAMANIO_INICIAL= ni.get_tamanio_ocupado();
+
+		for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
+			unsigned short ocurrenciaInsercion= 0;
+			assert( ni.insertar_clave(claves[i],ocurrenciaInsercion)== RES_OK );
+			assert( ocurrenciaInsercion== i );
+			assert( ni.insertar_clave(claves[i],ocurrenciaInsercion)== RES_ERROR );
+			assert( ni.get_tamanio_ocupado()== TAMANIO_INICIAL +
+					claves[i].get_tamanio_empaquetado() * (i+1) );
+		}
+
+		unsigned short ocurrenciaInsercion= 0;
+		ClaveX cx;
+		cx.set_clave(1);
+		assert( ni.insertar_clave(cx,ocurrenciaInsercion)== RES_OK );
+		assert( ocurrenciaInsercion== 1 );
+
+		cx.set_clave(3);
+		assert( ni.insertar_clave(cx,ocurrenciaInsercion)== RES_OK );
+		assert( ocurrenciaInsercion== 3 );
+
+		ni.imprimir_claves();//TODO remover
+
+	}//las claves se insertan en el orden apropiado
+
+	{
+
+		const unsigned short CANTIDAD_CLAVES= 5;
+		ClaveX claves[CANTIDAD_CLAVES];
+		for(unsigned short i=0;i<CANTIDAD_CLAVES;i++)
+			claves[i].set_clave((int)(2*i));
+		const unsigned short TAMANIO_EMPAQUETADO_CLAVE=
+				claves[0].get_tamanio_empaquetado();
+
+		const unsigned int MAX_BYTES_NODO_INTERNO= 16;
+		NodoInterno ni(0,MAX_BYTES_NODO_INTERNO);
+		const unsigned short TAMANIO_INICIAL= ni.get_tamanio_ocupado();
+
+		srand(time(NULL));
+		const unsigned int LIMITE_RANDOM= 20;
+		NodoInterno::TipoHijo hijos[CANTIDAD_CLAVES];
+		for(unsigned short i=0;i<CANTIDAD_CLAVES;i++)
+			hijos[i]= rand()%LIMITE_RANDOM;
+		const unsigned short TAMANIO_HIJO= sizeof(hijos[0]);
+
+		unsigned short ocurrenciaInsercion= 0;
+		ni.insertar_clave(claves[0],ocurrenciaInsercion);
+		ni.insertar_clave(claves[1],ocurrenciaInsercion);
+		assert( ni.get_tamanio_ocupado()== TAMANIO_INICIAL +
+				TAMANIO_EMPAQUETADO_CLAVE*2 );
+		ni.insertar_hijo(hijos[0],1);
+
+
+
+	}
+
 
 }
 
 
-void TestNodoInterno::empaquetar_en_bloque_chico_falla()
-{
-	NodoInterno nodoI(0,11);
-	ClaveX clave1, clave2, clave3;
-	clave1.set_clave("aca");
-	clave2.set_clave("alla");
-	clave3.set_clave("abba");
+void TestNodoInterno::todo_tipo_empaquetado(){
 
-//	nodoI.agregar_clave(&clave1);
-//	nodoI.agregar_clave(&clave2);
-//	nodoI.agregar_clave(&clave3);
+	typedef NodoInterno::TipoHijo TipoHijo;
+	srand(time(NULL));
+/*
+	{
 
-	nodoI.set_hijo_izquierdo(clave1,1);
-	nodoI.set_hijo_derecho(clave1,2);
+		NodoInterno ni,ni2;
+		NodoArbol na(TIPO_HOJA);
+		Bloque* b= new Bloque;
 
-	nodoI.set_hijo_izquierdo(clave2,3);
-	nodoI.set_hijo_derecho(clave2,4);
+		const unsigned short CANTIDAD_CLAVES= 5;
+		string datos[CANTIDAD_CLAVES]= {"ante","paraiso","demoledor","extraterrestre","invasion"};
+		ClaveX claves[CANTIDAD_CLAVES];
+		for(unsigned short i=0;i<CANTIDAD_CLAVES;i++)
+			claves[i].set_clave(datos[i]);
 
-	nodoI.set_hijo_izquierdo(clave3,5);
-	nodoI.set_hijo_derecho(clave3,6);
+		const unsigned short CANTIDAD_HIJOS= CANTIDAD_CLAVES+1;
+		TipoHijo hijos[CANTIDAD_HIJOS];
+		for(unsigned short i=0;i<CANTIDAD_HIJOS;i++ , hijos[i]=rand()%32);
+		assert( ni.modificar_hijo(hijos[0],0)== RES_OK ) ;
 
-	int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
-	assert(nodoI.get_tamanio_ocupado() == tamanioOcupado);
 
-	int tamBloque = 5;
-	assert(nodoI.get_tamanio_ocupado() > tamBloque);
-	ManejadorBloques manejadorBloques;
-	manejadorBloques.crear_archivo("testnodos.dat",tamBloque);
-	Bloque* bloque = manejadorBloques.crear_bloque();
+		for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
+			unsigned short posicionOcurrencia= 0;
+			ni.insertar_clave(claves[i],posicionOcurrencia);
+			assert(ni.get_cantidad_claves()== i+1);
+			assert( ni.insertar_hijo_derecho(claves[i],hijos[i+1])== RES_OK );
+		}
 
-	assert(nodoI.empaquetar(bloque) == RES_ERROR);
+		assert( ni.empaquetar(b)==RES_OK );
+		delete b;
 
-	delete(bloque);
-	manejadorBloques.cerrar_archivo();
+
+	}//empaquetar y desempaquetar un nodo correctamente
+*/
+
+
+	NodoInterno ni;
+	NodoInterno ni2;
+
+	const unsigned short CANTIDAD_DATOS= 5;
+	string datoAcumulado= "d";
+	for(int i=0;i<CANTIDAD_DATOS;i++){
+
+		datoAcumulado+= "a";
+		string dato= datoAcumulado;
+		ClaveX clave;
+		clave.set_clave(dato);
+		unsigned short ocurrencia;
+		ni.insertar_clave(clave,ocurrencia);
+
+	}
+
+	ni.imprimir_claves();
+	Bloque b;
+	assert( ni.empaquetar(&b)== RES_OK );
+	assert( ni2.desempaquetar(&b)== RES_OK );
+
+
 }
 
-void TestNodoInterno::empaquetar_en_bloque_da_ok()
-{
-	NodoInterno nodoI(0,11);
-	ClaveX clave1, clave2, clave3;
-	clave1.set_clave("aca");
-	clave2.set_clave("alla");
-	clave3.set_clave("abba");
 
-//	nodoI.agregar_clave(&clave1);
-//	nodoI.agregar_clave(&clave2);
-//	nodoI.agregar_clave(&clave3);
 
-	nodoI.set_hijo_izquierdo(clave1,1);
-	nodoI.set_hijo_derecho(clave1,2);
-
-	nodoI.set_hijo_izquierdo(clave2,3);
-	nodoI.set_hijo_derecho(clave2,4);
-
-	nodoI.set_hijo_izquierdo(clave3,5);
-	nodoI.set_hijo_derecho(clave3,6);
-
-	int tamanioOcupado = sizeof(char)*11 + sizeof(short)*4;
-	assert(nodoI.get_tamanio_ocupado() == tamanioOcupado);
-
-	int tamBloque = tamanioOcupado + 5;
-	ManejadorBloques manejadorBloques;
-	manejadorBloques.crear_archivo("testnodos.dat",tamBloque);
-	Bloque* bloque = manejadorBloques.crear_bloque();
-
-	// Escribo el nodo
-	assert(nodoI.empaquetar(bloque) == RES_OK);
-	assert(manejadorBloques.abrir_archivo("testnodos.dat","wb+") == RES_OK);
-	assert(manejadorBloques.escribir_bloque(bloque) == RES_OK);
-
-	// Leo el nodo
-	Bloque* bloqueLeido = manejadorBloques.obtener_bloque(0);
-	assert(bloqueLeido != NULL);
-
-	NodoInterno nodoLeido(0,11);
-	nodoLeido.desempaquetar(bloqueLeido);
-
-	delete(bloqueLeido);
-	delete(bloque);
-	manejadorBloques.cerrar_archivo();
-}

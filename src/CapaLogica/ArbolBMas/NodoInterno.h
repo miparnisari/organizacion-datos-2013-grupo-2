@@ -8,28 +8,22 @@ class NodoInterno : public NodoArbol {
 
 	public:
 		typedef vector<ClaveX>::iterator IteradorVectorClaves;
-		typedef unsigned short TipoHijo;
+		//typedef unsigned short TipoHijo;
+		typedef unsigned int TipoHijo;
 
 	protected:
 
 		unsigned int maxCantidadBytes;
 		unsigned int minCantidadBytes;
 		unsigned int cantidadBytesOcupados;
+		/*cantidadBytesOcupados NO TOMA EN CUENTA tamanio de metadatos de registros
+		 * variables a la hora de empaquetar tampoco el tamanio de tipoNodo ...
+		 * seria sensato que al momento de crear un NodoInterno, el parametro de
+		 * maxCantidadBytes sea determinado a partir del tamanio de Bloque donde
+		 * sera empaquetado en el futuro.*/
 		std::vector<ClaveX> vectorClaves;
 		std::vector<TipoHijo> vectorHijos;
 
-
-
-
-		virtual int remover_clave(const ClaveX& clave);
-		/*se remueve la clave que sea igual al parametro 'clave' */
-		/*virtual int _insertar_clave( const ClaveX& claveInsertar ,
-				ClaveX& claveMitad , unsigned short& posicionInsercion);*/
-		/*inserta una clave en el nodo . Si ocurre overflow, la clave del medio es
-		 * expulsada y guardada en ClaveMitad*/
-
-		virtual int _insertar_si_overflow(ClaveX* claveInsertar,unsigned short& posicionInsertar ,
-				unsigned short& posicionClavePromocionar);
 
 
 	public:
@@ -42,12 +36,7 @@ class NodoInterno : public NodoArbol {
 				unsigned int maxCantidadBytes= MAXIMA_CANTIDAD_BYTES_DEFAULT);
 		virtual ~NodoInterno();
 
-		bool esta_vacio();
-		int agregar_clave(const ClaveX& clave);
-//		int agregar_clave(ClaveX* clave,
-//				ClaveX* clavePromocion,
-//				std::vector<Clave> clavesSplit,
-//				std::vector<unsigned short> hijosClaveSplit);
+		bool esta_vacio()const;
 		int get_tamanio_ocupado();
 
 		unsigned short get_cantidad_claves();
@@ -56,6 +45,8 @@ class NodoInterno : public NodoArbol {
 		int set_hijo_derecho(const ClaveX& clave, TipoHijo valor);
 		virtual int get_hijo_izquierdo(TipoHijo& hijo,const ClaveX& clave);
 		virtual int get_hijo_derecho(TipoHijo& hijo,const ClaveX& clave);
+		/*se retornar los hijos izquierdo y derecho respectivamente a partir de una
+		 * clave.*/
 
 
 		int get_clave(unsigned short numeroClave,ClaveX& clave);
@@ -99,9 +90,18 @@ class NodoInterno : public NodoArbol {
 		 * underflow se retorna RES_UNDERFLOW.*/
 		bool es_hoja(){return false;}
 		bool es_interno(){return true;}
-		virtual bool hay_overflow();
-		virtual bool hay_underflow();
+		virtual bool hay_overflow()const;
+		virtual bool hay_underflow()const;
 
+		void imprimir_claves()const;
+		/*imprime todas las claves guardadas en el nodo. En caso que el mismo
+		 * este vacio se imprime NODO_VACIO.*/
+
+		int insertar_hijo_derecho(const ClaveX& clave,TipoHijo valor= HIJO_INVALIDO);
+		int insertar_hijo_izquierdo(const ClaveX& clave,TipoHijo valor);
+
+		int modificar_hijo_derecho(const ClaveX&,TipoHijo valor );
+		int modificar_hijo_izquierdo(const ClaveX&,TipoHijo valor);
 
 
 
@@ -110,8 +110,8 @@ class NodoInterno : public NodoArbol {
 
 
 
-		int empaquetar(Bloque* bloque); //FIXME
-		int desempaquetar(const Bloque* bloque); //FIXME
+		int empaquetar(Bloque* bloque);
+		int desempaquetar(const Bloque* bloque);
 
 
 };
