@@ -17,6 +17,13 @@ RegistroClave::RegistroClave(const RegistroClave& otro)
 	: RegistroVariable(otro)
 {
 	clave = otro.clave;
+	this->tamanio= otro.tamanio;
+	this->buffer= new char[tamanio];
+	stringstream ss;
+	ss.write(otro.buffer,tamanio);
+	ss.seekg(0,ios::beg);
+	ss.read(this->buffer,tamanio);
+
 }
 
 void RegistroClave::_agregar_campo_clave()

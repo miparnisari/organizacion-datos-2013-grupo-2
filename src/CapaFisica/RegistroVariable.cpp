@@ -22,14 +22,19 @@ RegistroVariable::~RegistroVariable()
 RegistroVariable::RegistroVariable(const RegistroVariable& otro)
 {
 	tamanio = otro.tamanio;
-	buffer = new char[strlen(otro.buffer) +1];
-	strcpy(buffer,otro.buffer);
-	buffer[strlen(otro.buffer)] = '\0';
+	//buffer = new char[strlen(otro.buffer)+1 ];
+	buffer= new char[tamanio];
+	stringstream ss;
+	ss.write(otro.buffer,tamanio);
+	ss.seekg(0,ios::beg);
+	ss.read(this->buffer,tamanio);
+	//buffer[strlen(otro.buffer)] = '\0';
 }/* constructor copia */
 
 
 void RegistroVariable::_inicializar_buffer(){
 
+	if(buffer)
 	for(unsigned short i=0;i<this->tamanio;i++)
 		buffer[i]= '*';
 

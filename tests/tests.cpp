@@ -254,10 +254,10 @@ int main(int argc,char** args)
 	
 	tests.push_back(new TestHashingExtensible);
 	
-	tests.push_back(new TestHeap);
+//	tests.push_back(new TestHeap);
 
 	tests.push_back(new TestNodoInterno);
-	tests.push_back(new TestNodoSecuencial);
+//	tests.push_back(new TestNodoSecuencial);
 
 	for (unsigned int i = 0; i < tests.size(); i++)
 	{

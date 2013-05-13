@@ -63,6 +63,7 @@ class ClaveString:public Clave{
 
 		ClaveString();
 		ClaveString(const string& linea);
+		ClaveString(const ClaveString& copia);
 		virtual ~ClaveString();
 
 
