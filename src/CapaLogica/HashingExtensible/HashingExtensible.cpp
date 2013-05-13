@@ -28,6 +28,8 @@ HashingExtensible::HashingExtensible(std::string directorioSalida, std::string f
     }else{
         //Ya abrimos el archivo de bloques
         this->cant_bloques = manejador_bloques.get_cantidad_bloques();
+
+        printf("cant de bloques.... %d \n", this->manejador_bloques.get_cantidad_bloques());
     }
 }
 
@@ -119,9 +121,6 @@ int HashingExtensible::agregar(RegistroClave reg)
         bloqueAux.~Bloque();
         resultado= RES_OK;
     }
-    bloque.~Bloque();
-    tamDispBloque.~RegistroVariable();
-    clave_reg.~ClaveX();
     return resultado;
 }
 
@@ -135,7 +134,6 @@ int HashingExtensible::devolver(ClaveX clave, RegistroClave *reg)
     posReg = this->obtener_posicion_reg_bloque(clave, bloque);
     if (posReg == RES_ERROR)   return NO_EXISTE;
     bloque.recuperar_registro(reg, posReg);
-    bloque.~Bloque();
     return RES_OK;
 }
 
@@ -153,8 +151,6 @@ int HashingExtensible::modificar(RegistroClave elemN)
     bloque.agregar_registro(&elemN);    //Guardo el nuevo registro
     //Modifico el bloque en los bloques
     this->manejador_bloques.sobreescribir_bloque(&bloque, posBloque);
-    bloque.~Bloque();
-    clave_reg.~ClaveX();
     return RES_OK;
 }
 
@@ -195,8 +191,6 @@ int HashingExtensible::eliminar(ClaveX clave)
             this->dividir_tabla();
         }
     }
-    bloque.~Bloque();
-    tamDisp.~RegistroVariable();
     return RES_OK;
 }
 
@@ -213,7 +207,6 @@ int HashingExtensible::crear_bloque(int tam, Bloque *bloqueNuevo)
     //Le guardo el tamaño de dispersion
     tamDispBloque.agregar_campo(campo.c_str(),campo.size());
     bloqueNuevo->agregar_registro(&tamDispBloque);
- //   tamDispBloque.~RegistroVariable();
     return RES_OK;
 }
 
