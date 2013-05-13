@@ -1,4 +1,5 @@
 #include "TestNodoInterno.h"
+#include "TestRegistroCancion.h"
 #include "TestNodoSecuencial.h"
 #include "TestHashingExtensible.h"
 #include "TestManejadorBloques.h"
@@ -7,6 +8,7 @@
 #include "TestRegistroVariable.h"
 #include "TestHeap.h"
 #include "TestNodoSecuencial.h"
+#include "TestRegistroClave.h"
 
 #include <cassert>
 #include <iostream>
@@ -30,12 +32,12 @@ void print_test_ok(std::string nombreTest)
 void test_leer_de_archivo()
 {
 	ParserCanciones parser;
-	assert(parser.crear("../songs") == RES_OK);
+	assert(parser.crear("../songs/") == RES_OK);
 	RegistroCancion regCancion;
 	std::string parametro = "xxxxx";
-		
+
 	// Para cada cancion que tengamos...
-	while (! parser.finDirectorio())
+	while (parser.fin_directorio() == false)
 	{
 		if (parser.getNextCancion(regCancion) == RES_OK)
 		{
@@ -66,73 +68,6 @@ void test_leer_de_archivo()
 	}
 	print_test_ok("test_leer_de_archivo");
 }
-
-void test_registro_cancion()throw(){
-
-	std::cout<<"----------test_registro_cancion-------------"<<std::endl;
-
-
-	char linea2[]= "autor1;autor2;autor3-titulo-idiomainvalido\nlalalalaalallaallalalalalalal\n";
-	IMPRIMIR_VARIABLE(linea2);
-	RegistroCancion rc2;
-
-	assert( rc2.cargar(linea2,strlen(linea2))==RES_ERROR );
-
-
-	char linea3[]= "autor1;autor2;autor3-titulo-english\nlalalalaalallaallalalalalalal\n";
-	RegistroCancion rc3;
-	assert( rc3.cargar(linea3,strlen(linea3))== RES_OK );
-	assert(rc3.contar_parametros()== 3);
-
-	cout<<endl<<endl;
-
-	string parametro= "xxxxx";
-	for(unsigned short i=0;i<4;i++){
-		rc3.obtener_parametro(i,parametro);
-		IMPRIMIR_VARIABLE(parametro);
-	}
-
-
-
-	char linea4[]= "arjona-Martin-spanish\nesta es una letra de prueba\ncon varias lineas\nconcatenadas a re loco\n";
-	RegistroCancion rc4;
-	assert( rc4.cargar( linea4 , strlen(linea4) )== RES_OK );
-	assert( rc4.get_cantidad_autores()== 1 );
-	assert( rc4.get_anio()== Anio::ANIO_DEFAULT );
-	assert( rc4.get_idioma().compare("spanish")== 0 );
-	IMPRIMIR_VARIABLE( rc4.get_letra() );
-
-
-	char linea5[]= "arjona-Martin-spanish";
-	RegistroCancion rc5;
-	assert( rc5.cargar(linea5,strlen(linea5))== RES_ERROR );
-
-	char linea6[]= "asd-sda-asdpaoisd-aspojdad-asd\n";
-	char linea7[]= "asd-dsa\n";
-	RegistroCancion rc6;
-	assert( rc6.cargar(linea6,strlen(linea6))== RES_ERROR );
-	rc6.limpiar_buffer();
-	assert(rc6.cargar(linea7,strlen(linea7))== RES_ERROR  );
-
-
-	char linea8[]= "arjona-2012-la vida es bella-english\nesta es una letra\nde varias\nlineas\n";
-	RegistroCancion rc8;
-	assert( rc8.cargar(linea8,strlen(linea8))== RES_OK );
-	assert( rc8.contar_parametros()== 4 );
-	IMPRIMIR_VARIABLE(rc8.get_titulo());
-
-
-	char linea9[]="the beatles;arjona-2012-la vida es bella-english\nesta es\nuna letra\nmuy larga\n";
-	RegistroCancion rc9;
-	assert( rc9.cargar(linea9,strlen(linea9))== RES_OK );
-	assert( rc9.get_cantidad_autores()== 2 );
-	IMPRIMIR_VARIABLE(rc9.get_autor(0));
-	assert(rc9.contar_parametros()== 4);
-
-
-
-	print_test_ok("test_registro_cancion");
-}/*funcionaaa*/
 
 void test_clave_string(){
 	ClaveString clave1;
@@ -303,18 +238,26 @@ int main(int argc,char** args)
 //	test_leer_de_archivo();
 	test_clave_numerica();
 	test_clave_string();
-	test_registro_cancion(); //TODO poner asserts en vez de couts
 	test_clavex();
-
+//
 	std::vector<Test*> tests;
-//	tests.push_back(new TestRegistroVariable);
-//	tests.push_back(new TestBloque);
-//	tests.push_back(new TestManejadorRegistrosVariables);
-	//tests.push_back(new TestManejadorBloques);
+
+	tests.push_back(new TestRegistroCancion);
+
+	tests.push_back(new TestRegistroVariable);
+	tests.push_back(new TestManejadorRegistrosVariables);
+
+	tests.push_back(new TestRegistroClave);
+
+	tests.push_back(new TestBloque);
+	tests.push_back(new TestManejadorBloques);
+	
+	tests.push_back(new TestHashingExtensible);
+	
+	tests.push_back(new TestHeap);
+
 	tests.push_back(new TestNodoInterno);
-	//tests.push_back(new TestNodoSecuencial);
-	//tests.push_back(new TestHeap);
-	//tests.push_back(new TestHashingExtensible);
+	tests.push_back(new TestNodoSecuencial);
 
 	for (unsigned int i = 0; i < tests.size(); i++)
 	{

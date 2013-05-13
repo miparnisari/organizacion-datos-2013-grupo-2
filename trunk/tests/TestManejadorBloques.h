@@ -20,6 +20,7 @@ class TestManejadorBloques: public Test {
 		void test_manejador_bloques_crear();
 		void test_manejador_bloques_escribir_bloques();
 		void test_manejador_bloques_masivo();
+		void test_eliminar();
 };
 
 #endif /* TESTMANEJADORBLOQUES_H_ */

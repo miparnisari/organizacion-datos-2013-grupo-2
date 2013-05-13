@@ -122,9 +122,8 @@ int ArbolBMas::_hallar_hoja(RegistroClave* registro,
 
 
 int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
-		RegistroClave* registro , TipoHijo& hijoPromocionado){
-
-
-
+		RegistroClave* registro , TipoHijo& hijoPromocionado)
+{
+	return RES_OK;
 
 }

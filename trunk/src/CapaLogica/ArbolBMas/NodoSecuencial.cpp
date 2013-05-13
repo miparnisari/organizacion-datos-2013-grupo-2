@@ -73,7 +73,7 @@ void NodoSecuencial::__resolver_overflow(std::vector<RegistroClave> & regsOverfl
 	vectorRegistros.erase(vectorRegistros.begin()+regsQueQuedan,vectorRegistros.end());
 }
 
-int NodoSecuencial::insertar(RegistroClave registro, std::vector<RegistroClave> & regsOverflow)
+int NodoSecuencial::insertar(RegistroClave & registro, std::vector<RegistroClave> & regsOverflow)
 {
 	RegistroClave* regAbuscar = new RegistroClave();
 	ClaveX claveAbuscar;
@@ -168,16 +168,10 @@ int NodoSecuencial::empaquetar(Bloque* bloque)
 	if (bloque == NULL)
 		return RES_ERROR;
 
-	int tam_registros = 0;
-	unsigned int i;
-	for (i = 0 ; i < vectorRegistros.size() ; i++)
-		tam_registros += vectorRegistros.at(i).get_tamanio_empaquetado();
-
 	// Empaqueto los registros del nodo
-	for (i = 0; i < vectorRegistros.size(); i++)
+	for (unsigned int i = 0; i < vectorRegistros.size(); i++)
 	{
-		RegistroClave reg = vectorRegistros.at(i);
-		bloque->agregar_registro(&reg);
+		bloque->agregar_registro(&(vectorRegistros.at(i)));
 	}
 	RegistroClave regConPuntero;
 	regConPuntero.agregar_campo((char*)&proximoNodo, sizeof(proximoNodo));

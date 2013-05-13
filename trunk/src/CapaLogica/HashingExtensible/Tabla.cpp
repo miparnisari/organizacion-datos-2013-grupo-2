@@ -32,7 +32,6 @@ Tabla::Tabla(string rutaArchivo) {
 }
 
 Tabla::~Tabla() {
-
 }
 
 void Tabla::set_tamanio(int cantidad){
@@ -59,22 +58,26 @@ int Tabla::obtener_valor(int posicion){
 
 	archivo.leer(&contenido,posicion);
 
-	return contenido;
 	archivo.cerrar_archivo();
+
+	return contenido;
 }
 
 void Tabla::cambiar_valor(int posicion, int nuevoValor){
 	ManejadorArchivoDatosBasicos<int> archivo;
-	int contenido;
 
 	archivo.abrir_archivo(this->get_rutaTabla(), "wb");
 
-	archivo.escribir(contenido,posicion);
+	archivo.escribir(nuevoValor,posicion);
 
 	archivo.cerrar_archivo();
 }
 
 void Tabla::dividir_tabla(){
+
+	ManejadorArchivoDatosBasicos<int> archivo;
+
+	archivo.truncar(this->get_tamanio() / 2);
 
 	this->set_tamanio((this->get_tamanio() / 2));
 }

@@ -17,38 +17,39 @@ TestNodoSecuencial::~TestNodoSecuencial()
 
 void TestNodoSecuencial::ejecutar()
 {
+	test_empaquetar_desempaquetar();
 	test_insertar_eliminar();
-//	test_empaquetar_desempaquetar();
-//	test_overflow();
+	test_overflow();
 }
 
 void TestNodoSecuencial::test_empaquetar_desempaquetar()
 {
+	// SET UP
 	ManejadorBloques manejador;
 	manejador.crear_archivo("bloques_nodos_secuenciales.dat", 4096);
 	manejador.abrir_archivo("bloques_nodos_secuenciales.dat","rb+");
 
 	Bloque* bloque = manejador.crear_bloque();
-
 	NodoSecuencial* nodo = new NodoSecuencial(100,4096);
 
-	std::string campoEscrito = "un campo ";
+	std::string campoEscrito = "un campo";
 	RegistroClave registro;
 	ClaveX claveEscrita;
 	claveEscrita.set_clave("una clave");
 	registro.set_clave(claveEscrita);
 	registro.agregar_campo(campoEscrito.c_str(),campoEscrito.size());
 	std::vector<RegistroClave> regsOverflow;
-	nodo->insertar(registro,regsOverflow);
 
+	// Inserto "una clave | un campo"
+	assert(nodo->insertar(registro,regsOverflow) == RES_OK);
+
+	assert(nodo->get_cantidad_registros() == 1);
 	assert(nodo->get_proximo_nodo() == -1);
-	assert(nodo->buscar(&registro) == 1);
+	assert(nodo->buscar(&registro) == 0);
 	assert(regsOverflow.empty());
 
-	nodo->empaquetar(bloque);
+	assert(nodo->empaquetar(bloque) == RES_OK);
 	assert(manejador.escribir_bloque(bloque) == RES_OK);
-	assert(manejador.get_cantidad_bloques() == 1);
-	assert(manejador.get_primer_bloque_libre() == -1);
 
 	NodoSecuencial* nodoLeido = new NodoSecuencial(100,4096);
 	Bloque* bloqueLeido = manejador.obtener_bloque(0);
@@ -89,21 +90,22 @@ void TestNodoSecuencial::test_insertar_eliminar()
 	assert(nodo->get_cantidad_registros() == 0);
 	assert(nodo->get_proximo_nodo() == -1);
 
-	// Pruebo eliminar una clave vacia
+	// Pruebo eliminar una clave vacia -> no debe andar
 	assert(nodo->eliminar(clave,regsUnderflow) != RES_OK);
-	// Pruebo eliminar una clave que no existe
+	assert(regsUnderflow.empty() == true);
+	// Pruebo eliminar una clave que no existe -> no debe andar
 	clave.set_clave("una clave");
 	assert(nodo->eliminar(clave,regsUnderflow) == RES_RECORD_DOESNT_EXIST);
+	assert(regsUnderflow.empty() == true);
 
 	// Agrego una clave (no se produce overflow)
+	// intento insertarla de nuevo (no se puede)
 	// y la borro (se produce underflow!)
 	registro.set_clave(clave);
 	std::string campo = "un campo";
 	registro.agregar_campo(campo.c_str(), campo.size());
 	assert(nodo->insertar(registro,regsOverflow) == RES_OK);
 	assert(regsOverflow.empty() == true);
-
-	// Pruebo insertar una clave que ya estaba
 	assert(nodo->insertar(registro,regsOverflow) == RES_RECORD_EXISTS);
 	assert(regsOverflow.empty() == true);
 

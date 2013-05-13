@@ -11,15 +11,19 @@ ParserCanciones::~ParserCanciones()
 	
 }
 
-bool ParserCanciones::finDirectorio()
+int ParserCanciones::cantidad_archivos()
+{
+	return archivos.size();
+}
+
+bool ParserCanciones::fin_directorio()
 {
 	return (contadorArchivosLeidos > archivos.size());
 }
 
 char ParserCanciones::_estandarizar (char caracter)
 {
-	//TODO Martin: quitar acentos, dieresis, etc.
-	return caracter;	
+	return normalizador.transformar_char(caracter);
 }
 
 int ParserCanciones::crear (std::string dir)
@@ -53,18 +57,18 @@ int ParserCanciones::getNextCancion(RegistroCancion& reg)
 	contadorArchivosLeidos ++;
 	
 	// el registro
-	char * regCancion = new char[s_contenidoArchivo.size() + 1];
-	std::copy(s_contenidoArchivo.begin(), s_contenidoArchivo.end(), regCancion);
-	regCancion[s_contenidoArchivo.size()] = '\0'; // don't forget the terminating 0
+	char * bufferCancion = new char[s_contenidoArchivo.size() + 1];
+	std::copy(s_contenidoArchivo.begin(), s_contenidoArchivo.end(), bufferCancion);
+	bufferCancion[s_contenidoArchivo.size()] = '\0'; // don't forget the terminating 0
 
 	// el tamaño del registro
-	unsigned short sizeofregCancion = s_contenidoArchivo.size();
+	unsigned short sizeOfBuffer = s_contenidoArchivo.size();
 	
 	// lo cargamos en el registro
 	reg.limpiar_buffer();
-	int resultado = reg.cargar(regCancion, sizeofregCancion);
+	int resultado = reg.cargar(bufferCancion, sizeOfBuffer);
 	
-	delete[] regCancion;
-	
+	delete[] bufferCancion;
+	std::cout << "fin get next cancion" << std::endl;
 	return resultado;
 }

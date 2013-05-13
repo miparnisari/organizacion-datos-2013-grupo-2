@@ -78,8 +78,6 @@ class RegistroVariable {
 /*--------------------------------------------------------------------------------------------------*/
 /*LOS SIGUIENTES METODOS SE CREARON POR CUESTION DE PRUEBAS O PARA CUMPLIR CON CONSIGNAS DEL TP0*/
 
-		virtual int emitir()throw();
-
 		virtual std::string mostrar()throw();
 		virtual int agregar_datos(const char* datos,unsigned short tamanioDatos)throw();
 		/*agrega datos al final del registro (append) sin agregar delimitador de tamanio del

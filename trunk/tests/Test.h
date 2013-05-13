@@ -28,6 +28,7 @@
 #include "../src/CapaLogica/ArbolBMas/NodoInterno.h"
 #include "../src/CapaLogica/ArbolBMas/NodoSecuencial.h"
 #include "../src/CapaLogica/ManejoArchivos/RegistroCancion.h"
+#include "../src/CapaLogica/ManejoArchivos/RegistroClave.h"
 #include "../src/CapaLogica/ManejoArchivos/ClaveString.h"
 #include "../src/CapaLogica/ManejoArchivos/ClaveNumerica.h"
 #include "../src/CapaLogica/ManejoArchivos/ClaveX.h"

@@ -22,8 +22,8 @@ void TestHashingExtensible::test_crear_hashing()
     ManejadorBloques manejador_bloques;
     manejador_bloques.abrir_archivo(DIRECCION, "rb+");
     assert (manejador_bloques.get_cantidad_bloques() == 1);
-    hash1.eliminar_hashing_extensible();
-    printf("entro");
+    assert (hash1.eliminar_hashing_extensible() == RES_OK);
+
     print_test_ok("crear_hashing");
 }
 

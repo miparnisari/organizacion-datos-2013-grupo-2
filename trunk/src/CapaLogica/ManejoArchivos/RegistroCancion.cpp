@@ -66,7 +66,7 @@ bool RegistroCancion::obtener_parametro(unsigned short numeroParametro,string& p
 unsigned short RegistroCancion::contar_parametros()throw()
 {
 	stringstream stream;
-	stream.write(buffer,tamanio);
+	stream.write(buffer,tamanio); //Inserts the first n characters of the array pointed by s into the stream.
 	stream.seekg(0,ios::beg);
 		
 	string stringCancion;
@@ -76,10 +76,7 @@ unsigned short RegistroCancion::contar_parametros()throw()
 	stream.getline(bufferParametros , TAMANIO_BUFFER_PARAMETROS);
 	stringCancion= bufferParametros;
 	delete[] bufferParametros;
-	/*cout<<stringCancion;//FIXME
-	string stringOtraCancion;//FIXME
-	stream>>stringOtraCancion;//FIXME
-	cout<<stringOtraCancion;//FIXME*/
+
 	const unsigned short OFFSET_FIN_PARAMETROS= stringCancion.length();
 	const char SEPARACION_PARAMETRO= '-';
 	unsigned short contadorGuiones= 0;
@@ -289,7 +286,9 @@ string RegistroCancion::get_titulo()throw(){
 
 int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
 	//FIXME este metodo no anda!!!
-	RegistroVariable::agregar_datos(dato,tamanioDato);
+	int resCarga = RegistroVariable::agregar_datos(dato,tamanioDato);
+	if (resCarga != RES_OK)
+		return resCarga;
 	
 	bool val1 = (contar_parametros() == 0);
 	bool val2 = (this->obtener_autores() == 0);
