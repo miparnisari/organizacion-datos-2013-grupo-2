@@ -32,9 +32,6 @@ class RegistroClave:public RegistroVariable {
 		virtual void set_clave(const ClaveX& clave);
 
 		virtual ClaveX get_clave();
-		unsigned short get_cantidad_campos()throw();
-		int get_tamanio_campo(unsigned short numeroCampo);
-		int recuperar_campo(char* copia,unsigned short numeroCampo)throw();
 
 		void limpiar_campos() throw();
 		/*limpia el buffer e inserta la clave en el primer campo del registro .

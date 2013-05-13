@@ -17,14 +17,14 @@ TestNodoSecuencial::~TestNodoSecuencial()
 
 void TestNodoSecuencial::ejecutar()
 {
-	test_crear();
-	test_insertar_simple();
-	test_insertar_eliminar();
-	test_empaquetar_desempaquetar();
-	test_overflow();
+	test_nodo_sec_crear();
+	test_nodo_sec_insertar_simple();
+	test_nodo_sec_insertar_eliminar();
+	test_nodo_sec_empaquetar_desempaquetar();
+	test_nodo_sec_overflow();
 }
 
-void TestNodoSecuencial::test_crear()
+void TestNodoSecuencial::test_nodo_sec_crear()
 {
 	NodoSecuencial* nodo = new NodoSecuencial(100,1000);
 	assert(nodo->get_bytes_ocupados() == sizeof(int) + sizeof(char));
@@ -32,9 +32,11 @@ void TestNodoSecuencial::test_crear()
 	assert(nodo->get_cantidad_registros() == 0);
 	assert(nodo->esta_vacio() == true);
 	delete(nodo);
+
+	print_test_ok("test_nodo_secuencial_crear");
 }
 
-void TestNodoSecuencial::test_insertar_simple()
+void TestNodoSecuencial::test_nodo_sec_insertar_simple()
 {
 	NodoSecuencial* nodo = new NodoSecuencial(5,100);
 	std::vector <RegistroClave> regsOverflow;
@@ -48,7 +50,6 @@ void TestNodoSecuencial::test_insertar_simple()
 	registro.set_clave(clave);
 	registro.agregar_campo(campo.c_str(), campo.size());
 
-	std::cout << "registro.get_tamanio()" << registro.get_tamanio() << std::endl;
 	assert(registro.get_tamanio() == 22);
 
 	assert(nodo->buscar(clave,&registroCopia) < 0);
@@ -59,19 +60,21 @@ void TestNodoSecuencial::test_insertar_simple()
 	assert(nodo->buscar(clave,&registroCopia) == 0);
 	assert(registroCopia != NULL);
 
-	std::cout << "registroCopia.get_tamanio()" << registroCopia->get_tamanio() << std::endl;
 	assert(registroCopia->get_tamanio() == registro.get_tamanio());
 
-	char* buffer = new char[registroCopia->get_tamanio_campo(1)]();
+	char* buffer = new char[registroCopia->get_tamanio_campo(1) +1]();
 	registroCopia->recuperar_campo(buffer,1);
+	buffer[registroCopia->get_tamanio_campo(1)] = '\0';
 	assert (strcmp(buffer,campo.c_str()) == 0);
 
 	delete[] buffer;
 	delete(nodo);
 	delete(registroCopia);
+
+	print_test_ok("test_nodo_secuencial_insertar_simple");
 }
 
-void TestNodoSecuencial::test_empaquetar_desempaquetar()
+void TestNodoSecuencial::test_nodo_sec_empaquetar_desempaquetar()
 {
 	// SET UP
 	ManejadorBloques manejador;
@@ -111,8 +114,9 @@ void TestNodoSecuencial::test_empaquetar_desempaquetar()
 	assert(registroLeido != NULL);
 	assert(registroLeido->get_clave() == claveEscrita);
 
-	char* campoLeido = new char[registroLeido->get_tamanio_campo(1)];
+	char* campoLeido = new char[registroLeido->get_tamanio_campo(1)+1];
 	assert(registroLeido->recuperar_campo(campoLeido,1) == RES_OK);
+	campoLeido[registroLeido->get_tamanio_campo(1)] = '\0';
 	assert(strcmp(campoLeido,campoEscrito.c_str()) == 0);
 
 	delete[] campoLeido;
@@ -122,9 +126,11 @@ void TestNodoSecuencial::test_empaquetar_desempaquetar()
 	delete(bloqueLeido);
 
 	manejador.cerrar_archivo();
+
+	print_test_ok("test_nodo_sec_empaquetar_desempaquetar");
 }
 
-void TestNodoSecuencial::test_insertar_eliminar()
+void TestNodoSecuencial::test_nodo_sec_insertar_eliminar()
 {
 	// Set up
 	NodoSecuencial* nodo = new NodoSecuencial(8,100);
@@ -202,9 +208,11 @@ void TestNodoSecuencial::test_insertar_eliminar()
 
 	delete(nodo);
 
+	print_test_ok("test_nodo_sec_insertar_eliminar");
+
 }
 
-void TestNodoSecuencial::test_overflow()
+void TestNodoSecuencial::test_nodo_sec_overflow()
 {
 	std::vector<RegistroClave> regsOverflow;
 	std::vector<RegistroClave> registros;
@@ -243,5 +251,7 @@ void TestNodoSecuencial::test_overflow()
 	assert(nodo->insertar(regOverflow,regsOverflow) == RES_OVERFLOW);
 	assert(regsOverflow.empty() == false);
 	assert(regsOverflow.size() == 500);
+
+	print_test_ok("test_nodo_sec_overflow");
 
 }

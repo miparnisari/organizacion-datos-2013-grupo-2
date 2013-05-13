@@ -89,16 +89,13 @@ int NodoSecuencial::insertar(RegistroClave & registro, std::vector<RegistroClave
 {
 	int resBuscar = buscar(registro.get_clave(),NULL);
 	if (resBuscar == RES_ERROR)
-	{
-		std::cout << "RES_ERROR" << std::endl;
 		return RES_ERROR;
-	}
+
 	else if (resBuscar == RES_OK)
-	{
-		std::cout << "RES_RECORD_EXISTS" << std::endl;
 		return RES_RECORD_EXISTS;
-	}
-	else // (NO ESTA)
+
+
+	else // (LA CLAVE NO ESTA EN EL NODO)
 	{
 		vectorRegistros.push_back(registro);
 		bytesOcupados += registro.get_tamanio_empaquetado();
@@ -107,7 +104,6 @@ int NodoSecuencial::insertar(RegistroClave & registro, std::vector<RegistroClave
 		if (bytesOcupados > maxCantidadBytesOcupados)
 		{
 			__resolver_overflow(regsOverflow);
-			std::cout << "RES_OVERFLOW" << std::endl;
 			return RES_OVERFLOW;
 		}
 		return RES_OK;
@@ -143,10 +139,12 @@ int NodoSecuencial::buscar(ClaveX claveBuscada, RegistroClave** regDevuelto)
 {
 	for (unsigned int i = 0; i < vectorRegistros.size(); i++)
 	{
-		ClaveX claveAlmacenada = vectorRegistros.at(i).get_clave();
+		ClaveX claveAlmacenada (vectorRegistros.at(i).get_clave());
+
 		if (claveBuscada == claveAlmacenada)
 		{
-			*regDevuelto = new RegistroClave(vectorRegistros.at(i));
+			if (regDevuelto != NULL)
+				*regDevuelto = new RegistroClave(vectorRegistros.at(i));
 
 //			for (unsigned int j = 1; j < vectorRegistros.at(i).get_cantidad_campos(); j++)
 //			{
