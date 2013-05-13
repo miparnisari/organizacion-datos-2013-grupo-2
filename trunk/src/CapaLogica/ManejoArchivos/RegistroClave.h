@@ -16,7 +16,7 @@
 class RegistroClave:public RegistroVariable {
 
 	protected:
-		ClaveX clave;
+		ClaveX* clave;
 
 		void _agregar_campo_clave();
 		/*la clave se agrega como el primer campo del registro. Se considera el
@@ -26,12 +26,17 @@ class RegistroClave:public RegistroVariable {
 		static const unsigned short NUMERO_CAMPO_CLAVE= 0;
 
 		RegistroClave();
+		~RegistroClave();
 		RegistroClave(const RegistroClave& otro);
 
 		virtual void set_clave(const ClaveX& clave);
-		virtual void get_clave(ClaveX& clave);
 
-		void limpiar_buffer() throw();
+		virtual ClaveX get_clave();
+		unsigned short get_cantidad_campos()throw();
+		int get_tamanio_campo(unsigned short numeroCampo);
+		int recuperar_campo(char* copia,unsigned short numeroCampo)throw();
+
+		void limpiar_campos() throw();
 		/*limpia el buffer e inserta la clave en el primer campo del registro .
 		 * Esto obliga a que la clave SIEMPRE ESTE EN EL PRIMER CAMPO.*/
 

@@ -20,10 +20,14 @@ class NodoSecuencial : public NodoArbol {
 		void __resolver_overflow(std::vector<RegistroClave>& regsOverflow);
 		/* Devuelve en un vector los registros que se sacaron del nodo. */
 		void __resolver_underflow(std::vector<RegistroClave>& regsUnderflow);
+		/* Devuelve en un vector los registros que se sacaron del nodo. */
+		void __limpiar();
 
 	public:
 		NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBytesOcupados);
 		virtual ~NodoSecuencial();
+
+		void set_proximo_nodo(TipoPuntero p_prox);
 
 		int insertar(RegistroClave & registro, std::vector<RegistroClave> & regsOveflow);
 		/* Inserta un registro en el nodo. Si ya estaba, devuelve RES_RECORD_EXISTS.
@@ -31,18 +35,15 @@ class NodoSecuencial : public NodoArbol {
 		Si no, devuelve RES_OK.
 		Si hubo error, devuelve RES_ERROR. */
 
-
 		int eliminar(const ClaveX clave, std::vector<RegistroClave>& regsUnderflow);
-		int buscar(RegistroClave* regDevuelto);
+		int buscar(ClaveX claveBuscada, RegistroClave** regDevuelto);
 
 		int empaquetar(Bloque* bloque);
 		int desempaquetar(const Bloque*);
 
+		unsigned int get_bytes_ocupados();
 		TipoPuntero get_proximo_nodo();
-		void set_proximo_nodo(TipoPuntero p_prox);
-
 		unsigned int get_cantidad_registros();
-
 		bool esta_vacio();
 };
 

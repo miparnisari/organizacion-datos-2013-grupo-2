@@ -33,7 +33,6 @@
 #include "../src/CapaLogica/ManejoArchivos/ClaveNumerica.h"
 #include "../src/CapaLogica/ManejoArchivos/ClaveX.h"
 
-
 #include "../src/Constantes.h"
 
 using namespace std;

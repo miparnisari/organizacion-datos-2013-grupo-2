@@ -22,6 +22,7 @@ void TestHashingExtensible::test_crear_hashing()
     ManejadorBloques manejador_bloques;
     manejador_bloques.abrir_archivo(DIRECCION, "rb+");
     assert (manejador_bloques.get_cantidad_bloques() == 1);
+    assert (manejador_bloques.cerrar_archivo() == RES_OK);
     assert (hash1.eliminar_hashing_extensible() == RES_OK);
 
     print_test_ok("crear_hashing");
@@ -62,7 +63,7 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     assert(hash1.devolver(clave, &reg) == RES_OK);
 
     //Pruebo si saco el registro correcto
-    reg.get_clave(clave2);
+    clave2 = reg.get_clave();
     clave2.get_clave(claveNum);
     assert(claveNum == 23);
 
@@ -125,7 +126,7 @@ void TestHashingExtensible::test_agregar_varios_registros_y_devolver()
     assert(hash1.devolver(clave, &reg) == RES_OK);
 
     //Pruebo si saco el registro correcto
-    reg.get_clave(clave2);
+    clave2 = reg.get_clave();
     clave2.get_clave(claveNum);
     assert(claveNum == 72);
 

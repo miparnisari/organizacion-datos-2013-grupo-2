@@ -1,5 +1,28 @@
 #include "Bloque.h"
 
+Bloque::Bloque(unsigned int tamBloque)
+{
+	this->tamanioBloque= tamBloque;
+	this->espacioLibre= tamanioBloque - sizeof(espacioLibre);
+	this->espacioLibreOffset= espacioLibre;
+	this->bufferBloque= new char[tamanioBloque]();
+	_limpiar_buffer();
+}
+
+Bloque::~Bloque()
+{
+	delete[] bufferBloque;
+}
+
+Bloque::Bloque(const Bloque& otro)
+{
+	tamanioBloque = otro.tamanioBloque;
+	espacioLibre = otro.espacioLibre;
+	espacioLibreOffset = otro.espacioLibreOffset;
+	bufferBloque = new char[tamanioBloque]();
+	strcpy(bufferBloque, otro.bufferBloque);
+	_limpiar_buffer();
+}
 
 bool Bloque::fue_eliminado(){
 
@@ -62,22 +85,6 @@ int Bloque::obtener_ref_prox_bloque(){
 	return proximoBloque;
 
 }
-
-
-Bloque::Bloque(unsigned int tamBloque)
-{
-	this->tamanioBloque= tamBloque;
-	this->espacioLibre= tamanioBloque - sizeof(espacioLibre);
-	this->espacioLibreOffset= espacioLibre;
-	this->bufferBloque= new char[tamanioBloque]();
-	_limpiar_buffer();
-}
-
-Bloque::~Bloque()
-{
-	delete[] bufferBloque;
-}
-
 
 unsigned int Bloque::_calcular_resto_bloque(unsigned int offsetRegistro)const throw()
 {
@@ -162,7 +169,7 @@ void Bloque::desempaquetar(const char* datos)throw(){
 
 int Bloque::_agregar_registro(char* dato, unsigned short tamanioDato)throw(){
 
-	if(dato== NULL)
+	if(dato == NULL)
 		return RES_ERROR;
 	if(tamanioDato >= _calcular_espacio_libre())
 		return RES_INSUFFICIENT_SPACE;

@@ -82,7 +82,7 @@ void TestBloque::test_agregar_registros(){
 	assert( b4.agregar_registro(&rv4)==RES_ERROR );
 	/*no se puede agregar un registro sin datos*/
 	rv4.agregar_campo( datos[0].c_str() , datos[0].length() );
-	rv4.limpiar_buffer();
+	rv4.limpiar_campos();
 	assert( b4.agregar_registro(&rv4)== RES_ERROR );
 	/*no se puede agregar un registro que fue limpiado a un bloque*/
 

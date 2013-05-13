@@ -34,6 +34,7 @@ class Bloque {
 		Bloque(unsigned int tamBloque = BLOQUE_TAM_DEFAULT);
 		/*Si no se le pasa un tamanio, se le asignara BLOQUE_TAM_DEFAULT.*/
 		virtual ~Bloque();
+		Bloque(const Bloque & otro);
 
 		virtual unsigned short get_cantidad_registros_almacenados()const throw();
 

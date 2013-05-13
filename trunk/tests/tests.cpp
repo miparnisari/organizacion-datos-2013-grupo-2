@@ -18,9 +18,6 @@
 #include <unistd.h>
 #include <climits>
 
-#define IMPRIMIR_VARIABLE(var)\
-	std::cout<<#var<<" = "<<var<<'\n';
-
 using namespace std;
 using namespace utilitarios;
 
@@ -34,36 +31,35 @@ void test_leer_de_archivo()
 	ParserCanciones parser;
 	assert(parser.crear("../songs/") == RES_OK);
 	RegistroCancion regCancion;
-	std::string parametro = "xxxxx";
+	std::string parametro = "";
 
 	// Para cada cancion que tengamos...
 	while (parser.fin_directorio() == false)
 	{
 		if (parser.getNextCancion(regCancion) == RES_OK)
 		{
-			std::cout << "-----------CANCION-----------" << std::endl;
-			
-			// Imprimo autores
+			// Autores
 			for (unsigned short j=0; j < regCancion.get_cantidad_autores(); j++)
 			{
 				std::string autor = regCancion.get_autor(j);
-				IMPRIMIR_VARIABLE(autor);
+				assert(autor.size() > 1);
 			}
 			
-			// Imprimo los atributos de la cancion (NO la letra)
+			// Atributos de la cancion (NO la letra)
 			for(unsigned short i=1;i<regCancion.contar_parametros();i++)
 			{
 				regCancion.obtener_parametro(i,parametro);
-				IMPRIMIR_VARIABLE(parametro);
+				assert(parametro.size() > 1);
 			}
 
-			// Imprimo una partecita de la letra
+			// 50 caracteres de la letra
 			std::string letra = regCancion.get_letra();
+			std::string parteLetra = "";
 			for (int i = 0; i < 50; i++)
 			{
-				std::cout << letra[i];
+				parteLetra.push_back(letra[i]);
 			}
-			std::cout << "..." << std::endl;
+			assert(parteLetra.size() == 50);
 		}
 	}
 	print_test_ok("test_leer_de_archivo");
@@ -235,11 +231,12 @@ void test_vector_clavex(){
 
 int main(int argc,char** args)
 {
-//	test_leer_de_archivo();
+	test_leer_de_archivo();
 	test_clave_numerica();
 	test_clave_string();
 	test_clavex();
-//
+	test_vector_clavex();
+
 	std::vector<Test*> tests;
 
 	tests.push_back(new TestRegistroCancion);
@@ -254,21 +251,15 @@ int main(int argc,char** args)
 	
 	tests.push_back(new TestHashingExtensible);
 	
-//	tests.push_back(new TestHeap);
-
 	tests.push_back(new TestNodoInterno);
 //	tests.push_back(new TestNodoSecuencial);
+
+//	tests.push_back(new TestHeap);
 
 	for (unsigned int i = 0; i < tests.size(); i++)
 	{
 		tests.at(i)->ejecutar();
 		delete(tests.at(i));
 	}
-
-
-	//test_vector_clavex();
-
-	cout<<"fin tests!!!"<<endl;
-
 	return 0;
 }

@@ -21,14 +21,14 @@ void TestRegistroCancion::ejecutar()
 
 void TestRegistroCancion::prueba()
 {
-	char linea2[]= "autor1;autor2;autor3-titulo-idiomainvalido\nletrasssssssss\n";
 	RegistroCancion rc2;
+	char linea2[]= "autor1;autor2;autor3-titulo-idiomainvalido\nletrasssssssss\n";
 	assert( rc2.cargar(linea2,strlen(linea2)) == RES_ERROR );
 
-	char linea3[]= "autor1;autor2;autor3-titulo-english\nletrasssssssssssss\n";
 	RegistroCancion rc3;
+	char linea3[]= "autor1;autor2;autor3-titulo-english\nletrasssssssssssss\n";
 	assert( rc3.cargar(linea3,strlen(linea3))== RES_OK );
-	assert (rc3.contar_parametros()== 3);
+	assert( rc3.contar_parametros()== 3);
 
 	string parametro;
 	rc3.obtener_parametro(0,parametro);

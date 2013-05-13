@@ -12,13 +12,20 @@ NodoSecuencial::NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBy
 {
 	minCantidadBytesOcupados = minBytesOcupados;
 	maxCantidadBytesOcupados = maxBytesOcupados;
-	bytesOcupados = 0;
+	bytesOcupados = sizeof(TIPO_HOJA) + sizeof(proximoNodo);
 	proximoNodo = -1;
 }
 
 NodoSecuencial::~NodoSecuencial()
 {
 
+}
+
+void NodoSecuencial::__limpiar()
+{
+	bytesOcupados = sizeof(TIPO_HOJA) + sizeof(proximoNodo);
+	proximoNodo = -1;
+	vectorRegistros.clear();
 }
 
 unsigned int NodoSecuencial::get_cantidad_registros()
@@ -29,6 +36,11 @@ unsigned int NodoSecuencial::get_cantidad_registros()
 bool NodoSecuencial::esta_vacio()
 {
 	return (vectorRegistros.size() == 0);
+}
+
+unsigned int NodoSecuencial::get_bytes_ocupados()
+{
+	return bytesOcupados;
 }
 
 TipoPuntero NodoSecuencial::get_proximo_nodo()
@@ -75,19 +87,15 @@ void NodoSecuencial::__resolver_overflow(std::vector<RegistroClave> & regsOverfl
 
 int NodoSecuencial::insertar(RegistroClave & registro, std::vector<RegistroClave> & regsOverflow)
 {
-	RegistroClave* regAbuscar = new RegistroClave();
-	ClaveX claveAbuscar;
-	registro.get_clave(claveAbuscar);
-	regAbuscar->set_clave(claveAbuscar);
-	int resBuscar = buscar(regAbuscar);
+	int resBuscar = buscar(registro.get_clave(),NULL);
 	if (resBuscar == RES_ERROR)
 	{
-		delete (regAbuscar);
+		std::cout << "RES_ERROR" << std::endl;
 		return RES_ERROR;
 	}
 	else if (resBuscar == RES_OK)
 	{
-		delete (regAbuscar);
+		std::cout << "RES_RECORD_EXISTS" << std::endl;
 		return RES_RECORD_EXISTS;
 	}
 	else // (NO ESTA)
@@ -96,10 +104,10 @@ int NodoSecuencial::insertar(RegistroClave & registro, std::vector<RegistroClave
 		bytesOcupados += registro.get_tamanio_empaquetado();
 		std::sort(vectorRegistros.begin(), vectorRegistros.end());
 
-		delete (regAbuscar);
 		if (bytesOcupados > maxCantidadBytesOcupados)
 		{
 			__resolver_overflow(regsOverflow);
+			std::cout << "RES_OVERFLOW" << std::endl;
 			return RES_OVERFLOW;
 		}
 		return RES_OK;
@@ -108,10 +116,9 @@ int NodoSecuencial::insertar(RegistroClave & registro, std::vector<RegistroClave
 
 int NodoSecuencial::eliminar(const ClaveX clave, std::vector<RegistroClave>& regsUnderflow)
 {
-	RegistroClave* registro = new RegistroClave();
-	registro->set_clave(clave);
-	int posicionEliminar = buscar(registro);
-	if (posicionEliminar >= 0)
+	RegistroClave* registro = NULL;
+	int posicionEliminar = buscar(clave,&registro);
+	if (posicionEliminar >= 0 && registro != NULL)
 	{
 		bytesOcupados -= vectorRegistros.at(posicionEliminar).get_tamanio_empaquetado();
 		vectorRegistros.erase(vectorRegistros.begin()+posicionEliminar);
@@ -132,54 +139,54 @@ int NodoSecuencial::eliminar(const ClaveX clave, std::vector<RegistroClave>& reg
 
 }
 
-int NodoSecuencial::buscar(RegistroClave* regDevuelto)
+int NodoSecuencial::buscar(ClaveX claveBuscada, RegistroClave** regDevuelto)
 {
-	if (regDevuelto == NULL)
-		return RES_ERROR;
-	ClaveX clave;
-	regDevuelto->get_clave(clave);
-
 	for (unsigned int i = 0; i < vectorRegistros.size(); i++)
 	{
-		ClaveX claveAlmacenada;
-		vectorRegistros.at(i).get_clave(claveAlmacenada);
-		if (clave == claveAlmacenada)
+		ClaveX claveAlmacenada = vectorRegistros.at(i).get_clave();
+		if (claveBuscada == claveAlmacenada)
 		{
-			for (unsigned int j = 1; j < vectorRegistros.at(i).get_cantidad_campos(); j++)
-			{
-//				std::cout << "tamanio campo = " << registroAlmacenado.get_tamanio_campo(j) << std::endl;
-				char* buffer = new char[vectorRegistros.at(i).get_tamanio_campo(j)+1]();
-				buffer[vectorRegistros.at(i).get_tamanio_campo(j)] = '\0';
-				vectorRegistros.at(i).recuperar_campo(buffer, j);
-//				std:: cout << "buffer" << buffer << std::endl;
-//				std:: cout << "strlen" << strlen(buffer) << std::endl;
-				regDevuelto->agregar_campo(buffer,strlen(buffer));
-				delete[] buffer;
-			}
+			*regDevuelto = new RegistroClave(vectorRegistros.at(i));
+
+//			for (unsigned int j = 1; j < vectorRegistros.at(i).get_cantidad_campos(); j++)
+//			{
+
+//				//				std::cout << "tamanio campo = " << registroAlmacenado.get_tamanio_campo(j) << std::endl;
+//				char* buffer = new char[vectorRegistros.at(i).get_tamanio_campo(j)+1]();
+//				buffer[vectorRegistros.at(i).get_tamanio_campo(j)] = '\0';
+//				vectorRegistros.at(i).recuperar_campo(buffer, j);
+////				std:: cout << "buffer" << buffer << std::endl;
+////				std:: cout << "strlen" << strlen(buffer) << std::endl;
+//				regDevuelto->agregar_campo(buffer,strlen(buffer));
+//				delete[] buffer;
+//			}
 			return i;
 		}
 	}
 
 	return RES_RECORD_DOESNT_EXIST;
-}
+}/* POSTCONDICION: liberar la memoria de regDevuelto. */
 
 int NodoSecuencial::empaquetar(Bloque* bloque)
 {
 	if (bloque == NULL)
 		return RES_ERROR;
 
+	//Empaqueto el tipo de nodo y el puntero al proximo nodo
+	RegistroVariable header;
+	header.agregar_campo((char*)&tipoNodo, sizeof(tipoNodo));
+	header.agregar_campo((char*)&proximoNodo, sizeof(proximoNodo));
+	bloque->agregar_registro(&header);
+
 	// Empaqueto los registros del nodo
 	for (unsigned int i = 0; i < vectorRegistros.size(); i++)
 	{
 		bloque->agregar_registro(&(vectorRegistros.at(i)));
 	}
-	RegistroClave regConPuntero;
-	regConPuntero.agregar_campo((char*)&proximoNodo, sizeof(proximoNodo));
-	bloque->agregar_registro(&regConPuntero);
 
 	return RES_OK;
 
-}
+}/* POSTCONDICION: empaquetar el bloque. */
 
 int NodoSecuencial::desempaquetar(const Bloque* bloque)
 {
@@ -188,21 +195,26 @@ int NodoSecuencial::desempaquetar(const Bloque* bloque)
 	if (bloque->esta_vacio())
 		return RES_OK;
 
+	__limpiar();
 	unsigned short int q = bloque->get_cantidad_registros_almacenados();
 
+	// Desempaqueto el header (tipo nodo + puntero proximo nodo)
+	RegistroVariable header;
+	bloque->recuperar_registro(&header, 0);
+	header.recuperar_campo((char*)&tipoNodo,sizeof(tipoNodo));
+	header.recuperar_campo((char*)&proximoNodo, sizeof(proximoNodo));
+
+	bytesOcupados = sizeof(tipoNodo) + sizeof(proximoNodo);
+
+
+	// Desempaqueto los registros
 	for (int i = 0 ; i < q-1; i ++)
 	{
 		RegistroClave regActual;
 		bloque->recuperar_registro(&regActual, i);
-
 		vectorRegistros.push_back(regActual);
 		bytesOcupados += regActual.get_tamanio_empaquetado();
 	}
-
-	RegistroClave regConPuntero;
-	bloque->recuperar_registro(&regConPuntero, q-1);
-	regConPuntero.empaquetar((char*)&proximoNodo);
-	bytesOcupados += sizeof(proximoNodo);
 
 	return RES_OK;
 }

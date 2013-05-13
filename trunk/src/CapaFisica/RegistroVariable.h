@@ -52,7 +52,7 @@ class RegistroVariable {
 		/*recupera un campo en la posicion numeroCampo , el mismo es almacenado en el buffer copia.
 		 * Se retorna el tamanio del campo leido*/
 
-		virtual void limpiar_buffer()throw();
+		virtual void limpiar_campos()throw();
 
 		virtual int empaquetar(char* copia)throw();
 		/*exporta los datos del registro variable como un buffer de caracteres con el siguiente

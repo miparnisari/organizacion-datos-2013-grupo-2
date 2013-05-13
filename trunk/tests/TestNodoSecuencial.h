@@ -17,6 +17,8 @@ class TestNodoSecuencial: public Test {
 		void ejecutar();
 
 	private:
+		void test_crear();
+		void test_insertar_simple();
 		void test_empaquetar_desempaquetar();
 		void test_insertar_eliminar();
 		void test_overflow();

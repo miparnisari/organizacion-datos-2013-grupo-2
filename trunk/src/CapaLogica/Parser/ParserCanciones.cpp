@@ -8,17 +8,17 @@ ParserCanciones::ParserCanciones()
 
 ParserCanciones::~ParserCanciones()
 {
-	
+	chdir(currentWorkingDirectory); // De vuelta al directorio original
 }
 
-int ParserCanciones::cantidad_archivos()
+unsigned int ParserCanciones::get_cantidad_archivos()
 {
 	return archivos.size();
 }
 
 bool ParserCanciones::fin_directorio()
 {
-	return (contadorArchivosLeidos > archivos.size());
+	return (contadorArchivosLeidos > get_cantidad_archivos());
 }
 
 char ParserCanciones::_estandarizar (char caracter)
@@ -28,13 +28,11 @@ char ParserCanciones::_estandarizar (char caracter)
 
 int ParserCanciones::crear (std::string dir)
 {
-	char cwd[1024];
-	getcwd(cwd, sizeof(cwd));
+	getcwd(currentWorkingDirectory, sizeof(currentWorkingDirectory));
 	int res = chdir(dir.c_str()); // Cambia el directorio al del repositorio, para poder indexar
 	if (res == -1)
 		return RES_DIRECTORY_DOESNT_EXIST;
 	utilitarios::listpath (dir, archivos, ".txt");
-	chdir(cwd); // De vuelta al directorio original
 	return RES_OK;
 }
 
@@ -69,6 +67,5 @@ int ParserCanciones::getNextCancion(RegistroCancion& reg)
 	int resultado = reg.cargar(bufferCancion, sizeOfBuffer);
 	
 	delete[] bufferCancion;
-	std::cout << "fin get next cancion" << std::endl;
 	return resultado;
 }

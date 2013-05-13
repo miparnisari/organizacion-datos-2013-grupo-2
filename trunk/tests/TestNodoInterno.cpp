@@ -49,7 +49,7 @@ void TestNodoInterno::insertar_hijos(){
 
 		const unsigned int TAMANIO_INICIAL= ni.get_tamanio_ocupado();
 		assert( ni.insertar_hijo(99,2)== RES_ERROR );
-		assert( ni.get_tamanio_ocupado()== TAMANIO_INICIAL);
+		assert( ni.get_tamanio_ocupado()== (signed)TAMANIO_INICIAL);
 		for(unsigned short i=0;i<2;i++)
 			assert( ni.insertar_hijo(hijos[i],i+1)==RES_UNDERFLOW );
 		assert( ni.insertar_hijo(hijos[2],3)== RES_OK );
@@ -193,7 +193,7 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 			assert( ni.insertar_clave(claves[i],ocurrenciaInsercion)== RES_OK );
 			assert( ocurrenciaInsercion== i );
 			assert( ni.insertar_clave(claves[i],ocurrenciaInsercion)== RES_ERROR );
-			assert( ni.get_tamanio_ocupado()== TAMANIO_INICIAL +
+			assert( ni.get_tamanio_ocupado()== (signed)TAMANIO_INICIAL +
 					claves[i].get_tamanio_empaquetado() * (i+1) );
 		}
 
