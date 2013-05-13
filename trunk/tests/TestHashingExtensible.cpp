@@ -20,13 +20,13 @@ void TestHashingExtensible::test_crear_hashing()
 {
     HashingExtensible hash1("",DIRECCION);
     ManejadorBloques manejador_bloques;
-    manejador_bloques.abrir_archivo(DIRECCION, "rb");
+    HashingExtensible hash2("",DIRECCION);
+    manejador_bloques.abrir_archivo(DIRECCION, "rb+");
     assert (manejador_bloques.get_cantidad_bloques() == 1);
     //Debe guardar un bloque de registros
 
     print_test_ok("crear_hashing");
     hash1.eliminar_hashing_extensible();
-    hash1.~HashingExtensible();
 }
 
 void TestHashingExtensible::test_eliminar_registro()
@@ -46,9 +46,6 @@ void TestHashingExtensible::test_eliminar_registro()
 
     print_test_ok("test_eliminar_registro");
     hash1.eliminar_hashing_extensible();
-    hash1.~HashingExtensible();
-    reg.~RegistroVariable();
-    clave.~ClaveX();
 }
 
 void TestHashingExtensible::test_agregar_y_devolver_registro()
@@ -72,15 +69,12 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     assert(claveNum == 23);
 
     //Pruebo si se guardo el dato correcto
-    recuperar_dato_registro(dato, clave, hash1);
+    this->recuperar_dato_registro(dato, clave, hash1);
     assert (strcmp(dato,campo.c_str()) == 0);
     delete[] dato;
 
     print_test_ok("test_agregar_y_devolver_registro");
     hash1.eliminar_hashing_extensible();
-    hash1.~HashingExtensible();
-    reg.~RegistroVariable();
-    clave.~ClaveX();
 }
 
 void TestHashingExtensible::test_crear_hashing_cerrarlo_y_abrirlo()
@@ -94,7 +88,7 @@ void TestHashingExtensible::test_crear_hashing_cerrarlo_y_abrirlo()
     hash1.~HashingExtensible();
 
     HashingExtensible hash2("",DIRECCION);
-    recuperar_dato_registro(campoRecuperado, clave, hash2);
+    this->recuperar_dato_registro(campoRecuperado, clave, hash2);
 
     assert (strcmp(campoRecuperado,campo.c_str()) == 0);
     delete[] campoRecuperado;
@@ -102,8 +96,6 @@ void TestHashingExtensible::test_crear_hashing_cerrarlo_y_abrirlo()
     print_test_ok("test_crear_hashing_cerrarlo_y_abrirlo");
 
     hash1.eliminar_hashing_extensible();
-    hash2.~HashingExtensible();
-    clave.~ClaveX();
 }
 
 void TestHashingExtensible::test_agregar_varios_registros_y_devolver()
@@ -141,16 +133,13 @@ void TestHashingExtensible::test_agregar_varios_registros_y_devolver()
     assert(claveNum == 72);
 
     //Pruebo si se guardo el dato correcto
-    recuperar_dato_registro(dato, clave, hash1);
+    this->recuperar_dato_registro(dato, clave, hash1);
     campo = "Hola mundo";
     assert (strcmp(dato,campo.c_str()) == 0);
     delete[] dato;
 
     print_test_ok("test_agregar_varios_registros_y_devolver");
     hash1.eliminar_hashing_extensible();
-    hash1.~HashingExtensible();
-    reg.~RegistroVariable();
-    clave.~ClaveX();
 }
 
 void TestHashingExtensible::test_agregar_reg_y_duplicar_tabla()
@@ -190,13 +179,13 @@ void TestHashingExtensible::test_eliminar_reg_y_dividir_tabla()
 
 void TestHashingExtensible::ejecutar()
 {
-    test_crear_hashing();
-   /* test_eliminar_registro();
-	test_agregar_y_devolver_registro();
-	test_crear_hashing_cerrarlo_y_abrirlo();
-	test_agregar_varios_registros_y_devolver();
-	test_agregar_reg_y_duplicar_tabla();
-	test_eliminar_reg_y_dividir_tabla();*/
+    this->test_crear_hashing();
+   /* this->test_eliminar_registro();
+	this->test_agregar_y_devolver_registro();
+	this->test_crear_hashing_cerrarlo_y_abrirlo();
+	this->test_agregar_varios_registros_y_devolver();
+	this->test_agregar_reg_y_duplicar_tabla();
+	this->test_eliminar_reg_y_dividir_tabla();*/
 }
 
 void TestHashingExtensible::crear_registro_y_agregar(HashingExtensible *hash1, std::string campo, ClaveX clave)
