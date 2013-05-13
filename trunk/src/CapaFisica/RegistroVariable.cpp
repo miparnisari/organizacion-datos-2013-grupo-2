@@ -360,16 +360,9 @@ int RegistroVariable::get_tamanio_campo(unsigned short numeroCampo)
 int RegistroVariable::recuperar_campo(char* copia,unsigned short numeroCampo)throw(){
 
 	if(this->fue_eliminado() && numeroCampo> CAMPO_ENCADENAMIENTO_LIBRES)
-	{
-		std::cout << "no se que hace aca" <<std::endl;
 		return RES_ERROR;
-	}
 	if (numeroCampo >= this->get_cantidad_campos())
-	{
-		std::cout << "numero campo = " << numeroCampo << std::endl;
-		std::cout << "get_cantidad_campos = " << get_cantidad_campos() << std::endl;
 		return RES_ERROR;
-	}
 
 	stringstream stream;
 	stream.write(buffer,tamanio);

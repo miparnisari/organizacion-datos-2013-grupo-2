@@ -52,30 +52,6 @@ void RegistroClave::limpiar_campos() throw(){
 
 }
 
-int RegistroClave::get_tamanio_campo(unsigned short numeroCampo)
-{
-	if (this->fue_eliminado())
-		return RES_ERROR;
-	if (numeroCampo >= this->get_cantidad_campos())
-		return RES_ERROR;
-
-	stringstream stream;
-	stream.write(buffer,tamanio);
-	if (stream.seekg( this->seek_numero_campo(numeroCampo+1) , ios::beg ))
-	{
-			unsigned short tamanioCampo = 0;
-			if (stream.read( (char*)&tamanioCampo , sizeof(tamanioCampo) ))
-			{
-				std::cout << stream.gcount() << " could be read";
-				return tamanioCampo;
-			}
-			std::cout << "error: only " << stream.gcount() << " could be read";
-
-	}
-	std::cout << "error: no se pudo hacer seek del buffer" << std::endl;
-	return RES_ERROR;
-}/* La clave no cuenta como un campo. */
-
 void RegistroClave::set_clave(const ClaveX& clave){
 
 	// Si ya tenia una clave no hacemos nada
@@ -118,17 +94,6 @@ ClaveX RegistroClave::get_clave()
 {
 	return (*this->clave);
 }
-
-unsigned short RegistroClave::get_cantidad_campos()throw()
-{
-	unsigned short camposMasClave = RegistroVariable::get_cantidad_campos();
-	return camposMasClave - 1;
-} /* La clave no cuenta como un campo. */
-
-int RegistroClave::recuperar_campo(char* copia,unsigned short numeroCampo)throw()
-{
-	return RegistroVariable::recuperar_campo(copia,numeroCampo+1);
-} /* La clave no cuenta como un campo. */
 
 int RegistroClave::desempaquetar(const char* copia)throw(){
 

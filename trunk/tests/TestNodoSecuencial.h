@@ -17,11 +17,11 @@ class TestNodoSecuencial: public Test {
 		void ejecutar();
 
 	private:
-		void test_crear();
-		void test_insertar_simple();
-		void test_empaquetar_desempaquetar();
-		void test_insertar_eliminar();
-		void test_overflow();
+		void test_nodo_sec_crear();
+		void test_nodo_sec_insertar_simple();
+		void test_nodo_sec_empaquetar_desempaquetar();
+		void test_nodo_sec_insertar_eliminar();
+		void test_nodo_sec_overflow();
 };
 
 #endif /* TESTNODOSECUENCIAL_H_ */
