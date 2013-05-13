@@ -285,8 +285,7 @@ string RegistroCancion::get_titulo()throw(){
 
 
 int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
-	//FIXME este metodo no anda!!!
-	int resCarga = RegistroVariable::agregar_datos(dato,tamanioDato);
+ 	int resCarga = RegistroVariable::agregar_datos(dato,tamanioDato);
 	if (resCarga != RES_OK)
 		return resCarga;
 	
@@ -311,7 +310,7 @@ int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
 void RegistroCancion::limpiar_buffer()throw()
 {
 
-	RegistroVariable::limpiar_buffer();
+	RegistroVariable::limpiar_campos();
 
 	if(autores)
 		delete[] autores;

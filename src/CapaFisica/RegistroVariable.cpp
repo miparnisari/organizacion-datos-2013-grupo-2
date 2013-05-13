@@ -22,25 +22,25 @@ RegistroVariable::~RegistroVariable()
 RegistroVariable::RegistroVariable(const RegistroVariable& otro)
 {
 	tamanio = otro.tamanio;
-	//buffer = new char[strlen(otro.buffer)+1 ];
+//	buffer = new char[tamanio];
+//	strcpy(buffer,otro.buffer);
 	buffer= new char[tamanio];
 	stringstream ss;
 	ss.write(otro.buffer,tamanio);
 	ss.seekg(0,ios::beg);
 	ss.read(this->buffer,tamanio);
-	//buffer[strlen(otro.buffer)] = '\0';
+
+
 }/* constructor copia */
 
 
 void RegistroVariable::_inicializar_buffer(){
 
-	if(buffer)
+	if (buffer == NULL)
+		return;
 	for(unsigned short i=0;i<this->tamanio;i++)
 		buffer[i]= '*';
-
 }
-
-
 
 int RegistroVariable::agregar_datos(const char* datos,unsigned short tamanioDatos)throw(){
 
@@ -58,7 +58,7 @@ int RegistroVariable::agregar_datos(const char* datos,unsigned short tamanioDato
 	if (buffer)
 		stream.write(buffer,tamanio); //Inserts the first n characters of the array pointed by s into the stream.
 	stream.write(datos,tamanioDatos);
-	RegistroVariable::limpiar_buffer();
+	RegistroVariable::limpiar_campos();
 
 	tamanio= tamanioFinal;
 	//buffer= new char[tamanioFinal +1];
@@ -128,7 +128,7 @@ int RegistroVariable::agregar_campo(const char* campo,unsigned short tamanioCamp
 }/*agrega un campo al registro junto con su delimitador de espacio.*/
 
 
-void RegistroVariable::limpiar_buffer()throw(){
+void RegistroVariable::limpiar_campos()throw(){
 
 	if(buffer){
 		delete[] buffer;
@@ -342,11 +342,10 @@ int RegistroVariable::seek_numero_campo(unsigned short numeroCampo){
 
 int RegistroVariable::get_tamanio_campo(unsigned short numeroCampo)
 {
-
 	if (this->fue_eliminado())
-			return RES_ERROR;
-		if (numeroCampo >= this->get_cantidad_campos())
-			return RES_ERROR;
+		return RES_ERROR;
+	if (numeroCampo >= this->get_cantidad_campos())
+		return RES_ERROR;
 
 	stringstream stream;
 	stream.write(buffer,tamanio);
@@ -356,16 +355,21 @@ int RegistroVariable::get_tamanio_campo(unsigned short numeroCampo)
 	stream.read( (char*)&tamanioCampo , sizeof(tamanioCampo) );
 
 	return tamanioCampo;
-
-
 }
 
 int RegistroVariable::recuperar_campo(char* copia,unsigned short numeroCampo)throw(){
 
 	if(this->fue_eliminado() && numeroCampo> CAMPO_ENCADENAMIENTO_LIBRES)
+	{
+		std::cout << "no se que hace aca" <<std::endl;
 		return RES_ERROR;
+	}
 	if (numeroCampo >= this->get_cantidad_campos())
+	{
+		std::cout << "numero campo = " << numeroCampo << std::endl;
+		std::cout << "get_cantidad_campos = " << get_cantidad_campos() << std::endl;
 		return RES_ERROR;
+	}
 
 	stringstream stream;
 	stream.write(buffer,tamanio);
@@ -396,7 +400,7 @@ int RegistroVariable::desempaquetar(const char* copia)throw()
 		return RES_ERROR;
 	}
 
-	limpiar_buffer();
+	limpiar_campos();
 	stringstream stream;
 	stream.write(copia,sizeof(tamanio)); //Inserts the first n characters of the array pointed by s into the stream.
 	stream.seekg(0,stream.beg);

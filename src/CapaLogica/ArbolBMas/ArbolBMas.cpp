@@ -57,8 +57,6 @@ int ArbolBMas::_hallar_hijo_correspondiente(RegistroClave* registro,
 	if(registro== NULL || nodoBuscar== NULL)
 		return RES_ERROR;
 
-	ClaveX claveRegistro;
-	registro->get_clave(claveRegistro);
 	/*recupero la clave del registro a buscar*/
 
 	ClaveX unaClave;
@@ -66,13 +64,13 @@ int ArbolBMas::_hallar_hijo_correspondiente(RegistroClave* registro,
 
 	while( nodoBuscar->get_clave(indiceClave,unaClave)!= RES_ERROR ){
 
-		if(unaClave > claveRegistro){
+		if(unaClave > registro->get_clave()){
 			nodoBuscar->get_hijo(hijoCorrespondiente,indiceClave);
 			return RES_OK;
 		}/*si la clave del nodo que estoy examinando es mayor que la clave de
 		parametro -> el hijo correspondiente es el izquierdo a aquel que examino.*/
 
-		if(unaClave == claveRegistro){
+		if(unaClave == registro->get_clave()){
 			nodoBuscar->get_hijo(hijoCorrespondiente,indiceClave+1);
 			return RES_OK;
 		}/*si la clave que estoy examinando es identica a la clave del registro de

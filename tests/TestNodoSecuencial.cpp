@@ -17,9 +17,58 @@ TestNodoSecuencial::~TestNodoSecuencial()
 
 void TestNodoSecuencial::ejecutar()
 {
-	test_empaquetar_desempaquetar();
+	test_crear();
+	test_insertar_simple();
 	test_insertar_eliminar();
+	test_empaquetar_desempaquetar();
 	test_overflow();
+}
+
+void TestNodoSecuencial::test_crear()
+{
+	NodoSecuencial* nodo = new NodoSecuencial(100,1000);
+	assert(nodo->get_bytes_ocupados() == sizeof(int) + sizeof(char));
+	assert(nodo->get_proximo_nodo() == -1);
+	assert(nodo->get_cantidad_registros() == 0);
+	assert(nodo->esta_vacio() == true);
+	delete(nodo);
+}
+
+void TestNodoSecuencial::test_insertar_simple()
+{
+	NodoSecuencial* nodo = new NodoSecuencial(5,100);
+	std::vector <RegistroClave> regsOverflow;
+	RegistroClave registro;
+	RegistroClave* registroCopia = NULL;
+
+	ClaveX clave;
+	clave.set_clave("una clave");
+	std::string campo = "un campo";
+
+	registro.set_clave(clave);
+	registro.agregar_campo(campo.c_str(), campo.size());
+
+	std::cout << "registro.get_tamanio()" << registro.get_tamanio() << std::endl;
+	assert(registro.get_tamanio() == 22);
+
+	assert(nodo->buscar(clave,&registroCopia) < 0);
+	assert(registroCopia == NULL);
+
+	assert(nodo->insertar(registro,regsOverflow) == RES_OK);
+
+	assert(nodo->buscar(clave,&registroCopia) == 0);
+	assert(registroCopia != NULL);
+
+	std::cout << "registroCopia.get_tamanio()" << registroCopia->get_tamanio() << std::endl;
+	assert(registroCopia->get_tamanio() == registro.get_tamanio());
+
+	char* buffer = new char[registroCopia->get_tamanio_campo(1)]();
+	registroCopia->recuperar_campo(buffer,1);
+	assert (strcmp(buffer,campo.c_str()) == 0);
+
+	delete[] buffer;
+	delete(nodo);
+	delete(registroCopia);
 }
 
 void TestNodoSecuencial::test_empaquetar_desempaquetar()
@@ -45,7 +94,7 @@ void TestNodoSecuencial::test_empaquetar_desempaquetar()
 
 	assert(nodo->get_cantidad_registros() == 1);
 	assert(nodo->get_proximo_nodo() == -1);
-	assert(nodo->buscar(&registro) == 0);
+	assert(nodo->buscar(claveEscrita,NULL) == 0);
 	assert(regsOverflow.empty());
 
 	assert(nodo->empaquetar(bloque) == RES_OK);
@@ -56,15 +105,14 @@ void TestNodoSecuencial::test_empaquetar_desempaquetar()
 
 	nodoLeido->empaquetar(bloqueLeido);
 
-	RegistroClave registroLeido;
+	RegistroClave* registroLeido = NULL;
 	ClaveX claveLeida;
-	registroLeido.set_clave(claveEscrita);
-	assert(nodoLeido->buscar(&registroLeido) == 0);
-	registroLeido.get_clave(claveLeida);
-	assert(claveLeida == claveEscrita);
+	assert(nodoLeido->buscar(claveEscrita,&registroLeido) == 0);
+	assert(registroLeido != NULL);
+	assert(registroLeido->get_clave() == claveEscrita);
 
-	char* campoLeido = new char[registroLeido.get_tamanio_campo(1)];
-	assert(registroLeido.recuperar_campo(campoLeido,1) == RES_OK);
+	char* campoLeido = new char[registroLeido->get_tamanio_campo(1)];
+	assert(registroLeido->recuperar_campo(campoLeido,1) == RES_OK);
 	assert(strcmp(campoLeido,campoEscrito.c_str()) == 0);
 
 	delete[] campoLeido;
@@ -136,16 +184,18 @@ void TestNodoSecuencial::test_insertar_eliminar()
 	assert(regsOverflow.empty() == true);
 
 	// Los registros deben estar ordenados dentro del nodo
-	assert(nodo->buscar(&reg1) == 0);
-	assert(nodo->buscar(&reg2) == 1);
+	RegistroClave* regleido1 = NULL;
+	RegistroClave* regleido2 = NULL;
+	assert(nodo->buscar(clave1,&regleido1) == 0);
+	assert(regleido1 != NULL);
+	assert(nodo->buscar(clave2,&regleido2) == 1);
+	assert(regleido2 != NULL);
 
 	// Elimno una clave
 	assert(nodo->eliminar(clave1,regsUnderflow) == RES_UNDERFLOW);
 	assert(regsUnderflow.empty() == false);
 
-	ClaveX claveDeUnderflow;
-	regsUnderflow.at(0).get_clave(claveDeUnderflow);
-	assert (claveDeUnderflow == clave2);
+	assert (regsUnderflow.at(0).get_clave() == clave2);
 
 	assert(nodo->get_cantidad_registros() == 1);
 

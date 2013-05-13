@@ -7,7 +7,6 @@ Falta revisar como se guardan los tamanios de dispersion de los bloques*/
 
 HashingExtensible::HashingExtensible(std::string directorioSalida, std::string fileNamee)
 {
-    Bloque *bloqueNuevo = NULL;
     this->tabla = NULL;
     this->fileName=directorioSalida+fileNamee;
     this->fileNameTabla=directorioSalida+fileNamee+"Tabla";
@@ -19,9 +18,10 @@ HashingExtensible::HashingExtensible(std::string directorioSalida, std::string f
         this->tabla = new Tabla(fileNameTabla);
         this->tabla->cambiar_valor(0, 0); // la pos 0 de la tabla se le coloca el num de bloque 0
         //Creamos un nuevo bloque con dispersion 1 y lo guardamos en el archivo de bloques del Hash
-        bloqueNuevo = this->manejador_bloques.crear_bloque();
+        Bloque* bloqueNuevo = this->manejador_bloques.crear_bloque();
         this->crear_bloque(1, bloqueNuevo);
         this->manejador_bloques.escribir_bloque(bloqueNuevo);//Va a estar en la posicion 0
+        delete (bloqueNuevo);
         this->cant_bloques = 1;
     }else{
         //Ya abrimos el archivo de bloques
@@ -55,15 +55,14 @@ int HashingExtensible::agregar(RegistroClave reg)
     int posBloque, tamDispersion, i, resultado, posBloqueNuevo, posReg, tamTabla, posTabla;
     Bloque bloque;
     RegistroVariable tamDispBloque;
-    ClaveX clave_reg;
-    char* buffer = new char[50]();
+    ClaveX clave_reg = reg.get_clave();
  /**   std::string valor;*/
 
     this->manejador_bloques.abrir_archivo(fileName, "rb+");
 
     tamTabla = tabla->get_tamanio();
     //Obtengo el bloque en donde se guardara el registro
-    reg.get_clave(clave_reg);
+
     posBloque = this->obtener_bloque(clave_reg, &bloque);
     posTabla = this->obtener_posicion_tabla(clave_reg);
 
@@ -79,6 +78,7 @@ int HashingExtensible::agregar(RegistroClave reg)
         Bloque bloqueAux(this->manejador_bloques.get_tamanio_bloque());
         //Recupero el tamaño de dispersion del bloque
         bloque.recuperar_registro(&tamDispBloque,0);
+        char* buffer = new char[50]();
         tamDispBloque.recuperar_campo(buffer,0);
         tamDispersion = (int) buffer;
  /**       valor = std::string(buffer);
@@ -133,7 +133,8 @@ int HashingExtensible::devolver(ClaveX clave, RegistroClave *reg)
     this->obtener_bloque(clave, &bloque);
     //Modifico el elemento del bloque
     posReg = this->obtener_posicion_reg_bloque(clave, bloque);
-    if (posReg == RES_ERROR)   return NO_EXISTE;
+    if (posReg == RES_ERROR)
+    	return NO_EXISTE;
     bloque.recuperar_registro(reg, posReg);
     this->manejador_bloques.cerrar_archivo();
     return RES_OK;
@@ -143,9 +144,8 @@ int HashingExtensible::modificar(RegistroClave elemN)
 {
     Bloque bloque;
     int posReg, posBloque;
-    ClaveX clave_reg;
+    ClaveX clave_reg =  elemN.get_clave();
     this->manejador_bloques.abrir_archivo(fileName, "rb+");
-    elemN.get_clave(clave_reg);
     //obtengo el bloque que buscamos
     posBloque = this->obtener_bloque(clave_reg, &bloque);
     //Busco el registro a modificar
@@ -162,7 +162,7 @@ int HashingExtensible::eliminar(ClaveX clave)
 {
     int posBloque, tamDispersion, i, posDer, posIzq, posReg, posTabla;
     Bloque bloque;
-    char* buffer = new char[50]();
+
     RegistroVariable tamDisp;
 
     this->manejador_bloques.abrir_archivo(fileName, "rb+");
@@ -170,22 +170,26 @@ int HashingExtensible::eliminar(ClaveX clave)
     posTabla = this->obtener_posicion_tabla(clave);
     posBloque = this->obtener_bloque(clave, &bloque);
     posReg = this->obtener_posicion_reg_bloque(clave, bloque);
-    if (posReg == RES_ERROR)    return RES_OK; // No esta la clave en el archivo, es lo mismo que borrarla
+    if (posReg == RES_ERROR)
+    	return RES_OK; // No esta la clave en el archivo, es lo mismo que borrarla
     //Elimino el registro
     bloque.eliminar_registro(posReg);
     if (bloque.get_cantidad_registros_almacenados() == 1){ // o sea que solo esta el tam dispersion
         //Busco el tamanio de dispersion del bloque
         bloque.recuperar_registro(&tamDisp, 0);
+        char* buffer = new char[50]();
         tamDisp.recuperar_campo(buffer, 0);
         tamDispersion = ((int)buffer)/2;
 
         //Me muevo tamDispersion para un lado y para el otro de la lista, si son iguales cambio cada tam disp *2 los bloques de la tabla
         posDer = this->tabla->obtener_valor(posTabla+tamDispersion);
         posIzq = this->tabla->obtener_valor(posTabla-tamDispersion);
+        delete[] buffer;
         if (posDer == posIzq){
             //Eliminamos el bloque
             Bloque* bloqueVacio = this->manejador_bloques.crear_bloque();
             this->manejador_bloques.sobreescribir_bloque(bloqueVacio,posBloque);
+            delete (bloqueVacio);
             this->cant_bloques --;
             //Reemplazamos en donde estaba la posicion del bloque viejo por la posicion que corresponda
  /**/           for(i=posTabla; i<tabla->get_tamanio(); i=i+tamDispersion*2){ //hacia la derecha
@@ -234,12 +238,13 @@ int HashingExtensible::obtener_posicion_reg_bloque(ClaveX clave, Bloque bloque)
     RegistroClave reg;
     while((se_encontro!=RES_OK)&&(i< bloque.get_cantidad_registros_almacenados())){
         bloque.recuperar_registro(&reg, i);
-        reg.get_clave(clave_reg);
-        if(clave_reg == clave) se_encontro=RES_OK;
+        clave_reg = reg.get_clave();
+        if(clave_reg == clave)
+        	se_encontro=RES_OK;
         i++;
     }
-    clave_reg.~ClaveX();
-    if (se_encontro ==RES_OK) return i;
+    if (se_encontro ==RES_OK)
+    	return i;
     return RES_ERROR;
 }
 
