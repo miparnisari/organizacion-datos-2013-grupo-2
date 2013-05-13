@@ -13,7 +13,6 @@ NodoArbol::NodoArbol(char p_tipoNodo) {
 }
 
 NodoArbol::~NodoArbol() {
-	// TODO Auto-generated destructor stub
 }
 
 bool NodoArbol::es_hoja(){

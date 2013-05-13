@@ -28,7 +28,7 @@ namespace utilitarios
 
 	}/*imprime argumentos del programa*/
 	
-	int listpath (std::string dir, std::vector<std::string> & files, const char* extension)
+	int listpath (std::string dir, std::vector<std::string> & files, std::string extension)
 	{
 		DIR* dp;
 		struct dirent* dirp;
@@ -41,11 +41,11 @@ namespace utilitarios
 		
 		while ((dirp = readdir(dp)) != NULL) {
 			filename = std::string(dirp->d_name);
-			if ( strlen(extension) > 0 ) 
+			if ( extension.size() > 0 )
 			{
 				if(filename.find_last_of(".") != std::string::npos)
 				{
-					if( filename.substr(filename.find_last_of(".") ) == std::string(extension) ){
+					if( filename.substr(filename.find_last_of(".") ) == extension ){
 						files.push_back(filename);
 					}
 				}

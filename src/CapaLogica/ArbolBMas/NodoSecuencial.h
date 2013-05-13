@@ -25,7 +25,7 @@ class NodoSecuencial : public NodoArbol {
 		NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBytesOcupados);
 		virtual ~NodoSecuencial();
 
-		int insertar(RegistroClave registro, std::vector<RegistroClave> & regsOveflow);
+		int insertar(RegistroClave & registro, std::vector<RegistroClave> & regsOveflow);
 		/* Inserta un registro en el nodo. Si ya estaba, devuelve RES_RECORD_EXISTS.
 		Si no estaba, lo inserta. Si al insertar hubo overflow, devuelve RES_OVERFLOW.
 		Si no, devuelve RES_OK.

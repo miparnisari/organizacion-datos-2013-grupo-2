@@ -7,26 +7,25 @@
 
 #include "RegistroVariable.h"
 
-RegistroVariable::RegistroVariable(){
-
+RegistroVariable::RegistroVariable()
+{
 	buffer= NULL;
 	tamanio= 0;
-
 }/*constructor*/
 
-RegistroVariable::~RegistroVariable(){
-
+RegistroVariable::~RegistroVariable()
+{
 	if(buffer)
 		delete[] buffer;
-
 }/*destructor*/
 
 RegistroVariable::RegistroVariable(const RegistroVariable& otro)
 {
 	tamanio = otro.tamanio;
-	buffer = new char[strlen(otro.buffer)+1];
+	buffer = new char[strlen(otro.buffer) +1];
 	strcpy(buffer,otro.buffer);
-}
+	buffer[strlen(otro.buffer)] = '\0';
+}/* constructor copia */
 
 
 void RegistroVariable::_inicializar_buffer(){
@@ -163,18 +162,6 @@ std::string RegistroVariable::mostrar()throw()
 	}
 
 	return retornar;
-}
-
-
-int RegistroVariable::emitir()throw(){
-
-	if(!buffer)
-		return RES_ERROR;
-
-	cout<<buffer;
-
-	return RES_OK;
-
 }
 
 

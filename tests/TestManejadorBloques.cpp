@@ -19,6 +19,17 @@ void TestManejadorBloques::ejecutar()
 	test_manejador_bloques_crear();
 	test_manejador_bloques_escribir_bloques();
 	test_manejador_bloques_masivo();
+	test_eliminar();
+}
+
+void TestManejadorBloques::test_eliminar()
+{
+	ManejadorBloques manejador;
+	assert(manejador.crear_archivo("bloques_a_eliminar.dat",100) == RES_OK);
+	assert(manejador.eliminar_archivo("bloques_a_eliminar.dat") == RES_OK);
+	assert(manejador.eliminar_archivo("bloques_a_eliminar.dat") == RES_FILE_DOESNT_EXIST);
+
+	print_test_ok("test_eliminar");
 }
 
 void TestManejadorBloques::test_manejador_bloques_crear()

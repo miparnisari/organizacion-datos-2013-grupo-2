@@ -7,18 +7,17 @@
 
 #include "RegistroClave.h"
 
-RegistroClave::RegistroClave():RegistroVariable()
+RegistroClave::RegistroClave()
+	:RegistroVariable()
 {
 	_agregar_campo_clave();
 }
 
 RegistroClave::RegistroClave(const RegistroClave& otro)
+	: RegistroVariable(otro)
 {
 	clave = otro.clave;
 }
-
-
-
 
 void RegistroClave::_agregar_campo_clave()
 {
@@ -98,12 +97,12 @@ int RegistroClave::desempaquetar(const char* copia)throw(){
 
 bool RegistroClave::operator <(const RegistroClave& rc)const
 {
-	std::cout << "una clave =";
-	(this->clave.imprimir_dato());
-	std::cout << std::endl;
-	std::cout << "otra clave =";
-	(rc.clave.imprimir_dato());
-	std::cout << std::endl;
+//	std::cout << "una clave =";
+//	(this->clave.imprimir_dato());
+//	std::cout << std::endl;
+//	std::cout << "otra clave =";
+//	(rc.clave.imprimir_dato());
+//	std::cout << std::endl;
 	return (this->clave < rc.clave);
 
 }

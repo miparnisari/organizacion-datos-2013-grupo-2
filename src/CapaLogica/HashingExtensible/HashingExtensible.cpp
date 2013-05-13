@@ -8,9 +8,10 @@ Falta revisar como se guardan los tamanios de dispersion de los bloques*/
 HashingExtensible::HashingExtensible(std::string directorioSalida, std::string fileNamee)
 {
     Bloque *bloqueNuevo = NULL;
-
+    this->tabla = NULL;
     this->fileName=directorioSalida+fileNamee;
     this->fileNameTabla=directorioSalida+fileNamee+"Tabla";
+
     if (this->manejador_bloques.abrir_archivo(fileName, "rb+") != RES_OK){ //Si no existe es porque estamos creando un nuevo Hash
         this->manejador_bloques.crear_archivo(fileName, BLOQUE_TAM_DEFAULT);
         this->manejador_bloques.abrir_archivo(fileName, "rb+");
@@ -36,10 +37,10 @@ HashingExtensible::~HashingExtensible()
 
 int HashingExtensible::eliminar_hashing_extensible()
 {
-    printf("paso");
-    this->manejador_bloques.eliminar_archivo(this->fileName);
+	int resultado = this->manejador_bloques.eliminar_archivo(this->fileName);
+
+	return resultado;
   /**  this->tabla->eliminar_tabla();    falla por que no tenemos bien la tabla*/
-    return RES_OK;
 }
 
 int HashingExtensible::funcion_dispersion(int clave)
