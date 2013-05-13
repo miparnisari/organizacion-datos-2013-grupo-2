@@ -167,4 +167,11 @@ ClaveString::ClaveString(const string& linea){
 }
 
 
+ClaveString::ClaveString(const ClaveString& copia){
+
+	this->dato= copia.dato;
+
+}
+
+
 ClaveString::~ClaveString(){}

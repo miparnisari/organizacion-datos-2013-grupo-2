@@ -44,6 +44,27 @@ void TestRegistroVariable::test_agregar_campos()
 	assert(rv.get_tamanio_campo(2) == 6);
 	assert(rv.get_tamanio() == tamanioCampos + cantidadCampos * sizeof(unsigned short));
 
+	{
+		RegistroVariable rv1;
+
+		const unsigned short CANTIDAD_CAMPOS= 3;
+		string campoAcumulado= "d";
+		for(unsigned short i=0;i<CANTIDAD_CAMPOS;i++){
+			campoAcumulado+= "aa";
+			rv1.agregar_campo(campoAcumulado.c_str() , campoAcumulado.length());
+		}
+
+		RegistroVariable rv2(rv1);
+		assert( rv1.get_cantidad_campos()== rv2.get_cantidad_campos() &&
+				rv1.get_tamanio()== rv2.get_tamanio() );
+		for(unsigned short i=0;i<CANTIDAD_CAMPOS;i++){
+			assert(rv1.get_tamanio_campo(i)== rv2.get_tamanio_campo(i));
+		}
+
+
+	}
+
+
 	print_test_ok("test_agregar_campos_registro_variable");
 }
 

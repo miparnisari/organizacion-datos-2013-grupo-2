@@ -103,6 +103,9 @@ class NodoInterno : public NodoArbol {
 		int modificar_hijo_derecho(const ClaveX&,TipoHijo valor );
 		int modificar_hijo_izquierdo(const ClaveX&,TipoHijo valor);
 
+		void limpiar();
+		/*vacia los vectores de claves e hijos y resetea el espacio usado*/
+
 
 
 

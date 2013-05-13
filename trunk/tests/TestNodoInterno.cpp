@@ -297,6 +297,7 @@ void TestNodoInterno::todo_tipo_empaquetado(){
 		clave.set_clave(dato);
 		unsigned short ocurrencia;
 		ni.insertar_clave(clave,ocurrencia);
+		assert( ni.insertar_hijo_derecho(clave,(TipoHijo)ocurrencia) == RES_OK);
 
 	}
 
@@ -304,6 +305,24 @@ void TestNodoInterno::todo_tipo_empaquetado(){
 	Bloque b;
 	assert( ni.empaquetar(&b)== RES_OK );
 	assert( ni2.desempaquetar(&b)== RES_OK );
+
+	assert( ni2.get_cantidad_claves() == ni.get_cantidad_claves() );
+	assert( ni2.get_cantidad_hijos()== ni.get_cantidad_hijos() );
+
+	for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
+		ClaveX c1,c2;
+		ni.get_clave(i,c1);
+		ni2.get_clave(i,c2);
+		assert( c1==c2 );
+
+		TipoHijo h1,h2;
+		ni.get_hijo_derecho(h1,c1);
+		ni2.get_hijo_derecho(h2,c2);
+		assert( h1==h2 );
+		ni.get_hijo(h1,i+1);
+		ni2.get_hijo(h2,i+1);
+		assert(h1==h2);
+	}
 
 
 }

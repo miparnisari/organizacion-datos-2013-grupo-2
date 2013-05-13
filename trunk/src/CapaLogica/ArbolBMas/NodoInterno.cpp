@@ -255,6 +255,8 @@ int NodoInterno::desempaquetar(const Bloque* bloque)
 	if(bloque== NULL)
 		return RES_ERROR;
 
+	this->limpiar();
+
 	RegistroVariable registroTipoNodo,registroClaves,registroHijos;
 	bloque->recuperar_registro(&registroTipoNodo,0);
 	bloque->recuperar_registro(&registroClaves,1);
@@ -453,6 +455,19 @@ int NodoInterno::modificar_hijo_izquierdo(const ClaveX& clave,TipoHijo valor){
 		return RES_ERROR;
 
 	return this->modificar_hijo(valor,posClave);
+
+}
+
+
+void NodoInterno::limpiar(){
+
+	if(vectorClaves.size())
+		vectorClaves.erase( vectorClaves.begin() , vectorClaves.end() );
+
+	if(vectorHijos.size())
+		vectorHijos.erase( vectorHijos.begin() , vectorHijos.end() );
+
+	this->cantidadBytesOcupados= 0;
 
 }
 
