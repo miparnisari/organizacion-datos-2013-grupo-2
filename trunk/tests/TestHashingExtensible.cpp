@@ -21,8 +21,8 @@ void TestHashingExtensible::test_crear_hashing()
     HashingExtensible hash1("",DIRECCION);
     ManejadorBloques manejador_bloques;
     manejador_bloques.abrir_archivo(DIRECCION, "rb");
-    assert (manejador_bloques.get_cantidad_bloques() == 0);
-    //Ya que el primer bloque es la tabla y el segundo es el primer bloque de registros
+    assert (manejador_bloques.get_cantidad_bloques() == 1);
+    //Debe guardar un bloque de registros
 
     print_test_ok("crear_hashing");
     hash1.eliminar_hashing_extensible();
