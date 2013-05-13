@@ -36,7 +36,10 @@ void TestHashingExtensible::test_eliminar_registro()
     ClaveX clave;
     clave.set_clave(23);
     std::string campo = "Hola";
-    crear_registro_y_agregar(&hash1, campo, clave);
+    this->crear_registro_y_agregar(&hash1, campo, clave);
+
+    printf("paso el agregar");
+
 
     hash1.eliminar(clave);
     assert(hash1.devolver(clave, &reg) == NO_EXISTE);
@@ -58,7 +61,7 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     //Creo un nuevo registro
     clave.set_clave(23);
     std::string campo = "Hola";
-    crear_registro_y_agregar(&hash1, campo, clave);
+    this->crear_registro_y_agregar(&hash1, campo, clave);
 
     //Pruebo a ver si encuentra el registro en el hash
     assert(hash1.devolver(clave, &reg) == RES_OK);
@@ -87,7 +90,7 @@ void TestHashingExtensible::test_crear_hashing_cerrarlo_y_abrirlo()
     char* campoRecuperado = NULL;
     clave.set_clave(23);
     std::string campo = "Hola";
-    crear_registro_y_agregar(&hash1, campo, clave);
+    this->crear_registro_y_agregar(&hash1, campo, clave);
     hash1.~HashingExtensible();
 
     HashingExtensible hash2("",DIRECCION);
@@ -114,19 +117,19 @@ void TestHashingExtensible::test_agregar_varios_registros_y_devolver()
     //Creo varios registro
     clave.set_clave(23);
     campo = "Hola";
-    crear_registro_y_agregar(&hash1, campo, clave);
+    this->crear_registro_y_agregar(&hash1, campo, clave);
 
     clave.set_clave(32);
     campo = "Chau";
-    crear_registro_y_agregar(&hash1, campo, clave);
+    this->crear_registro_y_agregar(&hash1, campo, clave);
 
     clave.set_clave(72);
     campo = "Hola mundo";
-    crear_registro_y_agregar(&hash1, campo, clave);
+    this->crear_registro_y_agregar(&hash1, campo, clave);
 
     clave.set_clave(55);
     campo = "Hola chau";
-    crear_registro_y_agregar(&hash1, campo, clave);
+    this->crear_registro_y_agregar(&hash1, campo, clave);
 
     //Pruebo a ver si encuentra el registro en el hash
     clave.set_clave(72);
@@ -160,7 +163,7 @@ void TestHashingExtensible::test_agregar_reg_y_duplicar_tabla()
 	assert(1 == tabla.get_tamanio()); //Vemos si la tabla comienza con un elemento
 	for(i=0; i<3000;i++){ //Agregamos cantidad de elementos hasta que se llene el bloque mas un elemento
         clave.set_clave(i);
-        crear_registro_y_agregar(&hash1, campo, clave);
+        this->crear_registro_y_agregar(&hash1, campo, clave);
 	}
 	assert(2 == tabla.get_tamanio()); //Vemos si se duplico la tabla
 	assert(tabla.obtener_valor(1) != tabla.obtener_valor(0)); //vemos si los bloques son distintos de cada elemento de la tabla
@@ -177,7 +180,7 @@ void TestHashingExtensible::test_eliminar_reg_y_dividir_tabla()
 	assert(1 == tabla.get_tamanio()); //Vemos si la tabla comienza con un elemento
 	for(i=0; i<3000;i++){ //Agregamos cantidad de elementos hasta que se llene el bloque mas un elemento
         clave.set_clave(i);
-        crear_registro_y_agregar(&hash1, campo, clave);
+        this->crear_registro_y_agregar(&hash1, campo, clave);
 	}
 	assert(2 == tabla.get_tamanio()); //Vemos si se duplico la tabla
 	hash1.eliminar(clave); //Elimino el ultimo registro

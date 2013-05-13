@@ -40,7 +40,7 @@ HashingExtensible::~HashingExtensible()
 int HashingExtensible::eliminar_hashing_extensible()
 {
     this->manejador_bloques.eliminar_archivo(fileName);
-  //  this->tabla.eliminar_tabla();
+    this->tabla->eliminar_tabla();
     return RES_OK;
 }
 
@@ -57,7 +57,8 @@ int HashingExtensible::agregar(RegistroClave reg)
     Bloque bloque;
     RegistroVariable tamDispBloque;
     ClaveX clave_reg;
-    char* valor = NULL;
+    char* buffer = new char[50]();
+ /**   std::string valor;*/
 
     tamTabla = tabla->get_tamanio();
     //Obtengo el bloque en donde se guardara el registro
@@ -77,8 +78,10 @@ int HashingExtensible::agregar(RegistroClave reg)
         Bloque bloqueAux(this->manejador_bloques.get_tamanio_bloque());
         //Recupero el tamaño de dispersion del bloque
         bloque.recuperar_registro(&tamDispBloque,0);
-        tamDispBloque.recuperar_campo(valor,0);
-        tamDispersion = (int)valor;
+        tamDispBloque.recuperar_campo(buffer,0);
+        tamDispersion = (int) buffer;
+ /**       valor = std::string(buffer);
+        tamDispersion = atoi(valor.c_str ());*/
 
         //La pos del nuevo bloque es el libre
         posBloqueNuevo = this->manejador_bloques.get_primer_bloque_libre();
@@ -159,7 +162,7 @@ int HashingExtensible::eliminar(ClaveX clave)
 {
     int posBloque, tamDispersion, i, posDer, posIzq, posReg, posTabla;
     Bloque bloque;
-    char* tam = NULL;
+    char* buffer = new char[50]();
     RegistroVariable tamDisp;
     //Busco el bloque para agregar el elemento
     posTabla = this->obtener_posicion_tabla(clave);
@@ -171,8 +174,8 @@ int HashingExtensible::eliminar(ClaveX clave)
     if (bloque.get_cantidad_registros_almacenados() == 1){ // o sea que solo esta el tam dispersion
         //Busco el tamanio de dispersion del bloque
         bloque.recuperar_registro(&tamDisp, 0);
-        tamDisp.recuperar_campo(tam, 0);
-        tamDispersion = ((int)tam)/2;
+        tamDisp.recuperar_campo(buffer, 0);
+        tamDispersion = ((int)buffer)/2;
 
         //Me muevo tamDispersion para un lado y para el otro de la lista, si son iguales cambio cada tam disp *2 los bloques de la tabla
         posDer = this->tabla->obtener_valor(posTabla+tamDispersion);
