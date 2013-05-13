@@ -20,7 +20,6 @@ void TestHashingExtensible::test_crear_hashing()
 {
     HashingExtensible hash1("",DIRECCION);
     ManejadorBloques manejador_bloques;
-    HashingExtensible hash2("",DIRECCION);
     manejador_bloques.abrir_archivo(DIRECCION, "rb+");
     assert (manejador_bloques.get_cantidad_bloques() == 1);
     //Debe guardar un bloque de registros
