@@ -139,11 +139,6 @@ void TestNodoSecuencial::test_nodo_sec_insertar_eliminar()
 	std::vector<RegistroClave> regsUnderflow;
 	std::vector<RegistroClave> regsOverflow;
 
-	// Comprobaciones iniciales
-	assert(nodo->esta_vacio() == true);
-	assert(nodo->get_cantidad_registros() == 0);
-	assert(nodo->get_proximo_nodo() == -1);
-
 	// Pruebo eliminar una clave vacia -> no debe andar
 	assert(nodo->eliminar(clave,regsUnderflow) != RES_OK);
 	assert(regsUnderflow.empty() == true);

@@ -8,7 +8,6 @@
 #include "ClaveX.h"
 
 ClaveX::ClaveX(){
-
 	this->tipoClave = CLAVE_STRING; //tipo por defecto
 	claves[CLAVE_NUMERICA]= new ClaveNumerica;
 	claves[CLAVE_STRING]= new ClaveString;
@@ -17,19 +16,34 @@ ClaveX::ClaveX(){
 
 
 ClaveX::ClaveX(const ClaveX& clavex){
-
+	this->tipoClave = clavex.tipoClave;
 	claves[CLAVE_NUMERICA]= new ClaveNumerica;
 	claves[CLAVE_STRING]= new ClaveString;
 
-	(*this)= clavex;
+	if (this->tipoClave == CLAVE_NUMERICA)
+	{
+		int clave;
+		clavex.get_clave(clave);
+		set_clave(clave);
+	}
+	else if (this->tipoClave == CLAVE_STRING)
+	{
+		std::string clave;
+		clavex.get_clave(clave);
+		set_clave(clave);
+	}
+//	(*this)= clavex;
 
 }
 
 
-ClaveX::~ClaveX(){
-
+ClaveX::~ClaveX()
+{
 	for (unsigned int i = 0; i < CANTIDAD_TIPOS_CLAVE; i++)
+	{
 		delete(claves[i]);
+		claves[i] = NULL;
+	}
 }
 
 void ClaveX::imprimir_dato()const

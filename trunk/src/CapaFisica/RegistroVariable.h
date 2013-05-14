@@ -57,7 +57,7 @@ class RegistroVariable {
 		virtual int empaquetar(char* copia)throw();
 		/*exporta los datos del registro variable como un buffer de caracteres con el siguiente
 		 * formato: tamanioRegistro|datosRegistro */
-		virtual int get_tamanio_empaquetado();
+		virtual int get_tamanio_empaquetado()const;
 		/*retorna el tamanio del registroVariable junto con el size del tamanio del mismo
 		 * es decir : get_tamanio_empaquetado = sizeof(tamanio) + tamanio ; */
 

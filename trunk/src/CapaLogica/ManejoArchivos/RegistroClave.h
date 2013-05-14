@@ -28,10 +28,11 @@ class RegistroClave:public RegistroVariable {
 		RegistroClave();
 		~RegistroClave();
 		RegistroClave(const RegistroClave& otro);
+		RegistroClave& operator=(const RegistroClave& otro);
 
 		virtual void set_clave(const ClaveX& clave);
 
-		virtual ClaveX get_clave();
+		virtual ClaveX get_clave() const;
 
 		void limpiar_campos() throw();
 		/*limpia el buffer e inserta la clave en el primer campo del registro .

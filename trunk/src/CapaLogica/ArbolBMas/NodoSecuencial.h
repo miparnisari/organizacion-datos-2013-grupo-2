@@ -29,14 +29,14 @@ class NodoSecuencial : public NodoArbol {
 
 		void set_proximo_nodo(TipoPuntero p_prox);
 
-		int insertar(RegistroClave & registro, std::vector<RegistroClave> & regsOveflow);
+		int insertar(const RegistroClave & registro, std::vector<RegistroClave> & regsOveflow);
 		/* Inserta un registro en el nodo. Si ya estaba, devuelve RES_RECORD_EXISTS.
 		Si no estaba, lo inserta. Si al insertar hubo overflow, devuelve RES_OVERFLOW.
 		Si no, devuelve RES_OK.
 		Si hubo error, devuelve RES_ERROR. */
 
-		int eliminar(const ClaveX clave, std::vector<RegistroClave>& regsUnderflow);
-		int buscar(ClaveX claveBuscada, RegistroClave** regDevuelto);
+		int eliminar(const ClaveX & clave, std::vector<RegistroClave>& regsUnderflow);
+		int buscar(const ClaveX & claveBuscada, RegistroClave** regDevuelto);
 
 		int empaquetar(Bloque* bloque);
 		int desempaquetar(const Bloque*);

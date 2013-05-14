@@ -27,6 +27,20 @@ RegistroClave::RegistroClave(const RegistroClave& otro)
 
 }
 
+RegistroClave& RegistroClave::operator=(const RegistroClave& otro)
+{
+	this->clave = new ClaveX(*(otro.clave));
+	this->tamanio = otro.tamanio;
+//	buffer = new char[tamanio];
+//	strcpy(buffer,otro.buffer);
+	this->buffer= new char[tamanio];
+	stringstream ss;
+	ss.write(otro.buffer,tamanio);
+	ss.seekg(0,ios::beg);
+	ss.read(this->buffer,tamanio);
+    return *this;
+}
+
 RegistroClave::~RegistroClave()
 {
 	delete(clave);
@@ -90,7 +104,7 @@ void RegistroClave::set_clave(const ClaveX& clave){
 }
 
 
-ClaveX RegistroClave::get_clave()
+ClaveX RegistroClave::get_clave()const
 {
 	return (*this->clave);
 }
