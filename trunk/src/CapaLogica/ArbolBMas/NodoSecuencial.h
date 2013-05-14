@@ -36,6 +36,10 @@ class NodoSecuencial : public NodoArbol {
 		Si hubo error, devuelve RES_ERROR. */
 
 		int eliminar(const ClaveX & clave, std::vector<RegistroClave>& regsUnderflow);
+		/* Elimina una clave del Nodo.
+		 * Si se produce underflow al borrar, se eliminan los registros restantes del Nodo,
+		 * y se los guarda en la variable "regsUnderflow".
+		 */
 		int buscar(const ClaveX & claveBuscada, RegistroClave** regDevuelto);
 
 		int empaquetar(Bloque* bloque);

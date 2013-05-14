@@ -4,6 +4,7 @@
 ParserCanciones::ParserCanciones()
 {
 	contadorArchivosLeidos = 0;
+	currentWorkingDirectory[0] = '\0';
 }
 
 ParserCanciones::~ParserCanciones()
