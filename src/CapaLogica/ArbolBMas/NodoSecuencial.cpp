@@ -85,7 +85,7 @@ void NodoSecuencial::__resolver_overflow(std::vector<RegistroClave> & regsOverfl
 	vectorRegistros.erase(vectorRegistros.begin()+regsQueQuedan,vectorRegistros.end());
 }
 
-int NodoSecuencial::insertar(RegistroClave & registro, std::vector<RegistroClave> & regsOverflow)
+int NodoSecuencial::insertar(const RegistroClave & registro, std::vector<RegistroClave> & regsOverflow)
 {
 	int resBuscar = buscar(registro.get_clave(),NULL);
 	if (resBuscar == RES_ERROR)
@@ -110,7 +110,7 @@ int NodoSecuencial::insertar(RegistroClave & registro, std::vector<RegistroClave
 	}
 }
 
-int NodoSecuencial::eliminar(const ClaveX clave, std::vector<RegistroClave>& regsUnderflow)
+int NodoSecuencial::eliminar(const ClaveX & clave, std::vector<RegistroClave>& regsUnderflow)
 {
 	RegistroClave* registro = NULL;
 	int posicionEliminar = buscar(clave,&registro);
@@ -135,13 +135,13 @@ int NodoSecuencial::eliminar(const ClaveX clave, std::vector<RegistroClave>& reg
 
 }
 
-int NodoSecuencial::buscar(ClaveX claveBuscada, RegistroClave** regDevuelto)
+int NodoSecuencial::buscar(const ClaveX & claveBuscada, RegistroClave** regDevuelto)
 {
 	for (unsigned int i = 0; i < vectorRegistros.size(); i++)
 	{
-		ClaveX claveAlmacenada (vectorRegistros.at(i).get_clave());
+		ClaveX* claveAlmacenada = new ClaveX(vectorRegistros.at(i).get_clave());
 
-		if (claveBuscada == claveAlmacenada)
+		if (claveBuscada == *claveAlmacenada)
 		{
 			if (regDevuelto != NULL)
 				*regDevuelto = new RegistroClave(vectorRegistros.at(i));
@@ -158,8 +158,10 @@ int NodoSecuencial::buscar(ClaveX claveBuscada, RegistroClave** regDevuelto)
 //				regDevuelto->agregar_campo(buffer,strlen(buffer));
 //				delete[] buffer;
 //			}
+			delete (claveAlmacenada);
 			return i;
 		}
+		delete (claveAlmacenada);
 	}
 
 	return RES_RECORD_DOESNT_EXIST;

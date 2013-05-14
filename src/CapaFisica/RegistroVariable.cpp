@@ -415,10 +415,9 @@ int RegistroVariable::desempaquetar(const char* copia)throw()
 con el formato tamanioRegistro|tamanioPrimerCampo|datos...*/
 
 
-int RegistroVariable::get_tamanio_empaquetado(){
-
+int RegistroVariable::get_tamanio_empaquetado()const
+{
 	return (sizeof(tamanio)+tamanio) ;
-
 }
 
 
