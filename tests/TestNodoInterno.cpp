@@ -6,8 +6,6 @@
  */
 
 #include "TestNodoInterno.h"
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
 
 TestNodoInterno::TestNodoInterno()
 	:Test()

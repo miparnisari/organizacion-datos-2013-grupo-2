@@ -27,6 +27,8 @@ class ClaveX {
 		/*por defecto una ClaveX es de string*/
 		ClaveX( const ClaveX& clavex );
 
+		ClaveX& operator =(const ClaveX& otro);
+
 		virtual ~ClaveX();
 
 		virtual int empaquetar(char* buffer);
@@ -63,7 +65,7 @@ class ClaveX {
 		virtual bool operator <=(const ClaveX& clavex)const;
 		virtual bool operator ==(const ClaveX& clavex)const;
 		virtual bool operator !=(const ClaveX& clavex)const;
-		virtual void operator =(const ClaveX& clavex);
+
 
 };
 

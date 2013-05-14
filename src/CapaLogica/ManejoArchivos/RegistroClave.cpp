@@ -18,13 +18,6 @@ RegistroClave::RegistroClave(const RegistroClave& otro)
 	: RegistroVariable(otro)
 {
 	clave = new ClaveX(*(otro.clave));
-//	_agregar_campo_clave();
-//	this->buffer= new char[tamanio];
-//	stringstream ss;
-//	ss.write(otro.buffer,tamanio);
-//	ss.seekg(0,ios::beg);
-//	ss.read(this->buffer,tamanio);
-
 }
 
 RegistroClave& RegistroClave::operator=(const RegistroClave& otro)
@@ -48,6 +41,7 @@ RegistroClave& RegistroClave::operator=(const RegistroClave& otro)
 RegistroClave::~RegistroClave()
 {
 	delete(clave);
+	clave = NULL;
 }
 
 
@@ -66,7 +60,7 @@ void RegistroClave::_agregar_campo_clave()
 void RegistroClave::limpiar_campos() throw(){
 
 	RegistroVariable::limpiar_campos();
-	_agregar_campo_clave();
+//	_agregar_campo_clave();
 
 }
 
@@ -122,12 +116,20 @@ int RegistroClave::desempaquetar(const char* copia)throw(){
 	unsigned short tamanioCampoClave= this->get_tamanio_campo(NUMERO_CAMPO_CLAVE);
 	char* bufferClave= new char[tamanioCampoClave + 1]();
 	bufferClave[tamanioCampoClave] = '\0';
-	this->recuperar_campo(bufferClave , tamanioCampoClave);
 
-	this->clave->desempaquetar(bufferClave,tamanioCampoClave);
+	if (this->recuperar_campo(bufferClave , 0) > 0)
+	{
+		ClaveX clave;
+		clave.desempaquetar(bufferClave,tamanioCampoClave);
+
+		set_clave(clave);
+
+		delete[] bufferClave;
+		return RES_OK;
+	}
 
 	delete[] bufferClave;
-	return RES_OK;
+	return RES_ERROR;
 
 }
 

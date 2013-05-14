@@ -18,7 +18,7 @@ NodoSecuencial::NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBy
 
 NodoSecuencial::~NodoSecuencial()
 {
-
+	vectorRegistros.clear();
 }
 
 void NodoSecuencial::__limpiar()
@@ -207,7 +207,7 @@ int NodoSecuencial::desempaquetar(const Bloque* bloque)
 
 
 	// Desempaqueto los registros
-	for (int i = 0 ; i < q-1; i ++)
+	for (int i = 1; i < q; i ++)
 	{
 		RegistroClave regActual;
 		bloque->recuperar_registro(&regActual, i);
