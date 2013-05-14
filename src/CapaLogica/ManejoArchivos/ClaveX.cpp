@@ -116,7 +116,8 @@ int ClaveX::empaquetar(char* buffer){
 void ClaveX::desempaquetar(char* buffer,unsigned short tamanioBuffer){
 
 	unsigned short tamanioClave= tamanioBuffer - sizeof(char);
-	char* bufferClave= new char[tamanioClave]();
+	char* bufferClave= new char[tamanioClave +1]();
+	bufferClave[tamanioClave] = '\0';
 
 	stringstream stream;
 	stream.write( buffer,tamanioBuffer );

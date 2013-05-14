@@ -116,11 +116,12 @@ ClaveX RegistroClave::get_clave()const
 int RegistroClave::desempaquetar(const char* copia)throw(){
 
 	int resultado= RegistroVariable::desempaquetar(copia);
-	if(resultado== RES_ERROR)
+	if (resultado == RES_ERROR)
 		return RES_ERROR;
 
 	unsigned short tamanioCampoClave= this->get_tamanio_campo(NUMERO_CAMPO_CLAVE);
-	char* bufferClave= new char[tamanioCampoClave]();
+	char* bufferClave= new char[tamanioCampoClave + 1]();
+	bufferClave[tamanioCampoClave] = '\0';
 	this->recuperar_campo(bufferClave , tamanioCampoClave);
 
 	this->clave->desempaquetar(bufferClave,tamanioCampoClave);

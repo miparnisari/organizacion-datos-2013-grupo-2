@@ -31,7 +31,6 @@ class RegistroClave:public RegistroVariable {
 		RegistroClave& operator=(const RegistroClave& otro);
 
 		virtual void set_clave(const ClaveX& clave);
-
 		virtual ClaveX get_clave() const;
 
 		void limpiar_campos() throw();

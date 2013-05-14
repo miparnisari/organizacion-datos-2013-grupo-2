@@ -21,7 +21,9 @@ class TestNodoSecuencial: public Test {
 		void test_nodo_sec_insertar_simple();
 		void test_nodo_sec_empaquetar_desempaquetar();
 		void test_nodo_sec_insertar_eliminar();
-		void test_nodo_sec_overflow();
+		void test_nodo_sec_overflow_masivo();
+		void test_nodo_sec_overflow_impar();
+		void test_nodo_sec_overflow_par();
 };
 
 #endif /* TESTNODOSECUENCIAL_H_ */

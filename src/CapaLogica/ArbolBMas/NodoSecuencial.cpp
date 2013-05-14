@@ -11,7 +11,7 @@ NodoSecuencial::NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBy
 	:NodoArbol(TIPO_HOJA)
 {
 	minCantidadBytesOcupados = minBytesOcupados;
-	maxCantidadBytesOcupados = maxBytesOcupados;
+	maxCantidadBytesOcupados = maxBytesOcupados + sizeof(TIPO_HOJA) + sizeof(proximoNodo);
 	bytesOcupados = sizeof(TIPO_HOJA) + sizeof(proximoNodo);
 	proximoNodo = -1;
 }
@@ -66,7 +66,9 @@ void NodoSecuencial::__resolver_underflow(std::vector<RegistroClave> & regsUnder
 
 void NodoSecuencial::__resolver_overflow(std::vector<RegistroClave> & regsOverflow)
 {
-	unsigned int mitad = ceil(bytesOcupados / 2.0);
+	regsOverflow.clear();
+
+	unsigned int mitad = (bytesOcupados-sizeof(tipoNodo)-sizeof(proximoNodo)) / 2.0;
 
 	unsigned int regsQueQuedan = 0;
 	unsigned int cantidadBytesRegsQueQuedan = 0;
@@ -78,7 +80,7 @@ void NodoSecuencial::__resolver_overflow(std::vector<RegistroClave> & regsOverfl
 		regsQueQuedan ++;
 	}
 
-	for (unsigned int i = regsQueQuedan; i < vectorRegistros.size() - 1; i ++ )
+	for (unsigned int i = regsQueQuedan; i < vectorRegistros.size(); i ++ )
 	{
 		regsOverflow.push_back(vectorRegistros.at(i));
 	}
