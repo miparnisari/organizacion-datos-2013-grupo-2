@@ -231,7 +231,7 @@ void test_vector_clavex(){
 
 int main(int argc,char** args)
 {
-	test_leer_de_archivo();
+//	test_leer_de_archivo();
 	test_clave_numerica();
 	test_clave_string();
 	test_clavex();
@@ -252,7 +252,7 @@ int main(int argc,char** args)
 	tests.push_back(new TestHashingExtensible);
 	
 	tests.push_back(new TestNodoInterno);
-	tests.push_back(new TestNodoSecuencial);
+//	tests.push_back(new TestNodoSecuencial);
 
 //	tests.push_back(new TestHeap);
 
@@ -261,5 +261,8 @@ int main(int argc,char** args)
 		tests.at(i)->ejecutar();
 		delete(tests.at(i));
 	}
+
+	cout<<"fin tests!"<<endl;
+
 	return 0;
 }
