@@ -20,8 +20,8 @@ void TestNodoSecuencial::ejecutar()
 	test_nodo_sec_crear();
 	test_nodo_sec_insertar_simple();
 	test_nodo_sec_insertar_eliminar();
-	test_nodo_sec_empaquetar_desempaquetar();
 	test_nodo_sec_overflow();
+	test_nodo_sec_empaquetar_desempaquetar();
 }
 
 void TestNodoSecuencial::test_nodo_sec_crear()
@@ -133,7 +133,7 @@ void TestNodoSecuencial::test_nodo_sec_empaquetar_desempaquetar()
 void TestNodoSecuencial::test_nodo_sec_insertar_eliminar()
 {
 	// Set up
-	NodoSecuencial* nodo = new NodoSecuencial(8,100);
+	NodoSecuencial* nodo = new NodoSecuencial(11,100);
 	RegistroClave registro;
 	ClaveX clave;
 	std::vector<RegistroClave> regsUnderflow;
@@ -184,6 +184,8 @@ void TestNodoSecuencial::test_nodo_sec_insertar_eliminar()
 	assert(nodo->insertar(reg1,regsOverflow) == RES_OK);
 	assert(regsOverflow.empty() == true);
 
+	assert(nodo->get_bytes_ocupados() == 20);
+
 	// Los registros deben estar ordenados dentro del nodo
 	RegistroClave* regleido1 = NULL;
 	RegistroClave* regleido2 = NULL;
@@ -192,13 +194,16 @@ void TestNodoSecuencial::test_nodo_sec_insertar_eliminar()
 	assert(nodo->buscar(clave2,&regleido2) == 1);
 	assert(regleido2 != NULL);
 
-	// Elimno una clave
+	// Elimino una clave
+	assert(nodo->get_bytes_ocupados() == 20);
 	assert(nodo->eliminar(clave1,regsUnderflow) == RES_UNDERFLOW);
+	assert(nodo->get_cantidad_registros() == 0);
 	assert(regsUnderflow.empty() == false);
+	assert(regsUnderflow.size() == 1);
 
 	assert (regsUnderflow.at(0).get_clave() == clave2);
 
-	assert(nodo->get_cantidad_registros() == 1);
+	assert(nodo->get_cantidad_registros() == 0);
 
 
 	delete(nodo);
@@ -230,7 +235,7 @@ void TestNodoSecuencial::test_nodo_sec_overflow()
 	int tamReg = registros.at(0).get_tamanio_empaquetado();
 	int tamRegTotal = tamReg * 1000;
 
-	NodoSecuencial* nodo = new NodoSecuencial(5,tamRegTotal+sizeof(int));
+	NodoSecuencial* nodo = new NodoSecuencial(5,tamRegTotal+sizeof(int)+sizeof(char));
 	for (int i = 0; i<1000;i++)
 	{
 		assert(nodo->insertar(registros.at(i),regsOverflow) == RES_OK);
@@ -243,9 +248,18 @@ void TestNodoSecuencial::test_nodo_sec_overflow()
 	regOverflow.set_clave(clave);
 	regOverflow.agregar_campo(campo.c_str(), campo.size());
 
+	// El nodo tenia 1000 claves y estaba lleno.
+	// Al querer insertarle una clave mas, se produce overflow.
+	// Esa clave se inserta, y se devuelven los registros en overflow
+	// de tal forma que el nodo izquierdo siempre tenga un registro mas
+	// que el derecho
+	assert(nodo->get_cantidad_registros()==1000);
 	assert(nodo->insertar(regOverflow,regsOverflow) == RES_OVERFLOW);
 	assert(regsOverflow.empty() == false);
-	assert(regsOverflow.size() == 500);
+	assert(regsOverflow.size() == 499);
+	assert(nodo->get_cantidad_registros()==502);
+
+	delete(nodo);
 
 	print_test_ok("test_nodo_sec_overflow");
 
