@@ -18,6 +18,7 @@ class TestRegistroClave : public Test{
 
 	private:
 		void test_registro_clave_guardar_y_leer();
+		void test_registro_clave_empaquetar_desempaquetar();
 };
 
 #endif /* TESTREGISTROCLAVE_H_ */

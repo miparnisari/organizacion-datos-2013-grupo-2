@@ -17,6 +17,7 @@ TestRegistroClave::~TestRegistroClave() {
 void TestRegistroClave::ejecutar()
 {
 	test_registro_clave_guardar_y_leer();
+	test_registro_clave_empaquetar_desempaquetar();
 }
 
 void TestRegistroClave::test_registro_clave_guardar_y_leer()
@@ -49,4 +50,38 @@ void TestRegistroClave::test_registro_clave_guardar_y_leer()
 	}
 
 	print_test_ok("test_registro_clave_guardar_y_leer");
+}
+
+void TestRegistroClave::test_registro_clave_empaquetar_desempaquetar()
+{
+	ClaveX clave;
+	clave.set_clave("una clave 123");
+	std::string campo = "un campo 456";
+
+	RegistroClave registro;
+	registro.set_clave(clave);
+	registro.agregar_campo(campo.c_str(), campo.size());
+
+	char* buffer = new char[registro.get_tamanio_empaquetado() +1]();
+	buffer[registro.get_tamanio_empaquetado()] = '\0';
+
+	assert(registro.empaquetar(buffer) == RES_OK);
+
+	RegistroClave registroDesempaquetado;
+	registroDesempaquetado.desempaquetar(buffer);
+
+	assert (registroDesempaquetado.get_clave() == clave);
+
+	char* campoRecuperado = new char[registroDesempaquetado.get_tamanio_campo(0) +1]();
+	campoRecuperado[registroDesempaquetado.get_tamanio_campo(0)] = '\0';
+
+	registroDesempaquetado.recuperar_campo(campoRecuperado,0);
+
+	assert( strcmp(campoRecuperado,campo.c_str()) == 0);
+
+	delete[] buffer;
+	delete[] campoRecuperado;
+
+	print_test_ok("test_registro_clave_empaquetar_desempaquetar");
+
 }

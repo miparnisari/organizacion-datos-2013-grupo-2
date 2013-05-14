@@ -20,7 +20,9 @@ void TestNodoSecuencial::ejecutar()
 	test_nodo_sec_crear();
 	test_nodo_sec_insertar_simple();
 	test_nodo_sec_insertar_eliminar();
-	test_nodo_sec_overflow();
+//	test_nodo_sec_overflow_masivo();
+	test_nodo_sec_overflow_impar();
+	test_nodo_sec_overflow_par();
 	test_nodo_sec_empaquetar_desempaquetar();
 }
 
@@ -50,7 +52,7 @@ void TestNodoSecuencial::test_nodo_sec_insertar_simple()
 	registro.set_clave(clave);
 	registro.agregar_campo(campo.c_str(), campo.size());
 
-	assert(registro.get_tamanio() == 22);
+	assert(registro.get_tamanio_empaquetado() == 24);
 
 	assert(nodo->buscar(clave,&registroCopia) < 0);
 	assert(registroCopia == NULL);
@@ -79,9 +81,10 @@ void TestNodoSecuencial::test_nodo_sec_empaquetar_desempaquetar()
 	// SET UP
 	ManejadorBloques manejador;
 	manejador.crear_archivo("bloques_nodos_secuenciales.dat", 4096);
-	manejador.abrir_archivo("bloques_nodos_secuenciales.dat","rb+");
+	manejador.abrir_archivo("bloques_nodos_secuenciales.dat","wb+");
 
 	Bloque* bloque = manejador.crear_bloque();
+	assert(bloque != NULL);
 	NodoSecuencial* nodo = new NodoSecuencial(100,4096);
 
 	std::string campoEscrito = "un campo";
@@ -90,24 +93,36 @@ void TestNodoSecuencial::test_nodo_sec_empaquetar_desempaquetar()
 	claveEscrita.set_clave("una clave");
 	registro.set_clave(claveEscrita);
 	registro.agregar_campo(campoEscrito.c_str(),campoEscrito.size());
+
+
 	std::vector<RegistroClave> regsOverflow;
 
 	// Inserto "una clave | un campo"
 	assert(nodo->insertar(registro,regsOverflow) == RES_OK);
-
 	assert(nodo->get_cantidad_registros() == 1);
 	assert(nodo->get_proximo_nodo() == -1);
 	assert(nodo->buscar(claveEscrita,NULL) == 0);
 	assert(regsOverflow.empty());
 
+	// Empaqueto el nodo y lo guardo en el archivo
 	assert(nodo->empaquetar(bloque) == RES_OK);
-	assert(manejador.escribir_bloque(bloque) == RES_OK);
+	assert(manejador.escribir_bloque(bloque) == 0); // Se escribe en el bloque 0
+	assert(manejador.cerrar_archivo() == RES_OK);
 
+
+	manejador.abrir_archivo("bloques_nodos_secuenciales.dat","rb+");
+
+	// Levanto el nodo
 	NodoSecuencial* nodoLeido = new NodoSecuencial(100,4096);
 	Bloque* bloqueLeido = manejador.obtener_bloque(0);
 
-	nodoLeido->empaquetar(bloqueLeido);
+	// Lo desempaqueto
+	assert(nodoLeido->desempaquetar(bloqueLeido) == RES_OK);
+	assert(nodoLeido->get_cantidad_registros()==1);
+	assert(nodoLeido->get_proximo_nodo() == -1);
 
+
+	// Comprobaciones pertinentes
 	RegistroClave* registroLeido = NULL;
 	ClaveX claveLeida;
 	assert(nodoLeido->buscar(claveEscrita,&registroLeido) == 0);
@@ -212,7 +227,7 @@ void TestNodoSecuencial::test_nodo_sec_insertar_eliminar()
 
 }
 
-void TestNodoSecuencial::test_nodo_sec_overflow()
+void TestNodoSecuencial::test_nodo_sec_overflow_masivo()
 {
 	std::vector<RegistroClave> regsOverflow;
 	std::vector<RegistroClave> registros;
@@ -256,11 +271,83 @@ void TestNodoSecuencial::test_nodo_sec_overflow()
 	assert(nodo->get_cantidad_registros()==1000);
 	assert(nodo->insertar(regOverflow,regsOverflow) == RES_OVERFLOW);
 	assert(regsOverflow.empty() == false);
-	assert(regsOverflow.size() == 499);
-	assert(nodo->get_cantidad_registros()==502);
+	assert(regsOverflow.size() == 500);
+	assert(nodo->get_cantidad_registros()==501);
 
 	delete(nodo);
 
-	print_test_ok("test_nodo_sec_overflow");
+	print_test_ok("test_nodo_sec_overflow_masivo");
 
+}
+
+void TestNodoSecuencial::test_nodo_sec_overflow_impar()
+{
+	ClaveX clave1, clave2, clave3;
+	clave1.set_clave("a");
+	clave2.set_clave("b");
+	clave3.set_clave("c");
+
+	std::string campo = "un campo";
+
+	RegistroClave reg1, reg2, reg3;
+	reg1.set_clave(clave1); reg1.agregar_campo(campo.c_str(),campo.size());
+	reg2.set_clave(clave2); reg2.agregar_campo(campo.c_str(),campo.size());
+	reg3.set_clave(clave3); reg3.agregar_campo(campo.c_str(),campo.size());
+
+	// El nodo soportara hasta 2 registros
+	NodoSecuencial* nodo = new NodoSecuencial(0,2*reg1.get_tamanio_empaquetado());
+
+
+	// Meto el primero, no falla
+	std::vector <RegistroClave> regsOverflow;
+	assert (nodo->insertar(reg1,regsOverflow) == RES_OK);
+	assert (regsOverflow.empty() == true);
+
+	// Meto el segundo, no falla
+	assert (nodo->insertar(reg2,regsOverflow) == RES_OK);
+	assert (regsOverflow.empty() == true);
+
+	// Meto el tercero -> overflow!
+	assert (nodo->insertar(reg3,regsOverflow) == RES_OVERFLOW);
+	assert (nodo->get_cantidad_registros() == 2);
+	assert (regsOverflow.size() == 1);
+	assert (regsOverflow[0] == reg3);
+
+
+	delete(nodo);
+
+	print_test_ok("test_nodo_sec_overflow_impar");
+}
+
+void TestNodoSecuencial::test_nodo_sec_overflow_par()
+{
+	ClaveX clave1, clave2;
+	clave1.set_clave("a");
+	clave2.set_clave("b");
+
+	std::string campo = "un campo";
+
+	RegistroClave reg1, reg2;
+	reg1.set_clave(clave1); reg1.agregar_campo(campo.c_str(),campo.size());
+	reg2.set_clave(clave2); reg2.agregar_campo(campo.c_str(),campo.size());
+
+	assert (reg1.get_tamanio_empaquetado() == reg2.get_tamanio_empaquetado());
+
+	// El nodo soportara hasta 1 registro
+	NodoSecuencial* nodo = new NodoSecuencial(0,1*reg1.get_tamanio_empaquetado());
+
+	// Meto el primero, no falla
+	std::vector <RegistroClave> regsOverflow;
+	assert (nodo->insertar(reg1,regsOverflow) == RES_OK);
+	assert (regsOverflow.empty() == true);
+
+	// Meto el segundo -> overflow!
+	assert (nodo->insertar(reg2,regsOverflow) == RES_OVERFLOW);
+	assert (nodo->get_cantidad_registros() == 1);
+	assert (regsOverflow.size() == 1);
+	assert (regsOverflow[0] == reg2);
+
+	delete(nodo);
+
+	print_test_ok("test_nodo_sec_overflow_par");
 }
