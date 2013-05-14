@@ -130,7 +130,7 @@ void TestNodoSecuencial::test_nodo_sec_empaquetar_desempaquetar()
 	assert(registroLeido->get_clave() == claveEscrita);
 
 	char* campoLeido = new char[registroLeido->get_tamanio_campo(1)+1];
-	assert(registroLeido->recuperar_campo(campoLeido,1) == RES_OK);
+	assert(registroLeido->recuperar_campo(campoLeido,1) != RES_ERROR);
 	campoLeido[registroLeido->get_tamanio_campo(1)] = '\0';
 	assert(strcmp(campoLeido,campoEscrito.c_str()) == 0);
 
@@ -139,6 +139,7 @@ void TestNodoSecuencial::test_nodo_sec_empaquetar_desempaquetar()
 	delete(bloque);
 	delete(nodoLeido);
 	delete(bloqueLeido);
+	delete(registroLeido);
 
 	manejador.cerrar_archivo();
 

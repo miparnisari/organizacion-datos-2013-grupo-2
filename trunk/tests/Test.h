@@ -8,6 +8,7 @@
 #ifndef TEST_H_
 #define TEST_H_
 
+#include <assert.h>
 #include <cassert>
 #include <iostream>
 #include <cstdio>
@@ -16,6 +17,8 @@
 #include <unistd.h>
 #include <climits>
 #include <string>
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 
 #include "../src/CapaFisica/ManejadorArchivosTexto.h"
 #include "../src/CapaFisica/ManejadorRegistrosVariables.h"

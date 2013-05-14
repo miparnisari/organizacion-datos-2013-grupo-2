@@ -7,33 +7,33 @@
 
 #include "ClaveX.h"
 
-ClaveX::ClaveX(){
+ClaveX::ClaveX()
+{
 	this->tipoClave = CLAVE_STRING; //tipo por defecto
-	claves[CLAVE_NUMERICA]= new ClaveNumerica;
-	claves[CLAVE_STRING]= new ClaveString;
-
+	this->claves[CLAVE_NUMERICA]= new ClaveNumerica;
+	this->claves[CLAVE_STRING]= new ClaveString;
 }
 
 
-ClaveX::ClaveX(const ClaveX& clavex){
-	this->tipoClave = clavex.tipoClave;
-	claves[CLAVE_NUMERICA]= new ClaveNumerica;
-	claves[CLAVE_STRING]= new ClaveString;
+ClaveX::ClaveX(const ClaveX& otro)
+{
+	this->tipoClave = otro.tipoClave;
+	this->claves[CLAVE_NUMERICA]= new ClaveNumerica;
+	this->claves[CLAVE_STRING]= new ClaveString;
+//	(*this)= clavex;
 
 	if (this->tipoClave == CLAVE_NUMERICA)
 	{
 		int clave;
-		clavex.get_clave(clave);
+		otro.get_clave(clave);
 		set_clave(clave);
 	}
 	else if (this->tipoClave == CLAVE_STRING)
 	{
 		std::string clave;
-		clavex.get_clave(clave);
+		otro.get_clave(clave);
 		set_clave(clave);
 	}
-//	(*this)= clavex;
-
 }
 
 
@@ -205,15 +205,20 @@ bool ClaveX::operator >=(const ClaveX& clavex)const{
 }
 
 
-void ClaveX::operator =(const ClaveX& clavex){
+ClaveX& ClaveX::operator =(const ClaveX& otro)
+{
+	if (this != &otro)
+	{
+		this->tipoClave= otro.tipoClave;
+//		this->claves[CLAVE_NUMERICA]= new ClaveNumerica;
+//		this->claves[CLAVE_STRING]= new ClaveString;
 
-	this->tipoClave= clavex.tipoClave;
-
-	for(unsigned int i=0;i<CANTIDAD_TIPOS_CLAVE;i++)
-		(*claves[i]) = (*clavex.claves[i]);
+		for(unsigned int i=0;i<CANTIDAD_TIPOS_CLAVE;i++)
+			(*claves[i]) = (*otro.claves[i]);
+	}
+	return (*this);
 
 }
-
 
 int ClaveX::get_clave(int& clave)const{
 
