@@ -17,7 +17,6 @@ public:
     Heap();
     ~Heap();
 
-    void AgregarAlHeap(RegistroClave vectorAOrdenar[], RegistroClave valor_a_agregar);
     void ordenar(RegistroClave vectorAOrdenar[],int tamanio);
 };
 

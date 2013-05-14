@@ -1,3 +1,9 @@
+/*
+ * TestNodoSecuencial.cpp
+ *
+ *  Created on: May 11, 2013
+ *      Author: juan
+ */
 
 #include "Heap.h"
 
@@ -17,26 +23,26 @@ void Heap::ReestructurarHeap(RegistroClave vectorAOrdenar[],int desde,int hasta)
     int hijoDer=2*desde+2;
 
     int posicionMax=desde;
+    if (hijoIzq<=hasta)
+    	if((vectorAOrdenar[hijoIzq]>vectorAOrdenar[posicionMax]))
+    	{
+    		posicionMax=hijoIzq;
+    	}
 
-    if((vectorAOrdenar[hijoIzq]>vectorAOrdenar[posicionMax])&&(hijoIzq<=hasta))
-    {
-        posicionMax=hijoIzq;
-    }
-
-    if((vectorAOrdenar[hijoDer]>vectorAOrdenar[posicionMax])&&(hijoDer<=hasta))
-    {
-        posicionMax=hijoDer;
-    }
+    if(hijoDer<=hasta)
+    	if((vectorAOrdenar[hijoDer]>vectorAOrdenar[posicionMax]))
+    	{
+    		posicionMax=hijoDer;
+    	}
 
     if(posicionMax!=desde)
     {
-        RegistroClave auxIntercambio=vectorAOrdenar[posicionMax];
+    	RegistroClave auxIntercambio=vectorAOrdenar[posicionMax];
         vectorAOrdenar[posicionMax]=vectorAOrdenar[desde];
         vectorAOrdenar[desde]=auxIntercambio;
 
         ReestructurarHeap(vectorAOrdenar,posicionMax,hasta);
     }
-
 }
 
 
@@ -50,45 +56,6 @@ void Heap::CargarVectorYTransformarEnHeap(RegistroClave vectorACargar[])
     }
 }
 
-
-void Heap::AgregarAlHeap(RegistroClave vectorAOrdenar[], RegistroClave valor_a_agregar)
-{
-    bool cambio=false;//inicializo variables necesarias
-    int posInicial=tamanio;
-
-    vectorAOrdenar[posInicial]=valor_a_agregar;//agrego al final
-    int padre=(posInicial-1)/2;//busco el padre
-    if(vectorAOrdenar[padre]<vectorAOrdenar[posInicial])
-    {
-        //intercambio
-        RegistroClave auxIntercambio=vectorAOrdenar[padre];
-        vectorAOrdenar[padre]=vectorAOrdenar[posInicial];
-        vectorAOrdenar[posInicial]=auxIntercambio;
-
-        cambio=true;
-        posInicial=padre;//ahora el valor agregado esta donde estaba el padre
-        padre=(posInicial-1)/2;//busco el nuevo padre
-    }
-
-    while (cambio)//mientras pueda tener que seguir subiendo...
-    {
-        cambio=false;
-        if(vectorAOrdenar[padre]<vectorAOrdenar[posInicial])
-        {
-            //intercambio
-            RegistroClave auxIntercambio=vectorAOrdenar[padre];
-            vectorAOrdenar[padre]=vectorAOrdenar[posInicial];
-            vectorAOrdenar[posInicial]=auxIntercambio;
-
-            cambio=true;
-            posInicial=padre;//ahora el valor agregado esta donde estaba el padre
-            padre=(posInicial-1)/2;//busco el nuevo padre
-        }
-    }
-
-    tamanio++;//aumento tamanio total del vector
-}
-
 void Heap::ordenar(RegistroClave vectorAOrdenar[],int tamanio)
 {
 
@@ -96,11 +63,13 @@ void Heap::ordenar(RegistroClave vectorAOrdenar[],int tamanio)
 
     CargarVectorYTransformarEnHeap(vectorAOrdenar);
 
-    RegistroClave auxIntercambio=vectorAOrdenar[tamanio-1];
-    vectorAOrdenar[tamanio-1]=vectorAOrdenar[0];
-    vectorAOrdenar[0]=auxIntercambio;
+    while (tamanio>0)
+    {
+    	RegistroClave auxIntercambio=vectorAOrdenar[tamanio-1];
+    	vectorAOrdenar[tamanio-1]=vectorAOrdenar[0];
+    	vectorAOrdenar[0]=auxIntercambio;
 
-    ReestructurarHeap(vectorAOrdenar,0,tamanio-2);
-    tamanio--;
+    	ReestructurarHeap(vectorAOrdenar,0,tamanio-2);
+    	tamanio--;
+    }
 }
-
