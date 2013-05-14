@@ -118,10 +118,105 @@ int ArbolBMas::_hallar_hoja(RegistroClave* registro,
 }
 
 
+int ArbolBMas::_split_hoja(NodoSecuencial* nodoActual,RegistroClave* registro,
+		TipoHijo& hijoPromocionado){
+
+	return RES_OK;
+
+}//TODO
+
+
+int ArbolBMas::_insertar_recursivo_hoja(Bloque* bloqueActual ,
+		RegistroClave* registro , TipoHijo& hijoPromocionado){
+
+	const unsigned int MIN_BYTES=0,MAX_BYTES=3000;//FIXME eliminar constantes
+	NodoSecuencial nodoActual(MIN_BYTES,MAX_BYTES);
+	nodoActual.desempaquetar(bloqueActual);
+	delete[] bloqueActual;
+	/*cargo el bloqueActual en el nodo secuencial y libero al bloque*/
+
+	vector<RegistroClave> registrosOverflow;
+	int resultadoInsercion= nodoActual.insertar(*registro,registrosOverflow);
+
+	if(resultadoInsercion== RES_OK)
+		return RES_OK;
+	if(resultadoInsercion== RES_RECORD_EXISTS)
+		return RES_RECORD_EXISTS;
+
+	_split_hoja(&nodoActual,registro,hijoPromocionado);
+	/*en registro se guardara el registro promocionado*/
+
+	return RES_OVERFLOW;
+
+}
+
+
+
+int ArbolBMas::_split_interno(NodoInterno* nodo,ClaveX* clavePromocionada,
+		TipoHijo& bloquePromocionado){
+
+	return RES_OK;
+
+}
+
+
 
 int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
-		RegistroClave* registro , TipoHijo& hijoPromocionado)
+		RegistroClave* registro , TipoHijo& hijoPromocionado,ClaveX* clavePromocionada)
 {
-	return RES_OK;
+
+	Bloque* bloqueActual= this->archivoNodos.obtener_bloque(numeroBloqueActual);
+	NodoArbol nodoActual(TIPO_HOJA);
+	nodoActual.desempaquetar(bloqueActual);
+
+	if(nodoActual.es_hoja()){
+
+		int resultadoInsercion=
+				_insertar_recursivo_hoja(bloqueActual,registro,hijoPromocionado);
+
+		if(resultadoInsercion== RES_OVERFLOW){
+			ClaveX claveRegistroPromocionado= registro->get_clave();
+			(*clavePromocionada)= claveRegistroPromocionado;
+		}
+
+		return resultadoInsercion;
+
+	}/*si el nodo actual es del tipo hoja, insertar el registro. En caso de ocurrir un overflow se guarda en clavePromocionada
+	la clave del registro promocionado.*/
+
+
+	NodoInterno nodoActualInterno;//TODO agregar el tamanio apropiado del nodo interno en minCantBytes y maxCantBytes
+	nodoActualInterno.desempaquetar(bloqueActual);
+	delete[] bloqueActual;
+	unsigned int numeroBloqueHijo;
+	this->_hallar_hijo_correspondiente(registro,&nodoActualInterno,
+			numeroBloqueHijo);
+	/*busco el siguiente hijo*/
+
+	int resultadoInsercion= this->_insertar_recursivo(numeroBloqueHijo,registro,
+			hijoPromocionado,clavePromocionada);
+
+	if(resultadoInsercion== RES_OK)
+		return RES_OK;/*no hay promocion / overflow*/
+	if(resultadoInsercion== RES_RECORD_EXISTS)
+		return RES_RECORD_EXISTS;/*registro que se busco insertar ya existia -> se retorna como error RES_RECORD_EXISTS*/
+
+
+	/*si el resultado de la insercion no es ninguno de los superiores -> ocurrio un overflow**/
+	unsigned short ocurrenciaInsercion;
+	nodoActualInterno.insertar_clave(*clavePromocionada,ocurrenciaInsercion);
+	int resultadoInsercionNodoInterno= nodoActualInterno.insertar_hijo_derecho(*clavePromocionada,hijoPromocionado);
+
+	if(resultadoInsercionNodoInterno== RES_OK)
+		return RES_OK;
+	if(resultadoInsercionNodoInterno== RES_ERROR)
+		return RES_ERROR;
+
+	_split_interno(&nodoActualInterno,clavePromocionada,hijoPromocionado);
+	/*realiza el split. y guarda el nodo nuevo en el archivo*/
+
+
+	return RES_OVERFLOW;
+
 
 }

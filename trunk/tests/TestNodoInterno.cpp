@@ -324,6 +324,10 @@ void TestNodoInterno::todo_tipo_empaquetado(){
 		assert(h1==h2);
 	}
 
+	NodoArbol na(TIPO_HOJA);
+	assert( na.desempaquetar(&b)== RES_OK );
+	assert( na.es_interno() );
+
 
 }
 

@@ -36,7 +36,7 @@ int NodoArbol::desempaquetar(const Bloque* bloque){
 	RegistroVariable registroTipoNodo;
 	bloque->recuperar_registro(&registroTipoNodo,0);
 	char tipoNodoLeido;
-	registroTipoNodo.recuperar_campo( (char*)&tipoNodoLeido , sizeof(tipoNodoLeido) );
+	registroTipoNodo.recuperar_campo( (char*)&tipoNodoLeido , 0 );
 
 	this->tipoNodo= tipoNodoLeido;
 	return RES_OK;
