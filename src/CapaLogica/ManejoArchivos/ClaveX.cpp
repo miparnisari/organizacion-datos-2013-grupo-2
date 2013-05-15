@@ -20,7 +20,6 @@ ClaveX::ClaveX(const ClaveX& otro)
 	this->tipoClave = otro.tipoClave;
 	this->claves[CLAVE_NUMERICA]= new ClaveNumerica;
 	this->claves[CLAVE_STRING]= new ClaveString;
-//	(*this)= clavex;
 
 	if (this->tipoClave == CLAVE_NUMERICA)
 	{
@@ -36,6 +35,19 @@ ClaveX::ClaveX(const ClaveX& otro)
 	}
 }
 
+ClaveX& ClaveX::operator =(const ClaveX& otro)
+{
+	if (this != &otro)
+	{
+		this->tipoClave= otro.tipoClave;
+
+		for(unsigned int i=0;i<CANTIDAD_TIPOS_CLAVE;i++)
+			(*claves[i]) = (*otro.claves[i]);
+	}
+	return (*this);
+
+}
+
 
 ClaveX::~ClaveX()
 {
@@ -48,7 +60,6 @@ ClaveX::~ClaveX()
 
 void ClaveX::imprimir_dato()const
 {
-
 	if (tipoClave == CLAVE_STRING)
 	{
 		string s;
@@ -63,35 +74,32 @@ void ClaveX::imprimir_dato()const
 }
 
 
-TipoClave ClaveX::get_tipo_clave()const{
-
+TipoClave ClaveX::get_tipo_clave()const
+{
 	return tipoClave;
-
 }
 
 
-void ClaveX::_resetear_datos(){
-
+void ClaveX::_resetear_datos()
+{
 	for(unsigned int i=0;i<CANTIDAD_TIPOS_CLAVE;i++)
 		claves[i]->resetear();
-
 }
 
 
-int ClaveX::get_tamanio_empaquetado()const{
-
+int ClaveX::get_tamanio_empaquetado()const
+{
 	return this->get_tamanio_clave() + sizeof(char);
-
 }
 
-int ClaveX::get_tamanio_clave()const{
-
+int ClaveX::get_tamanio_clave()const
+{
 	return this->claves[tipoClave]->get_tamanio();
-
 }
 
 
-int ClaveX::empaquetar(char* buffer){
+int ClaveX::empaquetar(char* buffer)
+{
 
 	unsigned short tamanioClave= this->get_tamanio_clave();
 	char tipoClaveChar= (char)tipoClave;
@@ -109,12 +117,10 @@ int ClaveX::empaquetar(char* buffer){
 
 	delete[] empaquetado;
 	return tamanioEmpaquetado;
-
-
 }
 
-void ClaveX::desempaquetar(char* buffer,unsigned short tamanioBuffer){
-
+void ClaveX::desempaquetar(char* buffer,unsigned short tamanioBuffer)
+{
 	unsigned short tamanioClave= tamanioBuffer - sizeof(char);
 	char* bufferClave= new char[tamanioClave +1]();
 	bufferClave[tamanioClave] = '\0';
@@ -131,28 +137,22 @@ void ClaveX::desempaquetar(char* buffer,unsigned short tamanioBuffer){
 	claves[tipoClave]->desempaquetar(bufferClave , tamanioClave);
 
 	delete[] bufferClave;
-
-
 }
 
-void ClaveX::set_clave(string clave){
-
+void ClaveX::set_clave(string clave)
+{
 	tipoClave= CLAVE_STRING;
 
-	//*(ClaveString*)claves[CLAVE_STRING] = clave;
 	ClaveString* cs= (ClaveString*)claves[CLAVE_STRING];
 	cs->set_dato(clave);
-
 }
 
-void ClaveX::set_clave(int clave){
-
+void ClaveX::set_clave(int clave)
+{
 	tipoClave= CLAVE_NUMERICA;
 
 	ClaveNumerica* cn= (ClaveNumerica*)claves[CLAVE_NUMERICA];
 	cn->set_dato(clave);
-
-
 }
 
 std::ostream& ClaveX::operator << (std::ostream& os)const
@@ -161,63 +161,40 @@ std::ostream& ClaveX::operator << (std::ostream& os)const
 }
 
 
-bool ClaveX::operator <(const ClaveX& clavex)const{
-
+bool ClaveX::operator <(const ClaveX& clavex)const
+{
 	return ( (*claves[tipoClave]) < (*clavex.claves[tipoClave]) );
-
 }
 
-bool ClaveX::operator >(const ClaveX& clavex)const{
-
-
+bool ClaveX::operator >(const ClaveX& clavex)const
+{
 	return ( (*claves[tipoClave]) > (*clavex.claves[tipoClave]) );
-
 }
 
-bool ClaveX::operator ==(const ClaveX& clavex)const{
-
+bool ClaveX::operator ==(const ClaveX& clavex)const
+{
 	if(this->tipoClave!= clavex.tipoClave)
 		return false;
 	return ( (*claves[tipoClave]) == (*clavex.claves[tipoClave]) );
-
 }
 
 
-bool ClaveX::operator !=(const ClaveX& clavex)const{
-
+bool ClaveX::operator !=(const ClaveX& clavex)const
+{
 	bool sonIguales= (*this)==clavex;
 	return !sonIguales;
-
 }
 
 
-bool ClaveX::operator <=(const ClaveX& clavex)const{
-
-	return ( (*this)<clavex || (*this)==clavex );
-
-}
-
-
-bool ClaveX::operator >=(const ClaveX& clavex)const{
-
-	return ( (*this)>clavex || (*this)==clavex );
-
-}
-
-
-ClaveX& ClaveX::operator =(const ClaveX& otro)
+bool ClaveX::operator <=(const ClaveX& clavex)const
 {
-	if (this != &otro)
-	{
-		this->tipoClave= otro.tipoClave;
-//		this->claves[CLAVE_NUMERICA]= new ClaveNumerica;
-//		this->claves[CLAVE_STRING]= new ClaveString;
+	return ( (*this)<clavex || (*this)==clavex );
+}
 
-		for(unsigned int i=0;i<CANTIDAD_TIPOS_CLAVE;i++)
-			(*claves[i]) = (*otro.claves[i]);
-	}
-	return (*this);
 
+bool ClaveX::operator >=(const ClaveX& clavex)const
+{
+	return ( (*this)>clavex || (*this)==clavex );
 }
 
 int ClaveX::get_clave(int& clave)const{
@@ -229,7 +206,6 @@ int ClaveX::get_clave(int& clave)const{
 	clave= cn->get_dato();
 
 	return RES_OK;
-
 }
 
 int ClaveX::get_clave(string& clave)const{
@@ -242,8 +218,6 @@ int ClaveX::get_clave(string& clave)const{
 	string ss(s);
 	clave= ss;
 
-
 	return RES_OK;
-
 }
 

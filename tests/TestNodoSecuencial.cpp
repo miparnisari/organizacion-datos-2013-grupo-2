@@ -20,7 +20,7 @@ void TestNodoSecuencial::ejecutar()
 	test_nodo_sec_crear();
 	test_nodo_sec_insertar_simple();
 	test_nodo_sec_insertar_eliminar();
-//	test_nodo_sec_overflow_masivo();
+	test_nodo_sec_overflow_masivo();
 	test_nodo_sec_overflow_impar();
 	test_nodo_sec_overflow_par();
 	test_nodo_sec_empaquetar_desempaquetar();
@@ -223,6 +223,8 @@ void TestNodoSecuencial::test_nodo_sec_insertar_eliminar()
 
 
 	delete(nodo);
+	delete(regleido1);
+	delete(regleido2);
 
 	print_test_ok("test_nodo_sec_insertar_eliminar");
 
