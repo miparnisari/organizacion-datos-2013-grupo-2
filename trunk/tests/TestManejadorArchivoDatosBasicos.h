@@ -17,7 +17,8 @@ class TestManejadorArchivoDatosBasicos: public Test {
 		void ejecutar();
 
 	private:
-		void test_madb_leer();
+		void test_madb_leer_escribir();
+		void test_madb_truncar();
 };
 
 #endif /* TESTMANEJADORARCHIVODATOSBASICOS_H_ */
