@@ -2,10 +2,12 @@
 #define MANEJADORDATOSBASICOS_H_
 
 #include "ManejadorArchivos.h"
+#include <errno.h>
+#include <string.h>
 
 struct mdb_header
 {
-	unsigned int tamanio_archivo;
+	unsigned int cantidadDatosGuardados;
 };
 
 template<typename TipoDato>
@@ -17,38 +19,40 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 		{
 			file_handler = NULL;
 			nombreArchivo = "";
-			header.tamanio_archivo = 0;
+			header.cantidadDatosGuardados = 0;
 		}
 
 		virtual ~ManejadorArchivoDatosBasicos()
 		{
 		}
 
-		int truncar(long longitudDeseada)
+		int truncar(long cantidadDatosDeseados)
 		{
 			if (file_handler == NULL)
 				return RES_ERROR;
-			int res = ftruncate(fileno(file_handler), longitudDeseada);
+
+			int res = ftruncate(fileno(file_handler), cantidadDatosDeseados*sizeof(TipoDato));
 			if (res == 0)
 			{
-				header.tamanio_archivo = longitudDeseada;
+				header.cantidadDatosGuardados = cantidadDatosDeseados;
 				return RES_OK;
 			}
 
+			std::cout << strerror(errno) << std::endl;
 			return RES_ERROR;
 		}/* PRECONDICION: abrir el archivo en modo "rb+". */
 
 		int agregar(const TipoDato dato)
 		{
-			int posicion = __get_tamanio_archivo();
+			int posicion = header.cantidadDatosGuardados;
 			if (posicion == RES_ERROR)
 				return RES_ERROR;
-			fseek(file_handler,0,SEEK_END);
+			fseek(file_handler,posicion*sizeof(TipoDato)+sizeof(header),SEEK_SET);
 			int res = fwrite(&dato,sizeof(dato),1,file_handler);
 			if (res != 1)
 				return RES_ERROR;
 
-			header.tamanio_archivo ++;
+			header.cantidadDatosGuardados ++;
 			return posicion;
 
 		}/* PRECONDICION: abrir el archivo en modo "ab".
@@ -59,22 +63,28 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 			if (file_handler == NULL)
 				return RES_ERROR;
 
-			fseek(file_handler,pos,SEEK_SET);
+			fseek(file_handler,pos*sizeof(TipoDato)+sizeof(header),SEEK_SET);
 			int res = fwrite(&dato,sizeof(dato),1,file_handler);
 			if (res != 1)
 				return RES_ERROR;
+
+			header.cantidadDatosGuardados ++;
 
 			return RES_OK;
 		}/* PRECONDICION: abrir el archivo en modo "wb+".
 		POSTCONDICION: cerrar el archivo. */
 		
-		int leer(TipoDato* dato, int pos)
+		int leer(TipoDato* dato, unsigned int pos)
 		{
+			if (pos >= header.cantidadDatosGuardados)
+				return RES_ERROR;
 			if (file_handler == NULL)
 				return RES_ERROR;
 
-			fseek(file_handler,pos,SEEK_SET);
-			int res = fread(dato,sizeof(TipoDato),1,file_handler);
+			int res = fseek(file_handler,pos*sizeof(TipoDato)+sizeof(header),SEEK_SET);
+			if (res != 0)
+				return RES_ERROR;
+			res = fread(dato,sizeof(TipoDato),1,file_handler);
 			if (res == 1)
 				return RES_OK;
 			return RES_ERROR;
@@ -114,15 +124,13 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 		{
 			if (! utilitarios::validFileName(p_nombreArchivo))
 			{
-				std::cout << "invalid filename" << std::endl;
+				std::cout << "MADB: invalid filename." << std::endl;
 				return RES_INVALID_FILENAME;
 			}
 			nombreArchivo = p_nombreArchivo;
 			file_handler = fopen(nombreArchivo.c_str(), modo.c_str());
-			if (file_handler == NULL) {
-				std::cout << "file handler es NULL" << std::endl;
+			if (file_handler == NULL)
 				return RES_ERROR;
-			}
 
 			return __get_header();
 
@@ -141,6 +149,11 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 			return RES_ERROR;
 		}/* Cierra el archivo. */
 
+		int get_tamanio_archivo()
+		{
+			return header.cantidadDatosGuardados*sizeof(TipoDato);
+		}
+
 	private:
 		struct mdb_header header;
 		FILE* file_handler;
@@ -152,11 +165,9 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 				return RES_ERROR;
 
 			res = fread(&(this->header),sizeof(this->header),1,this->file_handler);
-			if (res != 1) {
-
-				std::cout << "error al leer el header" << std::endl;
+			if (res != 1)
 				return RES_ERROR;
-			}
+
 			return RES_OK;
 		}/*PRECONDICION: el archivo debe estar abierto. */
 
@@ -168,23 +179,11 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 
 			res = fwrite(&(this->header),sizeof(this->header),1,this->file_handler);
 			if (res != 1)
-			{
-				std::cout << "error al escribir el header" << std::endl;
 				return RES_ERROR;
-			}
+
 			return RES_OK;
 		}/*PRECONDICION: el archivo debe estar abierto. */
 		
-		int __get_tamanio_archivo()
-		{
-			if (abrir_archivo(nombreArchivo, "rb") == RES_OK)
-			{
-				__get_header();
-				cerrar_archivo();
-				return header.tamanio_archivo;
-			}
-			return RES_ERROR;
-		}/* Devuelve el tamanio del archivo en cantidad de datos almacenados. */
 };
 
 #endif /* MANEJADORDATOSBASICOS_H_ */
