@@ -2,30 +2,75 @@
 
 ArbolBMas::ArbolBMas()
 {
+	numeroBloqueRaiz = 1; // el bloque 0 tiene el header!
 	raiz = NULL;
+	header.maxCantBytesClaves = 0;
+	header.minCantBytesClaves = 0;
 }
+
 ArbolBMas::~ArbolBMas()
 {
 	delete raiz;
 }
 
-int ArbolBMas::crear (std::string dir, std::string fileName)
+int ArbolBMas::_set_header()
 {
-	unsigned int tamanioBloque = BLOQUE_TAM_DEFAULT;
-	unsigned int minCantidadBytes = 0;
-	unsigned int maxCantidadBytes = 0;
-	Bloque* bloque = new Bloque(tamanioBloque);
+	// El bloque 0 debe tener datos del arbol
+	Bloque* bloqueHeader = archivoNodos.crear_bloque();
+	if (bloqueHeader == NULL)
+		return RES_ERROR;
+	RegistroVariable registroHeader;
+	registroHeader.agregar_campo((char*)&header.minCantBytesClaves,sizeof(header.minCantBytesClaves));
+	registroHeader.agregar_campo((char*)&header.maxCantBytesClaves,sizeof(header.maxCantBytesClaves));
+	int res = bloqueHeader->agregar_registro(&registroHeader);
+	if (res != RES_OK) {
+		delete bloqueHeader;
+		return RES_ERROR;
+	}
+	res = archivoNodos.sobreescribir_bloque(bloqueHeader,0);
+	delete bloqueHeader;
+	if (res != RES_OK)
+		return RES_ERROR;
+
+	// El bloque 1 debe tener la raiz
+	unsigned int minCantidadBytes = 0; //FIXME
+	unsigned int maxCantidadBytes = 0; //FIXME
+	Bloque* bloqueRaiz = archivoNodos.crear_bloque();
 	raiz = new NodoInterno(minCantidadBytes, maxCantidadBytes);
-	raiz->empaquetar(bloque);
-	return RES_OK;
-}
+	raiz->empaquetar(bloqueRaiz);
 
-int ArbolBMas::eliminar (std::string dir, std::string fileName)
+	res = archivoNodos.sobreescribir_bloque(bloqueRaiz,1);
+
+	delete bloqueRaiz;
+
+	return res;
+}/* PRECONDICION: el archivo debe estar abierto.
+POSTCONDICION: se debe cerrar el archivo. */
+
+int ArbolBMas::_get_header()
 {
+
 	return RES_OK;
 }
 
-int ArbolBMas::abrir (std::string dir, std::string fileName, std::string mode)
+int ArbolBMas::crear (std::string fileName, unsigned int tamNodo)
+{
+	int res = archivoNodos.crear_archivo(fileName,tamNodo);
+	if (res != RES_OK)
+		return res;
+
+	res = archivoNodos.abrir_archivo(fileName,"wb+");
+	if (res == RES_OK)
+		return _set_header();
+	return RES_ERROR;
+}
+
+int ArbolBMas::eliminar (std::string fileName)
+{
+	return archivoNodos.eliminar_archivo(fileName);
+}
+
+int ArbolBMas::abrir (std::string fileName, std::string mode)
 {
 	return RES_OK;
 }

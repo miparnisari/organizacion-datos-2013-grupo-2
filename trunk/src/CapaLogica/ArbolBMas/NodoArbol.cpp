@@ -41,5 +41,4 @@ int NodoArbol::desempaquetar(const Bloque* bloque){
 	this->tipoNodo= tipoNodoLeido;
 	return RES_OK;
 
-
 }

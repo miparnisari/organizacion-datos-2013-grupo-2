@@ -9,6 +9,7 @@
 #include "TestHeap.h"
 #include "TestNodoSecuencial.h"
 #include "TestRegistroClave.h"
+#include "TestManejadorArchivoDatosBasicos.h"
 
 #include <cassert>
 #include <iostream>
@@ -243,6 +244,8 @@ int main(int argc,char** args)
 
 	tests.push_back(new TestRegistroVariable);
 	tests.push_back(new TestManejadorRegistrosVariables);
+
+	tests.push_back(new TestManejadorArchivoDatosBasicos);
 
 	tests.push_back(new TestRegistroClave);
 
