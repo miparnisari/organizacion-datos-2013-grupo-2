@@ -408,10 +408,24 @@ void NodoInterno::imprimir_claves()const{
 		cout<<"NODO_VACIO"<<endl;
 
 	const unsigned short CANTIDAD_CLAVES= vectorClaves.size();
-	for(unsigned short i=0;i<CANTIDAD_CLAVES;i++)
+	for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
 		vectorClaves.at(i).imprimir_dato();
+		cout<<endl;
+	}
 
 }
+
+
+void NodoInterno::imprimir_hijos()const{
+
+	const unsigned short CANTIDAD_HIJOS= vectorHijos.size();
+	for(unsigned short i=0;i<CANTIDAD_HIJOS;i++){
+		cout<<vectorHijos.at(i);
+		cout<<endl;
+	}
+
+}
+
 
 int NodoInterno::insertar_hijo_derecho(const ClaveX& clave,
 		TipoHijo valor){

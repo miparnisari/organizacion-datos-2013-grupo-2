@@ -200,7 +200,55 @@ int ArbolBMas::_insertar_recursivo_hoja(Bloque* bloqueActual ,
 int ArbolBMas::_split_interno(NodoInterno* nodo,ClaveX* clavePromocionada,
 		TipoHijo& bloquePromocionado){
 
-	return RES_OK;
+	NodoInterno nodoNuevo;
+	nodoNuevo.limpiar();
+	/*remuevo el hijo x defecto del nodo nuevo*/
+	Bloque bloqueNodoNuevo;
+
+
+	const unsigned short CANTIDAD_HIJOS= nodo->get_cantidad_hijos();
+	const unsigned short CANTIDAD_CLAVES= nodo->get_cantidad_claves();
+
+
+	ClaveX claveMitad;
+	(*clavePromocionada) = claveMitad;
+	/*guardo la clavePromocionada*/
+	unsigned short numeroClaveMitad;
+	nodo->get_clave_mitad(claveMitad);
+	nodo->buscar_clave(claveMitad , numeroClaveMitad);
+
+
+	for(unsigned short i=numeroClaveMitad+1;i<CANTIDAD_CLAVES;i++){
+		ClaveX unaClave;
+		nodo->get_clave(i,unaClave);
+		unsigned short ocurrenciaInsercion;
+		nodoNuevo.insertar_clave(unaClave,ocurrenciaInsercion);
+	}/*obtengo las claves que tengo que pasar al nodo nuevo (posteriores a la clave de la mitad)*/
+
+
+	for(unsigned short i=numeroClaveMitad;i<CANTIDAD_HIJOS;i++){
+		TipoHijo unHijo;
+		nodo->get_hijo(unHijo , i+1);
+		nodoNuevo.insertar_hijo(unHijo);
+	}/*obtengo los hijos que se deben insertar en el nodo nuevo*/
+
+
+	for(unsigned short i=numeroClaveMitad;i<CANTIDAD_CLAVES;i++){
+		ClaveX unaClave;
+		nodo->remover_clave(numeroClaveMitad,unaClave);
+		nodo->remover_hijo(numeroClaveMitad+1);
+	}/*remuevo las claves e hijos del nodo en overflow*/
+
+
+	nodoNuevo.empaquetar(&bloqueNodoNuevo);
+	int resEscritura= this->archivoNodos.escribir_bloque(&bloqueNodoNuevo);
+
+	if(resEscritura!= RES_ERROR)
+		bloquePromocionado= resEscritura;
+
+
+
+	return resEscritura;
 
 }
 
@@ -218,6 +266,8 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 
 		int resultadoInsercion=
 				_insertar_recursivo_hoja(bloqueActual,registro,hijoPromocionado);
+		/*en hijoPromocionado se guardara el nuevo nodoSecuencial creado y persistido y en registro se retornara el registroClave
+		 * promocionado en caso de overflow.*/
 
 		if(resultadoInsercion== RES_OVERFLOW){
 			ClaveX claveRegistroPromocionado= registro->get_clave();
@@ -252,13 +302,15 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 	nodoActualInterno.insertar_clave(*clavePromocionada,ocurrenciaInsercion);
 	int resultadoInsercionNodoInterno= nodoActualInterno.insertar_hijo_derecho(*clavePromocionada,hijoPromocionado);
 
+
 	if(resultadoInsercionNodoInterno== RES_OK)
 		return RES_OK;
 	if(resultadoInsercionNodoInterno== RES_ERROR)
 		return RES_ERROR;
 
+
 	_split_interno(&nodoActualInterno,clavePromocionada,hijoPromocionado);
-	/*realiza el split. y guarda el nodo nuevo en el archivo*/
+	/*realiza el split. y guarda el nodo nuevo en el archivo. En hijoPromocionado se devolvera el hijo del nodoInterno nuevo creado*/
 
 
 	return RES_OVERFLOW;
