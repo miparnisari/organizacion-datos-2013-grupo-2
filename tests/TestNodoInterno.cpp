@@ -241,6 +241,84 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 	}
 
 
+	{
+
+		cout<<endl<<"imprimirNodoInterno: "<<endl;
+		NodoInterno ni;
+		typedef NodoInterno::TipoHijo TipoHijo;
+		string claveAcumulada= "dato";
+		const unsigned short CANTIDAD_DATOS= 5;
+		const unsigned short CANTIDAD_HIJOS= CANTIDAD_DATOS+1;
+		ni.modificar_hijo(0,0);
+
+		ni.imprimir_claves();
+		ni.imprimir_hijos();
+
+		for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
+
+			unsigned short ocurrenciaInsercion;
+			ClaveX unaClave;
+			unaClave.set_clave(claveAcumulada);
+			assert( ni.insertar_clave(unaClave,ocurrenciaInsercion)== RES_OK );
+			claveAcumulada+= (char)(67+i);
+			assert( ni.insertar_hijo(i+1,i+1)== RES_OK );
+
+		}assert(ni.get_cantidad_claves()== CANTIDAD_DATOS && ni.get_cantidad_hijos()== CANTIDAD_HIJOS);
+
+		cout<<"imprimo despues de insertar  5 claves y 5 hijos"<<endl;
+		ni.imprimir_claves();
+		ni.imprimir_hijos();
+
+		string datoClaveMitad= "datoCD";
+		ClaveX claveMitad;
+		claveMitad.set_clave(datoClaveMitad);
+		ClaveX claveMitadNodo;
+		ni.get_clave_mitad(claveMitadNodo);
+		assert( claveMitad== claveMitadNodo );
+
+		unsigned short numeroClaveMitad;
+		ni.buscar_clave(claveMitad,numeroClaveMitad);
+		vector<TipoHijo> hijosMover;
+		vector<ClaveX> clavesMover;
+		for(unsigned short i=numeroClaveMitad;i<CANTIDAD_DATOS;i++){
+
+			ClaveX unaClave;
+			assert( ni.remover_clave(numeroClaveMitad,unaClave)== RES_OK );
+			clavesMover.push_back(unaClave);
+			TipoHijo unHijo;
+			ni.get_hijo(unHijo,numeroClaveMitad+1);
+			hijosMover.push_back(unHijo);
+			assert( ni.remover_hijo(numeroClaveMitad+1)== RES_OK );
+
+
+		}/*pruebo remover la clave de la mitad y los hijos de la misma*/
+
+		cout<<"imprimo despues de remover la clave mitad y los hijos posteriores de claveMitad"<<endl;
+		ni.imprimir_claves();
+		ni.imprimir_hijos();
+
+		NodoInterno nodoNuevo;
+		nodoNuevo.limpiar();
+		nodoNuevo.insertar_hijo(hijosMover.at(0));
+
+		for(unsigned short i=0; i< (CANTIDAD_DATOS-numeroClaveMitad); i++){
+
+			unsigned short ocurrenciaInsercion;
+			nodoNuevo.insertar_clave(clavesMover[i],ocurrenciaInsercion);
+			nodoNuevo.insertar_hijo(hijosMover[i+1]);
+
+		}
+
+		cout<<"imprimo nodoNuevo"<<endl;
+		nodoNuevo.imprimir_claves();
+		nodoNuevo.imprimir_hijos();
+
+
+		cout<<endl<<"fin imprimirNodoInterno"<<endl;
+
+	}
+
+
 }
 
 

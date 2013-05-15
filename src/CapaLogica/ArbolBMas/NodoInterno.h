@@ -96,6 +96,7 @@ class NodoInterno : public NodoArbol {
 		void imprimir_claves()const;
 		/*imprime todas las claves guardadas en el nodo. En caso que el mismo
 		 * este vacio se imprime NODO_VACIO.*/
+		void imprimir_hijos()const;
 
 		int insertar_hijo_derecho(const ClaveX& clave,TipoHijo valor= HIJO_INVALIDO);
 		int insertar_hijo_izquierdo(const ClaveX& clave,TipoHijo valor);
