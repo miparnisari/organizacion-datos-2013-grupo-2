@@ -16,7 +16,7 @@
 class RegistroClave:public RegistroVariable {
 
 	protected:
-		ClaveX* clave;
+		ClaveX clave;
 
 		void _agregar_campo_clave();
 		/*la clave se agrega como el primer campo del registro. Se considera el

@@ -10,24 +10,23 @@
 RegistroClave::RegistroClave()
 	:RegistroVariable()
 {
-	clave = NULL;
-//	_agregar_campo_clave();
 }
 
 RegistroClave::RegistroClave(const RegistroClave& otro)
 	: RegistroVariable(otro)
 {
-	clave = new ClaveX(*(otro.clave));
+	clave = otro.clave;
 }
 
 RegistroClave& RegistroClave::operator=(const RegistroClave& otro)
 {
 	if (this != &otro)
 	{
-		this->clave = new ClaveX(*(otro.clave));
+		this->clave = otro.clave;
 		this->tamanio = otro.tamanio;
 	//	buffer = new char[tamanio];
 	//	strcpy(buffer,otro.buffer);
+		delete[] buffer;
 		this->buffer= new char[tamanio];
 		stringstream ss;
 		ss.write(otro.buffer,tamanio);
@@ -40,17 +39,15 @@ RegistroClave& RegistroClave::operator=(const RegistroClave& otro)
 
 RegistroClave::~RegistroClave()
 {
-	delete(clave);
-	clave = NULL;
 }
 
 
 void RegistroClave::_agregar_campo_clave()
 {
-	unsigned short tamanioClaveEmpaquetada = clave->get_tamanio_empaquetado();
+	unsigned short tamanioClaveEmpaquetada = clave.get_tamanio_empaquetado();
 	char* bufferClaveEmpaquetada= new char[tamanioClaveEmpaquetada]();
 
-	clave->empaquetar(bufferClaveEmpaquetada);
+	clave.empaquetar(bufferClaveEmpaquetada);
 
 	this->agregar_campo(bufferClaveEmpaquetada,tamanioClaveEmpaquetada);
 
@@ -60,17 +57,11 @@ void RegistroClave::_agregar_campo_clave()
 void RegistroClave::limpiar_campos() throw(){
 
 	RegistroVariable::limpiar_campos();
-//	_agregar_campo_clave();
 
 }
 
 void RegistroClave::set_clave(const ClaveX& clave){
-
-	// Si ya tenia una clave no hacemos nada
-	if (this->clave != NULL)
-		return;
-
-	this->clave = new ClaveX(clave);
+	this->clave = clave;
 	_agregar_campo_clave();
 
 //	const unsigned short CANTIDAD_CAMPOS= this->get_cantidad_campos();
@@ -104,7 +95,7 @@ void RegistroClave::set_clave(const ClaveX& clave){
 
 ClaveX RegistroClave::get_clave()const
 {
-	return *(this->clave);
+	return clave;
 }
 
 int RegistroClave::desempaquetar(const char* copia)throw(){
@@ -135,29 +126,25 @@ int RegistroClave::desempaquetar(const char* copia)throw(){
 
 bool RegistroClave::operator <(const RegistroClave& rc)const
 {
-	return (*(this->clave) < *(rc.clave));
-
+	return ((this->clave) < (rc.clave));
 }
 
 bool RegistroClave::operator >(const RegistroClave& rc)const
 {
-	return (*(this->clave) > *(rc.clave));
+	return ((this->clave) > (rc.clave));
 }
 
-bool RegistroClave::operator ==(const RegistroClave& rc)const{
-
-	return (*(this->clave) == *(rc.clave));
-
+bool RegistroClave::operator ==(const RegistroClave& rc)const
+{
+	return ((this->clave) == (rc.clave));
 }
 
-bool RegistroClave::operator <=(const RegistroClave& rc)const{
-
-	return (*(this->clave) <= *(rc.clave));
-
+bool RegistroClave::operator <=(const RegistroClave& rc)const
+{
+	return ((this->clave) <= (rc.clave));
 }
 
-bool RegistroClave::operator >=(const RegistroClave& rc)const{
-
-	return (*(this->clave) >= *(rc.clave));
-
+bool RegistroClave::operator >=(const RegistroClave& rc)const
+{
+	return ((this->clave) >= (rc.clave));
 }

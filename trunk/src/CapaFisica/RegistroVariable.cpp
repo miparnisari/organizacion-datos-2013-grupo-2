@@ -11,27 +11,33 @@ RegistroVariable::RegistroVariable()
 {
 	buffer= NULL;
 	tamanio= 0;
-}/*constructor*/
+}
+
+RegistroVariable& RegistroVariable::operator = (const RegistroVariable& otro)
+{
+	if (this != &otro)
+	{
+		delete[] buffer;
+		this->buffer = new char[otro.tamanio];
+		strcpy(buffer,otro.buffer);
+	}
+	return (*this);
+}
 
 RegistroVariable::~RegistroVariable()
 {
-	if(buffer)
-		delete[] buffer;
-}/*destructor*/
+	delete[] buffer;
+}
 
 RegistroVariable::RegistroVariable(const RegistroVariable& otro)
 {
 	tamanio = otro.tamanio;
-//	buffer = new char[tamanio];
-//	strcpy(buffer,otro.buffer);
-	buffer= new char[tamanio];
+	buffer = new char[tamanio];
 	stringstream ss;
 	ss.write(otro.buffer,tamanio);
 	ss.seekg(0,ios::beg);
 	ss.read(this->buffer,tamanio);
-
-
-}/* constructor copia */
+}
 
 
 void RegistroVariable::_inicializar_buffer(){
@@ -61,18 +67,14 @@ int RegistroVariable::agregar_datos(const char* datos,unsigned short tamanioDato
 	RegistroVariable::limpiar_campos();
 
 	tamanio= tamanioFinal;
-	//buffer= new char[tamanioFinal +1];
 	buffer= new char[tamanioFinal];
 	_inicializar_buffer();
 	stream.seekg(0,ios::beg);
 	stream.read(buffer,tamanio);
-	//buffer[tamanioFinal] = '\0';
 
 	return RES_OK;
 
 }/*agrega datos al buffer menor que REG_VAR_MAX_TAM. Los datos se agregan de forma directa sin separadores*/
-
-
 
 
 int RegistroVariable::remover_datos(unsigned short offset,unsigned short tamanioBorrar)throw(){
@@ -111,9 +113,7 @@ int RegistroVariable::remover_datos(unsigned short offset,unsigned short tamanio
 
 	return RES_OK;
 
-
 }/*remueve datos de una zona*/
-
 
 
 int RegistroVariable::agregar_campo(const char* campo,unsigned short tamanioCampo)throw(){
@@ -128,14 +128,13 @@ int RegistroVariable::agregar_campo(const char* campo,unsigned short tamanioCamp
 }/*agrega un campo al registro junto con su delimitador de espacio.*/
 
 
-void RegistroVariable::limpiar_campos()throw(){
-
+void RegistroVariable::limpiar_campos()throw()
+{
 	if(buffer){
 		delete[] buffer;
-		buffer= NULL;
-		tamanio= 0;
+		buffer = NULL;
+		tamanio = 0;
 	}
-
 }
 
 
@@ -410,7 +409,6 @@ int RegistroVariable::desempaquetar(const char* copia)throw()
 
 	return RES_OK;
 
-
 }/*importa un registro a partir de un arreglo
 con el formato tamanioRegistro|tamanioPrimerCampo|datos...*/
 
@@ -425,12 +423,12 @@ char* RegistroVariable::get_buffer()throw()
 {
 	return buffer;
 
-}/*retorna el puntero al buffer*/
+}
 
 unsigned short RegistroVariable::get_tamanio()throw()
 {
 	return tamanio;
-}/*devuelve el tamanio del registro*/
+}
 
 int RegistroVariable::comprimir (Compresor & compresor)
 {

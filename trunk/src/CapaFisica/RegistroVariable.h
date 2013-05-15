@@ -33,6 +33,7 @@ class RegistroVariable {
 		static const unsigned short CAMPO_ENCADENAMIENTO_LIBRES= 1;
 
 		RegistroVariable();
+		RegistroVariable& operator = (const RegistroVariable& otro);
 		virtual ~RegistroVariable();
 		RegistroVariable(const RegistroVariable& otro);
 
