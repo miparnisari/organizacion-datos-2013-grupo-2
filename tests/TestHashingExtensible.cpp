@@ -20,7 +20,8 @@ void TestHashingExtensible::test_crear_hashing()
 {
     HashingExtensible hash1("",DIRECCION);
     ManejadorBloques manejador_bloques;
-    manejador_bloques.abrir_archivo(DIRECCION, "rb+");
+  //  assert (manejador_bloques.crear_archivo(DIRECCION) == RES_OK);
+    assert (manejador_bloques.abrir_archivo(DIRECCION, "rb+") == RES_OK);
     assert (manejador_bloques.get_cantidad_bloques() == 1);
     assert (manejador_bloques.cerrar_archivo() == RES_OK);
     assert (hash1.eliminar_hashing_extensible() == RES_OK);

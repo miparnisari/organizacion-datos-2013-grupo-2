@@ -113,11 +113,16 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 		int abrir_archivo(std::string p_nombreArchivo, std::string modo)
 		{
 			if (! utilitarios::validFileName(p_nombreArchivo))
+			{
+				std::cout << "invalid filename" << std::endl;
 				return RES_INVALID_FILENAME;
+			}
 			nombreArchivo = p_nombreArchivo;
 			file_handler = fopen(nombreArchivo.c_str(), modo.c_str());
-			if (file_handler == NULL)
+			if (file_handler == NULL) {
+				std::cout << "file handler es NULL" << std::endl;
 				return RES_ERROR;
+			}
 
 			return __get_header();
 
@@ -142,19 +147,31 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 		std::string nombreArchivo;
 		int __get_header()
 		{
-			fseek(this->file_handler,0,SEEK_SET);
-			int res = fread(&(this->header),sizeof(this->header),1,this->file_handler);
-			if (res != 1)
+			int res = fseek(this->file_handler,0,SEEK_SET);
+			if (res != 0)
 				return RES_ERROR;
+
+			res = fread(&(this->header),sizeof(this->header),1,this->file_handler);
+			if (res != 1) {
+
+				std::cout << "error al leer el header" << std::endl;
+				return RES_ERROR;
+			}
 			return RES_OK;
 		}/*PRECONDICION: el archivo debe estar abierto. */
 
 		int __set_header()
 		{
-			fseek(this->file_handler,0,SEEK_SET);
-			int res = fwrite(&(this->header),sizeof(this->header),1,this->file_handler);
-			if (res != 1)
+			int res = fseek(this->file_handler,0,SEEK_SET);
+			if (res != 0)
 				return RES_ERROR;
+
+			res = fwrite(&(this->header),sizeof(this->header),1,this->file_handler);
+			if (res != 1)
+			{
+				std::cout << "error al escribir el header" << std::endl;
+				return RES_ERROR;
+			}
 			return RES_OK;
 		}/*PRECONDICION: el archivo debe estar abierto. */
 		
@@ -163,6 +180,7 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 			if (abrir_archivo(nombreArchivo, "rb") == RES_OK)
 			{
 				__get_header();
+				cerrar_archivo();
 				return header.tamanio_archivo;
 			}
 			return RES_ERROR;

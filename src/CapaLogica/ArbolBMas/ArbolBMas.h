@@ -10,11 +10,11 @@
 #include "NodoInterno.h"
 #include "NodoSecuencial.h"
 
-struct header_arbol
+typedef struct header_arbol
 {
 	unsigned int minCantBytesClaves;
 	unsigned int maxCantBytesClaves;
-};
+}header_arbol;
 
 class ArbolBMas
 {
@@ -26,6 +26,9 @@ class ArbolBMas
 		ManejadorBloques archivoNodos;
 		NodoInterno* raiz;
 		unsigned int numeroBloqueRaiz;
+
+		int _set_header();
+		int _get_header();
 
 		int _hallar_hijo_correspondiente(RegistroClave* registro,
 				NodoInterno* nodoBuscar,TipoHijo& numeroBloqueHijoCorrespondiente);
@@ -58,10 +61,10 @@ class ArbolBMas
 		ArbolBMas();
 		virtual ~ArbolBMas();
 
-		int crear (std::string dir, std::string fileName);
-		int eliminar (std::string dir, std::string fileName);
+		int crear (std::string fileName, unsigned int tamNodo = BLOQUE_TAM_DEFAULT);
+		int eliminar (std::string fileName);
 
-		int abrir (std::string dir, std::string fileName, std::string mode);
+		int abrir (std::string fileName, std::string mode);
 		int cerrar ();
 		
 		int agregar(RegistroVariable & reg);
