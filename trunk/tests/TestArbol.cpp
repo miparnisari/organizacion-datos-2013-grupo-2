@@ -22,6 +22,8 @@ void TestArbol::test_insertar_pocos_registros(){
 	header_arbol ha;
 	ha.minCantBytesClaves= 0;
 	ha.maxCantBytesClaves= 4096;
+	string nombreArchivoArbol= "testArbol.dat";
+	assert( abm.eliminar(nombreArchivoArbol)==RES_OK );
 
 	const unsigned int MAXIMA_CANTIDAD_BYTES_NODO_INTERNO= 45;
 	NodoInterno ni(0,MAXIMA_CANTIDAD_BYTES_NODO_INTERNO);
@@ -45,6 +47,8 @@ void TestArbol::test_insertar_pocos_registros(){
 	abm._split_interno(&ni,&clavePromocionada,bloquePromocionado);
 	cout<<"clave promocionada: ";clavePromocionada.imprimir_dato();cout<<endl;
 	cout<<"bloque promocionado: "<<bloquePromocionado<<endl;
+
+	assert(abm.crear(nombreArchivoArbol)== RES_OK);
 
 
 }
