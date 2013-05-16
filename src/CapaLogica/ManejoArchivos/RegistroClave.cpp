@@ -60,35 +60,38 @@ void RegistroClave::limpiar_campos() throw(){
 
 }
 
+//FIXME ESTRUCTURA ROTA
+//si se llamara a set_clave mas de una vez para un registro -> se guardaria mas de una clave en los campos del mismo!!!
 void RegistroClave::set_clave(const ClaveX& clave){
 	this->clave = clave;
 	_agregar_campo_clave();
 
-//	const unsigned short CANTIDAD_CAMPOS= this->get_cantidad_campos();
-//	RegistroVariable registroCopia;
-//	unsigned short tamanioEmpaquetamiento= this->get_tamanio_empaquetado();
-//	char* bufferRegistroCopia= new char[tamanioEmpaquetamiento]();
-//	this->empaquetar(bufferRegistroCopia);
-//	registroCopia.desempaquetar(bufferRegistroCopia);
-//	//hago una copia del registro original
-//
-//	this->limpiar_campos();
-//
-//
-//	if(CANTIDAD_CAMPOS>1)
-//		for(unsigned short i=1;i<CANTIDAD_CAMPOS;i++){
-//
-//			unsigned short tamanioCampo= registroCopia.get_tamanio_campo(i);
-//			char* bufferCampo= new char[tamanioCampo]();
-//			registroCopia.recuperar_campo(bufferCampo,i);
-//			this->agregar_campo(bufferCampo,tamanioCampo);
-//
-//			delete[] bufferCampo;
-//
-//		}
-//		//agrego los campos viejos en el registro nuevamente
-//
-//	delete[] bufferRegistroCopia;
+	/*
+	const unsigned short CANTIDAD_CAMPOS= this->get_cantidad_campos();
+	RegistroVariable registroCopia;
+	unsigned short tamanioEmpaquetamiento= this->get_tamanio_empaquetado();
+	char* bufferRegistroCopia= new char[tamanioEmpaquetamiento]();
+	this->empaquetar(bufferRegistroCopia);
+	registroCopia.desempaquetar(bufferRegistroCopia);
+	//hago una copia del registro original
+
+	this->limpiar_campos();
+
+
+	if(CANTIDAD_CAMPOS>1)
+		for(unsigned short i=1;i<CANTIDAD_CAMPOS;i++){
+
+			unsigned short tamanioCampo= registroCopia.get_tamanio_campo(i);
+			char* bufferCampo= new char[tamanioCampo]();
+			registroCopia.recuperar_campo(bufferCampo,i);
+			this->agregar_campo(bufferCampo,tamanioCampo);
+
+			delete[] bufferCampo;
+
+		}
+		//agrego los campos viejos en el registro nuevamente
+
+	delete[] bufferRegistroCopia;*/
 
 }
 

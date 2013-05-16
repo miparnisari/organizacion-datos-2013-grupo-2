@@ -42,7 +42,7 @@ class ArbolBMas
 
 		int agregar(RegistroClave & reg);
 		int eliminar(RegistroClave & reg);//FIXME el parametro no deberia ser un ClaveX?
-		int buscar(RegistroClave & reg);
+		int buscar(RegistroClave & reg);//FIXME el parametro no deberia ser un ClaveX?
 		/* Devuelve el numero de nodo secuencial donde esta o deberia estar reg. */
 
 

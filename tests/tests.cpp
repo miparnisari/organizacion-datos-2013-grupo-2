@@ -256,7 +256,7 @@ int main(int argc,char** args)
 	tests.push_back(new TestHashingExtensible);
 	
 	tests.push_back(new TestNodoInterno);
-	tests.push_back(new TestNodoSecuencial);
+	tests.push_back(new TestNodoSecuencial);//TODO: si en RegistroClave DESCOMENTO las lineas comentadas de set_clave, este test se rompe .
 
 	tests.push_back(new TestHeap);
 	tests.push_back(new TestArbol);

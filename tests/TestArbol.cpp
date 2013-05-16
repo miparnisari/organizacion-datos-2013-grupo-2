@@ -42,12 +42,45 @@ void TestArbol::test_insertar_pocos_registros(){
 		ni.insertar_hijo( (TipoHijo)(i+1) );
 	}
 	assert(ni.hay_overflow());
+	/*cargue a ni con claves del 0 al 5 y con hijos del 0 al 5*/
+
+	{
+
+		ClaveX claveBuscar;
+		claveBuscar.set_clave( (int)-1 );
+		RegistroClave registroBuscar;
+		registroBuscar.set_clave(claveBuscar);
+		TipoHijo hijoBuscar;
+
+		abm._hallar_hijo_correspondiente(&registroBuscar,&ni,hijoBuscar);
+		assert( hijoBuscar== 0 );
+		//el hijo devuelto es el mas a la izquierda del nodo interno
+
+		for(unsigned short i=0;i<CANTIDAD_HIJOS;i++){
+
+			ClaveX claveBuscar;
+			claveBuscar.set_clave( (int)i );
+			RegistroClave registroBuscar;
+			registroBuscar.set_clave(claveBuscar);
+			TipoHijo hijoBuscar;
+
+			abm._hallar_hijo_correspondiente(&registroBuscar,&ni,hijoBuscar);
+			assert( hijoBuscar >= (int)i );
+
+		}
+
+	}
+
+
 
 	ClaveX clavePromocionada;
 	TipoHijo bloquePromocionado;
 	abm._split_interno(&ni,&clavePromocionada,bloquePromocionado);
 	cout<<"clave promocionada: ";clavePromocionada.imprimir_dato();cout<<endl;
 	cout<<"bloque promocionado: "<<bloquePromocionado<<endl;
+
+
+
 
 	assert(abm.eliminar(nombreArchivoArbol)== RES_OK);
 
