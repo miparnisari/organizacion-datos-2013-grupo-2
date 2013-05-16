@@ -33,8 +33,8 @@ int ArbolBMas::_set_header()
 		return RES_ERROR;
 
 	// El bloque 1 debe tener la raiz
-	unsigned int minCantidadBytes = 0; //FIXME
-	unsigned int maxCantidadBytes = 0; //FIXME
+	unsigned int minCantidadBytes = 0; //FIXME CANTIDADES PARA TESTEAR!!!
+	unsigned int maxCantidadBytes = 4096; //FIXME
 	Bloque* bloqueRaiz = archivoNodos.crear_bloque();
 	raiz = new NodoInterno(minCantidadBytes, maxCantidadBytes);
 	raiz->empaquetar(bloqueRaiz);
