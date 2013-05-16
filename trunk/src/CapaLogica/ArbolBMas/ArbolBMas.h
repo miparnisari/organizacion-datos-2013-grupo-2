@@ -27,6 +27,26 @@ class ArbolBMas
 		NodoInterno* raiz;
 		unsigned int numeroBloqueRaiz;
 
+
+
+
+	public:
+		ArbolBMas();
+		virtual ~ArbolBMas();
+
+		int crear (std::string fileName, unsigned int tamNodo = BLOQUE_TAM_DEFAULT);
+		int eliminar (std::string fileName);
+
+		int abrir (std::string fileName, std::string mode);
+		int cerrar ();
+
+		int agregar(RegistroVariable & reg);
+		int eliminar(RegistroVariable & reg);
+		int buscar(RegistroClave & reg);
+		/* Devuelve el numero de nodo secuencial donde esta o deberia estar reg. */
+
+
+		/*ESTOS METODOS DEBERIAN SER PRIVADOS, SE HACEN PUBLICOS PARA TESTEAR*/
 		int _set_header();
 		int _get_header();
 
@@ -41,9 +61,8 @@ class ArbolBMas
 		int _insertar_recursivo_hoja(Bloque* bloqueActual ,
 				RegistroClave* registro , TipoHijo& hijoPromocionado);
 
-		//TODO
-		int _split_hoja(NodoSecuencial* nodoActual,RegistroClave* registro,
-				TipoHijo& hijoPromocionado);
+		int _split_hoja(NodoSecuencial* nodoActual,vector<RegistroClave>* registrosOverflow,
+				TipoHijo& hijoPromocionado,ClaveX* clavePromocionada);
 		/* > a partir de un NodoSecuencial en estado de overflow, se crea un NodoSecuencial
 		 * nuevo donde se guardaran la mitad superior de las claves de nodoActual.
 		 * > En registro se guardara el RegistroClave promocionado
@@ -55,22 +74,6 @@ class ArbolBMas
 		 * guardan las claves e hijos de la mitad derecha de nodo .
 		 * > el nodo nuevo es persistido en el archivo de bloques de nodos
 		 * > el numero de bloque del nodo nuevo es guardado en el parametro hijoPromocionado*/
-
-
-	public:
-		ArbolBMas();
-		virtual ~ArbolBMas();
-
-		int crear (std::string fileName, unsigned int tamNodo = BLOQUE_TAM_DEFAULT);
-		int eliminar (std::string fileName);
-
-		int abrir (std::string fileName, std::string mode);
-		int cerrar ();
-		
-		int agregar(RegistroVariable & reg);
-		int eliminar(RegistroVariable & reg);
-		int buscar(RegistroClave & reg);
-		/* Devuelve el numero de nodo secuencial donde esta o deberia estar reg. */
 
 };
 
