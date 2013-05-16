@@ -19,17 +19,19 @@ int ArbolBMas::_set_header()
 	Bloque* bloqueHeader = archivoNodos.crear_bloque();
 	if (bloqueHeader == NULL)
 		return RES_ERROR;
+
 	RegistroVariable registroHeader;
 	registroHeader.agregar_campo((char*)&header.minCantBytesClaves,sizeof(header.minCantBytesClaves));
 	registroHeader.agregar_campo((char*)&header.maxCantBytesClaves,sizeof(header.maxCantBytesClaves));
 	int res = bloqueHeader->agregar_registro(&registroHeader);
-	if (res != RES_OK) {
+	if (res != RES_OK)
+	{
 		delete bloqueHeader;
 		return RES_ERROR;
 	}
-	res = archivoNodos.sobreescribir_bloque(bloqueHeader,0);
+	res = archivoNodos.escribir_bloque(bloqueHeader);
 	delete bloqueHeader;
-	if (res != RES_OK)
+	if (res < 0)
 		return RES_ERROR;
 
 	// El bloque 1 debe tener la raiz
@@ -39,11 +41,12 @@ int ArbolBMas::_set_header()
 	raiz = new NodoInterno(minCantidadBytes, maxCantidadBytes);
 	raiz->empaquetar(bloqueRaiz);
 
-	res = archivoNodos.sobreescribir_bloque(bloqueRaiz,1);
-
+	res = archivoNodos.escribir_bloque(bloqueRaiz);
 	delete bloqueRaiz;
+	if (res < 0)
+		return res;
 
-	return res;
+	return RES_OK;
 }/* PRECONDICION: el archivo debe estar abierto.
 POSTCONDICION: se debe cerrar el archivo. */
 
@@ -59,9 +62,10 @@ int ArbolBMas::crear (std::string fileName, unsigned int tamNodo)
 	if (res != RES_OK)
 		return res;
 
-	res = archivoNodos.abrir_archivo(fileName,"wb+");
+	res = archivoNodos.abrir_archivo(fileName,"rb+");
 	if (res == RES_OK)
 		return _set_header();
+
 	return RES_ERROR;
 }
 

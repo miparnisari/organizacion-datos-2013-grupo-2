@@ -130,13 +130,13 @@ void TestManejadorBloques::test_manejador_bloques_escribir_bloques()
 	assert(manejador.get_cantidad_bloques() == 2);
 
 	//Libero el primer bloque que agregue
-	assert(manejador.sobreescribir_bloque(&bloqueVacio,0) == RES_OK);
-	assert(manejador.get_primer_bloque_libre() == 0);
-	assert(manejador.get_cantidad_bloques() == 2);
-	res = manejador.obtener_bloque(0);
-	assert(res->fue_eliminado());
-	assert(res->obtener_ref_prox_bloque()==-1);
-	delete(res);
+//	assert(manejador.sobreescribir_bloque(&bloqueVacio,0) == RES_OK);
+//	assert(manejador.get_primer_bloque_libre() == 0);
+//	assert(manejador.get_cantidad_bloques() == 2);
+//	res = manejador.obtener_bloque(0);
+//	assert(res->fue_eliminado());
+//	assert(res->obtener_ref_prox_bloque()==-1);
+//	delete(res);
 
 	delete(bloque);
 
