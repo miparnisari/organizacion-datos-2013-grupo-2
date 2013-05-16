@@ -163,37 +163,31 @@ int ArbolBMas::_hallar_hoja(RegistroClave* registro,
 }
 
 
-int ArbolBMas::_split_hoja(NodoSecuencial* nodoActual,RegistroClave* registro,
-		TipoHijo& hijoPromocionado){
+int ArbolBMas::_split_hoja(NodoSecuencial* nodoActual,vector<RegistroClave>* registrosOverflow,
+		TipoHijo& hijoPromocionado,ClaveX* clavePromocionada){
 
-	return RES_OK;
+	NodoSecuencial nodoSecuencialNuevo(header.minCantBytesClaves,header.maxCantBytesClaves);
+	const unsigned short CANTIDAD_REGISTROS_OVERFLOW= registrosOverflow->size();
+	if(CANTIDAD_REGISTROS_OVERFLOW== 0)
+		return RES_ERROR;
+	(*clavePromocionada)= registrosOverflow->at(0).get_clave();
+
+	vector<RegistroClave> ro;
+	for(int i=0;i<CANTIDAD_REGISTROS_OVERFLOW;i++){
+		nodoSecuencialNuevo.insertar(registrosOverflow->at(i),ro);
+	}/*en el nodo secuencial nuevo agrego los registros en overflow y remuevo dichos registros del nodoSecuencialActual*/
+
+	Bloque bloqueNodoSecuencialNuevo;
+	nodoSecuencialNuevo.empaquetar(&bloqueNodoSecuencialNuevo);
+	int resultadoEscritura= this->archivoNodos.escribir_bloque(&bloqueNodoSecuencialNuevo);
+
+	if(resultadoEscritura!= RES_ERROR)
+		hijoPromocionado= (unsigned int)resultadoEscritura;
+
+	return resultadoEscritura;
 
 }//TODO
 
-
-int ArbolBMas::_insertar_recursivo_hoja(Bloque* bloqueActual ,
-		RegistroClave* registro , TipoHijo& hijoPromocionado){
-
-	const unsigned int MIN_BYTES=0,MAX_BYTES=3000;//FIXME eliminar constantes
-	NodoSecuencial nodoActual(MIN_BYTES,MAX_BYTES);
-	nodoActual.desempaquetar(bloqueActual);
-	delete[] bloqueActual;
-	/*cargo el bloqueActual en el nodo secuencial y libero al bloque*/
-
-	vector<RegistroClave> registrosOverflow;
-	int resultadoInsercion= nodoActual.insertar(*registro,registrosOverflow);
-
-	if(resultadoInsercion== RES_OK)
-		return RES_OK;
-	if(resultadoInsercion== RES_RECORD_EXISTS)
-		return RES_RECORD_EXISTS;
-
-	_split_hoja(&nodoActual,registro,hijoPromocionado);
-	/*en registro se guardara el registro promocionado*/
-
-	return RES_OVERFLOW;
-
-}
 
 
 
@@ -261,32 +255,45 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 	Bloque* bloqueActual= this->archivoNodos.obtener_bloque(numeroBloqueActual);
 	NodoArbol nodoActual(TIPO_HOJA);
 	nodoActual.desempaquetar(bloqueActual);
+	/*desempaqueto el bloque para verificar que tipo de nodo es*/
 
 	if(nodoActual.es_hoja()){
 
-		int resultadoInsercion=
-				_insertar_recursivo_hoja(bloqueActual,registro,hijoPromocionado);
-		/*en hijoPromocionado se guardara el nuevo nodoSecuencial creado y persistido y en registro se retornara el registroClave
-		 * promocionado en caso de overflow.*/
+		NodoSecuencial nodoSecuencialActual(header.minCantBytesClaves,header.maxCantBytesClaves);
+		nodoSecuencialActual.desempaquetar(bloqueActual);
+		delete[] bloqueActual;
 
-		if(resultadoInsercion== RES_OVERFLOW){
-			ClaveX claveRegistroPromocionado= registro->get_clave();
-			(*clavePromocionada)= claveRegistroPromocionado;
-		}
+		vector<RegistroClave> registrosOverflow;
+		int resultadoInsercionSecuencial= nodoSecuencialActual.insertar(*registro,registrosOverflow);
+		if(resultadoInsercionSecuencial== RES_RECORD_EXISTS)
+			return RES_RECORD_EXISTS;
+		if(resultadoInsercionSecuencial== RES_OK)
+			return RES_OK;
+		/*si no ocurre overflow en la insercion del registro, la ejecucion finaliza*/
 
-		return resultadoInsercion;
+		_split_hoja(&nodoSecuencialActual,&registrosOverflow,hijoPromocionado,
+				clavePromocionada);
+		/*divido el nodoSecuencial en overflow , guardo el nodo nuevo en el archivo y en hijoPromocionado retorno el numero de
+		 * bloque donde el nodoNuevo se guardo. En clavePromocionada guardo la clave que debera ser insertada en el nodoInterno
+		 * padre.*/
+		Bloque bloqueNodoSecuencialActualModificado;
+		nodoSecuencialActual.empaquetar(&bloqueNodoSecuencialActualModificado);
+		this->archivoNodos.sobreescribir_bloque(&bloqueNodoSecuencialActualModificado,numeroBloqueActual);
+		/*persisto en el archivo el nodoSecuencial modificado*/
+
+		return RES_OVERFLOW;
 
 	}/*si el nodo actual es del tipo hoja, insertar el registro. En caso de ocurrir un overflow se guarda en clavePromocionada
 	la clave del registro promocionado.*/
 
 
-	NodoInterno nodoActualInterno;//TODO agregar el tamanio apropiado del nodo interno en minCantBytes y maxCantBytes
+	NodoInterno nodoActualInterno(header.minCantBytesClaves,header.maxCantBytesClaves);
 	nodoActualInterno.desempaquetar(bloqueActual);
 	delete[] bloqueActual;
 	unsigned int numeroBloqueHijo;
 	this->_hallar_hijo_correspondiente(registro,&nodoActualInterno,
 			numeroBloqueHijo);
-	/*busco el siguiente hijo*/
+	/*busco el siguiente hijo para acercarme a la hoja*/
 
 	int resultadoInsercion= this->_insertar_recursivo(numeroBloqueHijo,registro,
 			hijoPromocionado,clavePromocionada);
@@ -301,6 +308,7 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 	unsigned short ocurrenciaInsercion;
 	nodoActualInterno.insertar_clave(*clavePromocionada,ocurrenciaInsercion);
 	int resultadoInsercionNodoInterno= nodoActualInterno.insertar_hijo_derecho(*clavePromocionada,hijoPromocionado);
+	/*inserto en el nodoInterno la clave promocionada desde un secuencial y el hijo derecho de dicha clave*/
 
 
 	if(resultadoInsercionNodoInterno== RES_OK)
@@ -310,7 +318,14 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 
 
 	_split_interno(&nodoActualInterno,clavePromocionada,hijoPromocionado);
-	/*realiza el split. y guarda el nodo nuevo en el archivo. En hijoPromocionado se devolvera el hijo del nodoInterno nuevo creado*/
+	/*realiza el split. y guarda el nodo nuevo en el archivo. En hijoPromocionado se devolvera el hijo del nodoInterno nuevo creado, en
+	 * clavePromocionada se retorna la clave a insertar en un nodoInterno en una instancia superior de _insertar_recursivo . El nodoInterno
+	 * nuevo creado es guardado en el archivo*/
+
+	Bloque bloqueNodoInternoActualModificado;
+	nodoActualInterno.empaquetar(&bloqueNodoInternoActualModificado);
+	this->archivoNodos.sobreescribir_bloque(&bloqueNodoInternoActualModificado,numeroBloqueActual);
+	/*se sobreescribe el nodo original en el archivo de bloques*/
 
 
 	return RES_OVERFLOW;
