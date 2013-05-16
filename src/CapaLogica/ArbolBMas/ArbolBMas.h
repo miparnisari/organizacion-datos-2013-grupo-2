@@ -40,10 +40,13 @@ class ArbolBMas
 		int abrir (std::string fileName, std::string mode);
 		int cerrar ();
 
-		int agregar(RegistroVariable & reg);
-		int eliminar(RegistroVariable & reg);
+		int agregar(RegistroClave & reg);
+		int eliminar(RegistroClave & reg);//FIXME el parametro no deberia ser un ClaveX?
 		int buscar(RegistroClave & reg);
 		/* Devuelve el numero de nodo secuencial donde esta o deberia estar reg. */
+
+
+		bool esta_vacio();
 
 
 		/*ESTOS METODOS DEBERIAN SER PRIVADOS, SE HACEN PUBLICOS PARA TESTEAR*/

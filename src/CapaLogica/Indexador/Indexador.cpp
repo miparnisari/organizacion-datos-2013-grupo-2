@@ -56,10 +56,14 @@ int Indexador::indexar (std::string directorioEntrada, std::string directorioSal
 		// <autor,ID cancion> van a los nodos hoja del arbol B+
 		for (int i = 0; i < regCancion.get_cantidad_autores(); i++)
 		{
-			RegistroVariable regVar;
+			//RegistroVariable regVar;
 			//~ FIXME regVar.pack(regCancion.getAutor(i));
 			// FIXME regVar.pack(std::string(identificadorCancion));
-			indiceSecundarioAutor.agregar(regVar);
+			//indiceSecundarioAutor.agregar(regVar);
+			//FIXME aca se creaba y se buscaba insertar un RegistroVariable en el arbol,
+			//el cual DEBE Recibir un RegistroClave
+			RegistroClave registro;
+			indiceSecundarioAutor.agregar(registro);
 		}
 		
 		// Creamos el indice secundario por titulo
