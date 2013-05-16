@@ -10,6 +10,7 @@
 #include "TestNodoSecuencial.h"
 #include "TestRegistroClave.h"
 #include "TestManejadorArchivoDatosBasicos.h"
+#include "TestArbol.h"
 
 #include <cassert>
 #include <iostream>
@@ -258,6 +259,7 @@ int main(int argc,char** args)
 	tests.push_back(new TestNodoSecuencial);
 
 	tests.push_back(new TestHeap);
+	tests.push_back(new TestArbol);
 
 	for (unsigned int i = 0; i < tests.size(); i++)
 	{

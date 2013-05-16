@@ -80,12 +80,20 @@ int ArbolBMas::cerrar ()
 	return RES_OK;
 }
 
-int ArbolBMas::agregar(RegistroVariable & reg)
+int ArbolBMas::agregar(RegistroClave & reg)
 {
-	return RES_OK;
+	//TODO agregar caso que arbol este vacio (se crea un arbol NUEVO) y se busca insertar el primer registro
+
+	TipoHijo raiz= this->numeroBloqueRaiz;
+	TipoHijo hijoPromocionado;
+	ClaveX clavePromocionada;
+	return this->_insertar_recursivo(raiz,&reg,hijoPromocionado,&clavePromocionada);
+
+	//TODO resolver caso que _insertar_recursivo retorne finalmente OVERFLOW -> se debe crear nueva raiz
+
 }
 
-int ArbolBMas::eliminar(RegistroVariable & reg)
+int ArbolBMas::eliminar(RegistroClave & reg)
 {
 	return RES_OK;
 }
@@ -105,17 +113,18 @@ int ArbolBMas::_hallar_hijo_correspondiente(RegistroClave* registro,
 	/*recupero la clave del registro a buscar*/
 
 	ClaveX unaClave;
+	ClaveX claveRegistro= registro->get_clave();
 	unsigned short indiceClave= 0;
 
 	while( nodoBuscar->get_clave(indiceClave,unaClave)!= RES_ERROR ){
 
-		if(unaClave > registro->get_clave()){
+		if(unaClave > claveRegistro){
 			nodoBuscar->get_hijo(hijoCorrespondiente,indiceClave);
 			return RES_OK;
 		}/*si la clave del nodo que estoy examinando es mayor que la clave de
 		parametro -> el hijo correspondiente es el izquierdo a aquel que examino.*/
 
-		if(unaClave == registro->get_clave()){
+		if(unaClave == claveRegistro){
 			nodoBuscar->get_hijo(hijoCorrespondiente,indiceClave+1);
 			return RES_OK;
 		}/*si la clave que estoy examinando es identica a la clave del registro de
@@ -205,11 +214,11 @@ int ArbolBMas::_split_interno(NodoInterno* nodo,ClaveX* clavePromocionada,
 
 
 	ClaveX claveMitad;
-	(*clavePromocionada) = claveMitad;
 	/*guardo la clavePromocionada*/
 	unsigned short numeroClaveMitad;
 	nodo->get_clave_mitad(claveMitad);
 	nodo->buscar_clave(claveMitad , numeroClaveMitad);
+	(*clavePromocionada) = claveMitad;
 
 
 	for(unsigned short i=numeroClaveMitad+1;i<CANTIDAD_CLAVES;i++){
