@@ -80,7 +80,7 @@ int HashingExtensible::agregar(RegistroClave reg)
         bloque.recuperar_registro(&tamDispBloque,0);
         char* buffer = new char[50]();
         tamDispBloque.recuperar_campo(buffer,0);
-        tamDispersion = (int) buffer;
+        tamDispersion = atoi (buffer);
  /**       valor = std::string(buffer);
         tamDispersion = atoi(valor.c_str ());*/
 
@@ -179,7 +179,7 @@ int HashingExtensible::eliminar(ClaveX clave)
         bloque.recuperar_registro(&tamDisp, 0);
         char* buffer = new char[50]();
         tamDisp.recuperar_campo(buffer, 0);
-        tamDispersion = ((int)buffer)/2;
+        tamDispersion = (atoi(buffer))/2;   /****atoi(buffer) == (int) buffer sin perder presision*/
 
         //Me muevo tamDispersion para un lado y para el otro de la lista, si son iguales cambio cada tam disp *2 los bloques de la tabla
         posDer = this->tabla->obtener_valor(posTabla+tamDispersion);
@@ -254,7 +254,7 @@ int HashingExtensible::obtener_posicion_tabla(ClaveX registro)
     if(registro.get_tipo_clave() == CLAVE_STRING){
         string claveS;
         registro.get_clave(claveS);
-        clave = (int)(claveS.data());
+        clave = atoi(claveS.data()); //(int)(claveS.data()) == atoi(claveS.data())
     }else{
         registro.get_clave(clave);
     }
