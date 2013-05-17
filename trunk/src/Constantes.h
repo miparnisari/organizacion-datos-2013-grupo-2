@@ -54,7 +54,7 @@ const unsigned short CANTIDAD_MINIMA_PARAMETROS		= 3;
 const unsigned short CANTIDAD_MAXIMA_PARAMETROS		= 4;
 
 /*
- *Manejo del HashingExtensible      ***Seran modificados en el futuro
+ *Manejo del HashingExtensible
  */
 
 const int MAXTAM                                    = 256;
@@ -79,6 +79,13 @@ const char TIPO_HOJA= 'h';
 const char TIPO_INTERNO= 'i';
 
 const long FIN_PILA_REGISTROS_LIBRES = -1;
+
+/*
+ *Manejo del IndiceInvertido
+ */
+
+ const int NO_EXISTE_INDICE                         =-1;
+ const char* REF_NULA                                 ="";
 
 #endif /* CONSTANTES_H */
 
