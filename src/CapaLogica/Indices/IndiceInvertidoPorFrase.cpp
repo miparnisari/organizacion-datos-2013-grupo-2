@@ -20,9 +20,12 @@ int IndiceInvertidoPorFrase::armar_archivo_coincidencias(std::string doc, int ID
     RegistroClave regClave, regVocabulario;
     ClaveX clave;
     char *campo, *idtermino, *iterador;
-    string termino;
+  //  string termino;
     int i, posNodoSecuencial, IDter;
-    documento.abrir_archivo(doc); /*en realidad es la direccion del documento modificado*/
+    std::string docum;
+    /*Primero pasamos el documento para eliminar los stopwords y nos queda el documento para guardar
+    y suponemos que nos devuelve la direccion de un archivo secuencial de registros variables*/
+    documento.abrir_archivo(docum); /*en realidad es la direccion del documento modificado*/
     //Primero guardamos los terminos y armos las listas invertidas
     for(i=0; i<documento.get_cantidad_registros_ocupados(); i++){
         //Obtengo el primer termino
@@ -110,4 +113,42 @@ int IndiceInvertidoPorFrase::buscar_lista(int IDterLista, Bloque *lista)
         lista = listas_invertidas.obtener_bloque(num);
     }
     return num;
+}
+
+int IndiceInvertidoPorFrase::buscar(char *elem_busqueda, std::string conjunto_iddoc)
+{   //Devuelve NO_EXISTE si no encuentra alguna palabra de la frase
+    std::string docum;
+    RegistroClave regTermino;
+    RegistroVariable reg;
+    ClaveX clave;
+    char *campo;
+    int i=0, seguir=RES_OK, encontro;
+    ManejadorRegistrosVariables documento;
+    /*Primero pasamos la frase de elem_busqueda para eliminar los stopwords y nos queda el documento para guardar
+    y suponemos que nos devuelve la direccion de un archivo secuencial de registros variables*/
+    documento.abrir_archivo(docum); /*en realidad es la direccion del documento modificado*/
+    while(seguir == RES_OK){
+        documento.get_registro_ocupado(&reg, i);
+        reg.recuperar_campo(campo, 0);
+        clave.set_clave(campo);
+        regTermino.set_clave(clave);
+        //Buscamos las listas invertidas de cada termino
+     /**   encontro = this->vocabulario.buscar(&regTermino); /****revisar cuando tengamos el buscar del arbol creado***/
+        if (encontro == RES_ERROR)  return NO_EXISTE;
+        /****saco todas las listas y las guardo en un nuevo archivo***/
+        if(i<documento.get_cantidad_registros_ocupados()) i++;
+    }
+    this->interseccion_listas_invertidas(this->fileName+"ListasInterseccion");
+    return this->armar_lista_documentos(conjunto_iddoc, this->fileName+"ListasInterseccion", docum);
+}
+
+int IndiceInvertidoPorFrase::interseccion_listas_invertidas(std::string archivo)
+{
+    /***aca buscamos la interseccion de estas listas por IDdoc y guardamos las listas en un nuevo archivo de reg variables con el nombre pasado por parametro**/
+}
+
+int IndiceInvertidoPorFrase::armar_lista_documentos(std::string arch_docs, std::string arch_listas, std::string frase)
+{
+    /****aca comprobamos que este en el orden correcto a la frase en las listas y devolvemos un nuevo archivo de reg var con el nombre pasado por parametro
+         si no se encuentra ni un doc entonces se tira NO_EXISTE**/
 }
