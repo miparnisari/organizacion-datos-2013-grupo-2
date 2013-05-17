@@ -1,5 +1,6 @@
 #include "IndiceInvertido.h"
 
+/******falta implementar borrar_documento(int IDdoc)**/
 
 int IndiceInvertido::crear_indice(std::string directorioSalida, std::string fileNamee)
 {
@@ -25,17 +26,15 @@ int IndiceInvertido::abrir_indice(std::string directorioSalida, std::string file
 
 int IndiceInvertido::agregar_documento(std::string doc, int IDdoc)
 {
-    /*Primero pasamos el documento para eliminar los stopwords y nos queda el documento para guardar
-    y suponemos que nos devuelve la direccion de un archivo secuencial de registros variables*/
-    std::string documento;
     //Guardamos los terminos y armos las listas invertidas
-    this->armar_archivo_coincidencias(documento, IDdoc);
+    this->armar_archivo_coincidencias(doc, IDdoc);
     this->armar_listas_invertidas(IDdoc);
+    this->archivo_coincidencias.eliminar_archivo(this->fileName+"Coincidencias");
 }
 
 int IndiceInvertido::borrar_documento(int IDdoc)
 {
-
+    /********************FALTA*******************/
 }
 
 int IndiceInvertido::borrar_indice()
@@ -52,6 +51,11 @@ int IndiceInvertido::armar_listas_invertidas(int IDdoc)
 }
 
 int IndiceInvertido::armar_archivo_coincidencias(std::string doc, int IDdoc)
+{
+    //Lo van a implementar cada indice invertido
+}
+
+int IndiceInvertido::buscar(char *elem_busqueda, std::string conjunto_iddoc)
 {
     //Lo van a implementar cada indice invertido
 }

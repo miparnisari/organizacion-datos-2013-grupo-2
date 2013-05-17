@@ -29,6 +29,9 @@ class IndiceInvertido
     protected:  //Esto va a depender del indice que armemos
         virtual int armar_listas_invertidas(int IDdoc);
         virtual int armar_archivo_coincidencias(std::string doc, int IDdoc);
+        virtual int buscar(char *elem_busqueda, std::string conjunto_iddoc);
+        //este metodo busca el elemento buscado y crea un archivo de registros variables con la direccion pasada por parametro
+
 };
 
 #endif // INDICEINVERTIDO_H_INCLUDED
