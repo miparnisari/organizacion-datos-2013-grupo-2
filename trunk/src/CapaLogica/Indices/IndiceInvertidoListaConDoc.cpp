@@ -10,11 +10,6 @@ IndiceInvertidoListaConDoc::~IndiceInvertidoListaConDoc()
 
 }
 
-int IndiceInvertidoListaConDoc::armar_listas_invertidas(int IDdoc)
-{
-
-}
-
 int IndiceInvertidoListaConDoc::armar_archivo_coincidencias(std::string doc, int IDdoc)
 {   //En este caso string doc que se pasa va a ser lo que queremos que se guarde como identificador del documento en el vocabulario
 /*****    this->agregar_termino(doc, IDdoc, 1); error raro*/
