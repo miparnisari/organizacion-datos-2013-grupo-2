@@ -74,8 +74,8 @@ void TestRegistroClave::test_registro_clave_empaquetar_desempaquetar()
 	assert (registroDesempaquetado.get_clave() == clave);
 
 	// Recupero el campo
-	char* campoRecuperado = new char[registroDesempaquetado.get_tamanio_campo(0) +1]();
-	campoRecuperado[registroDesempaquetado.get_tamanio_campo(0)] = '\0';
+	char* campoRecuperado = new char[registroDesempaquetado.get_tamanio_campo(1) +1]();
+	campoRecuperado[registroDesempaquetado.get_tamanio_campo(1)] = '\0';
 
 	registroDesempaquetado.recuperar_campo(campoRecuperado,1);
 
