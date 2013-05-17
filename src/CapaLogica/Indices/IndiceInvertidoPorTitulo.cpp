@@ -10,17 +10,10 @@ IndiceInvertidoPorTitulo::~IndiceInvertidoPorTitulo()
 
 }
 
-int IndiceInvertidoPorTitulo::armar_listas_invertidas(int IDdoc)
-{
-
-}
 
 int IndiceInvertidoPorTitulo::armar_archivo_coincidencias(std::string doc, int IDdoc)
-{
-
-}
-
-int IndiceInvertidoPorTitulo::buscar(char *elem_busqueda, std::string conjunto_iddoc)
-{
-
+{   //En este caso string doc que se pasa va a ser lo que queremos que se guarde como identificador del documento en el vocabulario
+    /**saco el titulo del doc y lo agrego en el vobulario*/
+/*****    this->agregar_termino(doc, IDdoc, 1); error raro*/
+    return RES_OK;
 }

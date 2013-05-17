@@ -12,13 +12,10 @@ class IndiceInvertidoListaConDoc : public IndiceInvertido
         IndiceInvertidoListaConDoc();
         virtual ~IndiceInvertidoListaConDoc();
 
-    private:
-
     protected:
         std::string fileName;
         virtual void crear_reg_lista_inverida(RegistroVariable *regInvertido, char *pos, int IDdoc);
         virtual int agregar_coincidencia(int IDdoc, char* idtermino, int pos);
-        virtual int armar_listas_invertidas(int IDdoc);
         virtual int armar_archivo_coincidencias(std::string doc, int IDdoc);
         virtual int buscar(char *elem_busqueda, std::string conjunto_iddoc);
 };
