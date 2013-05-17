@@ -1,17 +1,18 @@
-#ifndef INDICEINVERTIDOPORFRASE_H_INCLUDED
-#define INDICEINVERTIDOPORFRASE_H_INCLUDED
+#ifndef INDICEINVERTIDOLISTACONDOC_H_INCLUDED
+#define INDICEINVERTIDOLISTACONDOC_H_INCLUDED
 
 #include "IndiceInvertido.h"
 
-class IndiceInvertidoPorFrase : public IndiceInvertido
+/**Esta clase va a servir para los indices por titulo y autor*/
+
+class IndiceInvertidoListaConDoc : public IndiceInvertido
 {
 
     public:
-        IndiceInvertidoPorFrase();
-        virtual ~IndiceInvertidoPorFrase();
+        IndiceInvertidoListaConDoc();
+        virtual ~IndiceInvertidoListaConDoc();
 
     private:
-        virtual int armar_lista_documentos(std::string arch_docs, std::string arch_listas, std::string frase);
 
     protected:
         std::string fileName;
@@ -22,5 +23,4 @@ class IndiceInvertidoPorFrase : public IndiceInvertido
         virtual int buscar(char *elem_busqueda, std::string conjunto_iddoc);
 };
 
-
-#endif // INDICEINVERTIDOPORFRASE_H_INCLUDED
+#endif // INDICEINVERTIDOLISTACONDOC_H_INCLUDED

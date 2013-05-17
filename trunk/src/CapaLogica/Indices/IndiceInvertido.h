@@ -25,8 +25,15 @@ class IndiceInvertido
         virtual int agregar_documento(std::string documento, int IDdoc);
         virtual int borrar_documento(int IDdoc);
         virtual int borrar_indice();
+        virtual int buscar_lista(int IDterLista, Bloque* lista);
 
-    protected:  //Esto va a depender del indice que armemos
+    protected:
+        virtual int interseccion_listas_invertidas(std::string archivo);
+        virtual void crear_termino_vocabulario(ClaveX clave, char* idtermino);
+        //Esto va a depender del indice que armemos
+        virtual void crear_reg_lista_inverida(RegistroVariable *regInvertido, char *pos, int IDdoc);
+        virtual int agregar_coincidencia(int IDdoc, char* idtermino, int pos);
+        virtual int agregar_termino(char* termino, int IDdoc, int pos);
         virtual int armar_listas_invertidas(int IDdoc);
         virtual int armar_archivo_coincidencias(std::string doc, int IDdoc);
         virtual int buscar(char *elem_busqueda, std::string conjunto_iddoc);
