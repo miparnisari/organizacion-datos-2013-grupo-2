@@ -5,16 +5,18 @@
 
 class IndiceInvertidoPorFrase : public IndiceInvertido
 {
-    private:
-        ManejadorBloques archivo_listas_pos;
 
     public:
         IndiceInvertidoPorFrase();
         virtual ~IndiceInvertidoPorFrase();
 
     private:
-        virtual int buscar_lista_pos(int IDterLista);
-        int armar_listas_posiciones();
+        virtual int buscar_lista(int IDterLista, Bloque* lista);
+        virtual int armar_listas_posiciones();
+
+    protected:
+        virtual int armar_listas_invertidas(int IDdoc);
+        virtual int armar_archivo_coincidencias(std::string doc, int IDdoc);
 
 };
 
