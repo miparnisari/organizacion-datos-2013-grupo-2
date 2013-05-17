@@ -185,10 +185,7 @@ int ManejadorBloques::__usar_bloque(Bloque* bloque, unsigned int numBloque)
 int ManejadorBloques::escribir_bloque(Bloque* bloque)
 {
 	if (file_handler == NULL || bloque == NULL)
-	{
-		std::cout << "file handler es null O bloque es null" << std::endl;
 		return RES_ERROR;
-	}
 
 	unsigned int numeroBloque = __get_primer_bloque_libre();
 	int res = sobreescribir_bloque(bloque,numeroBloque);

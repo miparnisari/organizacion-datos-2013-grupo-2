@@ -60,13 +60,34 @@ void RegistroClave::limpiar_campos() throw(){
 
 }
 
-//FIXME ESTRUCTURA ROTA
-//si se llamara a set_clave mas de una vez para un registro -> se guardaria mas de una clave en los campos del mismo!!!
 void RegistroClave::set_clave(const ClaveX& clave){
-	this->clave = clave;
-	_agregar_campo_clave();
 
-	/*
+	RegistroVariable copiaDeDatos;
+	for (int i = 1; i < get_cantidad_campos(); i ++)
+	{
+		char* copiaDato = new char[get_tamanio_campo(i) + 1]();
+		copiaDato[get_tamanio_campo(i)] = '\0';
+		recuperar_campo(copiaDato,i);
+		copiaDeDatos.agregar_campo(copiaDato,strlen(copiaDato));
+	}
+
+	limpiar_campos();
+
+	this->clave = clave;
+	this->_agregar_campo_clave();
+
+	for (int i = 0; i < copiaDeDatos.get_cantidad_campos(); i++)
+	{
+		char* copiaDato = new char[copiaDeDatos.get_tamanio_campo(i) +1]();
+		copiaDato[copiaDeDatos.get_tamanio_campo(i)] = '\0';
+		copiaDeDatos.recuperar_campo(copiaDato,i);
+		this->agregar_campo(copiaDato,strlen(copiaDato));
+	}
+
+
+	/*_agregar_campo_clave();
+
+
 	const unsigned short CANTIDAD_CAMPOS= this->get_cantidad_campos();
 	RegistroVariable registroCopia;
 	unsigned short tamanioEmpaquetamiento= this->get_tamanio_empaquetado();
