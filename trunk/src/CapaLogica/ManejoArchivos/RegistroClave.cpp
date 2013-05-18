@@ -69,6 +69,7 @@ void RegistroClave::set_clave(const ClaveX& clave){
 		copiaDato[get_tamanio_campo(i)] = '\0';
 		recuperar_campo(copiaDato,i);
 		copiaDeDatos.agregar_campo(copiaDato,strlen(copiaDato));
+		delete[] copiaDato;
 	}
 
 	limpiar_campos();
@@ -82,6 +83,7 @@ void RegistroClave::set_clave(const ClaveX& clave){
 		copiaDato[copiaDeDatos.get_tamanio_campo(i)] = '\0';
 		copiaDeDatos.recuperar_campo(copiaDato,i);
 		this->agregar_campo(copiaDato,strlen(copiaDato));
+		delete[] copiaDato;
 	}
 
 

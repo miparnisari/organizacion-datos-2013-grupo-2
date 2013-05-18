@@ -64,7 +64,10 @@ int ArbolBMas::crear (std::string fileName, unsigned int tamNodo)
 
 	res = archivoNodos.abrir_archivo(fileName,"rb+");
 	if (res == RES_OK)
-		return _set_header();
+	{
+		_set_header();
+		return archivoNodos.cerrar_archivo();
+	}
 
 	return RES_ERROR;
 }
