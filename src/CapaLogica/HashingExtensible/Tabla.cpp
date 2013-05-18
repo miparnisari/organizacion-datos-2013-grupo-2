@@ -66,7 +66,9 @@ int Tabla::get_tamanio()
 {
 	if (archivo.abrir_archivo(this->rutaArchivo,"rb+") == RES_OK)
 	{
-		return archivo.get_cantidad_datos_guardados();
+		int tamanio = archivo.get_cantidad_datos_guardados();
+		archivo.cerrar_archivo();
+		return tamanio;
 	}
 
 	return -1;

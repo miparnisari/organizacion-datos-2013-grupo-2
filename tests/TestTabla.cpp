@@ -26,11 +26,12 @@ void TestTabla::ejecutar(){
 
 void TestTabla::test_tabla_hash_crear(){
 	Tabla unaTabla;
-	assert(unaTabla.crear(DIRECCION) == RES_OK);
 	ManejadorArchivoDatosBasicos<int> archivo;
+
 
 	assert(unaTabla.crear(DIRECCION) == RES_OK);
 	assert(archivo.abrir_archivo(DIRECCION, "rb") == RES_OK);
+	assert(archivo.cerrar_archivo() == RES_OK);
 	assert(unaTabla.eliminar() == RES_OK);
 
     print_test_ok("test_tabla_hash_crear");
