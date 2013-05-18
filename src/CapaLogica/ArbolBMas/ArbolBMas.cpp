@@ -151,7 +151,13 @@ int ArbolBMas::buscar(RegistroClave & reg, unsigned int  & p_numBloque)
 	delete bloqueNodoSecuencial;
 
 	RegistroClave* regCopia = &reg;
-	return nodoSecuencial.buscar(reg.get_clave(),&regCopia);
+	int res = nodoSecuencial.buscar(reg.get_clave(),&regCopia);
+
+	reg = *regCopia;
+
+	std::cout << "tamanio campo 1 =" << reg.get_tamanio_campo(1) << std::endl;
+
+	return res;
 
 }
 
