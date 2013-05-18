@@ -11,6 +11,7 @@
 #include "TestRegistroClave.h"
 #include "TestManejadorArchivoDatosBasicos.h"
 #include "TestArbol.h"
+#include "TestTabla.h"
 
 #include <cassert>
 #include <iostream>
@@ -254,6 +255,7 @@ int main(int argc,char** args)
 	tests.push_back(new TestManejadorBloques);
 	
 	tests.push_back(new TestHashingExtensible);
+	tests.push_back(new TestTabla);
 	
 	tests.push_back(new TestNodoInterno);
 	tests.push_back(new TestNodoSecuencial);
