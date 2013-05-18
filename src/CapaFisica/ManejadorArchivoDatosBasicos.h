@@ -154,6 +154,11 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 			return header.cantidadDatosGuardados*sizeof(TipoDato);
 		}
 
+		int get_cantidad_datos_guardados()
+		{
+			return header.cantidadDatosGuardados;
+		}
+
 	private:
 		struct mdb_header header;
 		FILE* file_handler;
