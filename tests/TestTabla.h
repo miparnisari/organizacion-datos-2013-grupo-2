@@ -36,6 +36,14 @@ private:
 
 	//pruebo que se modifique un valor de la tabla
 	void test_tabla_hash_modificar_valor();
+
+	void test_tabla_hash_eliminar_tabla();
+
+	void test_tabla_hash_posiciones_correctas_al_duplicar();
+
+	void test_tabla_hash_posiciones_correctas_al_dividir();
+
+	void test_tabla_hash_integracion();
 };
 
 
