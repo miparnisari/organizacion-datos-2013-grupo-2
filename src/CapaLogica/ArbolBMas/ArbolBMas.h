@@ -24,8 +24,10 @@ class ArbolBMas
 	private:
 		header_arbol header;
 		ManejadorBloques archivoNodos;
-		NodoInterno* raiz;
+		NodoSecuencial* raiz;
 		unsigned int numeroBloqueRaiz;
+		unsigned int tamanioMaximoNodo;
+		unsigned int tamanioBloque;
 
 
 
@@ -34,7 +36,7 @@ class ArbolBMas
 		ArbolBMas();
 		virtual ~ArbolBMas();
 
-		int crear (std::string fileName, unsigned int tamNodo = BLOQUE_TAM_DEFAULT);
+		int crear (std::string fileName, unsigned int tamBloque = BLOQUE_TAM_DEFAULT);
 		int eliminar (std::string fileName);
 
 		int abrir (std::string fileName, std::string mode);
@@ -42,11 +44,14 @@ class ArbolBMas
 
 		int agregar(RegistroClave & reg);
 		int eliminar(RegistroClave & reg);//FIXME el parametro no deberia ser un ClaveX?
-		int buscar(RegistroClave & reg);//FIXME el parametro no deberia ser un ClaveX?
+		int buscar(RegistroClave & reg, unsigned int & numBloque);//FIXME el parametro no deberia ser un ClaveX?
 		/* Devuelve el numero de nodo secuencial donde esta o deberia estar reg. */
 
 
 		bool esta_vacio();
+
+		unsigned int get_cant_minima_nodo();
+		unsigned int get_cant_maxima_nodo();
 
 
 		/*ESTOS METODOS DEBERIAN SER PRIVADOS, SE HACEN PUBLICOS PARA TESTEAR*/

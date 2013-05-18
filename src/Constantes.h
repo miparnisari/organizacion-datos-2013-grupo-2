@@ -77,6 +77,7 @@ enum TipoClave {CLAVE_STRING=0 , CLAVE_NUMERICA};
 
 const char TIPO_HOJA= 'h';
 const char TIPO_INTERNO= 'i';
+const int NUMERO_BLOQUE_RAIZ = 1;
 
 const long FIN_PILA_REGISTROS_LIBRES = -1;
 

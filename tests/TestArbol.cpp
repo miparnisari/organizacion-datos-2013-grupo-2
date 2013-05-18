@@ -11,8 +11,80 @@ typedef NodoInterno::TipoHijo TipoHijo;
 
 void TestArbol::ejecutar(){
 
+	test_arbol_abrir_no_existente();
+	test_arbol_abrir_cerrar();
 	test_insertar_pocos_registros();
+	test_arbol_insertar_un_registro();
+}
 
+void TestArbol::test_arbol_insertar_un_registro()
+{
+	ArbolBMas arbol;
+	assert (arbol.crear("arbol.dat",BLOQUE_TAM_DEFAULT) == RES_OK);
+	assert (arbol.abrir("arbol.dat","rb+") == RES_OK);
+
+	RegistroClave reg;
+	ClaveX clave;
+	clave.set_clave("u2 123");
+	reg.set_clave(clave);
+
+	std::string campo = "ID CANCION = 3";
+	reg.agregar_campo(campo.c_str(),campo.size());
+
+	assert (arbol.agregar(reg) == RES_OK);
+	assert (arbol.cerrar() == RES_OK);
+
+
+	assert (arbol.abrir("arbol.dat","rb+") == RES_OK);
+
+	RegistroClave regLeido;
+	regLeido.set_clave(clave);
+
+	// Buscamos "u2 123" en el arbol
+	unsigned int numBloque = -1;
+	assert (arbol.buscar(regLeido, numBloque) != RES_RECORD_DOESNT_EXIST);
+	assert (numBloque == 1);
+	assert (regLeido.get_clave() == clave);
+
+	char* buffer = new char[regLeido.get_tamanio_campo(1)]();
+	regLeido.recuperar_campo(buffer,1);
+
+	assert (strcmp(buffer,campo.c_str()) == 0);
+
+	delete[] buffer;
+
+	assert(arbol.cerrar() == RES_OK);
+}
+
+void TestArbol::test_arbol_abrir_no_existente()
+{
+	ArbolBMas arbol;
+	assert ( arbol.abrir("nombreinvalido","rb+") == RES_INVALID_FILENAME);
+	assert ( arbol.abrir("estearbolnoexiste.dat","rb+") == RES_ERROR);
+
+
+	print_test_ok("test_arbol_abrir_no_existente");
+}
+
+void TestArbol::test_arbol_abrir_cerrar()
+{
+	ArbolBMas arbol;
+	assert (arbol.crear("unArbol.dat",BLOQUE_TAM_DEFAULT) == RES_OK);
+	assert (arbol.abrir("unArbol.dat","rb+") == RES_OK);
+	assert (arbol.get_cant_minima_nodo() == sizeof(TipoHijo));
+	IMPRIMIR_VARIABLE(arbol.get_cant_maxima_nodo());
+	assert (arbol.get_cant_maxima_nodo() == (int)(BLOQUE_TAM_DEFAULT * 0.9));
+	assert (arbol.cerrar() == RES_OK);
+
+	FILE* handler = fopen("unArbol.dat","rb+");
+	fseek(handler,0,SEEK_END);
+	int tamanio = ftell(handler);
+	IMPRIMIR_VARIABLE(tamanio);
+	assert (tamanio == 3*sizeof(int)+2*BLOQUE_TAM_DEFAULT);
+
+	assert (arbol.eliminar("unArbol.dat") == RES_OK);
+
+	fclose(handler);
 }
 
 
