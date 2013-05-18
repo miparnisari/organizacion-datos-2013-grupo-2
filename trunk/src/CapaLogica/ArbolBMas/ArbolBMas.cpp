@@ -2,10 +2,11 @@
 
 ArbolBMas::ArbolBMas()
 {
-	numeroBloqueRaiz = 1; // el bloque 0 tiene el header!
+	numeroBloqueRaiz = NUMERO_BLOQUE_RAIZ; // el bloque 0 tiene el header y el 1 la raiz
 	raiz = NULL;
 	header.maxCantBytesClaves = 0;
 	header.minCantBytesClaves = 0;
+	tamanioMaximoNodo = BLOQUE_TAM_DEFAULT;
 }
 
 ArbolBMas::~ArbolBMas()
@@ -21,6 +22,8 @@ int ArbolBMas::_set_header()
 		return RES_ERROR;
 
 	RegistroVariable registroHeader;
+	header.minCantBytesClaves = sizeof(TipoHijo);
+	header.maxCantBytesClaves = tamanioMaximoNodo;
 	registroHeader.agregar_campo((char*)&header.minCantBytesClaves,sizeof(header.minCantBytesClaves));
 	registroHeader.agregar_campo((char*)&header.maxCantBytesClaves,sizeof(header.maxCantBytesClaves));
 	int res = bloqueHeader->agregar_registro(&registroHeader);
@@ -31,20 +34,18 @@ int ArbolBMas::_set_header()
 	}
 	res = archivoNodos.escribir_bloque(bloqueHeader);
 	delete bloqueHeader;
-	if (res < 0)
+	if (res != 0)
 		return RES_ERROR;
 
 	// El bloque 1 debe tener la raiz
-	unsigned int minCantidadBytes = 0; //FIXME CANTIDADES PARA TESTEAR!!!
-	unsigned int maxCantidadBytes = 4096; //FIXME
 	Bloque* bloqueRaiz = archivoNodos.crear_bloque();
-	raiz = new NodoInterno(minCantidadBytes, maxCantidadBytes);
+	raiz = new NodoSecuencial(header.minCantBytesClaves, header.maxCantBytesClaves);
 	raiz->empaquetar(bloqueRaiz);
 
 	res = archivoNodos.escribir_bloque(bloqueRaiz);
 	delete bloqueRaiz;
-	if (res < 0)
-		return res;
+	if (res != NUMERO_BLOQUE_RAIZ)
+		return RES_ERROR;
 
 	return RES_OK;
 }/* PRECONDICION: el archivo debe estar abierto.
@@ -53,12 +54,38 @@ POSTCONDICION: se debe cerrar el archivo. */
 int ArbolBMas::_get_header()
 {
 
-	return RES_OK;
+	Bloque* bloqueHeader = archivoNodos.obtener_bloque(0);
+	if (bloqueHeader != NULL)
+	{
+		RegistroVariable registroHeader;
+		int res = bloqueHeader->recuperar_registro(&registroHeader,0);
+
+		res += registroHeader.recuperar_campo((char*)&header.minCantBytesClaves,0);
+		res += registroHeader.recuperar_campo((char*)&header.maxCantBytesClaves,1);
+
+		delete bloqueHeader;
+		if (res >= RES_OK)
+			return RES_OK;
+
+		return RES_ERROR;
+	}
+	return RES_ERROR;
 }
 
-int ArbolBMas::crear (std::string fileName, unsigned int tamNodo)
+unsigned int ArbolBMas::get_cant_minima_nodo()
 {
-	int res = archivoNodos.crear_archivo(fileName,tamNodo);
+	return header.minCantBytesClaves;
+}
+
+unsigned int ArbolBMas::get_cant_maxima_nodo()
+{
+	return header.maxCantBytesClaves;
+}
+
+int ArbolBMas::crear (std::string fileName, unsigned int tamBloque)
+{
+	this->tamanioMaximoNodo = tamBloque * 0.9;
+	int res = archivoNodos.crear_archivo(fileName,tamBloque);
 	if (res != RES_OK)
 		return res;
 
@@ -70,7 +97,7 @@ int ArbolBMas::crear (std::string fileName, unsigned int tamNodo)
 	}
 
 	return RES_ERROR;
-}
+}/* POSTCONDICION: el archivo se cierra. */
 
 int ArbolBMas::eliminar (std::string fileName)
 {
@@ -79,18 +106,21 @@ int ArbolBMas::eliminar (std::string fileName)
 
 int ArbolBMas::abrir (std::string fileName, std::string mode)
 {
-	return RES_OK;
+	int res = archivoNodos.abrir_archivo(fileName,mode);
+	if (res == RES_OK)
+	{
+		return _get_header();
+	}
+	return res;
 }
 
 int ArbolBMas::cerrar ()
 {
-	return RES_OK;
+	return archivoNodos.cerrar_archivo();
 }
 
 int ArbolBMas::agregar(RegistroClave & reg)
 {
-	//TODO agregar caso que arbol este vacio (se crea un arbol NUEVO) y se busca insertar el primer registro
-
 	TipoHijo raiz= this->numeroBloqueRaiz;
 	TipoHijo hijoPromocionado;
 	ClaveX clavePromocionada;
@@ -105,9 +135,24 @@ int ArbolBMas::eliminar(RegistroClave & reg)
 	return RES_OK;
 }
 
-int ArbolBMas::buscar(RegistroClave & reg)
+int ArbolBMas::buscar(RegistroClave & reg, unsigned int  & p_numBloque)
 {
-	return 0;
+	unsigned int numBloque = 1;
+	_hallar_hoja(&reg,numBloque);
+	p_numBloque = numBloque;
+
+	NodoSecuencial nodoSecuencial (header.minCantBytesClaves, header.maxCantBytesClaves);
+
+	Bloque* bloqueNodoSecuencial = archivoNodos.obtener_bloque(numBloque);
+
+	nodoSecuencial.desempaquetar(bloqueNodoSecuencial);
+
+
+	delete bloqueNodoSecuencial;
+
+	RegistroClave* regCopia = &reg;
+	return nodoSecuencial.buscar(reg.get_clave(),&regCopia);
+
 }
 
 
@@ -165,15 +210,19 @@ int ArbolBMas::_hallar_hoja(RegistroClave* registro,
 		return RES_ERROR;
 
 	NodoArbol na(TIPO_INTERNO);
+	std::cout << "Num bloque = " << numeroBloque << std::endl;
 	Bloque* bloqueActual= archivoNodos.obtener_bloque(numeroBloque);
 	if(bloqueActual== NULL)
 		return RES_ERROR;
 	na.desempaquetar(bloqueActual);
 
 	if( na.es_hoja() )
+	{
+		delete bloqueActual;
 		return RES_OK;
+	}
 
-	NodoInterno ni;
+	NodoInterno ni (header.minCantBytesClaves,header.maxCantBytesClaves);
 	ni.desempaquetar(bloqueActual);
 	TipoHijo numeroBloqueHijoCorrespondiente;
 	this->_hallar_hijo_correspondiente(registro,&ni,numeroBloqueHijoCorrespondiente);
@@ -199,10 +248,10 @@ int ArbolBMas::_split_hoja(NodoSecuencial* nodoActual,vector<RegistroClave>* reg
 		nodoSecuencialNuevo.insertar(registrosOverflow->at(i),ro);
 	}/*en el nodo secuencial nuevo agrego los registros en overflow y remuevo dichos registros del nodoSecuencialActual*/
 
-	Bloque bloqueNodoSecuencialNuevo;
-	nodoSecuencialNuevo.empaquetar(&bloqueNodoSecuencialNuevo);
-	int resultadoEscritura= this->archivoNodos.escribir_bloque(&bloqueNodoSecuencialNuevo);
-
+	Bloque* bloqueNodoSecuencialNuevo = archivoNodos.crear_bloque();
+	nodoSecuencialNuevo.empaquetar(bloqueNodoSecuencialNuevo);
+	int resultadoEscritura= this->archivoNodos.escribir_bloque(bloqueNodoSecuencialNuevo);
+	delete (bloqueNodoSecuencialNuevo);
 	if(resultadoEscritura!= RES_ERROR)
 		hijoPromocionado= (unsigned int)resultadoEscritura;
 
@@ -219,7 +268,7 @@ int ArbolBMas::_split_interno(NodoInterno* nodo,ClaveX* clavePromocionada,
 	NodoInterno nodoNuevo;
 	nodoNuevo.limpiar();
 	/*remuevo el hijo x defecto del nodo nuevo*/
-	Bloque bloqueNodoNuevo;
+	Bloque* bloqueNodoNuevo = archivoNodos.crear_bloque();
 
 
 	const unsigned short CANTIDAD_HIJOS= nodo->get_cantidad_hijos();
@@ -256,14 +305,14 @@ int ArbolBMas::_split_interno(NodoInterno* nodo,ClaveX* clavePromocionada,
 	}/*remuevo las claves e hijos del nodo en overflow*/
 
 
-	nodoNuevo.empaquetar(&bloqueNodoNuevo);
-	int resEscritura= this->archivoNodos.escribir_bloque(&bloqueNodoNuevo);
+	nodoNuevo.empaquetar(bloqueNodoNuevo);
+	int resEscritura= this->archivoNodos.escribir_bloque(bloqueNodoNuevo);
 
 	if(resEscritura!= RES_ERROR)
 		bloquePromocionado= resEscritura;
 
 
-
+	delete bloqueNodoNuevo;
 	return resEscritura;
 
 }
@@ -283,14 +332,22 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 
 		NodoSecuencial nodoSecuencialActual(header.minCantBytesClaves,header.maxCantBytesClaves);
 		nodoSecuencialActual.desempaquetar(bloqueActual);
-		delete[] bloqueActual;
+		delete bloqueActual;
 
 		vector<RegistroClave> registrosOverflow;
 		int resultadoInsercionSecuencial= nodoSecuencialActual.insertar(*registro,registrosOverflow);
 		if(resultadoInsercionSecuencial== RES_RECORD_EXISTS)
 			return RES_RECORD_EXISTS;
 		if(resultadoInsercionSecuencial== RES_OK)
-			return RES_OK;
+		{
+
+			Bloque* bloqueModificado = archivoNodos.crear_bloque();
+			nodoSecuencialActual.empaquetar(bloqueModificado);
+
+			int res = archivoNodos.sobreescribir_bloque(bloqueModificado,numeroBloqueActual);
+			delete bloqueModificado;
+			return res;
+		}
 		/*si no ocurre overflow en la insercion del registro, la ejecucion finaliza*/
 
 		_split_hoja(&nodoSecuencialActual,&registrosOverflow,hijoPromocionado,
@@ -311,7 +368,7 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 
 	NodoInterno nodoActualInterno(header.minCantBytesClaves,header.maxCantBytesClaves);
 	nodoActualInterno.desempaquetar(bloqueActual);
-	delete[] bloqueActual;
+	delete bloqueActual;
 	unsigned int numeroBloqueHijo;
 	this->_hallar_hijo_correspondiente(registro,&nodoActualInterno,
 			numeroBloqueHijo);

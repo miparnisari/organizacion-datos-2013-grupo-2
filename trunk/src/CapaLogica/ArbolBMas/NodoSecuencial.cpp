@@ -173,7 +173,9 @@ int NodoSecuencial::empaquetar(Bloque* bloque)
 
 	//Empaqueto el tipo de nodo y el puntero al proximo nodo
 	RegistroVariable header;
-	header.agregar_campo((char*)&tipoNodo, sizeof(tipoNodo));
+	char tn = TIPO_HOJA;
+	std::cout << "tipo nodo = " << tipoNodo << std::endl;
+	header.agregar_campo((char*)&tn, sizeof(tipoNodo)); //fixme
 	header.agregar_campo((char*)&proximoNodo, sizeof(proximoNodo));
 	bloque->agregar_registro(&header);
 
