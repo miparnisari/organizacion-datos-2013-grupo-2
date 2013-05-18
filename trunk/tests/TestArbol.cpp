@@ -19,6 +19,8 @@ void TestArbol::ejecutar(){
 void TestArbol::test_insertar_pocos_registros(){
 
 	ArbolBMas abm;
+	header_arbol ha;
+
 	ha.minCantBytesClaves= 0;
 	ha.maxCantBytesClaves= 4096;
 	string nombreArchivoArbol= "testArbol.dat";

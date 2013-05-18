@@ -67,9 +67,9 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 			int res = fwrite(&dato,sizeof(dato),1,file_handler);
 			if (res != 1)
 				return RES_ERROR;
-
-			header.cantidadDatosGuardados ++;
-
+			if (pos >= header.cantidadDatosGuardados){
+				header.cantidadDatosGuardados ++;
+			}
 			return RES_OK;
 		}/* PRECONDICION: abrir el archivo en modo "wb+".
 		POSTCONDICION: cerrar el archivo. */
