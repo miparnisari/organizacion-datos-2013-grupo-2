@@ -28,18 +28,16 @@ class Tabla {
 		Tabla();
 		virtual ~Tabla();
 
-		void set_tamanio(int cantidad);
-		int get_tamanio();
-
 		void set_rutaTabla(string ruta);
 
+		int get_tamanio();
 
 		int obtener_valor(int posicion);
 		int cambiar_valor(int posicion, int nuevoValor);
-		void dividir_tabla();
+		int dividir_tabla();
 		int duplicar_tabla();
-		void eliminar_tabla();
-		void crear_archivo_tabla(string rutaArchivo);
+		int eliminar_tabla();
+		int crear_archivo_tabla(string rutaArchivo);
 };
 
 #endif /* TABLA_H_ */
