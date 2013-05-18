@@ -58,7 +58,7 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 		}/* PRECONDICION: abrir el archivo en modo "ab".
 		Devuelve la posicion donde escribio el dato.
 		POSTCONDICION: cerrar el archivo.  */
-		int escribir(const TipoDato dato, int pos)
+		int escribir(const TipoDato dato, unsigned int pos)
 		{
 			if (file_handler == NULL)
 				return RES_ERROR;

@@ -145,18 +145,6 @@ int NodoSecuencial::buscar(const ClaveX & claveBuscada, RegistroClave** regDevue
 			if (regDevuelto != NULL)
 				*regDevuelto = new RegistroClave(vectorRegistros.at(i));
 
-//			for (unsigned int j = 1; j < vectorRegistros.at(i).get_cantidad_campos(); j++)
-//			{
-
-//				//				std::cout << "tamanio campo = " << registroAlmacenado.get_tamanio_campo(j) << std::endl;
-//				char* buffer = new char[vectorRegistros.at(i).get_tamanio_campo(j)+1]();
-//				buffer[vectorRegistros.at(i).get_tamanio_campo(j)] = '\0';
-//				vectorRegistros.at(i).recuperar_campo(buffer, j);
-////				std:: cout << "buffer" << buffer << std::endl;
-////				std:: cout << "strlen" << strlen(buffer) << std::endl;
-//				regDevuelto->agregar_campo(buffer,strlen(buffer));
-//				delete[] buffer;
-//			}
 			delete (claveAlmacenada);
 			return i;
 		}
@@ -173,9 +161,7 @@ int NodoSecuencial::empaquetar(Bloque* bloque)
 
 	//Empaqueto el tipo de nodo y el puntero al proximo nodo
 	RegistroVariable header;
-	char tn = TIPO_HOJA;
-	std::cout << "tipo nodo = " << tipoNodo << std::endl;
-	header.agregar_campo((char*)&tn, sizeof(tipoNodo)); //fixme
+	header.agregar_campo((char*)&tipoNodo, sizeof(tipoNodo));
 	header.agregar_campo((char*)&proximoNodo, sizeof(proximoNodo));
 	bloque->agregar_registro(&header);
 

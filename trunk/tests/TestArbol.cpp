@@ -34,7 +34,6 @@ void TestArbol::test_arbol_insertar_un_registro()
 	assert (arbol.agregar(reg) == RES_OK);
 	assert (arbol.cerrar() == RES_OK);
 
-
 	assert (arbol.abrir("arbol.dat","rb+") == RES_OK);
 
 	RegistroClave regLeido;
@@ -55,6 +54,8 @@ void TestArbol::test_arbol_insertar_un_registro()
 	delete[] buffer;
 
 	assert(arbol.cerrar() == RES_OK);
+
+	print_test_ok("test_arbol_insertar_un_registro");
 }
 
 void TestArbol::test_arbol_abrir_no_existente()
@@ -73,29 +74,26 @@ void TestArbol::test_arbol_abrir_cerrar()
 	assert (arbol.crear("unArbol.dat",BLOQUE_TAM_DEFAULT) == RES_OK);
 	assert (arbol.abrir("unArbol.dat","rb+") == RES_OK);
 	assert (arbol.get_cant_minima_nodo() == sizeof(TipoHijo));
-	IMPRIMIR_VARIABLE(arbol.get_cant_maxima_nodo());
+
 	assert (arbol.get_cant_maxima_nodo() == (int)(BLOQUE_TAM_DEFAULT * 0.9));
 	assert (arbol.cerrar() == RES_OK);
 
 	FILE* handler = fopen("unArbol.dat","rb+");
 	fseek(handler,0,SEEK_END);
 	int tamanio = ftell(handler);
-	IMPRIMIR_VARIABLE(tamanio);
 	assert (tamanio == 3*sizeof(int)+2*BLOQUE_TAM_DEFAULT);
 
 	assert (arbol.eliminar("unArbol.dat") == RES_OK);
 
 	fclose(handler);
+
+	print_test_ok("test_arbol_abrir_cerrar");
 }
 
 
 void TestArbol::test_insertar_pocos_registros(){
 
 	ArbolBMas abm;
-	header_arbol ha;
-
-	ha.minCantBytesClaves= 0;
-	ha.maxCantBytesClaves= 4096;
 	string nombreArchivoArbol= "testArbol.dat";
 	assert( abm.crear(nombreArchivoArbol,BLOQUE_TAM_DEFAULT)==RES_OK );
 	assert(abm.abrir("testArbol.dat","rb+") == RES_OK);
@@ -158,5 +156,6 @@ void TestArbol::test_insertar_pocos_registros(){
 
 	assert(abm.eliminar(nombreArchivoArbol)== RES_OK);
 
+	print_test_ok("test_insertar_pocos_registros");
 
 }

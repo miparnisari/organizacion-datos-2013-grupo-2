@@ -155,8 +155,6 @@ int ArbolBMas::buscar(RegistroClave & reg, unsigned int  & p_numBloque)
 
 	reg = *regCopia;
 
-	std::cout << "tamanio campo 1 =" << reg.get_tamanio_campo(1) << std::endl;
-
 	return res;
 
 }
@@ -216,7 +214,6 @@ int ArbolBMas::_hallar_hoja(RegistroClave* registro,
 		return RES_ERROR;
 
 	NodoArbol na(TIPO_INTERNO);
-	std::cout << "Num bloque = " << numeroBloque << std::endl;
 	Bloque* bloqueActual= archivoNodos.obtener_bloque(numeroBloque);
 	if(bloqueActual== NULL)
 		return RES_ERROR;

@@ -35,7 +35,6 @@ void TestNodoInterno::insertar_hijos(){
 
 	{
 		const unsigned short LIMITE_RANDOM= 32;
-		const unsigned short TAMANIO_HIJO= sizeof(TipoHijo);
 
 		const unsigned int MAX_CANT_BYTES= 32;
 		const unsigned int MIN_CANT_BYTES= 16;
@@ -73,7 +72,6 @@ void TestNodoInterno::insertar_hijos(){
 	{
 
 		NodoInterno ni;
-		const unsigned int TAMANIO_INICIAL= ni.get_tamanio_ocupado();
 		const unsigned short CANTIDAD_CLAVES_INICIAL= ni.get_cantidad_claves();
 		const unsigned short CANTIDAD_HIJOS_INICIAL= ni.get_cantidad_hijos();
 
@@ -227,7 +225,6 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 		NodoInterno::TipoHijo hijos[CANTIDAD_CLAVES];
 		for(unsigned short i=0;i<CANTIDAD_CLAVES;i++)
 			hijos[i]= rand()%LIMITE_RANDOM;
-		const unsigned short TAMANIO_HIJO= sizeof(hijos[0]);
 
 		unsigned short ocurrenciaInsercion= 0;
 		ni.insertar_clave(claves[0],ocurrenciaInsercion);
