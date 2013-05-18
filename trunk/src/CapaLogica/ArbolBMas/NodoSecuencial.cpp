@@ -202,8 +202,8 @@ int NodoSecuencial::desempaquetar(const Bloque* bloque)
 	// Desempaqueto el header (tipo nodo + puntero proximo nodo)
 	RegistroVariable header;
 	bloque->recuperar_registro(&header, 0);
-	header.recuperar_campo((char*)&tipoNodo,sizeof(tipoNodo));
-	header.recuperar_campo((char*)&proximoNodo, sizeof(proximoNodo));
+	header.recuperar_campo((char*)&tipoNodo,0);
+	header.recuperar_campo((char*)&proximoNodo, 1);
 
 	bytesOcupados = sizeof(tipoNodo) + sizeof(proximoNodo);
 
