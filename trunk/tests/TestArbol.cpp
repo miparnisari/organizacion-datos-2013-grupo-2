@@ -46,7 +46,8 @@ void TestArbol::test_arbol_insertar_un_registro()
 	assert (numBloque == 1);
 	assert (regLeido.get_clave() == clave);
 
-	char* buffer = new char[regLeido.get_tamanio_campo(1)]();
+	char* buffer = new char[regLeido.get_tamanio_campo(1) + 1]();
+	buffer[regLeido.get_tamanio_campo(1)] = '\0';
 	regLeido.recuperar_campo(buffer,1);
 
 	assert (strcmp(buffer,campo.c_str()) == 0);
