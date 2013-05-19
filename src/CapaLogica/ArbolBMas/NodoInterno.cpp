@@ -400,6 +400,21 @@ int NodoInterno::remover_hijo(unsigned short numeroHijo){
 
 }
 
+void NodoInterno::imprimir()
+{
+	TipoHijo hijo;
+	unsigned short numHijo = 0;
+	get_hijo(hijo,numHijo);
+	std::cout << hijo << "-";
+	for (unsigned int i = 0; i < vectorClaves.size(); i++)
+	{
+		numHijo ++;
+		vectorClaves.at(i).imprimir_dato();
+		get_hijo(hijo,numHijo);
+		std::cout << hijo << "-";
+	}
+}
+
 
 void NodoInterno::imprimir_claves()const{
 
