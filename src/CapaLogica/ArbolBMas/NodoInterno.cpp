@@ -107,7 +107,7 @@ int NodoInterno::buscar_clave(const ClaveX& clave,unsigned short& posicionClave)
 	return RES_ERROR;
 
 
-}//FIXME Para que sirve este metodo!? Es lo mismo que get_clave(pos)...
+}//
 
 
 int NodoInterno::get_hijo_izquierdo(TipoHijo& hijo,const ClaveX& clave){
