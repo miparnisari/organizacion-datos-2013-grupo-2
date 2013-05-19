@@ -15,7 +15,8 @@ HashingExtensible::HashingExtensible(std::string directorioSalida, std::string f
         this->manejador_bloques.crear_archivo(fileName, BLOQUE_TAM_DEFAULT);
         this->manejador_bloques.abrir_archivo(fileName, "rb+");
         //Creamos la tabla
-        this->tabla = new Tabla(fileNameTabla);
+        this->tabla = new Tabla;
+        this->tabla->crear(fileNameTabla);
         this->tabla->cambiar_valor(0, 0); // la pos 0 de la tabla se le coloca el num de bloque 0
         //Creamos un nuevo bloque con dispersion 1 y lo guardamos en el archivo de bloques del Hash
         Bloque* bloqueNuevo = this->manejador_bloques.crear_bloque();
@@ -40,7 +41,7 @@ int HashingExtensible::eliminar_hashing_extensible()
 	int resultado = this->manejador_bloques.eliminar_archivo(this->fileName);
 
 	return resultado;
-    this->tabla->eliminar_tabla();
+    this->tabla->eliminar();
 }
 
 int HashingExtensible::funcion_dispersion(int clave)
@@ -90,7 +91,7 @@ int HashingExtensible::agregar(RegistroClave reg)
         if(tamDispersion == tamTabla){
 
             //Duplicamos la tabla
-            this->tabla->duplicar_tabla();
+            this->tabla->duplicar();
             this->tabla->cambiar_valor(posTabla, posBloqueNuevo);
 
             //Creamos el bloque con el tam de dispersion del tamanio de la tabla
