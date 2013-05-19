@@ -41,7 +41,7 @@ int IndiceInvertido::agregar_termino(char* termino, int IDdoc, int pos)
     clave.set_clave(termino);
     regClave.set_clave(clave);
     //Vemos si el termino se encuentra en el vocabulario
-    posNodoSecuencial = this->vocabulario.buscar(regClave);
+/******    posNodoSecuencial = this->vocabulario.buscar(regClave);***********/
     if (posNodoSecuencial== RES_ERROR){ /******Si no existe en el buscar del arbol*/
         IDter = this->archivo_terminos.get_cantidad_registros_ocupados();
         idtermino = itoa (IDter, idtermino, 10); /*****chanchada para guardar numero como char***/
@@ -69,6 +69,7 @@ int IndiceInvertido::borrar_indice()
 void IndiceInvertido::crear_termino_vocabulario(ClaveX clave, char* idtermino){
     //Agrega el nuevo termino al vocabulario con una referencia nula a la lista invertida
     RegistroVariable reg;
+//    char* referencia = REF_NULA;
     RegistroClave regVocabulario;
     this->archivo_terminos.agregar_registro(&reg);   //Agrego el termino al archivo de terminos
     regVocabulario.set_clave(clave);
@@ -116,7 +117,7 @@ int IndiceInvertido::buscar_lista(int IDterLista, Bloque *lista)
     /*****busco el termino en el archivo de terminos, busqueda binaria*/
     clave.set_clave(termino);
     reg.set_clave(clave);
-    vocabulario.buscar(reg);
+/*********    vocabulario.buscar(reg);**********/
     reg.recuperar_campo(refLista,2);
     num = atoi(refLista);   //recupero el numero
     if(num<0){
