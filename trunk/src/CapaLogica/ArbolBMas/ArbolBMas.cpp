@@ -208,28 +208,41 @@ int ArbolBMas::_hallar_hijo_correspondiente(RegistroClave* registro,
 		return RES_OK;
 	}/*si la clave de registro es menor que la primera clave de nodoBuscar, entonces el hijo a retornar es el 'mas izquierdo'*/
 
-	while( nodoBuscar->get_clave(indiceClave,unaClave)!= RES_ERROR ){
 
-		if(unaClave > claveRegistro){
-			nodoBuscar->get_hijo(hijoCorrespondiente,indiceClave);
-			return RES_OK;
-		}/*si la clave del nodo que estoy examinando es mayor que la clave de
-		parametro -> el hijo correspondiente es el izquierdo a aquel que examino.*/
+//	while( nodoBuscar->get_clave(indiceClave,unaClave)!= RES_ERROR ){
+//
+//		if(unaClave > claveRegistro){
+//			nodoBuscar->get_hijo(hijoCorrespondiente,indiceClave);
+//			return RES_OK;
+//		}/*si la clave del nodo que estoy examinando es mayor que la clave de
+//		parametro -> el hijo correspondiente es el izquierdo a aquel que examino.*/
+//
+//		if(unaClave == claveRegistro){
+//			nodoBuscar->get_hijo(hijoCorrespondiente,indiceClave+1);
+//			return RES_OK;
+//		}/*si la clave que estoy examinando es identica a la clave del registro de
+//		parametro -> el hijo correspondiente es el derecho de la clave examinada*/
+//
+//		indiceClave++;
+//
+//	}
+//
+//
+//	nodoBuscar->get_hijo(hijoCorrespondiente,indiceClave);//
+//	/*en caso que la clave del registro sea mayor que todas las claves del nodo ->
+//	 * el hijo correspondiente a examinar es el de posicion ultima*/
+//
+//	return RES_OK;
 
-		if(unaClave == claveRegistro){
-			nodoBuscar->get_hijo(hijoCorrespondiente,indiceClave+1);
-			return RES_OK;
-		}/*si la clave que estoy examinando es identica a la clave del registro de
-		parametro -> el hijo correspondiente es el derecho de la clave examinada*/
 
-		indiceClave++;
+	const unsigned short CANTIDAD_CLAVES= nodoBuscar->get_cantidad_claves();
+	for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
+
+		nodoBuscar->get_clave(i,unaClave);
+		if(claveRegistro >= unaClave)
+			nodoBuscar->get_hijo(hijoCorrespondiente,i+1);
 
 	}
-
-
-	nodoBuscar->get_hijo(hijoCorrespondiente,indiceClave);//FIXME
-	/*en caso que la clave del registro sea mayor que todas las claves del nodo ->
-	 * el hijo correspondiente a examinar es el de posicion ultima*/
 
 	return RES_OK;
 
@@ -271,20 +284,20 @@ int ArbolBMas::_hallar_hoja(RegistroClave* registro,
 int ArbolBMas::_split_hoja(NodoSecuencial* nodoActual,vector<RegistroClave>* registrosOverflow,
 		TipoHijo& hijoPromocionado,ClaveX* clavePromocionada,TipoPuntero nodoSecuencialSiguiente){
 
-	{
-		cout<<"imprimiendo registrosOverflow: "<<endl;
-		const unsigned short CANTIDAD_REGISTROS_OVERFLOW= registrosOverflow->size();
-		for(unsigned short i=0;i<CANTIDAD_REGISTROS_OVERFLOW;i++){
-			ClaveX unaClave= registrosOverflow->at(i).get_clave();
-			string datoClave;
-			unaClave.get_clave(datoClave);
-			cout<<datoClave<<endl;
-		}
-
-		cout<<"imprimiendo claves nodo split: "<<endl;
-		nodoActual->imprimir();
-
-	}//TODO BORRAR
+//	{
+//		cout<<"imprimiendo registrosOverflow: "<<endl;
+//		const unsigned short CANTIDAD_REGISTROS_OVERFLOW= registrosOverflow->size();
+//		for(unsigned short i=0;i<CANTIDAD_REGISTROS_OVERFLOW;i++){
+//			ClaveX unaClave= registrosOverflow->at(i).get_clave();
+//			string datoClave;
+//			unaClave.get_clave(datoClave);
+//			cout<<datoClave<<endl;
+//		}
+//
+//		cout<<"imprimiendo claves nodo split: "<<endl;
+//		nodoActual->imprimir();
+//
+//	}//TODO BORRAR
 
 	NodoSecuencial nodoSecuencialNuevo(header.minCantBytesClaves,header.maxCantBytesClaves);
 	const unsigned short CANTIDAD_REGISTROS_OVERFLOW= registrosOverflow->size();
@@ -322,6 +335,12 @@ int ArbolBMas::_split_interno(NodoInterno* nodo,ClaveX* clavePromocionada,
 	/*remuevo el hijo x defecto del nodo nuevo*/
 	Bloque* bloqueNodoNuevo = archivoNodos.crear_bloque();
 
+	cout<<"claves split interno:"<<endl;
+	nodo->imprimir_claves();
+	cout<<"hijos split interno:"<<endl;
+	nodo->imprimir_hijos();
+	cout<<"fin imprimir split interno--------------------------------------------"<<endl;
+
 
 	const unsigned short CANTIDAD_HIJOS= nodo->get_cantidad_hijos();
 	const unsigned short CANTIDAD_CLAVES= nodo->get_cantidad_claves();
@@ -345,8 +364,11 @@ int ArbolBMas::_split_interno(NodoInterno* nodo,ClaveX* clavePromocionada,
 
 	for(unsigned short i=numeroClaveMitad;i<CANTIDAD_HIJOS;i++){
 		TipoHijo unHijo;
-		nodo->get_hijo(unHijo , i+1);
-		nodoNuevo.insertar_hijo(unHijo);
+		int res=nodo->get_hijo(unHijo , i+1);
+		if(res!= RES_ERROR){
+			nodoNuevo.insertar_hijo(unHijo);//FIXME
+			cout<<"hijo a pasar: "<<unHijo<<endl;
+		}
 	}/*obtengo los hijos que se deben insertar en el nodo nuevo*/
 
 
@@ -423,6 +445,13 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 	NodoInterno nodoActualInterno(header.minCantBytesClaves,header.maxCantBytesClaves);
 	nodoActualInterno.desempaquetar(bloqueActual);
 	delete bloqueActual;
+
+	/*TODO BORRAR*/
+	cout<<"nodoActualInterno claves:"<<endl;
+	nodoActualInterno.imprimir_claves();
+	cout<<"nodoActualInterno hijos:"<<endl;
+	nodoActualInterno.imprimir_hijos();
+
 	unsigned int numeroBloqueHijo;
 	this->_hallar_hijo_correspondiente(registro,&nodoActualInterno,
 			numeroBloqueHijo);

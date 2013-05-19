@@ -11,10 +11,10 @@ typedef NodoInterno::TipoHijo TipoHijo;
 
 void TestArbol::ejecutar(){
 
-	/*test_arbol_abrir_no_existente();
+	test_arbol_abrir_no_existente();
 	test_arbol_abrir_cerrar();
 	test_insertar_pocos_registros();
-	test_arbol_insertar_un_registro();*/
+	test_arbol_insertar_un_registro();
 	test_split_raiz();
 }
 
@@ -175,6 +175,8 @@ void TestArbol::test_split_raiz(){
 	RegistroClave rc;
 	ClaveX c;
 
+	cout<<"INSERCION DE aaA hasta aaH ------------------------------------"<<endl;
+
 	for(int i=0;i<8;i++){
 
 		string clave= "aaa";
@@ -186,6 +188,7 @@ void TestArbol::test_split_raiz(){
 
 	}
 
+	cout<<"INSERCION DE aaCA hasta aaCB ------------------------------------"<<endl;
 
 
 	for(int i=0;i<2;i++){
@@ -200,6 +203,8 @@ void TestArbol::test_split_raiz(){
 	}
 
 
+	cout<<"INSERCION DE baA hasta baC ------------------------------------"<<endl;
+
 	for(int i=0;i<3;i++){
 
 		string clave= "baa";
@@ -210,6 +215,22 @@ void TestArbol::test_split_raiz(){
 		assert( arbol.agregar(rc)== RES_OK );
 
 	}
+
+
+
+	/*FIXME hasta aca todo andaba bien*/
+	for(int i=0;i<10;i++){
+
+		string clave= "caa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		cout<<"clave en insercion: "<<clave<<endl;//TODO BORRAR
+		assert( arbol.agregar(rc)== RES_OK );
+
+	}
+
+
 
 	cout<<"imprimir arbol: "<<endl;
 	arbol.imprimir();
