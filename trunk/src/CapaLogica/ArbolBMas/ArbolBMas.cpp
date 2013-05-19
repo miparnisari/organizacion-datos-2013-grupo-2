@@ -84,7 +84,9 @@ unsigned int ArbolBMas::get_cant_maxima_nodo()
 
 int ArbolBMas::crear (std::string fileName, unsigned int tamBloque)
 {
-	this->tamanioMaximoNodo = tamBloque * 0.6;
+	this->tamanioMaximoNodo = tamBloque * FACTOR_CARGA /100;
+	/*FIXME . Tests funcaban con 0.6*/
+
 	int res = archivoNodos.crear_archivo(fileName,tamBloque);
 	if (res != RES_OK)
 		return res;

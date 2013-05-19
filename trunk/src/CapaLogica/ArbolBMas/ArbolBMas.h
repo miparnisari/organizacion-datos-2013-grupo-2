@@ -33,6 +33,8 @@ class ArbolBMas
 
 
 	public:
+		static const int FACTOR_CARGA= 50;
+
 		ArbolBMas();
 		virtual ~ArbolBMas();
 

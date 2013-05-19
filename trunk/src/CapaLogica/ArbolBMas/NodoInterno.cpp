@@ -241,7 +241,8 @@ int NodoInterno::empaquetar(Bloque* bloque)
 
 	bloque->agregar_registro(&registroTipoNodo);
 	bloque->agregar_registro(&registroClaves);
-	bloque->agregar_registro(&registroHijos);
+	int ah= bloque->agregar_registro(&registroHijos);
+	cout<<"ah= "<<ah<<endl;
 
 	return RES_OK;
 
