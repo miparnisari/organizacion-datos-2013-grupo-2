@@ -15,8 +15,7 @@ HashingExtensible::HashingExtensible(std::string directorioSalida, std::string f
         this->manejador_bloques.crear_archivo(fileName, BLOQUE_TAM_DEFAULT);
         this->manejador_bloques.abrir_archivo(fileName, "rb+");
         //Creamos la tabla
-        this->tabla = new Tabla;
-        this->tabla->crear(fileNameTabla);
+        this->tabla = new Tabla(fileNameTabla);
         this->tabla->cambiar_valor(0, 0); // la pos 0 de la tabla se le coloca el num de bloque 0
         //Creamos un nuevo bloque con dispersion 1 y lo guardamos en el archivo de bloques del Hash
         Bloque* bloqueNuevo = this->manejador_bloques.crear_bloque();
@@ -41,7 +40,7 @@ int HashingExtensible::eliminar_hashing_extensible()
 	int resultado = this->manejador_bloques.eliminar_archivo(this->fileName);
 
 	return resultado;
-  /**  this->tabla->eliminar_tabla();    falla por que no tenemos bien la tabla*/
+    this->tabla->eliminar_tabla();
 }
 
 int HashingExtensible::funcion_dispersion(int clave)
@@ -75,15 +74,15 @@ int HashingExtensible::agregar(RegistroClave reg)
     resultado = bloque.agregar_registro(&reg);
 
     if (resultado == RES_INSUFFICIENT_SPACE){   //Si desborda el bloque
+        ClaveX valor;   //tamanio de dispersion del bloque
         Bloque bloqueNuevo(this->manejador_bloques.get_tamanio_bloque());
         Bloque bloqueAux(this->manejador_bloques.get_tamanio_bloque());
         //Recupero el tamaño de dispersion del bloque
         bloque.recuperar_registro(&tamDispBloque,0);
         char* buffer = new char[50]();
         tamDispBloque.recuperar_campo(buffer,0);
-        tamDispersion = atoi (buffer);
- /**       valor = std::string(buffer);
-        tamDispersion = atoi(valor.c_str ());*/
+        valor.desempaquetar(buffer, 5);     /**************como saco el tamanio con que se empaqueto?????****************/
+        valor.get_clave(tamDispersion);
 
         //La pos del nuevo bloque es el libre
         posBloqueNuevo = this->manejador_bloques.get_primer_bloque_libre();
@@ -91,7 +90,7 @@ int HashingExtensible::agregar(RegistroClave reg)
         if(tamDispersion == tamTabla){
 
             //Duplicamos la tabla
-            this->tabla->duplicar();
+            this->tabla->duplicar_tabla();
             this->tabla->cambiar_valor(posTabla, posBloqueNuevo);
 
             //Creamos el bloque con el tam de dispersion del tamanio de la tabla
@@ -163,7 +162,7 @@ int HashingExtensible::eliminar(ClaveX clave)
 {
     int posBloque, tamDispersion, i, posDer, posIzq, posReg, posTabla;
     Bloque bloque;
-
+    ClaveX valor;
     RegistroVariable tamDisp;
 
     this->manejador_bloques.abrir_archivo(fileName, "rb+");
@@ -180,7 +179,8 @@ int HashingExtensible::eliminar(ClaveX clave)
         bloque.recuperar_registro(&tamDisp, 0);
         char* buffer = new char[50]();
         tamDisp.recuperar_campo(buffer, 0);
-        tamDispersion = (atoi(buffer))/2;   /****atoi(buffer) == (int) buffer sin perder presision*/
+        valor.desempaquetar(buffer, 5);     /**************como saco el tamanio con que se empaqueto?????****************/
+        valor.get_clave(tamDispersion);
 
         //Me muevo tamDispersion para un lado y para el otro de la lista, si son iguales cambio cada tam disp *2 los bloques de la tabla
         posDer = this->tabla->obtener_valor(posTabla+tamDispersion);
@@ -212,12 +212,12 @@ int HashingExtensible::crear_bloque(int tam, Bloque *bloqueNuevo)
     RegistroVariable tamDispBloque;
 
     //agregamos el tamanio al bloque
-    std::stringstream ss ;
-    std::string campo;
-    ss << tam;
-    campo = ss . str ();
+    char* campo;
+    ClaveX tamDisp;
+    tamDisp.set_clave(tam);
+    tamDisp.empaquetar(campo);
     //Le guardo el tamaño de dispersion
-    tamDispBloque.agregar_campo(campo.c_str(),campo.size());
+    tamDispBloque.agregar_campo(campo,strlen(campo));
     bloqueNuevo->agregar_registro(&tamDispBloque);
     return RES_OK;
 }
@@ -251,11 +251,11 @@ int HashingExtensible::obtener_posicion_reg_bloque(ClaveX clave, Bloque bloque)
 
 int HashingExtensible::obtener_posicion_tabla(ClaveX registro)
 {   //Se devuelve la clave pasada por la funcion dispersion
-    int clave;
+    int clave=0, i;
     if(registro.get_tipo_clave() == CLAVE_STRING){
         string claveS;
         registro.get_clave(claveS);
-        clave = atoi(claveS.data()); //(int)(claveS.data()) == atoi(claveS.data())
+        for(i=0; i<claveS.length(); i++)   clave = clave+(int)claveS[i];
     }else{
         registro.get_clave(clave);
     }
