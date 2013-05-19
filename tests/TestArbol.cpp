@@ -76,7 +76,7 @@ void TestArbol::test_arbol_abrir_cerrar()
 	assert (arbol.abrir("unArbol.dat","rb+") == RES_OK);
 	assert (arbol.get_cant_minima_nodo() == sizeof(TipoHijo));
 
-	assert (arbol.get_cant_maxima_nodo() == (int)(BLOQUE_TAM_DEFAULT * 0.6));
+	assert (arbol.get_cant_maxima_nodo() == (int)(BLOQUE_TAM_DEFAULT * ArbolBMas::FACTOR_CARGA/100));
 	assert (arbol.cerrar() == RES_OK);
 
 	FILE* handler = fopen("unArbol.dat","rb+");
@@ -192,6 +192,18 @@ void TestArbol::test_split_raiz(){
 
 		string clave= "aaCa";
 		clave[3]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		cout<<"clave en insercion: "<<clave<<endl;//TODO BORRAR
+		assert( arbol.agregar(rc)== RES_OK );
+
+	}
+
+
+	for(int i=0;i<3;i++){
+
+		string clave= "baa";
+		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
 		cout<<"clave en insercion: "<<clave<<endl;//TODO BORRAR

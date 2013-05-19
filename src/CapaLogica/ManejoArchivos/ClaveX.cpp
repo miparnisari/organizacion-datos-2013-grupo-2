@@ -64,12 +64,12 @@ void ClaveX::imprimir_dato()const
 	{
 		string s;
 		this->get_clave(s);
-		std::cout<<s;
+		std::cout<<s<<",";
 	}
 	else {
 		int i;
 		this->get_clave(i);
-		std::cout<<i;
+		std::cout<<i<<",";
 	}
 }
 
