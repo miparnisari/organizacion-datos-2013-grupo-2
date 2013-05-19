@@ -27,6 +27,8 @@ class NodoSecuencial : public NodoArbol {
 		NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBytesOcupados);
 		virtual ~NodoSecuencial();
 
+		void imprimir();
+
 		void set_proximo_nodo(TipoPuntero p_prox);
 
 		int insertar(const RegistroClave & registro, std::vector<RegistroClave> & regsOveflow);
