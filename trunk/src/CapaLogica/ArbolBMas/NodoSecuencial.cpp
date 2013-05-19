@@ -72,6 +72,7 @@ void NodoSecuencial::imprimir()
 		vectorRegistros.at(i).get_clave().imprimir_dato();
 	}
 	std::cout << "-----";
+	std::cout << "PROX=" << proximoNodo << std::endl;
 }
 
 void NodoSecuencial::__resolver_overflow(std::vector<RegistroClave> & regsOverflow)
@@ -115,6 +116,7 @@ int NodoSecuencial::insertar(const RegistroClave & registro, std::vector<Registr
 
 		if (bytesOcupados > maxCantidadBytesOcupados)
 		{
+			std::cout<<"resuelve overfloW!\n";
 			__resolver_overflow(regsOverflow);
 			return RES_OVERFLOW;
 		}
