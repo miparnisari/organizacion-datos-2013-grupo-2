@@ -66,7 +66,7 @@ void NodoSecuencial::__resolver_underflow(std::vector<RegistroClave> & regsUnder
 
 void NodoSecuencial::imprimir()
 {
-	std::cout << "NS------";
+	std::cout << "SECUENCIAL------";
 	for (unsigned int i = 0; i < vectorRegistros.size(); i++)
 	{
 		vectorRegistros.at(i).get_clave().imprimir_dato();

@@ -93,6 +93,8 @@ class NodoInterno : public NodoArbol {
 		virtual bool hay_overflow()const;
 		virtual bool hay_underflow()const;
 
+
+		void imprimir();
 		void imprimir_claves()const;
 		/*imprime todas las claves guardadas en el nodo. En caso que el mismo
 		 * este vacio se imprime NODO_VACIO.*/

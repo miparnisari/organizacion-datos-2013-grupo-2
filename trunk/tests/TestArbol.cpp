@@ -153,7 +153,7 @@ void TestArbol::test_insertar_pocos_registros(){
 	cout<<"bloque promocionado: "<<bloquePromocionado<<endl;
 
 
-
+	assert(abm.cerrar() == RES_OK);
 
 	assert(abm.eliminar(nombreArchivoArbol)== RES_OK);
 

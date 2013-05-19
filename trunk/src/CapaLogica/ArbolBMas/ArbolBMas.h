@@ -30,7 +30,7 @@ class ArbolBMas
 		unsigned int tamanioBloque;
 
 
-
+		void _imprimir_recursivo(unsigned int numNodo);
 
 	public:
 		static const int FACTOR_CARGA= 50;
@@ -45,7 +45,7 @@ class ArbolBMas
 		int cerrar ();
 
 		int agregar(RegistroClave & reg);
-		int eliminar(RegistroClave & reg);//FIXME el parametro no deberia ser un ClaveX?
+		int quitar(RegistroClave & reg);//FIXME el parametro no deberia ser un ClaveX?
 		int buscar(RegistroClave & reg, unsigned int & numBloque);//FIXME el parametro no deberia ser un ClaveX?
 		/* Devuelve el numero de nodo secuencial donde esta o deberia estar reg. */
 

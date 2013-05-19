@@ -158,7 +158,7 @@ int ArbolBMas::agregar(RegistroClave & reg)
 
 }
 
-int ArbolBMas::eliminar(RegistroClave & reg)
+int ArbolBMas::quitar(RegistroClave & reg)
 {
 	return RES_OK;
 }
@@ -200,7 +200,6 @@ int ArbolBMas::_hallar_hijo_correspondiente(RegistroClave* registro,
 
 	ClaveX unaClave;
 	ClaveX claveRegistro= registro->get_clave();
-	unsigned short indiceClave= 0;
 
 	nodoBuscar->get_clave(0,unaClave);
 	if(claveRegistro < unaClave){
@@ -548,36 +547,74 @@ void ArbolBMas::obtener_primer_nodo_secuencial(TipoHijo& numeroPrimerNodo){
 
 }
 
+void ArbolBMas::_imprimir_recursivo(unsigned int numNodo)
+{
+	Bloque* bloque = archivoNodos.obtener_bloque(numNodo);
+	NodoArbol nodo(TIPO_HOJA);
+	nodo.desempaquetar(bloque);
 
-void ArbolBMas::imprimir(){
+	std::cout << "NUM BLOQUE = " << numNodo << "---->";
 
-	TipoHijo numeroNodoSecuencial;
-	this->obtener_primer_nodo_secuencial(numeroNodoSecuencial);
-	Bloque* bloqueSecuencial= this->archivoNodos.obtener_bloque(numeroNodoSecuencial);
-	NodoSecuencial nodoActual(header.minCantBytesClaves,header.maxCantBytesClaves);
-	nodoActual.desempaquetar(bloqueSecuencial);
-	delete bloqueSecuencial;
+	if (nodo.es_interno())
+	{
+		NodoInterno nodoInterno(header.minCantBytesClaves,header.maxCantBytesClaves);
+		nodoInterno.desempaquetar(bloque);
 
-	int numeroNodoActual= (int)numeroNodoSecuencial;
+		nodoInterno.imprimir();
 
+		std::cout << std::endl;
 
-	while(numeroNodoActual!= -1){
+		for (unsigned int i = 0; i < nodoInterno.get_cantidad_hijos(); i ++)
+		{
+			TipoHijo unHijo;
+			nodoInterno.get_hijo(unHijo,i);
+			_imprimir_recursivo((unsigned)unHijo);
 
-		nodoActual.imprimir();
-		numeroNodoActual= nodoActual.get_proximo_nodo();
-		if(numeroNodoActual == -1)
-			break;
+		}
+	}
 
-		numeroNodoSecuencial= (TipoHijo)numeroNodoActual;
-		bloqueSecuencial= this->archivoNodos.obtener_bloque(numeroNodoSecuencial);
-		nodoActual.desempaquetar(bloqueSecuencial);
-		delete bloqueSecuencial;
+	else
+	{
+		NodoSecuencial nodoSecuencial(header.minCantBytesClaves,header.maxCantBytesClaves);
+		nodoSecuencial.desempaquetar(bloque);
 
-
+		nodoSecuencial.imprimir();
 	}
 
 
+	delete(bloque);
+}
 
 
+void ArbolBMas::imprimir(){
+
+//	TipoHijo numeroNodoSecuencial;
+//	this->obtener_primer_nodo_secuencial(numeroNodoSecuencial);
+//	Bloque* bloqueSecuencial= this->archivoNodos.obtener_bloque(numeroNodoSecuencial);
+//	NodoSecuencial nodoActual(header.minCantBytesClaves,header.maxCantBytesClaves);
+//	nodoActual.desempaquetar(bloqueSecuencial);
+//	delete bloqueSecuencial;
+//
+//	int numeroNodoActual= (int)numeroNodoSecuencial;
+//
+//
+//	while(numeroNodoActual!= -1){
+//
+//		std::cout << "num bloque = " << numeroNodoActual << " ---- ";
+//
+//		nodoActual.imprimir();
+//		numeroNodoActual= nodoActual.get_proximo_nodo();
+//		if(numeroNodoActual == -1)
+//			break;
+//
+//		numeroNodoSecuencial= (TipoHijo)numeroNodoActual;
+//		bloqueSecuencial= this->archivoNodos.obtener_bloque(numeroNodoSecuencial);
+//		nodoActual.desempaquetar(bloqueSecuencial);
+//		delete bloqueSecuencial;
+//
+//
+//	}
+
+	_imprimir_recursivo(NUMERO_BLOQUE_RAIZ);
 }
 
