@@ -24,6 +24,7 @@ class TestNodoSecuencial: public Test {
 		void test_nodo_sec_overflow_masivo();
 		void test_nodo_sec_overflow_impar();
 		void test_nodo_sec_overflow_par();
+		void test_guardar_y_comparar();
 };
 
 #endif /* TESTNODOSECUENCIAL_H_ */
