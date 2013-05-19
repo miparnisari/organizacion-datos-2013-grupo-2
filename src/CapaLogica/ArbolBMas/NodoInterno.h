@@ -107,6 +107,9 @@ class NodoInterno : public NodoArbol {
 		void limpiar();
 		/*vacia los vectores de claves e hijos y resetea el espacio usado*/
 
+		int buscar_hijo(TipoHijo valorHijo,unsigned short& posicionHijo);
+		int obtener_hijo_siguiente_a(TipoHijo valorHijo,int& hijoSiguiente);
+
 
 
 

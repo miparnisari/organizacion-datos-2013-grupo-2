@@ -186,6 +186,19 @@ void TestArbol::test_split_raiz(){
 
 	}
 
+
+
+	for(int i=0;i<2;i++){
+
+		string clave= "aaCa";
+		clave[3]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		cout<<"clave en insercion: "<<clave<<endl;//TODO BORRAR
+		assert( arbol.agregar(rc)== RES_OK );
+
+	}
+
 	cout<<"imprimir arbol: "<<endl;
 	arbol.imprimir();
 

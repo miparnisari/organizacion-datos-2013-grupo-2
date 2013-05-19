@@ -62,7 +62,7 @@ class ArbolBMas
 				NodoInterno* nodoBuscar,TipoHijo& numeroBloqueHijoCorrespondiente);
 		/*dado un nodoInterno y un registro, se busca el siguiente hijo a explorar*/
 		int _insertar_recursivo(unsigned int& numeroBloqueActual ,
-				 RegistroClave* registro , TipoHijo& hijoPromocionado,ClaveX* clavePromocionada);
+				 RegistroClave* registro , TipoHijo& hijoPromocionado,ClaveX* clavePromocionada,TipoPuntero& nodoSecuencialSiguiente);
 		int _hallar_hoja(RegistroClave* registro,unsigned int& numeroBloque);
 		/*retorna el numero de bloque donde el registro 'registro se encuentra .
 		 * En caso de no hallarlo retorna RES_ERROR'*/
@@ -70,7 +70,7 @@ class ArbolBMas
 				RegistroClave* registro , TipoHijo& hijoPromocionado);
 
 		int _split_hoja(NodoSecuencial* nodoActual,vector<RegistroClave>* registrosOverflow,
-				TipoHijo& hijoPromocionado,ClaveX* clavePromocionada);
+				TipoHijo& hijoPromocionado,ClaveX* clavePromocionada,TipoPuntero nodoSecuencialSiguiente);
 		/* > a partir de un NodoSecuencial en estado de overflow, se crea un NodoSecuencial
 		 * nuevo donde se guardaran la mitad superior de las claves de nodoActual.
 		 * > En registro se guardara el RegistroClave promocionado
