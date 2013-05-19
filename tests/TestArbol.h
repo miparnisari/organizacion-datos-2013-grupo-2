@@ -21,6 +21,8 @@ class TestArbol:public Test {
 		void test_arbol_abrir_cerrar();
 		void test_arbol_abrir_no_existente();
 		void test_arbol_insertar_un_registro();
+		void test_split_nodo_secuencial();
+		void test_split_raiz();
 
 };
 

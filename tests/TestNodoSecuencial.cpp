@@ -24,6 +24,7 @@ void TestNodoSecuencial::ejecutar()
 	test_nodo_sec_overflow_impar();
 	test_nodo_sec_overflow_par();
 	test_nodo_sec_empaquetar_desempaquetar();
+	test_guardar_y_comparar();
 }
 
 void TestNodoSecuencial::test_nodo_sec_crear()
@@ -354,3 +355,34 @@ void TestNodoSecuencial::test_nodo_sec_overflow_par()
 
 	print_test_ok("test_nodo_sec_overflow_par");
 }
+
+
+void TestNodoSecuencial::test_guardar_y_comparar(){
+
+	NodoSecuencial ns(0,4096);
+	RegistroClave rc1,rc2;
+	ClaveX c1,c2;
+	c1.set_clave(99);
+	c2.set_clave(100);
+	rc1.set_clave(c1);
+	rc2.set_clave(c2);
+	vector<RegistroClave> v;
+	ns.insertar(rc1,v);
+	ns.insertar(rc2,v);
+	Bloque b;
+
+	ns.empaquetar(&b);
+	NodoSecuencial ns2(0,4096);
+	ns2.desempaquetar(&b);
+	RegistroClave *rc3= NULL,*rc4= NULL;
+	ns2.buscar(c1,&rc3);
+	ns2.buscar(c2,&rc4);
+
+	assert( (*rc3)<(*rc4) );
+
+	print_test_ok("test_guardar_y_comparar");
+
+
+}
+
+

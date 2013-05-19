@@ -11,10 +11,11 @@ typedef NodoInterno::TipoHijo TipoHijo;
 
 void TestArbol::ejecutar(){
 
-	test_arbol_abrir_no_existente();
+	/*test_arbol_abrir_no_existente();
 	test_arbol_abrir_cerrar();
 	test_insertar_pocos_registros();
-	test_arbol_insertar_un_registro();
+	test_arbol_insertar_un_registro();*/
+	test_split_raiz();
 }
 
 void TestArbol::test_arbol_insertar_un_registro()
@@ -75,7 +76,7 @@ void TestArbol::test_arbol_abrir_cerrar()
 	assert (arbol.abrir("unArbol.dat","rb+") == RES_OK);
 	assert (arbol.get_cant_minima_nodo() == sizeof(TipoHijo));
 
-	assert (arbol.get_cant_maxima_nodo() == (int)(BLOQUE_TAM_DEFAULT * 0.9));
+	assert (arbol.get_cant_maxima_nodo() == (int)(BLOQUE_TAM_DEFAULT * 0.6));
 	assert (arbol.cerrar() == RES_OK);
 
 	FILE* handler = fopen("unArbol.dat","rb+");
@@ -157,5 +158,35 @@ void TestArbol::test_insertar_pocos_registros(){
 	assert(abm.eliminar(nombreArchivoArbol)== RES_OK);
 
 	print_test_ok("test_insertar_pocos_registros");
+
+}
+
+
+void TestArbol::test_split_raiz(){
+
+	ArbolBMas arbol;
+	string nombreArchivo= "arbolSplit.dat";
+	unsigned int tamanioBloque= 64;
+	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
+	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+
+	RegistroClave rc;
+	ClaveX c;
+
+	for(int i=0;i<7;i++){
+
+		string clave= "aaa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+
+	}
+	string clave= "pqr";
+	c.set_clave(clave);
+	rc.set_clave(c);
+	assert( arbol.agregar(rc)== RES_OK );
+
+	print_test_ok("test_split_raiz");
 
 }
