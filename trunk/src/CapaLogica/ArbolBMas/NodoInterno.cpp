@@ -484,6 +484,45 @@ void NodoInterno::limpiar(){
 }
 
 
+int NodoInterno::buscar_hijo(TipoHijo valorHijo,unsigned short& posicionHijo){
+
+	const unsigned short CANTIDAD_HIJOS= vectorHijos.size();
+	for(unsigned short i=0;i<CANTIDAD_HIJOS;i++){
+
+		TipoHijo unHijo= vectorHijos.at(i);
+		if(unHijo == valorHijo){
+			posicionHijo= i;
+			return RES_OK;
+		}
+
+	}
+
+	return RES_ERROR;
+
+}
+
+
+int NodoInterno::obtener_hijo_siguiente_a(TipoHijo valorHijo,int& hijoSiguiente){
+
+	unsigned short posicionHijo;
+	int res= buscar_hijo(valorHijo,posicionHijo);
+	if(res== RES_ERROR)
+		return RES_ERROR;
+
+	const unsigned short CANTIDAD_HIJOS= this->vectorHijos.size();
+	if(posicionHijo== (CANTIDAD_HIJOS-1) )
+		hijoSiguiente= -1;/*la posicion de valorHijo es la ULTIMA*/
+	else{
+		TipoHijo th;
+		get_hijo(th,posicionHijo+1);
+		hijoSiguiente= (int)th;
+	}
+
+	return RES_OK;
+
+}
+
+
 /*METODOS AGREGADOS POR MARTIN -----------------------------------------------*/
 
 

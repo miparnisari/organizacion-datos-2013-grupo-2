@@ -124,15 +124,17 @@ int ArbolBMas::agregar(RegistroClave & reg)
 	TipoHijo raiz= this->numeroBloqueRaiz;
 	TipoHijo hijoPromocionado;
 	ClaveX clavePromocionada;
-	int resultadoInsercion= _insertar_recursivo(raiz,&reg,hijoPromocionado,&clavePromocionada);
+	TipoPuntero nodoSecuencialSiguiente= -1;
+	int resultadoInsercion= _insertar_recursivo(raiz,&reg,hijoPromocionado,&clavePromocionada,nodoSecuencialSiguiente);
 
 	if(resultadoInsercion!= RES_OVERFLOW)
 		return resultadoInsercion;
 
 
 	NodoInterno nodoRaizNuevo(header.minCantBytesClaves , header.maxCantBytesClaves);
-	unsigned short ocurrenciaInsercion;
+	unsigned short ocurrenciaInsercion= -1;
 	nodoRaizNuevo.insertar_clave(clavePromocionada,ocurrenciaInsercion);
+	cout<<"ocurrencia insercion: "<<ocurrenciaInsercion<<endl;
 	nodoRaizNuevo.insertar_hijo_derecho(clavePromocionada,hijoPromocionado);
 	/*instancio un nodo nuevo para la raiz (interno). Inserto la clave promocionada y el numero de bloque de split como hijo derecho de
 	 * dicha clave .*/
@@ -265,7 +267,7 @@ int ArbolBMas::_hallar_hoja(RegistroClave* registro,
 
 
 int ArbolBMas::_split_hoja(NodoSecuencial* nodoActual,vector<RegistroClave>* registrosOverflow,
-		TipoHijo& hijoPromocionado,ClaveX* clavePromocionada){
+		TipoHijo& hijoPromocionado,ClaveX* clavePromocionada,TipoPuntero nodoSecuencialSiguiente){
 
 	{
 		cout<<"imprimiendo registrosOverflow: "<<endl;
@@ -292,6 +294,7 @@ int ArbolBMas::_split_hoja(NodoSecuencial* nodoActual,vector<RegistroClave>* reg
 	for(int i=0;i<CANTIDAD_REGISTROS_OVERFLOW;i++){
 		nodoSecuencialNuevo.insertar(registrosOverflow->at(i),ro);
 	}/*en el nodo secuencial nuevo agrego los registros en overflow y remuevo dichos registros del nodoSecuencialActual*/
+	nodoSecuencialNuevo.set_proximo_nodo(nodoSecuencialSiguiente);
 
 	Bloque* bloqueNodoSecuencialNuevo = archivoNodos.crear_bloque();
 	nodoSecuencialNuevo.empaquetar(bloqueNodoSecuencialNuevo);
@@ -367,7 +370,7 @@ int ArbolBMas::_split_interno(NodoInterno* nodo,ClaveX* clavePromocionada,
 
 
 int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
-		RegistroClave* registro , TipoHijo& hijoPromocionado,ClaveX* clavePromocionada)
+		RegistroClave* registro , TipoHijo& hijoPromocionado,ClaveX* clavePromocionada, TipoPuntero& nodoSecuencialSiguiente)
 {
 
 	Bloque* bloqueActual= this->archivoNodos.obtener_bloque(numeroBloqueActual);
@@ -398,7 +401,7 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 		/*si no ocurre overflow en la insercion del registro, la ejecucion finaliza*/
 
 		_split_hoja(&nodoSecuencialActual,&registrosOverflow,hijoPromocionado,
-				clavePromocionada);
+				clavePromocionada,nodoSecuencialSiguiente);
 		/*divido el nodoSecuencial en overflow , guardo el nodo nuevo en el archivo y en hijoPromocionado retorno el numero de
 		 * bloque donde el nodoNuevo se guardo. En clavePromocionada guardo la clave que debera ser insertada en el nodoInterno
 		 * padre.*/
@@ -423,11 +426,16 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 			numeroBloqueHijo);
 	/*busco el siguiente hijo para acercarme a la hoja*/
 
+	/*determino el nodoSecuencialSiguiente ------------------------------------------------------------------*/
+	nodoActualInterno.obtener_hijo_siguiente_a(numeroBloqueHijo,nodoSecuencialSiguiente);
+	/*determino el nodoSecuencialSiguiente ------------------------------------------------------------------*/
+
+
 	int resultadoInsercion= this->_insertar_recursivo(numeroBloqueHijo,registro,
-			hijoPromocionado,clavePromocionada);
+			hijoPromocionado,clavePromocionada,nodoSecuencialSiguiente);
 
 	if(resultadoInsercion== RES_OK)
-		return RES_OK;/*no hay promocion / overflow*/
+		return RES_OK;
 	if(resultadoInsercion== RES_RECORD_EXISTS)
 		return RES_RECORD_EXISTS;/*registro que se busco insertar ya existia -> se retorna como error RES_RECORD_EXISTS*/
 
@@ -439,8 +447,15 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 	/*inserto en el nodoInterno la clave promocionada desde un secuencial y el hijo derecho de dicha clave*/
 
 
-	if(resultadoInsercionNodoInterno== RES_OK)
+	if(resultadoInsercionNodoInterno== RES_OK){
+		Bloque* bloqueNodoInternoActualModificado = archivoNodos.crear_bloque();
+		nodoActualInterno.empaquetar(bloqueNodoInternoActualModificado);
+		this->archivoNodos.sobreescribir_bloque(bloqueNodoInternoActualModificado,numeroBloqueActual);
+		/*se sobreescribe el nodo original en el archivo de bloques*/
+
+		delete bloqueNodoInternoActualModificado;
 		return RES_OK;
+	}
 	if(resultadoInsercionNodoInterno== RES_ERROR)
 		return RES_ERROR;
 
