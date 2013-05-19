@@ -39,9 +39,9 @@ HashingExtensible::~HashingExtensible()
 int HashingExtensible::eliminar_hashing_extensible()
 {
 	int resultado = this->manejador_bloques.eliminar_archivo(this->fileName);
-
+	tabla->eliminar();
 	return resultado;
-    this->tabla->eliminar();
+
 }
 
 int HashingExtensible::funcion_dispersion(int clave)
@@ -91,7 +91,7 @@ int HashingExtensible::agregar(RegistroClave reg)
         if(tamDispersion == tamTabla){
 
             //Duplicamos la tabla
-            this->tabla->duplicar();
+        	this->tabla->duplicar();
             this->tabla->cambiar_valor(posTabla, posBloqueNuevo);
 
             //Creamos el bloque con el tam de dispersion del tamanio de la tabla
@@ -213,12 +213,12 @@ int HashingExtensible::crear_bloque(int tam, Bloque *bloqueNuevo)
     RegistroVariable tamDispBloque;
 
     //agregamos el tamanio al bloque
-    char* campo;
-    ClaveX tamDisp;
-    tamDisp.set_clave(tam);
-    tamDisp.empaquetar(campo);
+    std::stringstream ss;
+    std::string campo;
+    ss << tam;
+    campo = ss.str();
     //Le guardo el tamaño de dispersion
-    tamDispBloque.agregar_campo(campo,strlen(campo));
+    tamDispBloque.agregar_campo(campo.c_str(),campo.size());
     bloqueNuevo->agregar_registro(&tamDispBloque);
     return RES_OK;
 }
@@ -252,7 +252,8 @@ int HashingExtensible::obtener_posicion_reg_bloque(ClaveX clave, Bloque bloque)
 
 int HashingExtensible::obtener_posicion_tabla(ClaveX registro)
 {   //Se devuelve la clave pasada por la funcion dispersion
-    int clave=0, i;
+    int clave=0;
+    unsigned int i;
     if(registro.get_tipo_clave() == CLAVE_STRING){
         string claveS;
         registro.get_clave(claveS);
