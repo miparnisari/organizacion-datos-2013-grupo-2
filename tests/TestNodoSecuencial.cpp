@@ -380,6 +380,9 @@ void TestNodoSecuencial::test_guardar_y_comparar(){
 
 	assert( (*rc3)<(*rc4) );
 
+	delete rc3;
+	delete rc4;
+
 	print_test_ok("test_guardar_y_comparar");
 
 

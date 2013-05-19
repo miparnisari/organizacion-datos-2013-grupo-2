@@ -83,6 +83,11 @@ class ArbolBMas
 		 * > el nodo nuevo es persistido en el archivo de bloques de nodos
 		 * > el numero de bloque del nodo nuevo es guardado en el parametro hijoPromocionado*/
 
+
+		void imprimir();
+		void _imprimir_recursivo(TipoHijo& numeroBloqueActual);
+		void obtener_primer_nodo_secuencial(TipoHijo& numeroPrimerNodo);
+		/*guarda en el parametro nodo el primer nodo secuencial*/
 };
 
 #endif /* ARBOLBMAS_H */ 

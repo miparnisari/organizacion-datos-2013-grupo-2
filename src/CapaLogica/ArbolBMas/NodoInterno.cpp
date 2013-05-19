@@ -212,10 +212,8 @@ int NodoInterno::empaquetar(Bloque* bloque)
 	RegistroVariable registroClaves;
 	RegistroVariable registroHijos;
 
-	registroTipoNodo.agregar_campo( (char*)&tipoNodo , sizeof(tipoNodo) );
-	char tn;
-	registroTipoNodo.recuperar_campo( (char*)&tn,0 );
-	cout<<"tn= "<<tn<<endl;
+	char ti= TIPO_INTERNO;
+	registroTipoNodo.agregar_campo( (char*)&ti , sizeof(tipoNodo) );
 
 	const unsigned short CANTIDAD_CLAVES= vectorClaves.size();
 	for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){

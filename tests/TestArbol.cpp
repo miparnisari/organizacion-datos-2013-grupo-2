@@ -164,6 +164,8 @@ void TestArbol::test_insertar_pocos_registros(){
 
 void TestArbol::test_split_raiz(){
 
+	cout<<"test_split_raiz"<<endl;//TODO BORRAR
+
 	ArbolBMas arbol;
 	string nombreArchivo= "arbolSplit.dat";
 	unsigned int tamanioBloque= 64;
@@ -173,19 +175,21 @@ void TestArbol::test_split_raiz(){
 	RegistroClave rc;
 	ClaveX c;
 
-	for(int i=0;i<7;i++){
+	for(int i=0;i<8;i++){
 
 		string clave= "aaa";
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
+		cout<<"clave en insercion: "<<clave<<endl;//TODO BORRAR
 		assert( arbol.agregar(rc)== RES_OK );
 
 	}
-	string clave= "pqr";
-	c.set_clave(clave);
-	rc.set_clave(c);
-	assert( arbol.agregar(rc)== RES_OK );
+
+	cout<<"imprimir arbol: "<<endl;
+	arbol.imprimir();
+
+	assert(arbol.cerrar() == RES_OK);
 
 	print_test_ok("test_split_raiz");
 
