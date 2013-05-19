@@ -213,12 +213,12 @@ int HashingExtensible::crear_bloque(int tam, Bloque *bloqueNuevo)
     RegistroVariable tamDispBloque;
 
     //agregamos el tamanio al bloque
-    std::stringstream ss;
-    std::string campo;
-    ss << tam;
-    campo = ss.str();
+    char* campo;
+    ClaveX tamDisp;
+    tamDisp.set_clave(tam);
+    tamDisp.empaquetar(campo);
     //Le guardo el tamaño de dispersion
-    tamDispBloque.agregar_campo(campo.c_str(),campo.size());
+    tamDispBloque.agregar_campo(campo,strlen(campo));
     bloqueNuevo->agregar_registro(&tamDispBloque);
     return RES_OK;
 }

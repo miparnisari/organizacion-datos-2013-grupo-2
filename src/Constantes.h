@@ -86,6 +86,7 @@ const long FIN_PILA_REGISTROS_LIBRES = -1;
  */
 
  const int NO_EXISTE_INDICE                         =-1;
+ const char* REFE_NULA                               ="";
 
 #endif /* CONSTANTES_H */
 
