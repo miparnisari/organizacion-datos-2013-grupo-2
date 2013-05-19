@@ -30,6 +30,7 @@ int IndiceInvertido::agregar_documento(std::string doc, int IDdoc)
     this->armar_archivo_coincidencias(doc, IDdoc);
     this->armar_listas_invertidas(IDdoc);
     this->archivo_coincidencias.eliminar_archivo(this->fileName+"Coincidencias");
+    return RES_OK;
 }
 
 int IndiceInvertido::agregar_termino(char* termino, int IDdoc, int pos)
@@ -51,11 +52,13 @@ int IndiceInvertido::agregar_termino(char* termino, int IDdoc, int pos)
         idtermino = itoa (IDter, idtermino, 10); /*****chanchada para guardar numero como char***/
     }
     this->agregar_coincidencia(IDdoc, idtermino, pos);
+    return RES_OK;
 }
 
 int IndiceInvertido::borrar_documento(int IDdoc)
 {
     /********************FALTA*******************/
+    return RES_OK;
 }
 
 int IndiceInvertido::borrar_indice()
@@ -64,23 +67,23 @@ int IndiceInvertido::borrar_indice()
     this->vocabulario.eliminar(this->fileName+"Vocabulario");
     this->listas_invertidas.eliminar_archivo(this->fileName+"ListasInvertidas");
     this->archivo_coincidencias.eliminar_archivo(this->fileName+"Coincidencias");
+    return RES_OK;
 }
 
 void IndiceInvertido::crear_termino_vocabulario(ClaveX clave, char* idtermino){
     //Agrega el nuevo termino al vocabulario con una referencia nula a la lista invertida
     RegistroVariable reg;
-//    char* referencia = REF_NULA;
     RegistroClave regVocabulario;
     this->archivo_terminos.agregar_registro(&reg);   //Agrego el termino al archivo de terminos
     regVocabulario.set_clave(clave);
     regVocabulario.agregar_campo(idtermino, sizeof(idtermino));
-    regVocabulario.agregar_campo(REF_NULA, sizeof(REF_NULA)); //Seria el numero de la lista dentro del archivo de listas invertida
+    regVocabulario.agregar_campo(REFE_NULA, sizeof(REFE_NULA)); //Seria el numero de la lista dentro del archivo de listas invertida
     this->vocabulario.agregar(regVocabulario);  //Agrego el nuevo termino al vocabulario
 }
 
 int IndiceInvertido::armar_listas_invertidas(int IDdoc)
 {
-    int IDter, i, pos, posLista, IDterLista=-1; //ver el -1
+    int IDter, i, posLista, IDterLista=-1; //ver el -1
     RegistroVariable reg_coin, regInvertido;
     Bloque *lista;
     char *campo, *idtermino;
@@ -137,21 +140,25 @@ int IndiceInvertido::buscar_lista(int IDterLista, Bloque *lista)
 int IndiceInvertido::interseccion_listas_invertidas(std::string archivo)
 {
     /***aca buscamos la interseccion de estas listas por IDdoc y guardamos las listas en un nuevo archivo de reg variables con el nombre pasado por parametro**/
+    return RES_OK;
 }
 
 int IndiceInvertido::armar_archivo_coincidencias(std::string doc, int IDdoc)
 {
     //Lo van a implementar cada indice invertido
+    return RES_OK;
 }
 
 int IndiceInvertido::buscar(char *elem_busqueda, std::string conjunto_iddoc)
 {
     //Lo van a implementar cada indice invertido
+    return RES_OK;
 }
 
 int IndiceInvertido::agregar_coincidencia(int IDdoc, char* idtermino, int pos)
 {
     //Lo van a implementar cada indice invertido
+    return RES_OK;
 }
 
 void IndiceInvertido::crear_reg_lista_inverida(RegistroVariable *regInvertido, char *pos, int IDdoc)
