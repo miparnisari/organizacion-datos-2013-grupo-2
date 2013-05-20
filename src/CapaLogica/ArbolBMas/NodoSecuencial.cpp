@@ -16,6 +16,21 @@ NodoSecuencial::NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBy
 	proximoNodo = -1;
 }
 
+std::vector<RegistroClave> NodoSecuencial::get_registros() const
+{
+	return this->vectorRegistros;
+}
+
+
+
+bool NodoSecuencial::tiene_carga_minima ()
+{
+	if (vectorRegistros.size() == 1)
+		return true;
+
+	return false;
+}/* FIXME refactorizar y tener en cuenta que la carga minima puede ser distinta de 0. */
+
 NodoSecuencial::~NodoSecuencial()
 {
 	vectorRegistros.clear();

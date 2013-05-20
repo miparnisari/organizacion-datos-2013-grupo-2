@@ -26,6 +26,7 @@ class NodoArbol {
 		virtual ~NodoArbol();
 
 		virtual int desempaquetar(const Bloque* bloque);
+		virtual int empaquetar(Bloque* bloque);
 
 		virtual bool es_hoja();
 		virtual bool es_interno();

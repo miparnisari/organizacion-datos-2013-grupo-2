@@ -19,7 +19,7 @@ namespace utilitarios
 		buffer[1] = (integer >> 8) & 0xff;
 		buffer[2] = (integer >> 16) & 0xff;
 		buffer[3] = (integer >> 24) & 0xff;
-	}/* copia un int a un char**/
+	}/* copia un int a un char* */
 
 	bool validFileName (std::string fileName)
 	{
