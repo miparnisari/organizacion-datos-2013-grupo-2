@@ -22,18 +22,21 @@ class HashingExtensible
         ManejadorBloques manejador_bloques;
         Tabla* tabla;
 
-	public:
+        public:
 
         HashingExtensible();
 
-		virtual ~HashingExtensible();
+                virtual ~HashingExtensible();
 
-		virtual int crear(std::string nombreArchivo);
-		virtual int eliminar();
-		//Eliminamos el hashing extensible junto a todos sus documentos
+                virtual int crear(std::string nombreArchivo);
 
-		virtual int agregar(RegistroClave reg);
-		//Guarda el elemento en el hash, en caso de que ya existe el elemento devuelve YA_EXISTE
+                virtual int abrir(std::string nombreArchivo);
+
+                virtual int eliminar();
+                //Eliminamos el hashing extensible junto a todos sus documentos
+
+                virtual int agregar(RegistroClave reg);
+                //Guarda el elemento en el hash, en caso de que ya existe el elemento devuelve YA_EXISTE
 
         virtual int devolver(ClaveX clave, RegistroClave *reg);
         //Devuelve el elemento del hash, en caso de que no exista devuelve NO_EXISTE

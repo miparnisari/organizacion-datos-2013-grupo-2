@@ -235,33 +235,33 @@ void test_vector_clavex(){
 int main(int argc,char** args)
 {
 //	test_leer_de_archivo();
-	test_clave_numerica();
-	test_clave_string();
-	test_clavex();
-	test_vector_clavex();
+//	test_clave_numerica();
+//	test_clave_string();
+//	test_clavex();
+//	test_vector_clavex();
 
 	std::vector<Test*> tests;
 
-	tests.push_back(new TestRegistroCancion);
+//	tests.push_back(new TestRegistroCancion);
 
-	tests.push_back(new TestRegistroVariable);
-	tests.push_back(new TestManejadorRegistrosVariables);
+//	tests.push_back(new TestRegistroVariable);
+//	tests.push_back(new TestManejadorRegistrosVariables);
 
-	tests.push_back(new TestManejadorArchivoDatosBasicos);
+//	tests.push_back(new TestManejadorArchivoDatosBasicos);
 
-	tests.push_back(new TestRegistroClave);
+//	tests.push_back(new TestRegistroClave);
 
-	tests.push_back(new TestBloque);
-	tests.push_back(new TestManejadorBloques);
+//	tests.push_back(new TestBloque);
+//	tests.push_back(new TestManejadorBloques);
 	
 	tests.push_back(new TestHashingExtensible);
-	tests.push_back(new TestTabla);
+//	tests.push_back(new TestTabla);
 	
-	tests.push_back(new TestNodoInterno);
-	tests.push_back(new TestNodoSecuencial);
+//	tests.push_back(new TestNodoInterno);
+//	tests.push_back(new TestNodoSecuencial);
 
-	tests.push_back(new TestHeap);
-	tests.push_back(new TestArbol);
+//	tests.push_back(new TestHeap);
+//	tests.push_back(new TestArbol);
 
 	for (unsigned int i = 0; i < tests.size(); i++)
 	{

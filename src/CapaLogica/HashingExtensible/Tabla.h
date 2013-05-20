@@ -28,6 +28,7 @@ class Tabla {
 		int crear(string rutaArchivo);
 		int eliminar();
 
+		void set_ruta(string unaRuta);
 		int get_tamanio();
 
 		int obtener_valor(int posicion);
