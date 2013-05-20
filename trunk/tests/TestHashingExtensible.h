@@ -15,6 +15,8 @@ class TestHashingExtensible : public Test {
 
 	private:
 
+		void test_hashing_guardar_y_leer_int();
+
 		void test_crear_hashing();
 		//Probamos que se cree la tabla y el primer bloque de registros cuando se cree el hashing
 

@@ -16,6 +16,54 @@ TestHashingExtensible::~TestHashingExtensible()
 
 }
 
+void TestHashingExtensible::ejecutar()
+{
+	test_hashing_guardar_y_leer_int();
+    test_crear_hashing();
+   /* this->test_eliminar_registro();
+	this->test_agregar_y_devolver_registro();
+	this->test_crear_hashing_cerrarlo_y_abrirlo();
+	this->test_agregar_varios_registros_y_devolver();
+	this->test_agregar_reg_y_duplicar_tabla();
+	this->test_eliminar_reg_y_dividir_tabla();*/
+}
+
+void TestHashingExtensible::test_hashing_guardar_y_leer_int()
+{
+	// ARRANGE
+	ManejadorBloques manejador;
+	manejador.crear_archivo("prueba_int.dat",100);
+	manejador.abrir_archivo("prueba_int.dat","rb+");
+	Bloque* bloque = manejador.crear_bloque();
+	int numeroEscrito = 156;
+    RegistroVariable regEscrito;
+    assert (regEscrito.agregar_campo((char*)&numeroEscrito,sizeof(numeroEscrito)) == RES_OK);
+    assert (bloque->agregar_registro(&regEscrito) == RES_OK);
+
+
+    // ACT -> Escribo en el archivo
+    assert (manejador.escribir_bloque(bloque) == RES_OK);
+    manejador.cerrar_archivo();
+
+
+    // ASSERT -> Leo del archivo
+    manejador.abrir_archivo("prueba_int.dat","rb+");
+    RegistroVariable regLeido;
+    Bloque* bloqueLeido = manejador.obtener_bloque(0);
+    bloqueLeido->recuperar_registro(&regLeido,0);
+    int numeroLeido;
+    regLeido.recuperar_campo((char*)&numeroLeido,0);
+
+    assert(numeroLeido == numeroEscrito);
+
+    manejador.cerrar_archivo();
+    delete bloque;
+    delete bloqueLeido;
+
+    print_test_ok("test_hashing_guardar_y_leer_int");
+
+}
+
 void TestHashingExtensible::test_crear_hashing()
 {
     HashingExtensible hash1("",DIRECCION);
@@ -174,17 +222,6 @@ void TestHashingExtensible::test_eliminar_reg_y_dividir_tabla()
 	hash1.eliminar(clave); //Elimino el ultimo registro
 	assert(1 == tabla.get_tamanio()); //Vemos si se dividio la tabla
     print_test_ok("test_eliminar_reg_y_dividir_tabla");*/
-}
-
-void TestHashingExtensible::ejecutar()
-{
-    this->test_crear_hashing();
-   /* this->test_eliminar_registro();
-	this->test_agregar_y_devolver_registro();
-	this->test_crear_hashing_cerrarlo_y_abrirlo();
-	this->test_agregar_varios_registros_y_devolver();
-	this->test_agregar_reg_y_duplicar_tabla();
-	this->test_eliminar_reg_y_dividir_tabla();*/
 }
 
 void TestHashingExtensible::crear_registro_y_agregar(HashingExtensible *hash1, std::string campo, ClaveX clave)
