@@ -53,8 +53,9 @@ int HashingExtensible::funcion_dispersion(int clave)
 
 int HashingExtensible::agregar(RegistroClave reg)
 {
-    int posBloque, tamDispersion, i, resultado, posBloqueNuevo, posReg, tamTabla, posTabla;
+    int posBloque, i, resultado, posBloqueNuevo, posReg, tamTabla, posTabla;
     Bloque bloque;
+    unsigned int tamDispersion;
     RegistroVariable tamDispBloque;
     ClaveX clave_reg = reg.get_clave();
 
@@ -80,7 +81,7 @@ int HashingExtensible::agregar(RegistroClave reg)
         bloque.recuperar_registro(&tamDispBloque,0);
         char* buffer = new char[50]();
         tamDispBloque.recuperar_campo(buffer,0);
-        tamDispersion = atoi(buffer);
+        tamDispersion = utilitarios::pasarBufferAInt(buffer);
 
         //La pos del nuevo bloque es el libre
         posBloqueNuevo = this->manejador_bloques.get_primer_bloque_libre();
@@ -158,7 +159,8 @@ int HashingExtensible::modificar(RegistroClave elemN)
 
 int HashingExtensible::eliminar(ClaveX clave)
 {
-    int posBloque, tamDispersion, i, posDer, posIzq, posReg, posTabla;
+    int posBloque, i, posDer, posIzq, posReg, posTabla;
+    unsigned int tamDispersion;
     Bloque bloque;
     RegistroVariable tamDisp;
 
@@ -176,7 +178,7 @@ int HashingExtensible::eliminar(ClaveX clave)
         bloque.recuperar_registro(&tamDisp, 0);
         char* buffer = new char[50]();
         tamDisp.recuperar_campo(buffer, 0);
-        tamDispersion = atoi(buffer);
+        tamDispersion = utilitarios::pasarBufferAInt(buffer);
 
         //Me muevo tamDispersion para un lado y para el otro de la lista, si son iguales cambio cada tam disp *2 los bloques de la tabla
         posDer = this->tabla->obtener_valor(posTabla+tamDispersion);
@@ -207,10 +209,10 @@ int HashingExtensible::crear_bloque(int tam, Bloque *bloqueNuevo)
 //Creamos el bloque con el tam de dispersion del tama�o de la tabla
     RegistroVariable tamDispBloque;
     //agregamos el tamanio al bloque
-    char cadena[10];
-    itoa(tam,cadena,10);
+    char *campo;
+    utilitarios::copyIntToBuffer(campo, tam);
     //Le guardo el tamaño de dispersion
-    tamDispBloque.agregar_campo(cadena,strlen(cadena));
+    tamDispBloque.agregar_campo(campo,strlen(campo));
     bloqueNuevo->agregar_registro(&tamDispBloque);
     return RES_OK;
 }
