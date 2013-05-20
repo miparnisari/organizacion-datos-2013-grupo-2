@@ -7,9 +7,8 @@ namespace utilitarios
     unsigned int pasarBufferAInt(char* value)
     {
         unsigned int intValue;
-        stringstream strValue;
+        std::stringstream strValue;
         strValue << value;
-        unsigned int intValue;
         strValue >> intValue;
         return intValue;
     }/* pasa un char* a un int*/
