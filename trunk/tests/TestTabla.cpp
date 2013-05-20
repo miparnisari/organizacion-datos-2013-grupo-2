@@ -7,6 +7,7 @@
 
 #include "TestTabla.h"
 #define DIRECCION "TablaDePrueba.dat"
+#define DIRECCION2 "TablaDePrueba"
 using namespace std;
 using namespace utilitarios;
 
@@ -24,6 +25,7 @@ void TestTabla::ejecutar(){
 	test_tabla_hash_duplicacion();
 	test_tabla_hash_posiciones_correctas_al_duplicar();
 	test_tabla_hash_posiciones_correctas_al_dividir();
+	test_tabla_hash_eliminar_tabla();
 }
 
 void TestTabla::test_tabla_hash_crear(){
@@ -79,7 +81,13 @@ void TestTabla::test_tabla_hash_duplicacion(){
 }
 
 void TestTabla::test_tabla_hash_eliminar_tabla(){
+	Tabla unaTabla;
 
+	assert(unaTabla.crear(DIRECCION) == RES_OK);
+	assert(unaTabla.crear(DIRECCION) == RES_OK);
+
+	assert(unaTabla.eliminar() == RES_OK);
+	print_test_ok("test_tabla_hash_eliminar_tabla");
 }
 
 

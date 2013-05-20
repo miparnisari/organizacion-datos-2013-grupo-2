@@ -15,9 +15,13 @@ Tabla::Tabla()
 Tabla::~Tabla() {
 }
 
+void Tabla::set_ruta(string unaRuta){
+	this->rutaArchivo = unaRuta;
+}
+
 int Tabla::crear(string unaRuta)
 {
-	this->rutaArchivo = unaRuta;
+	this->set_ruta(unaRuta);
 
 	if (archivo.abrir_archivo(rutaArchivo, "rb+") == RES_ERROR){
 		archivo.crear_archivo(rutaArchivo);
@@ -30,6 +34,7 @@ int Tabla::crear(string unaRuta)
 
 int Tabla::eliminar()
 {
+	archivo.abrir_archivo(this->rutaArchivo, "rb+");
 	return archivo.eliminar_archivo(this->rutaArchivo);
 }
 

@@ -40,13 +40,16 @@ bool ManejadorArchivos::archivo_existe(std::string nombreArchivo)const throw()
 
 int ManejadorArchivos::eliminar_archivo(std::string nombreArchivo)const throw()
 {
+	int res;
+
 	if (! utilitarios::validFileName(nombreArchivo) )
 		return RES_ERROR;
 
 	if(!archivo_existe(nombreArchivo))
 		return RES_FILE_DOESNT_EXIST;
 
-	if (remove(nombreArchivo.c_str()) == 0)
+	res = remove(nombreArchivo.c_str());
+	if (res == 0)
 		return RES_OK;
 
 	return RES_ERROR;

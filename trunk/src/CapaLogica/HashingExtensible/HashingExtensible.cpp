@@ -9,8 +9,8 @@ HashingExtensible::HashingExtensible()
 {
 	this->fileName = "";
 	this->fileNameTabla = "";
-   	this->cant_bloques = 0;
-    this->tabla = NULL;
+	this->cant_bloques = 0;
+    this->tabla = new Tabla();
 }
 
 HashingExtensible::~HashingExtensible()
@@ -18,39 +18,46 @@ HashingExtensible::~HashingExtensible()
     delete(tabla);
 }
 
+int HashingExtensible::abrir(std::string nombreArchivo)
+{
+	int resultado;
+	this->fileName=nombreArchivo+".dat";
+    this->fileNameTabla=nombreArchivo+"Tabla"+".dat";
+	resultado = this->manejador_bloques.abrir_archivo(fileName, "rb+");
+    this->cant_bloques = manejador_bloques.get_cantidad_bloques();
+    this->manejador_bloques.cerrar_archivo();
+    resultado = resultado + this->tabla->crear(fileNameTabla);
+    return resultado;
+}
+
 int HashingExtensible::crear(std::string nombreArchivo)
 {
-    this->fileName=nombreArchivo;
-    this->fileNameTabla=nombreArchivo+"Tabla"+".dat";
+    this->fileName=nombreArchivo+".dat";
+    this->fileNameTabla=nombreArchivo+"Tabla.dat";
 
-    if (this->manejador_bloques.abrir_archivo(fileName, "rb+") != RES_OK){ //Si no existe es porque estamos creando un nuevo Hash
-        this->manejador_bloques.crear_archivo(fileName, BLOQUE_TAM_DEFAULT);
-        this->manejador_bloques.abrir_archivo(fileName, "rb+");
-        //Creamos la tabla
-        this->tabla = new Tabla;
-        this->tabla->crear(fileNameTabla);
-        this->tabla->cambiar_valor(0, 0); // la pos 0 de la tabla se le coloca el num de bloque 0
-        //Creamos un nuevo bloque con dispersion 1 y lo guardamos en el archivo de bloques del Hash
-        Bloque* bloqueNuevo = this->manejador_bloques.crear_bloque();
-        this->crear_bloque(1, bloqueNuevo);
-        this->manejador_bloques.escribir_bloque(bloqueNuevo);//Va a estar en la posicion 0
-        delete (bloqueNuevo);
-        this->cant_bloques = 1;
-    }else{
-        //Ya abrimos el archivo de bloques
-        this->cant_bloques = manejador_bloques.get_cantidad_bloques();
-    }
+    if (this->manejador_bloques.abrir_archivo(fileName, "rb+") == RES_OK)	return YA_EXISTE; //Si no existe es porque estamos creando un nuevo Hash
+    int resultado = this->manejador_bloques.crear_archivo(fileName, BLOQUE_TAM_DEFAULT);
+	this->manejador_bloques.abrir_archivo(fileName, "rb+");
+	//Creamos la tabla
+	resultado = resultado + this->tabla->crear(fileNameTabla);
+	this->tabla->cambiar_valor(0, 0); // la pos 0 de la tabla se le coloca el num de bloque 0
+	//Creamos un nuevo bloque con dispersion 1 y lo guardamos en el archivo de bloques del Hash
+	Bloque* bloqueNuevo = this->manejador_bloques.crear_bloque();
+	this->crear_bloque(1, bloqueNuevo);
+	this->manejador_bloques.escribir_bloque(bloqueNuevo);//Va a estar en la posicion 0
+	delete (bloqueNuevo);
+	this->cant_bloques = 1;
     this->manejador_bloques.cerrar_archivo();
-    return RES_OK;
+    return resultado;
 }
 
 int HashingExtensible::eliminar()
 {
-	int resultado1 = this->manejador_bloques.eliminar_archivo(this->fileName);
-	int resultado2 = tabla->eliminar();
-	if (resultado1 == RES_OK && resultado2 == RES_OK)
-		return RES_OK;
-	return RES_ERROR;
+        int resultado1 = this->manejador_bloques.eliminar_archivo(this->fileName);
+        int resultado2 = tabla->eliminar();
+        if (resultado1 == RES_OK && resultado2 == RES_OK)
+                return RES_OK;
+        return RES_ERROR;
 }
 
 int HashingExtensible::funcion_dispersion(int clave)
@@ -96,7 +103,7 @@ int HashingExtensible::agregar(RegistroClave reg)
         if(tamDispersion == (unsigned)tamTabla){
 
             //Duplicamos la tabla
-        	this->tabla->duplicar();
+                this->tabla->duplicar();
             this->tabla->cambiar_valor(posTabla, posBloqueNuevo);
 
             //Creamos el bloque con el tam de dispersion del tamanio de la tabla
@@ -140,7 +147,7 @@ int HashingExtensible::devolver(ClaveX clave, RegistroClave *reg)
     //Modifico el elemento del bloque
     posReg = this->obtener_posicion_reg_bloque(clave, bloque);
     if (posReg == RES_ERROR)
-    	return NO_EXISTE;
+        return NO_EXISTE;
     bloque.recuperar_registro(reg, posReg);
     this->manejador_bloques.cerrar_archivo();
     return RES_OK;
@@ -177,7 +184,7 @@ int HashingExtensible::eliminar(ClaveX clave)
     posBloque = this->obtener_bloque(clave, bloque);
     posReg = this->obtener_posicion_reg_bloque(clave, bloque);
     if (posReg == RES_ERROR)
-    	return RES_OK; // No esta la clave en el archivo, es lo mismo que borrarla
+        return RES_OK; // No esta la clave en el archivo, es lo mismo que borrarla
     //Elimino el registro
     bloque.eliminar_registro(posReg);
     if (bloque.get_cantidad_registros_almacenados() == 1){ // o sea que solo esta el tam dispersion
@@ -211,8 +218,8 @@ int HashingExtensible::eliminar(ClaveX clave)
 
 int HashingExtensible::crear_bloque(int tam, Bloque *bloqueNuevo)
 {
-	if (bloqueNuevo == NULL)
-		return RES_ERROR;
+        if (bloqueNuevo == NULL)
+                return RES_ERROR;
     RegistroVariable regTamDisp;
     regTamDisp.agregar_campo((char*)&tam,sizeof(tam));
     bloqueNuevo->agregar_registro(&regTamDisp);
@@ -239,11 +246,11 @@ int HashingExtensible::obtener_posicion_reg_bloque(ClaveX clave, Bloque bloque)
         bloque.recuperar_registro(&reg, i);
         clave_reg = reg.get_clave();
         if(clave_reg == clave)
-        	se_encontro=RES_OK;
+                se_encontro=RES_OK;
         i++;
     }
     if (se_encontro ==RES_OK)
-    	return i;
+        return i;
     return RES_ERROR;
 }
 
