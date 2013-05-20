@@ -52,7 +52,7 @@ class HashingExtensible
         virtual int crear_bloque(int tam, Bloque *bloqueNuevo);
         //Crea un nuevo bloque del Hashing
 
-        virtual int obtener_bloque(ClaveX clave, Bloque* bloque);
+        virtual int obtener_bloque(ClaveX clave, Bloque& bloque);
         //Obtenemos el bloque que corresponde a la clave pasada por parametro
 
         virtual int obtener_posicion_reg_bloque(ClaveX clave, Bloque bloque);

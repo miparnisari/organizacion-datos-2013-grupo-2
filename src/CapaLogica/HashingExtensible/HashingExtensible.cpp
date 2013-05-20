@@ -73,7 +73,7 @@ int HashingExtensible::agregar(RegistroClave reg)
     tamTabla = tabla->get_tamanio();
     //Obtengo el bloque en donde se guardara el registro
 
-    posBloque = this->obtener_bloque(clave_reg, &bloque);
+    posBloque = this->obtener_bloque(clave_reg, bloque);
     posTabla = this->obtener_posicion_tabla(clave_reg);
 
     //Verificamos que no exista la clave del registro que queremos guardar
@@ -136,7 +136,7 @@ int HashingExtensible::devolver(ClaveX clave, RegistroClave *reg)
     Bloque bloque;
     this->manejador_bloques.abrir_archivo(fileName, "rb+");
     //Obtengo el bloque que buscamos
-    this->obtener_bloque(clave, &bloque);
+    this->obtener_bloque(clave, bloque);
     //Modifico el elemento del bloque
     posReg = this->obtener_posicion_reg_bloque(clave, bloque);
     if (posReg == RES_ERROR)
@@ -153,7 +153,7 @@ int HashingExtensible::modificar(RegistroClave elemN)
     ClaveX clave_reg =  elemN.get_clave();
     this->manejador_bloques.abrir_archivo(fileName, "rb+");
     //obtengo el bloque que buscamos
-    posBloque = this->obtener_bloque(clave_reg, &bloque);
+    posBloque = this->obtener_bloque(clave_reg, bloque);
     //Busco el registro a modificar
     posReg = this->obtener_posicion_reg_bloque(clave_reg, bloque);
     if (posReg != RES_ERROR) bloque.eliminar_registro(posReg); //Borro el viejo registro
@@ -174,7 +174,7 @@ int HashingExtensible::eliminar(ClaveX clave)
     this->manejador_bloques.abrir_archivo(fileName, "rb+");
     //Busco el bloque para agregar el elemento
     posTabla = this->obtener_posicion_tabla(clave);
-    posBloque = this->obtener_bloque(clave, &bloque);
+    posBloque = this->obtener_bloque(clave, bloque);
     posReg = this->obtener_posicion_reg_bloque(clave, bloque);
     if (posReg == RES_ERROR)
     	return RES_OK; // No esta la clave en el archivo, es lo mismo que borrarla
@@ -219,13 +219,14 @@ int HashingExtensible::crear_bloque(int tam, Bloque *bloqueNuevo)
     return RES_OK;
 }
 
-int HashingExtensible::obtener_bloque(ClaveX clave, Bloque* bloque)
+int HashingExtensible::obtener_bloque(ClaveX clave, Bloque& bloque)
 {
     int posBloque;
     //Busco el numero de bloque que necesitamos
     posBloque = this->tabla->obtener_valor(this->obtener_posicion_tabla(clave));
     //Busco el bloque para agregar el elemento
-    bloque = this->manejador_bloques.obtener_bloque(posBloque);
+    bloque = *(this->manejador_bloques.obtener_bloque(posBloque));
+
     return posBloque;
 }
 
