@@ -5,11 +5,23 @@
 
 Falta revisar como se guardan los tamanios de dispersion de los bloques*/
 
-HashingExtensible::HashingExtensible(std::string directorioSalida, std::string fileNamee)
+HashingExtensible::HashingExtensible()
 {
+	this->fileName = "";
+	this->fileNameTabla = "";
+   	this->cant_bloques = 0;
     this->tabla = NULL;
-    this->fileName=directorioSalida+fileNamee;
-    this->fileNameTabla=directorioSalida+fileNamee+"Tabla";
+}
+
+HashingExtensible::~HashingExtensible()
+{
+    delete(tabla);
+}
+
+int HashingExtensible::crear(std::string nombreArchivo)
+{
+    this->fileName=nombreArchivo;
+    this->fileNameTabla=nombreArchivo+"Tabla"+".dat";
 
     if (this->manejador_bloques.abrir_archivo(fileName, "rb+") != RES_OK){ //Si no existe es porque estamos creando un nuevo Hash
         this->manejador_bloques.crear_archivo(fileName, BLOQUE_TAM_DEFAULT);
@@ -29,19 +41,16 @@ HashingExtensible::HashingExtensible(std::string directorioSalida, std::string f
         this->cant_bloques = manejador_bloques.get_cantidad_bloques();
     }
     this->manejador_bloques.cerrar_archivo();
+    return RES_OK;
 }
 
-HashingExtensible::~HashingExtensible()
+int HashingExtensible::eliminar()
 {
-    delete(tabla);
-}
-
-int HashingExtensible::eliminar_hashing_extensible()
-{
-	int resultado = this->manejador_bloques.eliminar_archivo(this->fileName);
-	tabla->eliminar();
-	return resultado;
-
+	int resultado1 = this->manejador_bloques.eliminar_archivo(this->fileName);
+	int resultado2 = tabla->eliminar();
+	if (resultado1 == RES_OK && resultado2 == RES_OK)
+		return RES_OK;
+	return RES_ERROR;
 }
 
 int HashingExtensible::funcion_dispersion(int clave)
@@ -79,9 +88,7 @@ int HashingExtensible::agregar(RegistroClave reg)
         Bloque bloqueAux(this->manejador_bloques.get_tamanio_bloque());
         //Recupero el tamaño de dispersion del bloque
         bloque.recuperar_registro(&tamDispBloque,0);
-        char* buffer = new char[50]();
-        tamDispBloque.recuperar_campo(buffer,0);
-        tamDispersion = utilitarios::pasarBufferAInt(buffer);
+        tamDispBloque.recuperar_campo((char*)&tamDispersion,0);
 
         //La pos del nuevo bloque es el libre
         posBloqueNuevo = this->manejador_bloques.get_primer_bloque_libre();
@@ -162,7 +169,7 @@ int HashingExtensible::eliminar(ClaveX clave)
     int posBloque, i, posDer, posIzq, posReg, posTabla;
     unsigned int tamDispersion;
     Bloque bloque;
-    RegistroVariable tamDisp;
+    RegistroVariable regTamDisp;
 
     this->manejador_bloques.abrir_archivo(fileName, "rb+");
     //Busco el bloque para agregar el elemento
@@ -175,15 +182,13 @@ int HashingExtensible::eliminar(ClaveX clave)
     bloque.eliminar_registro(posReg);
     if (bloque.get_cantidad_registros_almacenados() == 1){ // o sea que solo esta el tam dispersion
         //Busco el tamanio de dispersion del bloque
-        bloque.recuperar_registro(&tamDisp, 0);
-        char* buffer = new char[50]();
-        tamDisp.recuperar_campo(buffer, 0);
-        tamDispersion = utilitarios::pasarBufferAInt(buffer);
+        bloque.recuperar_registro(&regTamDisp, 0);
+        regTamDisp.recuperar_campo((char*)&tamDispersion,0);
 
         //Me muevo tamDispersion para un lado y para el otro de la lista, si son iguales cambio cada tam disp *2 los bloques de la tabla
         posDer = this->tabla->obtener_valor(posTabla+tamDispersion);
         posIzq = this->tabla->obtener_valor(posTabla-tamDispersion);
-        delete[] buffer;
+
         if (posDer == posIzq){
             //Eliminamos el bloque
             Bloque* bloqueVacio = this->manejador_bloques.crear_bloque();
@@ -206,20 +211,15 @@ int HashingExtensible::eliminar(ClaveX clave)
 
 int HashingExtensible::crear_bloque(int tam, Bloque *bloqueNuevo)
 {
-//Creamos el bloque con el tam de dispersion del tama�o de la tabla
-    RegistroVariable tamDispBloque;
-    //agregamos el tamanio al bloque
-    char* campo = new char[5]();
-    campo[4] = '\0';
-    utilitarios::copyIntToBuffer(campo, tam);
-    //Le guardo el tamaño de dispersion
-    tamDispBloque.agregar_campo(campo,strlen(campo));
-    bloqueNuevo->agregar_registro(&tamDispBloque);
-    delete[] campo;
+	if (bloqueNuevo == NULL)
+		return RES_ERROR;
+    RegistroVariable regTamDisp;
+    regTamDisp.agregar_campo((char*)&tam,sizeof(tam));
+    bloqueNuevo->agregar_registro(&regTamDisp);
     return RES_OK;
 }
 
-int HashingExtensible::obtener_bloque(ClaveX clave, Bloque *bloque)
+int HashingExtensible::obtener_bloque(ClaveX clave, Bloque* bloque)
 {
     int posBloque;
     //Busco el numero de bloque que necesitamos

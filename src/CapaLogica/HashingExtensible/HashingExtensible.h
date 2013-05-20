@@ -16,21 +16,20 @@ class HashingExtensible
 {
     /*Atributos..... No se necesitan guardar en el archivo pero son utiles en RAM*/
     private:
-
         std::string fileName;
         std::string fileNameTabla;
         int cant_bloques;
         ManejadorBloques manejador_bloques;
         Tabla* tabla;
 
-
 	public:
 
-		HashingExtensible(std::string directorioSalida, std::string fileName);
+        HashingExtensible();
 
 		virtual ~HashingExtensible();
 
-		virtual int eliminar_hashing_extensible();
+		virtual int crear(std::string nombreArchivo);
+		virtual int eliminar();
 		//Eliminamos el hashing extensible junto a todos sus documentos
 
 		virtual int agregar(RegistroClave reg);
@@ -53,7 +52,7 @@ class HashingExtensible
         virtual int crear_bloque(int tam, Bloque *bloqueNuevo);
         //Crea un nuevo bloque del Hashing
 
-        virtual int obtener_bloque(ClaveX clave, Bloque *bloque);
+        virtual int obtener_bloque(ClaveX clave, Bloque* bloque);
         //Obtenemos el bloque que corresponde a la clave pasada por parametro
 
         virtual int obtener_posicion_reg_bloque(ClaveX clave, Bloque bloque);
