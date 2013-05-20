@@ -57,7 +57,6 @@ int HashingExtensible::agregar(RegistroClave reg)
     Bloque bloque;
     RegistroVariable tamDispBloque;
     ClaveX clave_reg = reg.get_clave();
- /**   std::string valor;*/
 
     this->manejador_bloques.abrir_archivo(fileName, "rb+");
 
@@ -75,15 +74,13 @@ int HashingExtensible::agregar(RegistroClave reg)
     resultado = bloque.agregar_registro(&reg);
 
     if (resultado == RES_INSUFFICIENT_SPACE){   //Si desborda el bloque
-        ClaveX valor;   //tamanio de dispersion del bloque
         Bloque bloqueNuevo(this->manejador_bloques.get_tamanio_bloque());
         Bloque bloqueAux(this->manejador_bloques.get_tamanio_bloque());
         //Recupero el tamaño de dispersion del bloque
         bloque.recuperar_registro(&tamDispBloque,0);
         char* buffer = new char[50]();
         tamDispBloque.recuperar_campo(buffer,0);
-        valor.desempaquetar(buffer, 5);     /**************como saco el tamanio con que se empaqueto?????****************/
-        valor.get_clave(tamDispersion);
+        tamDispersion = atoi(buffer);
 
         //La pos del nuevo bloque es el libre
         posBloqueNuevo = this->manejador_bloques.get_primer_bloque_libre();
@@ -163,7 +160,6 @@ int HashingExtensible::eliminar(ClaveX clave)
 {
     int posBloque, tamDispersion, i, posDer, posIzq, posReg, posTabla;
     Bloque bloque;
-    ClaveX valor;
     RegistroVariable tamDisp;
 
     this->manejador_bloques.abrir_archivo(fileName, "rb+");
@@ -180,8 +176,7 @@ int HashingExtensible::eliminar(ClaveX clave)
         bloque.recuperar_registro(&tamDisp, 0);
         char* buffer = new char[50]();
         tamDisp.recuperar_campo(buffer, 0);
-        valor.desempaquetar(buffer, 5);     /**************como saco el tamanio con que se empaqueto?????****************/
-        valor.get_clave(tamDispersion);
+        tamDispersion = atoi(buffer);
 
         //Me muevo tamDispersion para un lado y para el otro de la lista, si son iguales cambio cada tam disp *2 los bloques de la tabla
         posDer = this->tabla->obtener_valor(posTabla+tamDispersion);
@@ -211,14 +206,11 @@ int HashingExtensible::crear_bloque(int tam, Bloque *bloqueNuevo)
 {
 //Creamos el bloque con el tam de dispersion del tama�o de la tabla
     RegistroVariable tamDispBloque;
-
     //agregamos el tamanio al bloque
-    char* campo;
-    ClaveX tamDisp;
-    tamDisp.set_clave(tam);
-    tamDisp.empaquetar(campo);
+    char cadena[10];
+    itoa(tam,cadena,10);
     //Le guardo el tamaño de dispersion
-    tamDispBloque.agregar_campo(campo,strlen(campo));
+    tamDispBloque.agregar_campo(cadena,strlen(cadena));
     bloqueNuevo->agregar_registro(&tamDispBloque);
     return RES_OK;
 }

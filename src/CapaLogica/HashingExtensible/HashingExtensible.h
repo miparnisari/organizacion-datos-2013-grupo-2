@@ -9,6 +9,7 @@
 #include "../../CapaLogica/ManejoArchivos/ClaveX.h"
 #include "../../CapaLogica/ManejoArchivos/Clave.h"
 #include "../../CapaLogica/ManejoArchivos/RegistroClave.h"
+#include <stdlib.h>
 
 
 class HashingExtensible
