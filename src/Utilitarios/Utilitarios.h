@@ -6,8 +6,11 @@
 #include <vector>
 #include <cstring>
 
+#include <sstream>
+
 namespace utilitarios
 {
+    unsigned int pasarBufferAInt(char* value);
 	void copyIntToBuffer (char* buffer, int integer);
 	bool validFileName (std::string fileName);
 	void imprimir_argumentos (int argc,char** args);

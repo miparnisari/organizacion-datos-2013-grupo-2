@@ -1,7 +1,19 @@
 #include "Utilitarios.h"
+#include <iostream>
+#include <sstream>
 
 namespace utilitarios
 {
+    unsigned int pasarBufferAInt(char* value)
+    {
+        unsigned int intValue;
+        stringstream strValue;
+        strValue << value;
+        unsigned int intValue;
+        strValue >> intValue;
+        return intValue;
+    }/* pasa un char* a un int*/
+
     void copyIntToBuffer (char* buffer, int integer)
 	{
 		buffer[0] = (integer >> 0) & 0xff;
@@ -9,7 +21,7 @@ namespace utilitarios
 		buffer[2] = (integer >> 16) & 0xff;
 		buffer[3] = (integer >> 24) & 0xff;
 	}/* copia un int a un char**/
-	
+
 	bool validFileName (std::string fileName)
 	{
 		int len = fileName.length();
@@ -17,7 +29,7 @@ namespace utilitarios
 		if (fileName[len-4] != '.') return false;
 		return true;
 	}/*verifica que un string sea un nombre de archivo valido.*/
-	
+
 	void imprimir_argumentos(int argc,char** args)
 	{
 		std::cout<<" Argumentos programa: "<<std::endl<<std::endl;
@@ -27,7 +39,7 @@ namespace utilitarios
 			std::cout<<args[i]<<std::endl;
 
 	}/*imprime argumentos del programa*/
-	
+
 	int listpath (std::string dir, std::vector<std::string> & files, std::string extension)
 	{
 		DIR* dp;
@@ -38,7 +50,7 @@ namespace utilitarios
 		}
 
 		std::string filename = "";
-		
+
 		while ((dirp = readdir(dp)) != NULL) {
 			filename = std::string(dirp->d_name);
 			if ( extension.size() > 0 )
