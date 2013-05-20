@@ -29,6 +29,10 @@ class NodoSecuencial : public NodoArbol {
 
 		void imprimir();
 
+		bool tiene_carga_minima ();
+
+		std::vector<RegistroClave> get_registros() const;
+
 		void set_proximo_nodo(TipoPuntero p_prox);
 
 		int insertar(const RegistroClave & registro, std::vector<RegistroClave> & regsOveflow);

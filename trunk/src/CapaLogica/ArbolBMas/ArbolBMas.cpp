@@ -14,6 +14,22 @@ ArbolBMas::~ArbolBMas()
 	delete raiz;
 }
 
+int ArbolBMas::persistir(NodoArbol* nodo, unsigned int numeroNodo){
+
+	Bloque* bloqueNodo= archivoNodos.crear_bloque();
+	nodo->empaquetar(bloqueNodo);
+	archivoNodos.sobreescribir_bloque(bloqueNodo,numeroNodo);
+
+	delete bloqueNodo;
+	return RES_OK;
+}
+
+
+int ArbolBMas::_balancear_secuenciales(NodoSecuencial&, NodoSecuencial&, NodoInterno&){
+	return RES_OK;
+}
+
+
 int ArbolBMas::_set_header()
 {
 	// El bloque 0 debe tener datos del arbol
@@ -161,6 +177,244 @@ int ArbolBMas::agregar(RegistroClave & reg)
 int ArbolBMas::quitar(RegistroClave & reg)
 {
 	return RES_OK;
+}
+
+
+int ArbolBMas::_obtener_nodo_interno(unsigned int numeroNodoInterno,NodoInterno& nodo){
+
+	Bloque* bloque= archivoNodos.obtener_bloque(numeroNodoInterno);
+	if(bloque==NULL)
+		return RES_ERROR;
+	nodo.desempaquetar(bloque);
+	delete bloque;
+	return RES_OK;
+
+}
+
+
+//TODO numBloqueHermano puede ser el izquierdo o el derecho
+int ArbolBMas::_resolver_underflow_hoja(unsigned int numBloqueUnderflow, unsigned int numBloqueHermano,
+		int numBloqueIzquierdo,bool esUltimo,unsigned int numNodoPadre)
+{
+	NodoSecuencial nodoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
+	if(_obtener_nodo_secuencial(numBloqueUnderflow,nodoUnderflow)== RES_ERROR)
+		return RES_ERROR;
+
+//	Bloque* bUnderflow = archivoNodos.obtener_bloque(numBloqueUnderflow);
+//	NodoSecuencial nodoUnderflow(header.minCantBytesClaves, header.maxCantBytesClaves);
+//	nodoUnderflow.desempaquetar(bUnderflow);
+//	delete bUnderflow;
+//
+//	Bloque* bHermano = archivoNodos.obtener_bloque(numBloqueHermano);
+//	NodoSecuencial hermano(header.minCantBytesClaves, header.maxCantBytesClaves);
+//	hermano.desempaquetar(bHermano);
+//	delete bHermano;
+
+	NodoSecuencial hermano(header.minCantBytesClaves,header.maxCantBytesClaves) ;
+	_obtener_nodo_secuencial(numBloqueHermano,hermano);
+
+	if (hermano.tiene_carga_minima())
+	{
+		_merge_nodos_secuenciales(nodoUnderflow,hermano);
+		if(esUltimo){
+			NodoSecuencial nodoIzquierdo(header.minCantBytesClaves,header.maxCantBytesClaves);
+			this->_obtener_nodo_secuencial(numBloqueIzquierdo,nodoIzquierdo);
+			nodoIzquierdo.set_proximo_nodo(numBloqueUnderflow);
+			persistir(&nodoIzquierdo,numBloqueIzquierdo);
+		}else{
+			int bloqueSiguiente= hermano.get_proximo_nodo();
+			nodoUnderflow.set_proximo_nodo(bloqueSiguiente);
+		}
+
+		persistir(&nodoUnderflow,numBloqueUnderflow);
+
+		// El hermano vuela del arbol
+		Bloque* bloqueVacio = archivoNodos.crear_bloque();
+		archivoNodos.sobreescribir_bloque(bloqueVacio,numBloqueHermano);
+		delete bloqueVacio;
+
+		return RES_MERGE;
+	}
+	else
+	{
+		NodoInterno nodoPadre(header.minCantBytesClaves,header.maxCantBytesClaves);
+		if(this->_obtener_nodo_interno(numNodoPadre,nodoPadre)== RES_ERROR)
+			return RES_ERROR;
+
+		_balancear_secuenciales(hermano,nodoUnderflow,nodoPadre);
+		persistir(&nodoUnderflow,numBloqueUnderflow);
+		persistir(&hermano,numBloqueHermano);
+		return RES_BALANCEO;
+	}
+
+}
+
+int ArbolBMas::_resolver_underflow_interno()
+{
+	return RES_OK;
+
+}
+
+int ArbolBMas::_merge_nodos_secuenciales(NodoSecuencial & nodoUnderflow, NodoSecuencial & hermano)
+{
+	std::vector<RegistroClave> registrosDelHermano = hermano.get_registros();
+	std::vector<RegistroClave> regsOverflow;
+
+	int res;
+
+	for (unsigned int i = 0; i < registrosDelHermano.size(); i++)
+	{
+		res = nodoUnderflow.insertar(registrosDelHermano.at(i),regsOverflow);
+		if (res == RES_OVERFLOW)
+			return RES_ERROR;
+	}
+
+	return RES_OK;
+}
+
+int ArbolBMas::_obtener_nodo_secuencial(int numNodoSecuencial,NodoSecuencial& nodoSecuencialActual)
+{
+	Bloque* bloqueSecuencialActual = archivoNodos.obtener_bloque(numNodoSecuencial);
+	if(bloqueSecuencialActual== NULL)
+		return RES_ERROR;
+	nodoSecuencialActual.desempaquetar(bloqueSecuencialActual);
+	delete bloqueSecuencialActual;
+	return RES_OK;
+
+}//FIXME revisar
+
+int ArbolBMas::_buscar_nodo_con_puntero(int punteroAbuscar)
+{
+	TipoHijo numNodoSecuencial;
+	this->obtener_primer_nodo_secuencial(numNodoSecuencial);
+	if (numNodoSecuencial == punteroAbuscar)
+		return -1; //El primer nodo secuencial no es apuntado por nadie
+
+	NodoSecuencial nodoSecuencialActual(header.minCantBytesClaves,header.maxCantBytesClaves) ;
+	_obtener_nodo_secuencial(numNodoSecuencial,nodoSecuencialActual);
+
+	while (nodoSecuencialActual.get_proximo_nodo() != punteroAbuscar)
+	{
+		_obtener_nodo_secuencial(nodoSecuencialActual.get_proximo_nodo(),nodoSecuencialActual);
+		if (nodoSecuencialActual.get_proximo_nodo() == -1)
+			return -1; //No deberia llegar nunca aca
+	}
+
+	return numNodoSecuencial;
+}/* Devuelve el numero del bloque del nodo secuencial cuyo puntero es el parametro. */
+
+int ArbolBMas::_quitar_recursivo(unsigned int& numNodoActual, RegistroClave & registro, int & huboUnderflow)
+{
+
+	Bloque* bloqueActual = archivoNodos.obtener_bloque(numNodoActual);
+	NodoArbol nodo(TIPO_INTERNO);
+	nodo.desempaquetar(bloqueActual);
+
+	if (nodo.es_interno())
+	{
+		NodoInterno nodoInternoActual (header.minCantBytesClaves,header.maxCantBytesClaves);
+		nodoInternoActual.desempaquetar(bloqueActual);
+
+		TipoHijo elHijo;
+		unsigned int numBloqueDelHermano;
+		_hallar_hijo_correspondiente(&registro,&nodoInternoActual,elHijo);
+		/*hallamos el nodo siguiente donde debemos realizar la eliminacion*/
+		unsigned int CANT_HIJOS_NODO = nodoInternoActual.get_cantidad_hijos();
+		unsigned short posicionElHijo;
+		nodoInternoActual.buscar_hijo(elHijo,posicionElHijo);
+
+		//puntero del izquierdo del izquierdo
+		int numBloqueDelHermanoDelHermano;
+		//la variable sirve en caso que el siguiente nodo a inspeccionar resulte ser el ultimo del nodoInterno actual
+		bool esUltimo;
+
+		if (posicionElHijo == CANT_HIJOS_NODO -1)
+		{
+			// Es el ultimo hijo, devolvemos el hermano izquierdo para resolver mas adelante merge o balanceo
+			nodoInternoActual.get_hijo(numBloqueDelHermano,posicionElHijo -1);
+			esUltimo= true;
+
+			numBloqueDelHermanoDelHermano = _buscar_nodo_con_puntero(numBloqueDelHermano);
+			// FIXME esto puede ser -1 !!!
+
+
+		}//caso si el  siguiente nodo a inspeccionar es el ultimo del nodoInterno
+		else
+		{
+			esUltimo= false;
+			// Devolvemos el hermano derecho
+			nodoInternoActual.get_hijo(numBloqueDelHermano,posicionElHijo +1);
+		}//caso en el que el siguiente nodo a inspeccionar tiene hermanos a la derecha
+
+		int res = _quitar_recursivo(elHijo,registro, huboUnderflow);
+		if (res == RES_OK)
+			return res;
+
+		if (res == RES_RECORD_DOESNT_EXIST)
+			return RES_RECORD_DOESNT_EXIST;
+
+		// Hubo underflow en un nodo interno o secuencial inferior
+		bloqueActual = archivoNodos.obtener_bloque(elHijo);
+		NodoArbol nodo(TIPO_INTERNO);
+		nodo.desempaquetar(bloqueActual);
+
+		if (nodo.es_hoja())
+		{
+			NodoSecuencial nodoSecuencialUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
+			NodoSecuencial nodoSecuencialHermano(header.minCantBytesClaves,header.maxCantBytesClaves);
+			this->_obtener_nodo_secuencial(elHijo,nodoSecuencialUnderflow);
+			this->_obtener_nodo_secuencial(numBloqueDelHermano,nodoSecuencialHermano);
+			unsigned int numeroNodoPadre;//como la obteneeeemossss??? TODO
+			this->_resolver_underflow_hoja(numNodoActual,numBloqueDelHermano,numBloqueDelHermanoDelHermano,
+					esUltimo,numeroNodoPadre);
+			//FIXME resolver cuanto antesss!!!
+			if(!esUltimo){
+				int bloqueSiguiente= nodoSecuencialHermano.get_proximo_nodo();
+				nodoSecuencialUnderflow.set_proximo_nodo(bloqueSiguiente);
+			}else{
+				int numeroNodoSecuencialIzquierdo= this->_buscar_nodo_con_puntero(numBloqueDelHermanoDelHermano);
+				NodoSecuencial nodoSecuencialIzquierdo(header.minCantBytesClaves,header.maxCantBytesClaves);
+				this->_obtener_nodo_secuencial(numeroNodoSecuencialIzquierdo,nodoSecuencialIzquierdo);
+				nodoSecuencialIzquierdo.set_proximo_nodo(elHijo);
+
+			}
+
+			//persistir!
+		}
+		else
+		{
+			// Hubo underflow en nodo interno
+			res = _resolver_underflow_interno();
+		}
+
+		delete bloqueActual;
+		return res;
+	}
+
+	// Quitar de la hoja
+	NodoSecuencial nodoSecuencialActual(header.minCantBytesClaves, header.maxCantBytesClaves);
+	nodoSecuencialActual.desempaquetar(bloqueActual);
+
+	std::vector<RegistroClave> regsUnderflow;
+	int res = nodoSecuencialActual.eliminar(registro.get_clave(),regsUnderflow);
+
+	if (res == RES_UNDERFLOW)
+		huboUnderflow = RES_UNDERFLOW_HOJA;
+
+	if (res == RES_OK)
+	{
+		persistir(&nodoSecuencialActual,numNodoActual);
+		return RES_OK;
+	}
+
+	for (unsigned int i = 0; regsUnderflow.size(); i++)
+	{
+		std::vector<RegistroClave> noOverflow;
+		nodoSecuencialActual.insertar(regsUnderflow.at(i), noOverflow);
+	}
+
+	delete bloqueActual;
+	return res;
 }
 
 int ArbolBMas::buscar(RegistroClave & reg, unsigned int  & p_numBloque)
@@ -547,6 +801,10 @@ void ArbolBMas::obtener_primer_nodo_secuencial(TipoHijo& numeroPrimerNodo){
 
 }
 
+void ArbolBMas::imprimir(){
+	_imprimir_recursivo(NUMERO_BLOQUE_RAIZ);
+}
+
 void ArbolBMas::_imprimir_recursivo(unsigned int numNodo)
 {
 	Bloque* bloque = archivoNodos.obtener_bloque(numNodo);
@@ -569,7 +827,6 @@ void ArbolBMas::_imprimir_recursivo(unsigned int numNodo)
 			TipoHijo unHijo;
 			nodoInterno.get_hijo(unHijo,i);
 			_imprimir_recursivo((unsigned)unHijo);
-
 		}
 	}
 
@@ -577,44 +834,9 @@ void ArbolBMas::_imprimir_recursivo(unsigned int numNodo)
 	{
 		NodoSecuencial nodoSecuencial(header.minCantBytesClaves,header.maxCantBytesClaves);
 		nodoSecuencial.desempaquetar(bloque);
-
 		nodoSecuencial.imprimir();
 	}
 
 
 	delete(bloque);
 }
-
-
-void ArbolBMas::imprimir(){
-
-//	TipoHijo numeroNodoSecuencial;
-//	this->obtener_primer_nodo_secuencial(numeroNodoSecuencial);
-//	Bloque* bloqueSecuencial= this->archivoNodos.obtener_bloque(numeroNodoSecuencial);
-//	NodoSecuencial nodoActual(header.minCantBytesClaves,header.maxCantBytesClaves);
-//	nodoActual.desempaquetar(bloqueSecuencial);
-//	delete bloqueSecuencial;
-//
-//	int numeroNodoActual= (int)numeroNodoSecuencial;
-//
-//
-//	while(numeroNodoActual!= -1){
-//
-//		std::cout << "num bloque = " << numeroNodoActual << " ---- ";
-//
-//		nodoActual.imprimir();
-//		numeroNodoActual= nodoActual.get_proximo_nodo();
-//		if(numeroNodoActual == -1)
-//			break;
-//
-//		numeroNodoSecuencial= (TipoHijo)numeroNodoActual;
-//		bloqueSecuencial= this->archivoNodos.obtener_bloque(numeroNodoSecuencial);
-//		nodoActual.desempaquetar(bloqueSecuencial);
-//		delete bloqueSecuencial;
-//
-//
-//	}
-
-	_imprimir_recursivo(NUMERO_BLOQUE_RAIZ);
-}
-

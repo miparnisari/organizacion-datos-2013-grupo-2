@@ -42,3 +42,8 @@ int NodoArbol::desempaquetar(const Bloque* bloque){
 	return RES_OK;
 
 }
+
+
+int NodoArbol::empaquetar(Bloque* bloque){
+	return RES_OK;
+}

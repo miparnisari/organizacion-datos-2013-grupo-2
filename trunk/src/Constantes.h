@@ -81,12 +81,20 @@ const int NUMERO_BLOQUE_RAIZ = 1;
 
 const long FIN_PILA_REGISTROS_LIBRES = -1;
 
+const int RES_NO_UNDERFLOW 		= 0;
+const int RES_UNDERFLOW_HOJA       = -1;
+const int RES_UNDERFLOW_INTERNO	= -2;
+const int RES_UNDERFLOW_RAIZ 		= -3;
+const int RES_MERGE				= -4;
+const int RES_BALANCEO				= -5;
+
+
 /*
  *Manejo del IndiceInvertido
  */
 
  const int NO_EXISTE_INDICE                         =-1;
- const char* REFE_NULA                               ="";
+// const char* REFE_NULA                               ="";
 
 #endif /* CONSTANTES_H */
 

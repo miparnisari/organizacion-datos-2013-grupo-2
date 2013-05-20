@@ -86,7 +86,7 @@ int HashingExtensible::agregar(RegistroClave reg)
         //La pos del nuevo bloque es el libre
         posBloqueNuevo = this->manejador_bloques.get_primer_bloque_libre();
 
-        if(tamDispersion == tamTabla){
+        if(tamDispersion == (unsigned)tamTabla){
 
             //Duplicamos la tabla
         	this->tabla->duplicar();
@@ -209,11 +209,13 @@ int HashingExtensible::crear_bloque(int tam, Bloque *bloqueNuevo)
 //Creamos el bloque con el tam de dispersion del tama�o de la tabla
     RegistroVariable tamDispBloque;
     //agregamos el tamanio al bloque
-    char *campo;
+    char* campo = new char[5]();
+    campo[4] = '\0';
     utilitarios::copyIntToBuffer(campo, tam);
     //Le guardo el tamaño de dispersion
     tamDispBloque.agregar_campo(campo,strlen(campo));
     bloqueNuevo->agregar_registro(&tamDispBloque);
+    delete[] campo;
     return RES_OK;
 }
 
