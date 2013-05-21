@@ -22,8 +22,17 @@ class Indexador
 		virtual ~Indexador();
 	
 		int indexar(std::string directorioEntrada, std::string directorioSalida);
+
+
 	private:
-		/* add your private declarations */
+		HashingExtensible indicePrimario;
+		ManejadorRegistrosVariables archivoMaestro;
+		ArbolBMas indiceSecundarioAutor;
+		HashingExtensible indiceSecundarioTitulo;
+		ParserCanciones parser;
+		CompresorPPMC compresor;
+
+		int init(std::string directorioEntrada, std::string directorioSalida);
 };
 
 #endif /* INDEXADOR_H */ 
