@@ -708,7 +708,6 @@ int ArbolBMas::_buscar(RegistroClave & reg, unsigned int  & p_numBloque)
 
 	reg = *regCopia;
 
-
 	delete regCopia;
 	return res;
 }
@@ -794,6 +793,8 @@ int ArbolBMas::_hallar_hoja(RegistroClave* registro,
 
 	NodoInterno ni (header.minCantBytesClaves,header.maxCantBytesClaves);
 	ni.desempaquetar(bloqueActual);
+
+	delete bloqueActual;
 	TipoHijo numeroBloqueHijoCorrespondiente;
 	this->_hallar_hijo_correspondiente(registro,&ni,numeroBloqueHijoCorrespondiente);
 	numeroBloque= numeroBloqueHijoCorrespondiente;

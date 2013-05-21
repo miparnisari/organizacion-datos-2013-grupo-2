@@ -24,8 +24,6 @@ RegistroClave& RegistroClave::operator=(const RegistroClave& otro)
 	{
 		this->clave = otro.clave;
 		this->tamanio = otro.tamanio;
-	//	buffer = new char[tamanio];
-	//	strcpy(buffer,otro.buffer);
 		delete[] buffer;
 		this->buffer= new char[tamanio];
 		stringstream ss;

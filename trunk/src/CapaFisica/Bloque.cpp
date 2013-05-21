@@ -20,7 +20,7 @@ Bloque::Bloque(const Bloque& otro)
 	espacioLibre = otro.espacioLibre;
 	espacioLibreOffset = otro.espacioLibreOffset;
 	bufferBloque = new char[tamanioBloque]();
-	strcpy(bufferBloque, otro.bufferBloque);
+	memcpy(this->bufferBloque,otro.bufferBloque,tamanioBloque);
 	_limpiar_buffer();
 }
 

@@ -11,11 +11,11 @@ class Clave{
 	public:	
 		Clave();
 		virtual ~Clave();
+		virtual void operator =(const Clave&)= 0;
 		
 		virtual bool operator <(const Clave&)= 0;
 		virtual bool operator >(const Clave&)= 0;
 		virtual bool operator ==(const Clave&)= 0;
-		virtual void operator =(const Clave&)= 0;
 		virtual bool operator !=(const Clave&)= 0;
 		virtual bool operator <=(const Clave&)= 0;
 		virtual bool operator >=(const Clave&)= 0;

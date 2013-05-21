@@ -34,7 +34,7 @@ int Tabla::crear(string unaRuta)
 
 int Tabla::eliminar()
 {
-	archivo.abrir_archivo(this->rutaArchivo, "rb+");
+//	archivo.abrir_archivo(this->rutaArchivo, "rb+");
 	return archivo.eliminar_archivo(this->rutaArchivo);
 }
 
