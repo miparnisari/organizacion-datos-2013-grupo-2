@@ -112,11 +112,10 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     assert( hash1.crear(DIRECCION) == RES_OK);
     RegistroClave reg;
     int claveNum;
-    char *dato = NULL;
     ClaveX clave, clave2;
 
     ManejadorBloques manejador;
-    Bloque* bloq;
+    Bloque* bloq = NULL;
     RegistroVariable regVar;
     int numeroLeido;
 
@@ -126,8 +125,10 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     std::string campo = "Hola";
     assert(this->crear_registro_y_agregar(&hash1, campo, clave) == RES_OK);
 
-    manejador.abrir_archivo("HashingDePrueba.dat", "+rb");
+    manejador.abrir_archivo("HashingDePrueba.dat", "rb+");
     bloq = manejador.obtener_bloque(0);
+    assert (bloq != NULL);
+    assert (bloq -> get_cantidad_registros_almacenados() == 2);
     bloq->recuperar_registro(&regVar,0);
     regVar.recuperar_campo((char*)&numeroLeido,0);
 
@@ -149,6 +150,7 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     assert(claveNum == 23);
 
     //Pruebo si se guardo el dato correcto
+    char *dato = NULL;
     this->recuperar_dato_registro(dato, clave, hash1);
     assert (strcmp(dato,campo.c_str()) == 0);
     delete[] dato;
@@ -288,7 +290,7 @@ void TestHashingExtensible::test_eliminar_reg_y_dividir_tabla()
 int TestHashingExtensible::crear_registro_y_agregar(HashingExtensible *hash1, std::string campo, ClaveX clave)
 {
     RegistroClave reg;
-    reg.agregar_campo(campo.c_str(), strlen(campo.c_str()));
+    reg.agregar_campo(campo.c_str(), campo.size());
     reg.set_clave(clave);
     return hash1->agregar(reg);
 

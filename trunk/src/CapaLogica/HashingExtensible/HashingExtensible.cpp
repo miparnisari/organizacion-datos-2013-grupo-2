@@ -35,12 +35,17 @@ int HashingExtensible::crear(std::string nombreArchivo)
     this->fileName=nombreArchivo+".dat";
     this->fileNameTabla=nombreArchivo+"Tabla.dat";
 
-    if (this->manejador_bloques.abrir_archivo(fileName, "rb+") == RES_OK)	return YA_EXISTE; //Si no existe es porque estamos creando un nuevo Hash
+    if (this->manejador_bloques.abrir_archivo(fileName, "rb+") == RES_OK)
+    	return YA_EXISTE;
+
+    //Si no existe es porque estamos creando un nuevo Hash
     int resultado = this->manejador_bloques.crear_archivo(fileName, BLOQUE_TAM_DEFAULT);
 	this->manejador_bloques.abrir_archivo(fileName, "rb+");
 	//Creamos la tabla
 	resultado = resultado + this->tabla->crear(fileNameTabla);
 	this->tabla->cambiar_valor(0, 0); // la pos 0 de la tabla se le coloca el num de bloque 0
+
+
 	//Creamos un nuevo bloque con dispersion 1 y lo guardamos en el archivo de bloques del Hash
 	Bloque* bloqueNuevo = this->manejador_bloques.crear_bloque();
 	this->crear_bloque(1, bloqueNuevo);
@@ -53,18 +58,17 @@ int HashingExtensible::crear(std::string nombreArchivo)
 
 int HashingExtensible::eliminar()
 {
-        int resultado1 = this->manejador_bloques.eliminar_archivo(this->fileName);
-        int resultado2 = tabla->eliminar();
-        if (resultado1 == RES_OK && resultado2 == RES_OK)
-                return RES_OK;
-        return RES_ERROR;
+	int resultado1 = this->manejador_bloques.eliminar_archivo(this->fileName);
+	int resultado2 = tabla->eliminar();
+	if (resultado1 == RES_OK && resultado2 == RES_OK)
+			return RES_OK;
+	return RES_ERROR;
 }
 
 int HashingExtensible::funcion_dispersion(int clave)
 {
-    int tam_tabla;
-    tam_tabla = this->tabla->get_tamanio();
-    return (clave%tam_tabla);
+    int tam_tabla = this->tabla->get_tamanio();
+    return (clave % tam_tabla);
 }
 
 int HashingExtensible::agregar(RegistroClave reg)
@@ -85,12 +89,14 @@ int HashingExtensible::agregar(RegistroClave reg)
 
     //Verificamos que no exista la clave del registro que queremos guardar
     posReg = this->obtener_posicion_reg_bloque(clave_reg, bloque);
-    if (posReg != RES_ERROR)    return YA_EXISTE;
+    if (posReg != RES_ERROR)
+    	return YA_EXISTE;
 
     //Agrego el elemento
     resultado = bloque.agregar_registro(&reg);
 
-    if (resultado == RES_INSUFFICIENT_SPACE){   //Si desborda el bloque
+    //Si desborda el bloque
+    if (resultado == RES_INSUFFICIENT_SPACE) {
         Bloque bloqueNuevo(this->manejador_bloques.get_tamanio_bloque());
         Bloque bloqueAux(this->manejador_bloques.get_tamanio_bloque());
         //Recupero el tamaño de dispersion del bloque
@@ -129,9 +135,8 @@ int HashingExtensible::agregar(RegistroClave reg)
         this->manejador_bloques.sobreescribir_bloque(&bloqueNuevo, posBloqueNuevo);
         //Agrego todos los registros del bloque que desbordo junto con el nuevo registro
         this->agregar_registros_bloques(bloque, reg);
-        bloqueNuevo.~Bloque();
-        bloqueAux.~Bloque();
-        resultado= RES_OK;
+
+        resultado = RES_OK;
     }
     this->manejador_bloques.cerrar_archivo();
     return resultado;
