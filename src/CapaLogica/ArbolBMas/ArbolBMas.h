@@ -30,6 +30,8 @@ class ArbolBMas
 
 		void _imprimir_recursivo(TipoHijo& numeroBloqueActual);
 
+		int _obtener_nodo_arbol(unsigned int numeroNodoArbol,NodoArbol& nodo);
+
 		int _obtener_nodo_interno(unsigned int numeroNodoInterno,NodoInterno& nodo);
 
 		void _imprimir_recursivo(unsigned int numNodo);
@@ -49,6 +51,21 @@ class ArbolBMas
 		//se rotan las claves de uno -> padre -> otro como sea necesario.
 
 		int _resolver_underflow_interno();
+
+		/*version distinta del _quitar_recursivo.*/
+		int _quitar_recursivo2(unsigned int& numeroBloqueActual,RegistroClave& registroEliminar,
+				int& tipoUnderflow);
+		/*esta version trabaja con persistencias DE MAS por seguridad*/
+		int _merge_secuenciales2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
+				unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo ,
+				unsigned short posicionClaveEliminar,unsigned short posicionHijoEliminar);
+		/*combina dos nodos secuenciales. El nodo anteriormente en underflow es persistido, el nodo hermano es liberado. EL NODO PADRE
+		 * NO ES PERSISTIDO*/
+		int _resolver_underflow_hoja2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow);
+		int _liberar_nodo(unsigned int numeroNodo);
+		int _balancear_secuenciales2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
+				unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo);
+		/*balancea dos nodos secuenciales . Todos los nodos excepto el padre son persistidos*/
 
 
 	public:
