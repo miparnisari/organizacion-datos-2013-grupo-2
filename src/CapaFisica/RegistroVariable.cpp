@@ -13,13 +13,16 @@ RegistroVariable::RegistroVariable()
 	tamanio= 0;
 }
 
+// RegVar este = otro;
+
 RegistroVariable& RegistroVariable::operator = (const RegistroVariable& otro)
 {
 	if (this != &otro)
 	{
 		delete[] buffer;
+		this->tamanio = otro.tamanio;
 		this->buffer = new char[otro.tamanio];
-		strcpy(buffer,otro.buffer);
+		memcpy(buffer,otro.buffer,tamanio);
 	}
 	return (*this);
 }

@@ -25,7 +25,8 @@ int IterArbolBMas::start(std::string unOperador, ClaveX claveInicial)
 {
 	operador = unOperador;
 
-	if (operador==">=") {
+	if (operador==">=")
+	{
 		RegistroClave regConClave;
 		regConClave.set_clave(claveInicial);
 
