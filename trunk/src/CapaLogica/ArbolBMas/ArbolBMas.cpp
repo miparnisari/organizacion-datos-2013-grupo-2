@@ -420,6 +420,268 @@ int ArbolBMas::_quitar_recursivo(unsigned int& numNodoActual, RegistroClave & re
 	return res;
 }
 
+
+int ArbolBMas::_quitar_recursivo2(unsigned int& numeroNodoActual,
+		RegistroClave& registroEliminar,int& tipoUnderflow){
+
+	NodoArbol nodoActualArbol(TIPO_HOJA);
+	if( _obtener_nodo_arbol(numeroNodoActual,nodoActualArbol)== RES_ERROR )
+		return RES_ERROR;
+
+	if(nodoActualArbol.es_hoja()){
+
+		NodoSecuencial nodoActualSecuencial(header.minCantBytesClaves,header.maxCantBytesClaves);
+		if(_obtener_nodo_secuencial(numeroNodoActual,nodoActualSecuencial)== RES_ERROR)
+			return RES_ERROR;
+
+		ClaveX claveRegistroEliminar= registroEliminar.get_clave();
+		vector<RegistroClave> vectorUnderflow;
+		int resultadoEliminacionRegistro= nodoActualSecuencial.eliminar(claveRegistroEliminar,vectorUnderflow);
+
+		if(resultadoEliminacionRegistro== RES_OK){
+			this->persistir(&nodoActualSecuencial,numeroNodoActual);
+			tipoUnderflow= RES_NO_UNDERFLOW;
+			return RES_OK;
+		}/*el borrado del registro en el nodoSecuencial ocurrio exitosamente sin ocurrin underflow. El nodoSecuencial
+		modificado es persistido en el archivo*/
+
+		if(resultadoEliminacionRegistro== RES_ERROR)
+			return RES_ERROR;
+		/*se produjo un error en el borrado del registro. No hay persistencia*/
+
+		/*a continuacion se llevaran los pasos a llevar a cabo en caso de underflow del nodoSecuencial*/
+		tipoUnderflow= RES_UNDERFLOW_HOJA;
+		this->persistir(&nodoActualSecuencial , numeroNodoActual);
+		/*FIXME, esta persistencia deberia ocurrir desde una instancia superior, pero por ahora no se me ocurre otra solucion ... */
+		return RES_UNDERFLOW;
+
+	}/*resolucion si el nodoActual es hoja*/
+
+
+	/*a continuacion se resolvera el caso que el nodoActual sea interno*/
+	NodoInterno nodoActualInterno(header.minCantBytesClaves,header.maxCantBytesClaves);
+	if( this->_obtener_nodo_interno(numeroNodoActual,nodoActualInterno) == RES_ERROR)
+		return RES_ERROR;
+
+
+	TipoHijo proximoNodoInspeccionar;
+	this->_hallar_hijo_correspondiente(&registroEliminar , &nodoActualInterno , proximoNodoInspeccionar);
+
+
+	int resultadoQuitarInferior= this->_quitar_recursivo2(proximoNodoInspeccionar,registroEliminar,tipoUnderflow);
+
+	if(resultadoQuitarInferior== RES_ERROR)
+		return RES_ERROR;
+	if(resultadoQuitarInferior== RES_OK)
+		return RES_OK;
+	/*si la insercion de un nivel inferior resulta en un exito(sin underflow) o un error, no ocurre persistencia en disco y se retorna
+	 * el valor pertinente a la instancia superior.*/
+
+
+	if(resultadoQuitarInferior== RES_UNDERFLOW){
+
+		if(tipoUnderflow== RES_UNDERFLOW_HOJA){
+			this->_resolver_underflow_hoja2(&nodoActualInterno,proximoNodoInspeccionar);
+		}/*nodos hijos involucrados deben balancearse / mergear y ser persistidos*/
+		else{
+
+		}
+
+
+	}
+
+
+	return RES_UNDERFLOW;
+
+
+}
+
+
+int ArbolBMas::_resolver_underflow_hoja2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow){
+
+
+	NodoSecuencial nodoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
+	if( this->_obtener_nodo_secuencial(numeroNodoUnderflow,nodoUnderflow)== RES_ERROR )
+		return RES_ERROR;
+
+	const unsigned short CANTIDAD_HIJOS_NODO_PADRE= nodoPadre->get_cantidad_hijos();
+	unsigned short posicionNumeroNodoUnderflow;
+	if( nodoPadre->buscar_hijo(numeroNodoUnderflow,posicionNumeroNodoUnderflow) == RES_ERROR )
+		return RES_ERROR;
+
+	bool numeroNodoUnderflowEsUltimoHijo= ( posicionNumeroNodoUnderflow == (CANTIDAD_HIJOS_NODO_PADRE - 1) );
+	TipoHijo numeroNodoHermanoUnderflow;
+
+
+
+	NodoSecuencial nodoHermanoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
+	this->_obtener_nodo_secuencial(numeroNodoHermanoUnderflow,nodoHermanoUnderflow);
+	if(nodoHermanoUnderflow.tiene_carga_minima()){
+
+		unsigned short posicionClaveEliminar;
+		unsigned short posicionHijoEliminar;
+
+
+		if(!numeroNodoUnderflowEsUltimoHijo){
+			nodoPadre->get_hijo(numeroNodoHermanoUnderflow,posicionNumeroNodoUnderflow+1);
+			posicionClaveEliminar= posicionNumeroNodoUnderflow;
+			posicionHijoEliminar= posicionClaveEliminar+1;
+		}
+		else{
+			nodoPadre->get_hijo(numeroNodoHermanoUnderflow,posicionNumeroNodoUnderflow-1);
+			posicionClaveEliminar= posicionNumeroNodoUnderflow-1;
+			posicionHijoEliminar= posicionClaveEliminar+1;
+		}
+
+		if(_merge_secuenciales2(nodoPadre,numeroNodoUnderflow,numeroNodoHermanoUnderflow,numeroNodoUnderflowEsUltimoHijo,
+				posicionClaveEliminar,posicionHijoEliminar)== RES_ERROR)
+			return RES_ERROR;
+		return RES_MERGE;
+
+	}/*si el nodo hermano tiene carga minima debo mergear*/
+
+	_balancear_secuenciales2(nodoPadre,numeroNodoUnderflow,numeroNodoHermanoUnderflow,numeroNodoUnderflowEsUltimoHijo);
+	return RES_BALANCEO;
+
+
+}
+
+
+int ArbolBMas::_merge_secuenciales2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
+		unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo ,
+		unsigned short posicionClaveEliminar,unsigned short posicionHijoEliminar){
+
+	NodoSecuencial nodoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
+	if( this->_obtener_nodo_secuencial(numeroNodoUnderflow,nodoUnderflow) == RES_ERROR)
+		return RES_ERROR;
+	NodoSecuencial nodoHermanoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
+	if( this->_obtener_nodo_secuencial(numeroNodoUnderflow,nodoHermanoUnderflow) == RES_ERROR){
+		return RES_ERROR;
+	}
+
+	vector<RegistroClave> registrosHermanoUnderflow= nodoHermanoUnderflow.get_registros();
+	vector<RegistroClave> vu;
+	const unsigned short CANTIDAD_REGISTROS_HERMANO_UNDERFLOW= registrosHermanoUnderflow.size();
+
+	for(unsigned short i=0;i<CANTIDAD_REGISTROS_HERMANO_UNDERFLOW;i++){
+		RegistroClave unRegistro= registrosHermanoUnderflow.at(i);
+		nodoUnderflow.insertar(unRegistro,vu);
+	}
+
+	if(numeroNodoUnderflowEsUltimoHijo){
+		int numeroNodoIzquierdo= this->_buscar_nodo_con_puntero(numeroNodoHermanoUnderflow);
+		if(numeroNodoIzquierdo!= -1){
+			NodoSecuencial nodoIzquierdo(header.minCantBytesClaves,header.maxCantBytesClaves);
+			this->_obtener_nodo_secuencial(numeroNodoIzquierdo,nodoIzquierdo);
+			nodoIzquierdo.set_proximo_nodo(numeroNodoUnderflow);
+			this->persistir(&nodoIzquierdo,numeroNodoIzquierdo);
+		}
+	}else{
+
+		int numeroNodoDerecho= nodoHermanoUnderflow.get_proximo_nodo();
+		nodoUnderflow.set_proximo_nodo(numeroNodoDerecho);
+
+	}
+
+
+	this->persistir(&nodoUnderflow,numeroNodoUnderflow);
+	this->_liberar_nodo(numeroNodoHermanoUnderflow);
+
+	ClaveX cr;
+	nodoPadre->remover_clave(posicionClaveEliminar,cr);
+	nodoPadre->remover_hijo(posicionHijoEliminar);
+
+	return RES_OK;
+
+}
+
+
+int ArbolBMas::_balancear_secuenciales2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
+		unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo){
+
+	unsigned short posicionNumeroNodoUnderflow, posicionNumeroNodoHermanoUnderflow;
+	nodoPadre->buscar_hijo(numeroNodoHermanoUnderflow,posicionNumeroNodoHermanoUnderflow);
+	nodoPadre->buscar_hijo(numeroNodoUnderflow,posicionNumeroNodoUnderflow);
+
+	unsigned short posicionClaveDivision;
+	ClaveX claveDivision;
+	if(numeroNodoUnderflowEsUltimoHijo)
+		nodoPadre->get_clave(posicionNumeroNodoHermanoUnderflow,claveDivision);
+	else
+		nodoPadre->get_clave(posicionNumeroNodoUnderflow,claveDivision);
+	nodoPadre->buscar_clave(claveDivision,posicionClaveDivision);
+
+	NodoSecuencial nodoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
+	NodoSecuencial nodoHermano(header.minCantBytesClaves,header.maxCantBytesClaves);
+	vector<RegistroClave> registrosHermano= nodoHermano.get_registros();
+	const unsigned short CANTIDAD_REGISTROS_HERMANO= registrosHermano.size();
+
+	if(numeroNodoUnderflowEsUltimoHijo){
+		const unsigned short PRIMER_REGISTRO_PASAR= (short)(CANTIDAD_REGISTROS_HERMANO/2);
+		vector<RegistroClave> vu,vo;
+
+		for(unsigned short i=PRIMER_REGISTRO_PASAR;i<CANTIDAD_REGISTROS_HERMANO;i++){
+			RegistroClave unRegistro= registrosHermano.at(i);
+			nodoUnderflow.insertar(unRegistro,vo);
+			ClaveX claveRegistro= unRegistro.get_clave();
+			nodoHermano.eliminar(claveRegistro,vu);
+		}/*si el nodo en underflow es el ultimo hijo del padre -> paso la mitad superior de los registros del hermano a el (el hermnano es IZQUIERDO)*/
+	}else{
+		const unsigned short FINAL_REGISTROS_PASAR= (short)(CANTIDAD_REGISTROS_HERMANO/2);
+		vector<RegistroClave> vu,vo;
+
+		for(unsigned short i=0;i<FINAL_REGISTROS_PASAR;i++){
+			RegistroClave unRegistro= registrosHermano.at(i);
+			nodoUnderflow.insertar(unRegistro,vo);
+			ClaveX claveRegistro= unRegistro.get_clave();
+			nodoHermano.eliminar(claveRegistro,vu);
+		}
+	}/*si el nodo en underflow no es el ultimo -> paso la mitad inderior de los registros del hermano a el (el hermano es DERECHO) */
+
+	nodoPadre->remover_clave(claveDivision,posicionClaveDivision);
+	vector<RegistroClave> registrosUnderflowActualizados= nodoUnderflow.get_registros();
+	vector<RegistroClave> registrosHermanoActualizados= nodoHermano.get_registros();
+	ClaveX primeraClaveUnderflow= registrosUnderflowActualizados.at(0).get_clave();
+	ClaveX primeraClaveHermano= registrosHermanoActualizados.at(0).get_clave();
+
+	if(primeraClaveUnderflow > primeraClaveHermano)
+		nodoPadre->insertar_clave(primeraClaveUnderflow,posicionClaveDivision);
+	else
+		nodoPadre->insertar_clave(primeraClaveHermano,posicionClaveDivision);
+	/*actualizo la nueva clave de division*/
+
+
+	this->persistir(&nodoUnderflow,numeroNodoUnderflow);
+	this->persistir(&nodoHermano,numeroNodoHermanoUnderflow);
+
+	return RES_OK;
+
+
+}
+
+
+int ArbolBMas::_liberar_nodo(unsigned int numeroNodo){
+	Bloque* bloqueVacio= archivoNodos.crear_bloque();
+	int liberacion= archivoNodos.sobreescribir_bloque(bloqueVacio,numeroNodo);
+	delete bloqueVacio;
+
+	return liberacion;
+}
+
+
+int ArbolBMas::_obtener_nodo_arbol(unsigned int numeroNodo,NodoArbol& nodo){
+
+	Bloque* bloqueNodo= archivoNodos.obtener_bloque(numeroNodo);
+	if(bloqueNodo== NULL)
+		return RES_ERROR;
+	nodo.desempaquetar(bloqueNodo);
+	delete bloqueNodo;
+
+	return RES_OK;
+
+}
+
+
 int ArbolBMas::buscar(RegistroClave & reg)
 {
 	unsigned int numBloque;
@@ -623,7 +885,7 @@ int ArbolBMas::_split_interno(NodoInterno* nodo,ClaveX* clavePromocionada,
 	}/*obtengo las claves que tengo que pasar al nodo nuevo (posteriores a la clave de la mitad)*/
 
 
-	for(unsigned short i=numeroClaveMitad;i<CANTIDAD_HIJOS;i++){
+	for(unsigned short i=numeroClaveMitad;i<CANTIDAD_CLAVES;i++){
 		TipoHijo unHijo;
 		int res=nodo->get_hijo(unHijo , i+1);
 		if(res!= RES_ERROR){
