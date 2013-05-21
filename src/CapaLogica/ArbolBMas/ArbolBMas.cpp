@@ -281,7 +281,7 @@ int ArbolBMas::_obtener_nodo_secuencial(int numNodoSecuencial,NodoSecuencial& no
 	delete bloqueSecuencialActual;
 	return RES_OK;
 
-}//FIXME revisar
+}
 
 int ArbolBMas::_buscar_nodo_con_puntero(int punteroAbuscar)
 {
@@ -417,7 +417,13 @@ int ArbolBMas::_quitar_recursivo(unsigned int& numNodoActual, RegistroClave & re
 	return res;
 }
 
-int ArbolBMas::buscar(RegistroClave & reg, unsigned int  & p_numBloque)
+int ArbolBMas::buscar(RegistroClave & reg)
+{
+	unsigned int numBloque;
+	return _buscar(reg,numBloque);
+}
+
+int ArbolBMas::_buscar(RegistroClave & reg, unsigned int  & p_numBloque)
 {
 	unsigned int numBloque = 1;
 	_hallar_hoja(&reg,numBloque);
@@ -440,7 +446,6 @@ int ArbolBMas::buscar(RegistroClave & reg, unsigned int  & p_numBloque)
 
 	delete regCopia;
 	return res;
-
 }
 
 
