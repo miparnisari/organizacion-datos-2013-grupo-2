@@ -10,12 +10,13 @@
 typedef NodoInterno::TipoHijo TipoHijo;
 
 void TestArbol::ejecutar(){
-
 	test_arbol_abrir_no_existente();
 	test_arbol_abrir_cerrar();
 	test_insertar_pocos_registros();
 	test_arbol_insertar_un_registro();
 	test_split_raiz();
+
+	test_arbol_buscar();
 }
 
 void TestArbol::test_arbol_insertar_un_registro()
@@ -42,7 +43,7 @@ void TestArbol::test_arbol_insertar_un_registro()
 
 	// Buscamos "u2 123" en el arbol
 	unsigned int numBloque = -1;
-	assert (arbol.buscar(regLeido, numBloque) != RES_RECORD_DOESNT_EXIST);
+	assert (arbol._buscar(regLeido, numBloque) != RES_RECORD_DOESNT_EXIST);
 	assert (numBloque == 1);
 	assert (regLeido.get_clave() == clave);
 
@@ -239,4 +240,60 @@ void TestArbol::test_split_raiz(){
 
 	print_test_ok("test_split_raiz");
 
+}
+
+void TestArbol::test_arbol_buscar()
+{
+	ArbolBMas arbol;
+	string nombreArchivo= "arbolSplit_buscar.dat";
+	unsigned int tamanioBloque= 100;
+	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
+	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+
+
+
+	for(int i=0;i<100;i++){
+		RegistroClave reg;
+		ClaveX c;
+
+		string clave= "artista  ";
+		clave[8]= 65+i;
+		c.set_clave(clave);
+		reg.set_clave(c);
+
+		std::string campo = "campo  ";
+		campo[6] = 65+i;
+		reg.agregar_campo(campo.c_str(),campo.size());
+		assert( arbol.agregar(reg)== RES_OK );
+	}
+
+	arbol.cerrar();
+	arbol.abrir(nombreArchivo,"rb+");
+
+	for (int i = 0; i < 100; i++)
+	{
+		ClaveX c;
+		RegistroClave reg;
+
+		string clave= "artista  ";
+		clave[8]= 65+i;
+		c.set_clave(clave);
+		reg.set_clave(c);
+
+		assert(arbol.buscar(reg) != RES_RECORD_DOESNT_EXIST);
+		assert(arbol.buscar(reg) >= 0);
+		char* buffer = new char[reg.get_tamanio_campo(1) + 1]();
+		buffer[reg.get_tamanio_campo(1)] = '\0';
+
+		reg.recuperar_campo(buffer,1);
+
+		std::string campo = "campo  ";
+		campo[6] = 65+i;
+
+
+		assert(strcmp(buffer,campo.c_str()) == 0);
+		delete[] buffer;
+	}
+
+	arbol.cerrar();
 }

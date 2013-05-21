@@ -29,6 +29,8 @@ class ArbolBMas
 		unsigned int tamanioMaximoNodo;
 		unsigned int tamanioBloque;
 
+		void _imprimir_recursivo(TipoHijo& numeroBloqueActual);
+
 		int _obtener_nodo_interno(unsigned int numeroNodoInterno,NodoInterno& nodo);
 
 		int _obtener_nodo_secuencial(int numNodoSecuencial,NodoSecuencial& nodoSecuencialActual);
@@ -64,10 +66,10 @@ class ArbolBMas
 		int cerrar ();
 
 		int agregar(RegistroClave & reg);
-		int quitar(RegistroClave & reg);//FIXME el parametro no deberia ser un ClaveX?
-		int buscar(RegistroClave & reg, unsigned int & numBloque);//FIXME el parametro no deberia ser un ClaveX?
-		/* Devuelve el numero de nodo secuencial donde esta o deberia estar reg. */
+		int quitar(RegistroClave & reg);
 
+		int buscar(RegistroClave & reg);
+		int _buscar(RegistroClave & reg, unsigned int & numBloque);
 
 		bool esta_vacio();
 
@@ -106,7 +108,7 @@ class ArbolBMas
 
 
 		void imprimir();
-		void _imprimir_recursivo(TipoHijo& numeroBloqueActual);
+
 		void obtener_primer_nodo_secuencial(TipoHijo& numeroPrimerNodo);
 		/*guarda en el parametro nodo el primer nodo secuencial*/
 };

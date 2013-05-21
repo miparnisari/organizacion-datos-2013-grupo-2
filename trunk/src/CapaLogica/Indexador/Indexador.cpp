@@ -14,26 +14,19 @@ Indexador::~Indexador()
 
 int Indexador::indexar (std::string directorioEntrada, std::string directorioSalida)
 {
-	// clave = autor + id cancion
+
+	ManejadorRegistrosVariables archivoMaestro;
+	archivoMaestro.crear(directorioSalida+std::string(FILENAME_ARCH_MAESTRO));
+
 	ArbolBMas indiceSecundarioAutor;
 	indiceSecundarioAutor.crear(directorioSalida+std::string(FILENAME_IDX_SECUN_AUTOR));
-	
-	// clave = titulo
-//	HashingExtensible indiceSecundarioTitulo;
-//	indiceSecundarioTitulo.create(directorioSalida, std::string(FILENAME_IDX_SECUN_TITULO));
-	
-	// clave = id cancion
-//	HashingExtensible indicePrimario;
-//	indicePrimario.create(directorioSalida, std::string(FILENAME_IDX_PRIM));
-	
-	ManejadorRegistrosVariables archivoMaestro;	
 	
 	ParserCanciones parser;
 	parser.crear(directorioEntrada);
 	RegistroCancion regCancion;
 	
 	CompresorPPMC compresor;
-	
+
 	ClaveNumerica identificadorCancion ; // inicialmente vale 0
 	
 	// Para cada cancion que tengamos...
@@ -42,8 +35,7 @@ int Indexador::indexar (std::string directorioEntrada, std::string directorioSal
 		regCancion.comprimir(compresor);
 		
 //		int offsetInicialRegCancion;
-		//archivoMaestro.agregar_registro(directorioSalida+std::string(FILENAME_ARCH_MAESTRO),std::string(regCancion.get_buffer()));
-		//FIXME esta funcion fue modificada
+		archivoMaestro.agregar_registro(&regCancion);
 		
 		// Cargamos en el indice primario el offset al registro
 //		int longitudCampo[1] = {sizeof(int)};
