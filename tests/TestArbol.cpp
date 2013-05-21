@@ -17,6 +17,7 @@ void TestArbol::ejecutar(){
 	test_split_raiz();
 
 	test_arbol_buscar();
+	test_arbol_buscar_secuencial();
 }
 
 void TestArbol::test_arbol_insertar_un_registro()
@@ -251,7 +252,6 @@ void TestArbol::test_arbol_buscar()
 	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
 
 
-
 	for(int i=0;i<100;i++){
 		RegistroClave reg;
 		ClaveX c;
@@ -294,6 +294,95 @@ void TestArbol::test_arbol_buscar()
 		assert(strcmp(buffer,campo.c_str()) == 0);
 		delete[] buffer;
 	}
+
+	arbol.cerrar();
+}
+
+void TestArbol::test_arbol_buscar_secuencial()
+{
+	ArbolBMas arbol;
+	string nombreArchivo= "arbolSplit_buscar.dat";
+	unsigned int tamanioBloque= 100;
+	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
+	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+
+	for(int i=0;i<10;i++){
+		RegistroClave reg;
+		ClaveX c;
+
+		string clave= "arjona ";
+		clave[6]= 48+i;
+		c.set_clave(clave);
+		reg.set_clave(c);
+
+		assert( arbol.agregar(reg)== RES_OK );
+	}
+
+	for(int i=0;i<10;i++){
+		RegistroClave reg;
+		ClaveX c;
+
+		string clave= "abba ";
+		clave[4]= 48+i;
+		c.set_clave(clave);
+		reg.set_clave(c);
+
+		assert( arbol.agregar(reg)== RES_OK );
+	}
+
+	for(int i=0;i<10;i++){
+		RegistroClave reg;
+		ClaveX c;
+
+		string clave= "alan johnson ";
+		clave[12]= 48+i;
+		c.set_clave(clave);
+		reg.set_clave(c);
+
+		assert( arbol.agregar(reg)== RES_OK );
+	}
+
+	arbol.cerrar();
+	arbol.abrir(nombreArchivo,"rb+");
+
+	IterArbolBMas iterador("arbolSplit_buscar.dat");
+
+	ClaveX claveABBA;
+	claveABBA.set_clave("abba");
+	iterador.start(">=",claveABBA);
+	std::cout << "Buscando >= ABBA: ";
+	RegistroClave* regLeido = NULL;
+	regLeido = iterador.readNext();
+	while (regLeido != NULL)
+	{
+
+		std::string valorLeido;
+		ClaveX claveLeida = regLeido->get_clave();
+		claveLeida.get_clave(valorLeido);
+
+		std::cout << valorLeido << ", ";
+
+		delete regLeido;
+	}
+
+	ClaveX claveArjona;
+	claveArjona.set_clave("arjona");
+	iterador.start(">=",claveArjona);
+	std::cout << "Buscando >= ARJONA: ";
+
+	regLeido = iterador.readNext();
+	while (regLeido != NULL)
+	{
+
+		std::string valorLeido;
+		ClaveX claveLeida = regLeido->get_clave();
+		claveLeida.get_clave(valorLeido);
+
+		std::cout << valorLeido << ", ";
+
+		delete regLeido;
+	}
+
 
 	arbol.cerrar();
 }

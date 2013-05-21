@@ -10,7 +10,6 @@
 
 #include "Test.h"
 
-
 class TestArbol:public Test {
 
 	private:
@@ -21,6 +20,8 @@ class TestArbol:public Test {
 		void test_arbol_insertar_un_registro();
 		void test_split_nodo_secuencial();
 		void test_split_raiz();
+		void test_arbol_buscar_secuencial();
+
 
 	public:
 		void ejecutar();

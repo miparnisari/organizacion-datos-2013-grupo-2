@@ -3,15 +3,18 @@
 ArbolBMas::ArbolBMas()
 {
 	numeroBloqueRaiz = NUMERO_BLOQUE_RAIZ; // el bloque 0 tiene el header y el 1 la raiz
-	raiz = NULL;
 	header.maxCantBytesClaves = 0;
 	header.minCantBytesClaves = 0;
 	tamanioMaximoNodo = BLOQUE_TAM_DEFAULT;
 }
 
+ArbolBMas::ArbolBMas(std::string nombreArchivo)
+{
+	archivoNodos.set_ruta(nombreArchivo);
+}
+
 ArbolBMas::~ArbolBMas()
 {
-	delete raiz;
 }
 
 int ArbolBMas::persistir(NodoArbol* nodo, unsigned int numeroNodo){
@@ -23,7 +26,6 @@ int ArbolBMas::persistir(NodoArbol* nodo, unsigned int numeroNodo){
 	delete bloqueNodo;
 	return RES_OK;
 }
-
 
 int ArbolBMas::_balancear_secuenciales(NodoSecuencial&, NodoSecuencial&, NodoInterno&){
 	return RES_OK;
@@ -55,10 +57,11 @@ int ArbolBMas::_set_header()
 
 	// El bloque 1 debe tener la raiz
 	Bloque* bloqueRaiz = archivoNodos.crear_bloque();
-	raiz = new NodoSecuencial(header.minCantBytesClaves, header.maxCantBytesClaves);
+	NodoSecuencial* raiz = new NodoSecuencial(header.minCantBytesClaves, header.maxCantBytesClaves);
 	raiz->empaquetar(bloqueRaiz);
 
 	res = archivoNodos.escribir_bloque(bloqueRaiz);
+	delete raiz;
 	delete bloqueRaiz;
 	if (res != NUMERO_BLOQUE_RAIZ)
 		return RES_ERROR;

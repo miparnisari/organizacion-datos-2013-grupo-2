@@ -24,7 +24,6 @@ class ArbolBMas
 	private:
 		header_arbol header;
 		ManejadorBloques archivoNodos;
-		NodoSecuencial* raiz;
 		unsigned int numeroBloqueRaiz;
 		unsigned int tamanioMaximoNodo;
 		unsigned int tamanioBloque;
@@ -33,7 +32,6 @@ class ArbolBMas
 
 		int _obtener_nodo_interno(unsigned int numeroNodoInterno,NodoInterno& nodo);
 
-		int _obtener_nodo_secuencial(int numNodoSecuencial,NodoSecuencial& nodoSecuencialActual);
 		void _imprimir_recursivo(unsigned int numNodo);
 		int _buscar_nodo_con_puntero(int punteroAbuscar);
 		int _quitar_recursivo(unsigned int& numNodoActual, RegistroClave & registro, int & huboUnderflow);
@@ -57,6 +55,7 @@ class ArbolBMas
 		static const int FACTOR_CARGA= 50;
 
 		ArbolBMas();
+		ArbolBMas(std::string nombreArchivo);
 		virtual ~ArbolBMas();
 
 		int crear (std::string fileName, unsigned int tamBloque = BLOQUE_TAM_DEFAULT);
@@ -80,6 +79,7 @@ class ArbolBMas
 		/*ESTOS METODOS DEBERIAN SER PRIVADOS, SE HACEN PUBLICOS PARA TESTEAR*/
 		int _set_header();
 		int _get_header();
+		int _obtener_nodo_secuencial(int numNodoSecuencial,NodoSecuencial& nodoSecuencialActual);
 
 		int _hallar_hijo_correspondiente(RegistroClave* registro,
 				NodoInterno* nodoBuscar,TipoHijo& numeroBloqueHijoCorrespondiente);

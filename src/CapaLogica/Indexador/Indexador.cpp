@@ -12,61 +12,74 @@ Indexador::~Indexador()
 	
 }
 
+int Indexador::init(std::string directorioEntrada, std::string directorioSalida)
+{
+	int res= indicePrimario.crear(directorioSalida+std::string(FILENAME_IDX_PRIM));
+	res += archivoMaestro.crear_archivo(directorioSalida+std::string(FILENAME_ARCH_MAESTRO));
+	res += archivoMaestro.abrir_archivo(directorioSalida+std::string(FILENAME_ARCH_MAESTRO));
+	res += indiceSecundarioAutor.crear(directorioSalida+std::string(FILENAME_IDX_SECUN_AUTOR));
+	res += indiceSecundarioAutor.abrir(directorioSalida+std::string(FILENAME_IDX_SECUN_AUTOR),"rb+");
+	res += indiceSecundarioTitulo.crear(directorioSalida+std::string(FILENAME_IDX_SECUN_TITULO));
+	res += parser.crear(directorioEntrada);
+	if (res != RES_OK)
+		return RES_ERROR;
+
+	return res;
+}
+
 int Indexador::indexar (std::string directorioEntrada, std::string directorioSalida)
 {
+	init(directorioEntrada,directorioSalida);
 
-	ManejadorRegistrosVariables archivoMaestro;
-	archivoMaestro.crear(directorioSalida+std::string(FILENAME_ARCH_MAESTRO));
-
-	ArbolBMas indiceSecundarioAutor;
-	indiceSecundarioAutor.crear(directorioSalida+std::string(FILENAME_IDX_SECUN_AUTOR));
+	int contador = 0;
+	ClaveX identificadorCancion; // inicialmente vale 0
+	identificadorCancion.set_clave(contador);
 	
-	ParserCanciones parser;
-	parser.crear(directorioEntrada);
 	RegistroCancion regCancion;
-	
-	CompresorPPMC compresor;
 
-	ClaveNumerica identificadorCancion ; // inicialmente vale 0
-	
 	// Para cada cancion que tengamos...
 	while (parser.getNextCancion(regCancion) == RES_OK)
 	{
 		regCancion.comprimir(compresor);
+		long offsetInicialRegCancion = archivoMaestro.agregar_registro(&regCancion);
 		
-//		int offsetInicialRegCancion;
-		archivoMaestro.agregar_registro(&regCancion);
-		
-		// Cargamos en el indice primario el offset al registro
-//		int longitudCampo[1] = {sizeof(int)};
-		RegistroVariable regOffset;
-		//~ FIXME RegistroFijo regOffset(1, longitudCampo); //Un registro tiene un solo campo de 1 int
-		//~ FIXME regOffset.pack((char*)offsetInicialRegCancion);
-//		indicePrimario.agregar(regOffset);
-		
-		// Creamos el indice secundario por autor
-		// <autor,ID cancion> van a los nodos hoja del arbol B+
-		for (int i = 0; i < regCancion.get_cantidad_autores(); i++)
+		/* ----- agregamos al indice primario: ID cancion + offset de la cancion ----*/
+
+		RegistroClave regClave;
+		regClave.set_clave(identificadorCancion);
+		regClave.agregar_campo((char*)&offsetInicialRegCancion,sizeof(offsetInicialRegCancion));
+		indicePrimario.agregar(regClave);
+
+
+		/* ----- agregamos al indice por autor: el autor + ID cancion ----*/
+
+		for (unsigned int i = 0; i < regCancion.get_cantidad_autores(); i++)
 		{
-			//RegistroVariable regVar;
-			//~ FIXME regVar.pack(regCancion.getAutor(i));
-			// FIXME regVar.pack(std::string(identificadorCancion));
-			//indiceSecundarioAutor.agregar(regVar);
-			//FIXME aca se creaba y se buscaba insertar un RegistroVariable en el arbol,
-			//el cual DEBE Recibir un RegistroClave
-			RegistroClave registro;
-			indiceSecundarioAutor.agregar(registro);
+			RegistroClave regClave2;
+
+			std::string clave = regCancion.get_autor(i);
+			clave.push_back((char)contador);
+
+			ClaveX claveAutor;
+			claveAutor.set_clave(clave);
+			regClave2.set_clave(claveAutor);
+//			regClave2.agregar_campo((char*)&contador,sizeof(contador));
+			indiceSecundarioAutor.agregar(regClave2);
 		}
+
+		/* ----- agregamos al indice por titulo: el titulo + ID cancion ----*/
+
+		RegistroClave regClave3;
+		ClaveX claveTitulo;
+		claveTitulo.set_clave(regCancion.get_titulo());
+		regClave3.set_clave(claveTitulo);
+		regClave3.agregar_campo((char*)&contador,sizeof(contador));
+		indiceSecundarioTitulo.agregar(regClave3);
 		
-		// Creamos el indice secundario por titulo
-		RegistroVariable regVar;
-		//~ FIXME regVar.pack(regCancion.getTitulo());
-		//FIXME regVar.pack(std::string(identificadorCancion));
-//		indiceSecundarioTitulo.agregar(regVar);
-		
-		// Incrementamos la clave
-		
-		identificadorCancion.incrementar();
+
+		/** incrementamos el ID de la cancion **/
+		contador++;
+		identificadorCancion.set_clave(contador);
 		
 	}
 	
