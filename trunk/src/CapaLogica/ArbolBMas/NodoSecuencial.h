@@ -25,13 +25,15 @@ class NodoSecuencial : public NodoArbol {
 
 	public:
 		NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBytesOcupados);
+		NodoSecuencial(const NodoSecuencial& otro);
+
+		NodoSecuencial& operator=(const NodoSecuencial& otro);
+
 		virtual ~NodoSecuencial();
 
 		void imprimir();
 
 		bool tiene_carga_minima ();
-
-		std::vector<RegistroClave> get_registros() const;
 
 		void set_proximo_nodo(TipoPuntero p_prox);
 
@@ -51,9 +53,13 @@ class NodoSecuencial : public NodoArbol {
 		int empaquetar(Bloque* bloque);
 		int desempaquetar(const Bloque*);
 
-		unsigned int get_bytes_ocupados();
-		TipoPuntero get_proximo_nodo();
-		unsigned int get_cantidad_registros();
+		unsigned int get_bytes_ocupados()const;
+		TipoPuntero get_proximo_nodo()const;
+		unsigned int get_cantidad_registros()const;
+		std::vector<RegistroClave> get_registros() const;
+		unsigned int get_max_bytes() const;
+		unsigned int get_min_bytes() const;
+
 		bool esta_vacio();
 };
 
