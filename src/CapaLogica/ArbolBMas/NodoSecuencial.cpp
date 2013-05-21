@@ -16,6 +16,31 @@ NodoSecuencial::NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBy
 	proximoNodo = -1;
 }
 
+NodoSecuencial::NodoSecuencial(const NodoSecuencial& otro)
+	:NodoArbol(TIPO_HOJA)
+{
+	maxCantidadBytesOcupados = otro.get_max_bytes();
+	minCantidadBytesOcupados = otro.get_min_bytes();
+	bytesOcupados = otro.get_bytes_ocupados();
+	proximoNodo = otro.get_proximo_nodo();
+	vectorRegistros = otro.get_registros();
+}
+
+NodoSecuencial& NodoSecuencial::operator=(const NodoSecuencial& otro)
+{
+	if (this != &otro)
+	{
+		maxCantidadBytesOcupados = otro.get_max_bytes();
+		minCantidadBytesOcupados = otro.get_min_bytes();
+		bytesOcupados = otro.get_bytes_ocupados();
+		proximoNodo = otro.get_proximo_nodo();
+		vectorRegistros.clear();
+		vectorRegistros = otro.get_registros();
+	}
+
+	return *this;
+}
+
 std::vector<RegistroClave> NodoSecuencial::get_registros() const
 {
 	return this->vectorRegistros;
@@ -43,7 +68,16 @@ void NodoSecuencial::__limpiar()
 	vectorRegistros.clear();
 }
 
-unsigned int NodoSecuencial::get_cantidad_registros()
+unsigned int NodoSecuencial::get_max_bytes()const
+{
+	return this->maxCantidadBytesOcupados;
+}
+unsigned int NodoSecuencial::get_min_bytes()const
+{
+	return this->minCantidadBytesOcupados;
+}
+
+unsigned int NodoSecuencial::get_cantidad_registros()const
 {
 	return vectorRegistros.size();
 }
@@ -53,12 +87,12 @@ bool NodoSecuencial::esta_vacio()
 	return (vectorRegistros.size() == 0);
 }
 
-unsigned int NodoSecuencial::get_bytes_ocupados()
+unsigned int NodoSecuencial::get_bytes_ocupados()const
 {
 	return bytesOcupados;
 }
 
-TipoPuntero NodoSecuencial::get_proximo_nodo()
+TipoPuntero NodoSecuencial::get_proximo_nodo()const
 {
 	return proximoNodo;
 }
