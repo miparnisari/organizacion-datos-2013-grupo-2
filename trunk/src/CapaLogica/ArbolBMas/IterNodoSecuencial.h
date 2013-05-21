@@ -12,7 +12,10 @@
 
 class IterNodoSecuencial {
 public:
-	IterNodoSecuencial(NodoSecuencial nodoSec);
+	NodoSecuencial* nodo;
+	std::string operador;
+
+	IterNodoSecuencial(NodoSecuencial & nodoSec, std::string operador);
 	virtual ~IterNodoSecuencial();
 
 	int get_pos_reg(std::string unOperador, ClaveX claveInicial);

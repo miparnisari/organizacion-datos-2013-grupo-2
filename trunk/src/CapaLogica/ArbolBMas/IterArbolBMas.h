@@ -23,8 +23,9 @@ class IterArbolBMas {
 
 	private:
 		ArbolBMas* arbol;
-		int numRegActual;
+		unsigned int numRegActual;
 		int numNodoActual;
+		ClaveX claveCorte;
 		ClaveX* claveActual;
 		std::string operador;
 };

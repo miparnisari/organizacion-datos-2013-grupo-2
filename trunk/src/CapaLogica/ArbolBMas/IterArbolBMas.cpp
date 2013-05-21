@@ -41,7 +41,7 @@ int IterArbolBMas::start(std::string unOperador, ClaveX claveInicial)
 
 		numNodoActual = numNodoSecuencialInicial;
 
-		IterNodoSecuencial iterNodo(nodoSecInicial);
+		IterNodoSecuencial iterNodo(nodoSecInicial,operador);
 
 		numRegActual = iterNodo.get_pos_reg(unOperador, claveInicial);
 	}else//es <=
@@ -54,35 +54,20 @@ int IterArbolBMas::start(std::string unOperador, ClaveX claveInicial)
 
 RegistroClave* IterArbolBMas::readNext()
 {
-
-
-	while (numNodoActual != -1)
+	if (numNodoActual != -1)
 	{
 		NodoSecuencial nodoActual (arbol->get_cant_minima_nodo(), arbol->get_cant_maxima_nodo());
 		arbol->_obtener_nodo_secuencial(numNodoActual,nodoActual);
 
 
-		while (numRegActual < nodoActual.get_cantidad_registros())
+		if (numRegActual < nodoActual.get_cantidad_registros())
 		{
-			std::vector<RegistroClave> registrosDelNodo = nodoActual.get_registros();
-			unsigned int i = 0;
-			for (; i < registrosDelNodo.size(); i ++)
-			{
-				ClaveX clave;
-
-				clave = registrosDelNodo.at(i).get_clave();
-
-				if (operador == ">=" && clave == (*claveActual))
-					numRegActual ++;
-
-			}
+			// TODO
 		}
 
 		numNodoActual = nodoActual.get_proximo_nodo();
 
 	}
-
-
 
 	return NULL;
 }
