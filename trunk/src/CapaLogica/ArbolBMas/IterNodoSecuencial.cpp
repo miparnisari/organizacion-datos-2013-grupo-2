@@ -7,9 +7,10 @@
 
 #include "IterNodoSecuencial.h"
 
-IterNodoSecuencial::IterNodoSecuencial(NodoSecuencial & nodoSec, std::string unOperador) {
-	nodo= new NodoSecuencial(nodoSec);
-	this->operador=unOperador;
+IterNodoSecuencial::IterNodoSecuencial(const NodoSecuencial& nodoSec,std::string operador) {
+	this->operador=operador;
+	nodo = new NodoSecuencial(nodoSec);
+
 }
 
 IterNodoSecuencial::~IterNodoSecuencial() {
@@ -19,13 +20,14 @@ IterNodoSecuencial::~IterNodoSecuencial() {
 int IterNodoSecuencial::get_pos_reg(std::string unOperador,
 		ClaveX claveInicial)
 {
-	if (operador == "<=" || operador == "<")
-		return 0;
-	else if	(operador==">") {
+
+	if (operador == ">")
+	{
 		unsigned int i = 0;
 		for (; i < nodo->get_registros().size(); i++)
 		{
 			ClaveX* claveAlmacenada = new ClaveX(nodo->get_registros().at(i).get_clave());
+
 			if (claveInicial < *claveAlmacenada)
 			{
 				delete (claveAlmacenada);
@@ -34,21 +36,29 @@ int IterNodoSecuencial::get_pos_reg(std::string unOperador,
 			delete (claveAlmacenada);
 		}
 		return i;
-	}
-	else {// caso de >=
 
-		unsigned int i = 0;
-		for (; i < nodo->get_registros().size(); i++)
+	}else{
+		if (operador == ">=")
 		{
-			ClaveX* claveAlmacenada = new ClaveX(nodo->get_registros().at(i).get_clave());
-
-			if (claveInicial <= *claveAlmacenada)
+			unsigned int i = 0;
+			for (; i < nodo->get_registros().size(); i++)
 			{
+				ClaveX* claveAlmacenada = new ClaveX(nodo->get_registros().at(i).get_clave());
+
+				if (claveInicial < *claveAlmacenada)
+				{
+					delete (claveAlmacenada);
+					return i;
+				}
 				delete (claveAlmacenada);
-				return i;
 			}
-			delete (claveAlmacenada);
+			return i;
+
+		}else//es decir es < o <=
+		{
+			return 0;//empieza desde el primero
 		}
-		return i;
 	}
+	//no debería pasar pero si el operador es algun otro (probablemente invalido) TODO
+	return RES_ERROR;
 }

@@ -345,44 +345,71 @@ void TestArbol::test_arbol_buscar_secuencial()
 	arbol.cerrar();
 	arbol.abrir(nombreArchivo,"rb+");
 
-	IterArbolBMas iterador("arbolSplit_buscar.dat");
+
+	std::cout << "Buscando >= ABBA: ";
 
 	ClaveX claveABBA;
 	claveABBA.set_clave("abba");
-	iterador.start(">=",claveABBA);
-	std::cout << "Buscando >= ABBA: ";
-	RegistroClave* regLeido = NULL;
-	regLeido = iterador.readNext();
-	while (regLeido != NULL)
+
+	IterArbolBMas unIterador("arbolSplit_buscar.dat"); //asumo que el archivo viene abierto para lectura! FIXME
+
+	unIterador.start(">=",claveABBA);
+
+	int i = 0;
+	while (unIterador.readNext() != NULL && i<10)
 	{
+		RegistroClave reg;
+		ClaveX c;
 
-		std::string valorLeido;
-		ClaveX claveLeida = regLeido->get_clave();
-		claveLeida.get_clave(valorLeido);
+		string clave= "alan johnson ";
+		clave[12]= 48+i;
+		c.set_clave(clave);
+		reg.set_clave(c);
 
-		std::cout << valorLeido << ", ";
-
-		delete regLeido;
+		assert((*(unIterador.readNext()))==reg);
+		i++;
 	}
+
+	i = 0;
+	while (unIterador.readNext() != NULL)
+	{
+		RegistroClave reg;
+		ClaveX c;
+
+		string clave= "arjona ";
+		clave[6]= 48+i;
+		c.set_clave(clave);
+		reg.set_clave(c);
+
+		assert((*(unIterador.readNext()))==reg);
+		i++;
+	}
+
+
+	std::cout << "Buscando >= ARJONA: ";
 
 	ClaveX claveArjona;
 	claveArjona.set_clave("arjona");
-	iterador.start(">=",claveArjona);
-	std::cout << "Buscando >= ARJONA: ";
+	IterArbolBMas otroIterador("arbolSplit_buscar.dat"); //asumo que el archivo viene abierto para lectura! FIXME
 
-	regLeido = iterador.readNext();
-	while (regLeido != NULL)
+	otroIterador.start(">=",claveABBA);
+
+	i = 0;
+	while (otroIterador.readNext() != NULL)
 	{
+		RegistroClave reg;
+		ClaveX c;
 
-		std::string valorLeido;
-		ClaveX claveLeida = regLeido->get_clave();
-		claveLeida.get_clave(valorLeido);
+		string clave= "arjona ";
+		clave[6]= 48+i;
+		c.set_clave(clave);
+		reg.set_clave(c);
 
-		std::cout << valorLeido << ", ";
-
-		delete regLeido;
+		assert((*(otroIterador.readNext()))==reg);
+		i++;
 	}
 
-
 	arbol.cerrar();
+
+	print_test_ok("test_arbol_buscar_secuencial");
 }

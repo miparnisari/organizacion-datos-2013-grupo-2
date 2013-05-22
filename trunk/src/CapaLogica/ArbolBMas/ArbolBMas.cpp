@@ -681,7 +681,6 @@ int ArbolBMas::_obtener_nodo_arbol(unsigned int numeroNodo,NodoArbol& nodo){
 
 }
 
-
 int ArbolBMas::buscar(RegistroClave & reg)
 {
 	unsigned int numBloque;

@@ -32,6 +32,7 @@
 #include "../src/CapaLogica/ArbolBMas/IterArbolBMas.h"
 #include "../src/CapaLogica/ArbolBMas/NodoSecuencial.h"
 #include "../src/CapaLogica/ArbolBMas/ArbolBMas.h"
+#include "../src/CapaLogica/ArbolBMas/IterArbolBMas.h"
 #include "../src/CapaLogica/ManejoArchivos/RegistroCancion.h"
 #include "../src/CapaLogica/ManejoArchivos/RegistroClave.h"
 #include "../src/CapaLogica/ManejoArchivos/ClaveString.h"
