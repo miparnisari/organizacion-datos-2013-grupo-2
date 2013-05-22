@@ -58,7 +58,7 @@ class HashingExtensible
         virtual int obtener_bloque(ClaveX clave, Bloque& bloque);
         //Obtenemos el bloque que corresponde a la clave pasada por parametro
 
-        virtual int obtener_posicion_reg_bloque(ClaveX clave, Bloque bloque);
+        virtual int obtener_posicion_reg_bloque(ClaveX clave,Bloque bloque);
         //Obtenemos en que posicion se encuentra el registro con la clave que buscamos
         //dentro de un bloque
 
