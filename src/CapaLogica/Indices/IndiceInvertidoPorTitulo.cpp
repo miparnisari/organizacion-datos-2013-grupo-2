@@ -30,7 +30,7 @@ int IndiceInvertidoPorTitulo::abrir_indice(std::string directorioSalida)
 
 int IndiceInvertidoPorTitulo::agregar_cancion(RegistroCancion cancion, int IDcancion)
 {
-    unsigned short ref_lista = this->listas.get_cantidad_registros_ocupados();
+    unsigned short ref_lista = this->listas.get_cantidad_listas();
     unsigned short ref_listas[1];
     RegistroClave reg_cancion;
     ClaveX clave;

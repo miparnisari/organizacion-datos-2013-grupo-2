@@ -11,7 +11,7 @@ ArchivoListas::~ArchivoListas()
 }
 int ArchivoListas::crear(std::string directorioSalida, std::string fileNamee)
 {
-    this->archivo.crear_archivo(directorioSalida+fileNamee);
+    return this->archivo.crear_archivo(directorioSalida+fileNamee);
 }
 
 int ArchivoListas::abrir(std::string directorioSalidaa, std::string fileNamee)
@@ -55,12 +55,13 @@ int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short 
     }
     this->archivo.eliminar_archivo(this->fileName);
     //Cambiamos el nombre del archivo por el ori¿ginal
-   /***** return rename(this->directorioSalida+"ListaAuxiliar.dat",this->fileName);***/
+/***    rename(this->directorioSalida+"ListaAuxiliar.dat",this->fileName);*////
 }
 
 int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short cant_ref, int ID, int *pos)
 {
     /************esta sirve para el indice por frase, ver con cuidado, conviene usar el archivo de coincidencias*****************/
+    return RES_OK;
 }
 
 int ArchivoListas::eliminar(std::string directorioSalida, std::string fileNamee)
@@ -68,7 +69,7 @@ int ArchivoListas::eliminar(std::string directorioSalida, std::string fileNamee)
     return this->archivo.eliminar_archivo(directorioSalida+fileNamee);
 }
 
-unsigned short ArchivoListas::get_cantidad_registros_ocupados()
+unsigned short ArchivoListas::get_cantidad_listas()
 {
-    this->archivo.get_cantidad_registros_ocupados();
+    return this->archivo.get_cantidad_registros_ocupados();
 }
