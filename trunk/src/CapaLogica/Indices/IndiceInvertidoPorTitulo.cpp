@@ -10,10 +10,65 @@ IndiceInvertidoPorTitulo::~IndiceInvertidoPorTitulo()
 
 }
 
+int IndiceInvertidoPorTitulo::crear_indice(std::string directorioSalida)
+{
+    int resultado;
+    this->ruta = directorioSalida;
+    resultado= resultado+this->indice.crear(this->ruta+"IndicePorTitulo.dat");
+    resultado= resultado+this->listas.crear(this->ruta, "ListasPorTitulo.dat");
+    return resultado;
+}
 
-int IndiceInvertidoPorTitulo::armar_archivo_coincidencias(std::string doc, int IDdoc)
-{   //En este caso string doc que se pasa va a ser lo que queremos que se guarde como identificador del documento en el vocabulario
-    /**saco el titulo del doc y lo agrego en el vobulario*/
-/*****    this->agregar_termino(doc, IDdoc, 1); error raro*/
-    return RES_OK;
+int IndiceInvertidoPorTitulo::abrir_indice(std::string directorioSalida)
+{
+    int resultado;
+    this->ruta = directorioSalida;
+    resultado= resultado+this->indice.abrir(this->ruta+"IndicePorTitulo.dat");
+    resultado= resultado+this->listas.abrir(this->ruta,"ListasPorTitulo.dat");
+    if (resultado !=RES_OK) return NO_EXISTE;
+}
+
+int IndiceInvertidoPorTitulo::agregar_cancion(RegistroCancion cancion, int IDcancion)
+{
+    unsigned short ref_lista = this->listas.get_cantidad_registros_ocupados();
+    unsigned short ref_listas[1];
+    RegistroClave reg_cancion;
+    ClaveX clave;
+    clave.set_clave(cancion.get_titulo());
+    //Veo si el titulo se encuentra en el indice
+    if(this->indice.devolver(clave, &reg_cancion) == NO_EXISTE){
+        //Creo un registro con el titulo en el indice y la referencia a una nueva lista
+        reg_cancion.set_clave(clave);
+        reg_cancion.agregar_campo((char*)&ref_lista,sizeof(ref_lista));
+        this->indice.agregar(reg_cancion);
+    }else{
+        reg_cancion.recuperar_campo((char*)&ref_lista, 0);  /***ver si los campos se guardan desde el 0 o el 1**/
+    }
+    //Actualizamos la lista del titulo agregandole el IDcancion
+    ref_listas[1]= ref_lista;
+    return this->listas.recontruir_listas(ref_listas, 1, IDcancion);
+}
+
+long IndiceInvertidoPorTitulo::buscar_titulo(std::string titulo, RegistroVariable &listaDeCanciones)
+{
+    unsigned short ref_lista;
+    RegistroClave reg_cancion;
+    ClaveX clave;
+    clave.set_clave(titulo);
+    //Veo si el titulo se encuentra en el indice
+    if(this->indice.devolver(clave, &reg_cancion) == NO_EXISTE)   return NO_EXISTE;
+    //Busco la posicion relativa de la lista en el archivo de listas
+    reg_cancion.recuperar_campo((char*)&ref_lista, 0);  /***ver si los campos se guardan desde el 0 o el 1**/
+    //Le pido la lista al archivo de listas
+    return this->listas.devolver(&listaDeCanciones, ref_lista);
+}
+
+int IndiceInvertidoPorTitulo::borrar_indice()
+{
+    int resultado;
+    this->indice.abrir(this->ruta+"IndicePorTitulo.dat");
+    resultado = this->indice.eliminar();
+    if (resultado!=RES_OK)  return resultado;
+    resultado = this->listas.eliminar(this->ruta,"ListasPorTitulo.dat");
+    if (resultado!=RES_OK)  return resultado;
 }

@@ -1,22 +1,20 @@
 #ifndef INDICEINVERTIDOPORAUTOR_H_INCLUDED
 #define INDICEINVERTIDOPORAUTOR_H_INCLUDED
 
-#include "../../CapaFisica/ManejadorBloques.h"
-#include "../../CapaFisica/ManejadorRegistrosVariables.h"
 #include "../../CapaFisica/RegistroVariable.h"
 #include "../ArbolBMas/ArbolBMas.h"
 #include "../../CapaLogica/ManejoArchivos/ClaveX.h"
 #include "../../CapaLogica/ManejoArchivos/RegistroClave.h"
 #include "../../Constantes.h"
 #include "../../CapaLogica/ManejoArchivos/RegistroCancion.h"
+#include "ArchivoListas.h"
 
 class IndiceInvertidoPorAutor
 {
     private:
         std::string ruta;
-        std::string direccion_listas;
         ArbolBMas indice;
-        ManejadorRegistrosVariables listas;
+        ArchivoListas listas;
 
     public:
         IndiceInvertidoPorAutor();
@@ -29,7 +27,7 @@ class IndiceInvertidoPorAutor
         virtual int borrar_indice();
 
     private:
-        virtual int recontruir_listas(unsigned short* ref_listas, unsigned short cant_ref, int IDcancion);
+    //    virtual int recontruir_listas(unsigned short* ref_listas, unsigned short cant_ref, int IDcancion);
 };
 
 #endif // INDICEINVERTIDOPORAUTOR_H_INCLUDED
