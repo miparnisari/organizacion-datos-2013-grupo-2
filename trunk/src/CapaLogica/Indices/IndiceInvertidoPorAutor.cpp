@@ -38,7 +38,7 @@ int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion cancion, int IDcanc
     RegistroClave regAutor;
     int i, existe, cant_autores = cancion.get_cantidad_autores();
     //Es la posicion relativa de la proxima lista libre en el archivo de listas de autores
-    unsigned short listaVacia= this->listas.get_cantidad_registros_ocupados();
+    unsigned short listaVacia= this->listas.get_cantidad_listas();
     unsigned short lista_autores[cant_autores];
     for(i=0; i<cant_autores; i++){
         //Obtenemos un autor de la cancion
