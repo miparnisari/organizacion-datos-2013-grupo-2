@@ -237,12 +237,9 @@ int NodoInterno::empaquetar(Bloque* bloque)
 
 	}
 
-	cout<<registroTipoNodo.get_cantidad_campos()<<endl;
-
 	bloque->agregar_registro(&registroTipoNodo);
 	bloque->agregar_registro(&registroClaves);
-	int ah= bloque->agregar_registro(&registroHijos);
-	cout<<"ah= "<<ah<<endl;
+	bloque->agregar_registro(&registroHijos);
 
 	return RES_OK;
 
@@ -411,7 +408,7 @@ void NodoInterno::imprimir()
 		numHijo ++;
 		vectorClaves.at(i).imprimir_dato();
 		get_hijo(hijo,numHijo);
-		std::cout << hijo << "-";
+		std::cout << " - " << hijo << " - ";
 	}
 }
 

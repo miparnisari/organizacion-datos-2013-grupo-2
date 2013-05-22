@@ -17,7 +17,7 @@ void TestArbol::ejecutar(){
 	test_split_raiz();
 
 	test_arbol_buscar();
-//	test_arbol_buscar_secuencial();
+	test_arbol_buscar_secuencial();
 }
 
 void TestArbol::test_arbol_insertar_un_registro()
@@ -151,8 +151,8 @@ void TestArbol::test_insertar_pocos_registros(){
 	ClaveX clavePromocionada;
 	TipoHijo bloquePromocionado;
 	abm._split_interno(&ni,&clavePromocionada,bloquePromocionado);
-	cout<<"clave promocionada: ";clavePromocionada.imprimir_dato();cout<<endl;
-	cout<<"bloque promocionado: "<<bloquePromocionado<<endl;
+//	cout<<"clave promocionada: ";clavePromocionada.imprimir_dato();cout<<endl;
+//	cout<<"bloque promocionado: "<<bloquePromocionado<<endl;
 
 
 	assert(abm.cerrar() == RES_OK);
@@ -166,8 +166,6 @@ void TestArbol::test_insertar_pocos_registros(){
 
 void TestArbol::test_split_raiz(){
 
-	cout<<"test_split_raiz"<<endl;//TODO BORRAR
-
 	ArbolBMas arbol;
 	string nombreArchivo= "arbolSplit.dat";
 	unsigned int tamanioBloque= 64;
@@ -177,35 +175,21 @@ void TestArbol::test_split_raiz(){
 	RegistroClave rc;
 	ClaveX c;
 
-	cout<<"INSERCION DE aaA hasta aaH ------------------------------------"<<endl;
-
 	for(int i=0;i<8;i++){
-
 		string clave= "aaa";
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		cout<<"clave en insercion: "<<clave<<endl;//TODO BORRAR
 		assert( arbol.agregar(rc)== RES_OK );
-
 	}
 
-	cout<<"INSERCION DE aaCA hasta aaCB ------------------------------------"<<endl;
-
-
 	for(int i=0;i<2;i++){
-
 		string clave= "aaCa";
 		clave[3]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		cout<<"clave en insercion: "<<clave<<endl;//TODO BORRAR
 		assert( arbol.agregar(rc)== RES_OK );
-
 	}
-
-
-	cout<<"INSERCION DE baA hasta baC ------------------------------------"<<endl;
 
 	for(int i=0;i<3;i++){
 
@@ -213,28 +197,20 @@ void TestArbol::test_split_raiz(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		cout<<"clave en insercion: "<<clave<<endl;//TODO BORRAR
 		assert( arbol.agregar(rc)== RES_OK );
-
 	}
 
-
-
-	/*FIXME hasta aca todo andaba bien*/
 	for(int i=0;i<10;i++){
 
 		string clave= "caa";
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		cout<<"clave en insercion: "<<clave<<endl;//TODO BORRAR
 		assert( arbol.agregar(rc)== RES_OK );
 
 	}
 
-
-
-	cout<<"imprimir arbol: "<<endl;
+	cout<<"ARBOL RESULTANTE: "<<endl;
 	arbol.imprimir();
 
 	assert(arbol.cerrar() == RES_OK);
@@ -301,23 +277,23 @@ void TestArbol::test_arbol_buscar()
 void TestArbol::test_arbol_buscar_secuencial()
 {
 	ArbolBMas arbol;
-	string nombreArchivo= "arbolSplit_buscar.dat";
+	string nombreArchivo = "arbolSplit_buscar.dat";
 	unsigned int tamanioBloque= 100;
 	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
 	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
 
+	// Agregamos desde "arjona0" hasta "arjona9"
 	for(int i=0;i<10;i++){
 		RegistroClave reg;
 		ClaveX c;
-
 		string clave= "arjona ";
 		clave[6]= 48+i;
 		c.set_clave(clave);
 		reg.set_clave(c);
-
 		assert( arbol.agregar(reg)== RES_OK );
 	}
 
+	// Agregamos desde "abba" hasta "abba9"
 	for(int i=0;i<10;i++){
 		RegistroClave reg;
 		ClaveX c;
@@ -330,6 +306,7 @@ void TestArbol::test_arbol_buscar_secuencial()
 		assert( arbol.agregar(reg)== RES_OK );
 	}
 
+	// Agregamos desde "alan johnson0" hasta "alan johnson9"
 	for(int i=0;i<10;i++){
 		RegistroClave reg;
 		ClaveX c;
@@ -341,128 +318,77 @@ void TestArbol::test_arbol_buscar_secuencial()
 
 		assert( arbol.agregar(reg)== RES_OK );
 	}
+
+	arbol.imprimir();
 
 	arbol.cerrar();
 	arbol.abrir(nombreArchivo,"rb+");
 
+	// ASSERT: Buscamos las claves por rango
+	RegistroClave actual;
+	IterArbolBMas unIterador(arbol);
 
-	std::cout << "Buscando >= ABBA: "<<endl;
 
-	ClaveX claveABBA;
-	claveABBA.set_clave("abba");
+	ClaveX claveA, claveABBA, claveArjona, claveAlan, claveB;
+	claveA.set_clave("a");
+	claveABBA.set_clave("abba0");
+	claveArjona.set_clave("arjona0");
+	claveAlan.set_clave("alan johnson0");
+	claveB.set_clave("b");
 
-	IterArbolBMas unIterador(arbol); //asumo que el archivo viene abierto para lectura! FIXME
+	std::cout << "Buscando >= a: " << endl;
+	unIterador.start(">=",claveA);
+	while (unIterador.readNext(actual) != RES_FIN)
+	{
+		actual.get_clave().imprimir_dato(); cout<<", ";
+	}
 
+	std::cout << "\nBuscando >= abba0:" << endl;
 	unIterador.start(">=",claveABBA);
-
-	assert (unIterador.readNext() != NULL);
-
-	int i = 0;
-	while (unIterador.readNext() != NULL && i<10)
+	while (unIterador.readNext(actual) != RES_FIN)
 	{
-		RegistroClave reg;
-		ClaveX c;
-
-		string clave= "abba ";
-		clave[4]= 48+i;
-		c.set_clave(clave);
-		reg.set_clave(c);
-
-		assert((*(unIterador.readNext()))==reg);
-		i++;
-
-		(unIterador.readNext())->get_clave().imprimir_dato();//todo borrar
+		actual.get_clave().imprimir_dato(); cout<<", ";
 	}
 
-	i = 0;
-	while (unIterador.readNext() != NULL && i<10)
+	std::cout << "\nBuscando >= alan johnson0: " << std::endl;
+	unIterador.start(">=",claveAlan);
+	while (unIterador.readNext(actual) != RES_FIN)
 	{
-		RegistroClave reg;
-		ClaveX c;
-
-		string clave= "alan johnson ";
-		clave[12]= 48+i;
-		c.set_clave(clave);
-		reg.set_clave(c);
-
-		assert((*(unIterador.readNext()))==reg);
-		i++;
-
-		(unIterador.readNext())->get_clave().imprimir_dato();//todo borrar
+		actual.get_clave().imprimir_dato(); cout<<", ";
 	}
 
-	i = 0;
-	while (unIterador.readNext() != NULL)
+	std::cout << "\nBuscando >= arjona0:" << std::endl;
+	unIterador.start(">=",claveArjona);
+	while (unIterador.readNext(actual) != RES_FIN)
 	{
-		RegistroClave reg;
-		ClaveX c;
-
-		string clave= "arjona ";
-		clave[6]= 48+i;
-		c.set_clave(clave);
-		reg.set_clave(c);
-
-		assert((*(unIterador.readNext()))==reg);
-		i++;
+		actual.get_clave().imprimir_dato(); cout<<", ";
 	}
 
+	std::cout << std::endl;
 
-/*	std::cout << "Buscando >= ARJONA: "<<endl;
-
-	ClaveX claveArjona;
-	claveArjona.set_clave("arjona");
-
-	IterArbolBMas otroIterador(arbol); //asumo que el archivo viene abierto para lectura! FIXME
-
-	otroIterador.start(">=",claveArjona);
-
-	i = 0;
-	while (otroIterador.readNext() != NULL)
+	std::cout << "\nBuscando >= b:" << std::endl;
+	unIterador.start(">=",claveB);
+	while (unIterador.readNext(actual) != RES_FIN)
 	{
-		RegistroClave reg;
-		ClaveX c;
-
-		string clave= "arjona ";
-		clave[6]= 48+i;
-		c.set_clave(clave);
-		reg.set_clave(c);
-
-		assert((*(otroIterador.readNext()))==reg);
-		i++;
+		actual.get_clave().imprimir_dato(); cout<<", ";
 	}
-*/
-/*
-	std::cout << "Buscando < ABBA: "<<endl; //deberia no haber ninguno
 
-	IterArbolBMas otroIterador2("arbolSplit_buscar.dat"); //asumo que el archivo viene abierto para lectura! FIXME
-
-	otroIterador2.start("<",claveABBA);
-
-	assert(otroIterador2.readNext()==NULL);
-
-	std::cout << "Buscando < ABBA2: "<<endl;
-
-	claveABBA.set_clave("abba2");
-
-	IterArbolBMas otroIterador3("arbolSplit_buscar.dat"); //asumo que el archivo viene abierto para lectura! FIXME
-
-	otroIterador3.start("<",claveABBA);
-
-	i = 0;
-	while (otroIterador3.readNext() != NULL)
+	std::cout << "\nBuscando > arjona0:" << endl;
+	unIterador.start(">",claveArjona);
+	while (unIterador.readNext(actual) != RES_FIN)
 	{
-		RegistroClave reg;
-		ClaveX c;
-
-		string clave= "abba ";
-		clave[4]= 48+i;
-		c.set_clave(clave);
-		reg.set_clave(c);
-
-		assert((*(otroIterador3.readNext()))==reg);
-		i++;
+		actual.get_clave().imprimir_dato(); cout<<", ";
 	}
-*/
+
+	std::cout << "\nBuscando > alan johnson0:" << endl;
+	unIterador.start(">",claveAlan);
+	while (unIterador.readNext(actual) != RES_FIN)
+	{
+		actual.get_clave().imprimir_dato(); cout<<", ";
+	}
+
+	std::cout << std::endl;
+
 
 	arbol.cerrar();
 

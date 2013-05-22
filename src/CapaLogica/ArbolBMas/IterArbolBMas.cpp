@@ -7,21 +7,11 @@
 
 #include "IterArbolBMas.h"
 
-IterArbolBMas::IterArbolBMas(std::string unArchivo)
-{
-	arbol = new ArbolBMas (unArchivo);
-	numRegActual = 0;
-	numNodoActual = 0;
-
-	claveActual = new ClaveX();
-}
-
 IterArbolBMas::IterArbolBMas(ArbolBMas otroArbol)
 {
 	this->arbol = new ArbolBMas(otroArbol);
 	numRegActual = 0;
 	numNodoActual = 0;
-
 	claveActual = new ClaveX();
 }
 
@@ -41,65 +31,55 @@ int IterArbolBMas::start(std::string unOperador, ClaveX claveInicial)
 	if (operador==">=" || operador==">")
 	{
 		RegistroClave regConClave;
-		regConClave.set_clave(claveInicial);
+		regConClave.set_clave(claveCorte);
 
 		if (arbol->_hallar_hoja(&regConClave,numNodoSecuencialInicial) != RES_OK)
 			return RES_ERROR;
 
 	}else//es <= o <
 	{
-		arbol->obtener_primer_nodo_secuencial(numNodoSecuencialInicial);
+		return RES_ERROR;
 	}
 
 	numNodoActual = numNodoSecuencialInicial;
 
 	arbol->_obtener_nodo_secuencial(numNodoSecuencialInicial,nodoSecInicial);
 
-	IterNodoSecuencial iterNodo(nodoSecInicial,operador);
+	IterNodoSecuencial iterNodo(nodoSecInicial);
 
 	numRegActual = iterNodo.get_pos_reg(operador, claveInicial);
 
 	return RES_OK;
 }
 
-RegistroClave* IterArbolBMas::readNext()
+int IterArbolBMas::readNext(RegistroClave & regActual)
 {
-
-	if (numNodoActual != -1)
-	{
-		NodoSecuencial nodoActual (arbol->get_cant_minima_nodo(), arbol->get_cant_maxima_nodo());
-		arbol->_obtener_nodo_secuencial(numNodoActual,nodoActual);
-
-//TODO refactorizar y pasar el avance en los nodos a su iterador
-		if (numRegActual < nodoActual.get_cantidad_registros())
-		{
-			ClaveX claveActual;
-
-			claveActual = (nodoActual.get_registros())[numRegActual].get_clave();
-			//para los operadores <= y <
-			//si la clave actual es mayor (o igual) dejo de avanzar y retorno NULL.
-			if ( operador == "<" && claveActual >= claveCorte)
-				return NULL;
-			if ( operador == "<=" && claveActual > claveCorte)
-				return NULL;
-
-			numRegActual++;
-		}
-		//llegue al final de un nodo, avanzo al siguiente.
-		if ( (numRegActual+1) == nodoActual.get_cantidad_registros())
-		{
-			numNodoActual = nodoActual.get_proximo_nodo();
-			numRegActual=0;
-		}
-	}else
-	{
-		return NULL;
-	}
-//TODO agregar casos de RES_ERROR
 	NodoSecuencial nodoActual (arbol->get_cant_minima_nodo(), arbol->get_cant_maxima_nodo());
 
-	arbol->_obtener_nodo_secuencial(numNodoActual,nodoActual);
+	if (numNodoActual == -1)
+		return RES_FIN;
 
-	return &(nodoActual.get_registros()[numRegActual]);
+	else {
+
+		arbol->_obtener_nodo_secuencial(numNodoActual,nodoActual);
+
+		// caso especial en que se busca una clave mayor a todas las del arbol
+		if (numRegActual >= nodoActual.get_cantidad_registros())
+		{
+			numNodoActual = nodoActual.get_proximo_nodo();
+			numRegActual = 0;
+			return readNext(regActual);
+		}
+		regActual = (nodoActual.get_registros().at(numRegActual));
+		numRegActual++;
+
+		// llegue al final de un nodo, avanzo al siguiente.
+		if ( numRegActual == nodoActual.get_cantidad_registros())
+		{
+			numNodoActual = nodoActual.get_proximo_nodo();
+			numRegActual = 0;
+		}
+
+		return RES_OK;
+	}
 }
-

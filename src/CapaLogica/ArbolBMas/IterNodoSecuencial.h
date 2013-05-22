@@ -11,16 +11,16 @@
 #include "NodoSecuencial.h"
 
 class IterNodoSecuencial {
-public:
-	NodoSecuencial* nodo;
-	std::string operador;
+	private:
+		NodoSecuencial* nodo;
+		std::string operador;
 
+	public:
 
-	IterNodoSecuencial(const NodoSecuencial& nodoSec,std::string operador);
-	virtual ~IterNodoSecuencial();
+		IterNodoSecuencial(const NodoSecuencial& nodoSec);
+		virtual ~IterNodoSecuencial();
 
-	int get_pos_reg(std::string unOperador, ClaveX claveInicial);
-	//esta basado en el buscar de nodo secuencial!
+		int get_pos_reg(std::string unOperador, ClaveX claveInicial);
 };
 
 #endif /* ITERNODOSECUENCIAL_H_ */
