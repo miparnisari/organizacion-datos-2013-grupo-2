@@ -35,6 +35,7 @@ class ManejadorBloques:public ManejadorArchivos {
 		~ManejadorBloques();
 		
 		void set_ruta(std::string ruta);
+		std::string get_ruta();
 
 		int crear_archivo(std::string nombreArchivo, unsigned int tamBloque);
 		int eliminar_archivo(std::string nombreArchivo);

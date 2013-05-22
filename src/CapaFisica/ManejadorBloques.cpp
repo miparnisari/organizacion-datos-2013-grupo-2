@@ -18,6 +18,11 @@ void ManejadorBloques::set_ruta(std::string ruta)
 	nombreArchivo = ruta;
 }
 
+std::string ManejadorBloques::get_ruta()
+{
+	return nombreArchivo;
+}
+
 int ManejadorBloques::get_primer_bloque_libre()
 {
 	return this->header.proximoBloqueLibre;
