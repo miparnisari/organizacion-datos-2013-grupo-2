@@ -39,7 +39,7 @@ int HashingExtensible::crear(std::string nombreArchivo)
     	return YA_EXISTE;
 
     //Si no existe es porque estamos creando un nuevo Hash
-    int resultado = this->manejador_bloques.crear_archivo(fileName, BLOQUE_TAM_DEFAULT);
+    int resultado = this->manejador_bloques.crear_archivo(fileName, 1024);//tamanio anterior TAM_DEFAULT
 	this->manejador_bloques.abrir_archivo(fileName, "rb+");
 	//Creamos la tabla
 	resultado = resultado + this->tabla->crear(fileNameTabla);
@@ -118,7 +118,7 @@ int HashingExtensible::agregar(RegistroClave reg)
 
         }else{
 
-            //Modifico en la tabla las posicion por cantidad de tamDispersion
+            //Modifico en la tabla la posicion por cantidad de tamDispersion
 /**/           for(i=posTabla; i<tabla->get_tamanio(); i=i+tamDispersion*2){ //hacia la derecha
                 this->tabla->cambiar_valor(i,posBloqueNuevo);
             }
@@ -137,7 +137,10 @@ int HashingExtensible::agregar(RegistroClave reg)
         this->agregar_registros_bloques(bloque, reg);
 
         resultado = RES_OK;
+    }else{
+    	this->manejador_bloques.sobreescribir_bloque(&bloque, posBloque);
     }
+
     this->manejador_bloques.cerrar_archivo();
     return resultado;
 }
@@ -244,18 +247,19 @@ int HashingExtensible::obtener_bloque(ClaveX clave, Bloque& bloque)
 
 int HashingExtensible::obtener_posicion_reg_bloque(ClaveX clave, Bloque bloque)
 {
-    int i=0,se_encontro = RES_ERROR;
+    int i = 1,se_encontro = RES_ERROR;
     ClaveX clave_reg;
     RegistroClave reg;
+
     while((se_encontro!=RES_OK)&&(i< bloque.get_cantidad_registros_almacenados())){
         bloque.recuperar_registro(&reg, i);
         clave_reg = reg.get_clave();
-        if(clave_reg == clave)
+        if(clave_reg== clave)
                 se_encontro=RES_OK;
         i++;
     }
     if (se_encontro ==RES_OK)
-        return i;
+        return (i -1);
     return RES_ERROR;
 }
 
@@ -266,7 +270,9 @@ int HashingExtensible::obtener_posicion_tabla(ClaveX registro)
     if(registro.get_tipo_clave() == CLAVE_STRING){
         string claveS;
         registro.get_clave(claveS);
-        for(i=0; i<claveS.length(); i++)   clave = clave+(int)claveS[i];
+        for(i=0; i<claveS.length(); i++){
+        	clave = clave + (int)claveS[i];
+        }
     }else{
         registro.get_clave(clave);
     }
