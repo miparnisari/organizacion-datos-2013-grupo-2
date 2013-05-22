@@ -17,7 +17,7 @@ void TestArbol::ejecutar(){
 	test_split_raiz();
 
 	test_arbol_buscar();
-	test_arbol_buscar_secuencial();
+//	test_arbol_buscar_secuencial();
 }
 
 void TestArbol::test_arbol_insertar_un_registro()
@@ -346,16 +346,35 @@ void TestArbol::test_arbol_buscar_secuencial()
 	arbol.abrir(nombreArchivo,"rb+");
 
 
-	std::cout << "Buscando >= ABBA: ";
+	std::cout << "Buscando >= ABBA: "<<endl;
 
 	ClaveX claveABBA;
 	claveABBA.set_clave("abba");
 
-	IterArbolBMas unIterador("arbolSplit_buscar.dat"); //asumo que el archivo viene abierto para lectura! FIXME
+	IterArbolBMas unIterador(arbol); //asumo que el archivo viene abierto para lectura! FIXME
 
 	unIterador.start(">=",claveABBA);
 
+	assert (unIterador.readNext() != NULL);
+
 	int i = 0;
+	while (unIterador.readNext() != NULL && i<10)
+	{
+		RegistroClave reg;
+		ClaveX c;
+
+		string clave= "abba ";
+		clave[4]= 48+i;
+		c.set_clave(clave);
+		reg.set_clave(c);
+
+		assert((*(unIterador.readNext()))==reg);
+		i++;
+
+		(unIterador.readNext())->get_clave().imprimir_dato();//todo borrar
+	}
+
+	i = 0;
 	while (unIterador.readNext() != NULL && i<10)
 	{
 		RegistroClave reg;
@@ -368,6 +387,8 @@ void TestArbol::test_arbol_buscar_secuencial()
 
 		assert((*(unIterador.readNext()))==reg);
 		i++;
+
+		(unIterador.readNext())->get_clave().imprimir_dato();//todo borrar
 	}
 
 	i = 0;
@@ -386,13 +407,14 @@ void TestArbol::test_arbol_buscar_secuencial()
 	}
 
 
-	std::cout << "Buscando >= ARJONA: ";
+/*	std::cout << "Buscando >= ARJONA: "<<endl;
 
 	ClaveX claveArjona;
 	claveArjona.set_clave("arjona");
-	IterArbolBMas otroIterador("arbolSplit_buscar.dat"); //asumo que el archivo viene abierto para lectura! FIXME
 
-	otroIterador.start(">=",claveABBA);
+	IterArbolBMas otroIterador(arbol); //asumo que el archivo viene abierto para lectura! FIXME
+
+	otroIterador.start(">=",claveArjona);
 
 	i = 0;
 	while (otroIterador.readNext() != NULL)
@@ -408,6 +430,39 @@ void TestArbol::test_arbol_buscar_secuencial()
 		assert((*(otroIterador.readNext()))==reg);
 		i++;
 	}
+*/
+/*
+	std::cout << "Buscando < ABBA: "<<endl; //deberia no haber ninguno
+
+	IterArbolBMas otroIterador2("arbolSplit_buscar.dat"); //asumo que el archivo viene abierto para lectura! FIXME
+
+	otroIterador2.start("<",claveABBA);
+
+	assert(otroIterador2.readNext()==NULL);
+
+	std::cout << "Buscando < ABBA2: "<<endl;
+
+	claveABBA.set_clave("abba2");
+
+	IterArbolBMas otroIterador3("arbolSplit_buscar.dat"); //asumo que el archivo viene abierto para lectura! FIXME
+
+	otroIterador3.start("<",claveABBA);
+
+	i = 0;
+	while (otroIterador3.readNext() != NULL)
+	{
+		RegistroClave reg;
+		ClaveX c;
+
+		string clave= "abba ";
+		clave[4]= 48+i;
+		c.set_clave(clave);
+		reg.set_clave(c);
+
+		assert((*(otroIterador3.readNext()))==reg);
+		i++;
+	}
+*/
 
 	arbol.cerrar();
 
