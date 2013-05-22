@@ -72,6 +72,7 @@ class ArbolBMas
 		static const int FACTOR_CARGA= 50;
 
 		ArbolBMas();
+		ArbolBMas(const ArbolBMas& otro);
 		ArbolBMas(std::string nombreArchivo);
 		virtual ~ArbolBMas();
 

@@ -8,6 +8,17 @@ ArbolBMas::ArbolBMas()
 	tamanioMaximoNodo = BLOQUE_TAM_DEFAULT;
 }
 
+ArbolBMas::ArbolBMas(const ArbolBMas& otro)
+{
+	this->numeroBloqueRaiz = otro.numeroBloqueRaiz;
+	this->header.maxCantBytesClaves = otro.header.maxCantBytesClaves;
+	this->header.minCantBytesClaves = otro.header.minCantBytesClaves;
+	this->tamanioMaximoNodo = otro.tamanioMaximoNodo;
+	this->header=otro.header;
+	this->archivoNodos=otro.archivoNodos;
+	this->tamanioBloque=otro.tamanioBloque;
+}
+
 ArbolBMas::ArbolBMas(std::string nombreArchivo)
 {
 	archivoNodos.set_ruta(nombreArchivo);
@@ -780,8 +791,9 @@ int ArbolBMas::_hallar_hoja(RegistroClave* registro,
 	NodoArbol na(TIPO_INTERNO);
 	std::cout << "Num bloque = " << numeroBloque << std::endl;
 	Bloque* bloqueActual= archivoNodos.obtener_bloque(numeroBloque);
-	if(bloqueActual== NULL)
+	if(bloqueActual == NULL)
 		return RES_ERROR;
+
 	na.desempaquetar(bloqueActual);
 
 	if( na.es_hoja() )
