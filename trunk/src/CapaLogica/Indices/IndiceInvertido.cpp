@@ -73,11 +73,12 @@ int IndiceInvertido::borrar_indice()
 void IndiceInvertido::crear_termino_vocabulario(ClaveX clave, char* idtermino){
     //Agrega el nuevo termino al vocabulario con una referencia nula a la lista invertida
     RegistroVariable reg;
+    char *ref_nula = "";
     RegistroClave regVocabulario;
     this->archivo_terminos.agregar_registro(&reg);   //Agrego el termino al archivo de terminos
     regVocabulario.set_clave(clave);
     regVocabulario.agregar_campo(idtermino, sizeof(idtermino));
-    regVocabulario.agregar_campo(REFE_NULA, sizeof(REFE_NULA)); //Seria el numero de la lista dentro del archivo de listas invertida
+    regVocabulario.agregar_campo(ref_nula, sizeof(ref_nula)); //Seria el numero de la lista dentro del archivo de listas invertida
     this->vocabulario.agregar(regVocabulario);  //Agrego el nuevo termino al vocabulario
 }
 
