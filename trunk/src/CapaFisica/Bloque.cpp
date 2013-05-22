@@ -20,8 +20,9 @@ Bloque::Bloque(const Bloque& otro)
 	espacioLibre = otro.espacioLibre;
 	espacioLibreOffset = otro.espacioLibreOffset;
 	bufferBloque = new char[tamanioBloque]();
+	/*limpiar_buffer antes se invocaba despues del memcpy , deberia invocarse antes.*/
+
 	memcpy(this->bufferBloque,otro.bufferBloque,tamanioBloque);
-	_limpiar_buffer();
 }
 
 bool Bloque::fue_eliminado(){
