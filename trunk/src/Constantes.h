@@ -24,6 +24,7 @@ const int RES_DIRECTORY_DOESNT_EXIST = 	-14;
 const int RES_INSUFFICIENT_SPACE =		-15;
 const int RES_INVALID_OFFSET =			-16;
 const int RES_BLOQUE_NO_BORRADO	=		-17;
+const int RES_FIN 					= -18;
 
 
 /*

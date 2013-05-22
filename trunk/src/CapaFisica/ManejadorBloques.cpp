@@ -202,7 +202,6 @@ int ManejadorBloques::escribir_bloque(Bloque* bloque)
 	if (res != RES_ERROR)
 		return numeroBloque;
 
-	std::cout << "fallo sobreescribir bloque" << std::endl;
 	return res;
 }
 

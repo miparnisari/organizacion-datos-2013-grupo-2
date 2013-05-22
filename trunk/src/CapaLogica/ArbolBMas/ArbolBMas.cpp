@@ -14,14 +14,7 @@ ArbolBMas::ArbolBMas(const ArbolBMas& otro)
 	this->header.maxCantBytesClaves = otro.header.maxCantBytesClaves;
 	this->header.minCantBytesClaves = otro.header.minCantBytesClaves;
 	this->tamanioMaximoNodo = otro.tamanioMaximoNodo;
-	this->header=otro.header;
 	this->archivoNodos=otro.archivoNodos;
-	this->tamanioBloque=otro.tamanioBloque;
-}
-
-ArbolBMas::ArbolBMas(std::string nombreArchivo)
-{
-	archivoNodos.set_ruta(nombreArchivo);
 }
 
 ArbolBMas::~ArbolBMas()
@@ -166,7 +159,6 @@ int ArbolBMas::agregar(RegistroClave & reg)
 	NodoInterno nodoRaizNuevo(header.minCantBytesClaves , header.maxCantBytesClaves);
 	unsigned short ocurrenciaInsercion= -1;
 	nodoRaizNuevo.insertar_clave(clavePromocionada,ocurrenciaInsercion);
-	cout<<"ocurrencia insercion: "<<ocurrenciaInsercion<<endl;
 	nodoRaizNuevo.insertar_hijo_derecho(clavePromocionada,hijoPromocionado);
 	/*instancio un nodo nuevo para la raiz (interno). Inserto la clave promocionada y el numero de bloque de split como hijo derecho de
 	 * dicha clave .*/
@@ -789,7 +781,6 @@ int ArbolBMas::_hallar_hoja(RegistroClave* registro,
 		return RES_ERROR;
 
 	NodoArbol na(TIPO_INTERNO);
-	std::cout << "Num bloque = " << numeroBloque << std::endl;
 	Bloque* bloqueActual= archivoNodos.obtener_bloque(numeroBloque);
 	if(bloqueActual == NULL)
 		return RES_ERROR;
@@ -818,21 +809,6 @@ int ArbolBMas::_hallar_hoja(RegistroClave* registro,
 
 int ArbolBMas::_split_hoja(NodoSecuencial* nodoActual,vector<RegistroClave>* registrosOverflow,
 		TipoHijo& hijoPromocionado,ClaveX* clavePromocionada,TipoPuntero nodoSecuencialSiguiente){
-
-//	{
-//		cout<<"imprimiendo registrosOverflow: "<<endl;
-//		const unsigned short CANTIDAD_REGISTROS_OVERFLOW= registrosOverflow->size();
-//		for(unsigned short i=0;i<CANTIDAD_REGISTROS_OVERFLOW;i++){
-//			ClaveX unaClave= registrosOverflow->at(i).get_clave();
-//			string datoClave;
-//			unaClave.get_clave(datoClave);
-//			cout<<datoClave<<endl;
-//		}
-//
-//		cout<<"imprimiendo claves nodo split: "<<endl;
-//		nodoActual->imprimir();
-//
-//	}//TODO BORRAR
 
 	NodoSecuencial nodoSecuencialNuevo(header.minCantBytesClaves,header.maxCantBytesClaves);
 	const unsigned short CANTIDAD_REGISTROS_OVERFLOW= registrosOverflow->size();
@@ -870,16 +846,7 @@ int ArbolBMas::_split_interno(NodoInterno* nodo,ClaveX* clavePromocionada,
 	/*remuevo el hijo x defecto del nodo nuevo*/
 	Bloque* bloqueNodoNuevo = archivoNodos.crear_bloque();
 
-	cout<<"claves split interno:"<<endl;
-	nodo->imprimir_claves();
-	cout<<"hijos split interno:"<<endl;
-	nodo->imprimir_hijos();
-	cout<<"fin imprimir split interno--------------------------------------------"<<endl;
-
-
-	const unsigned short CANTIDAD_HIJOS= nodo->get_cantidad_hijos();
 	const unsigned short CANTIDAD_CLAVES= nodo->get_cantidad_claves();
-
 
 	ClaveX claveMitad;
 	/*guardo la clavePromocionada*/
@@ -902,7 +869,6 @@ int ArbolBMas::_split_interno(NodoInterno* nodo,ClaveX* clavePromocionada,
 		int res=nodo->get_hijo(unHijo , i+1);
 		if(res!= RES_ERROR){
 			nodoNuevo.insertar_hijo(unHijo);//FIXME
-			cout<<"hijo a pasar: "<<unHijo<<endl;
 		}
 	}/*obtengo los hijos que se deben insertar en el nodo nuevo*/
 
@@ -981,11 +947,6 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 	nodoActualInterno.desempaquetar(bloqueActual);
 	delete bloqueActual;
 
-	/*TODO BORRAR*/
-	cout<<"nodoActualInterno claves:"<<endl;
-	nodoActualInterno.imprimir_claves();
-	cout<<"nodoActualInterno hijos:"<<endl;
-	nodoActualInterno.imprimir_hijos();
 
 	unsigned int numeroBloqueHijo;
 	this->_hallar_hijo_correspondiente(registro,&nodoActualInterno,

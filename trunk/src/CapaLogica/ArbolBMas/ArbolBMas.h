@@ -26,7 +26,6 @@ class ArbolBMas
 		ManejadorBloques archivoNodos;
 		unsigned int numeroBloqueRaiz;
 		unsigned int tamanioMaximoNodo;
-		unsigned int tamanioBloque;
 
 		void _imprimir_recursivo(TipoHijo& numeroBloqueActual);
 
@@ -73,7 +72,6 @@ class ArbolBMas
 
 		ArbolBMas();
 		ArbolBMas(const ArbolBMas& otro);
-		ArbolBMas(std::string nombreArchivo);
 		virtual ~ArbolBMas();
 
 		int crear (std::string fileName, unsigned int tamBloque = BLOQUE_TAM_DEFAULT);

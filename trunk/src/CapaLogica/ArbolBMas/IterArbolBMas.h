@@ -14,15 +14,10 @@
 class IterArbolBMas {
 
 	public:
-		IterArbolBMas(std::string unArchivo);
-		//FIXME este constructor es horrible, poner const de copia del arbol y ya
-		//y sacar get_ y set_ruta del manejador de bloques!
 		IterArbolBMas(ArbolBMas arbol);
 		virtual ~IterArbolBMas();
 		int start(std::string operador, ClaveX claveInicial);
-		//start(">=","arjona")
-		//arjona0 .... arjonb0.. NULL
-		RegistroClave* readNext();
+		int readNext(RegistroClave & regActual);
 
 	private:
 		ArbolBMas* arbol;

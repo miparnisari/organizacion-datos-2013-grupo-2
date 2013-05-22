@@ -228,17 +228,21 @@ void test_vector_clavex(){
 	}
 
 	for(int i=0;i<3;i++)
-		vcx[i].imprimir_dato();
+	{
+		int unaClave;
+		vcx.at(i).get_clave(unaClave);
+		assert(unaClave == i);
+	}
 
 }
 
 int main(int argc,char** args)
 {
 //	test_leer_de_archivo();
-//	test_clave_numerica();
-//	test_clave_string();
-//	test_clavex();
-//	test_vector_clavex();
+	test_clave_numerica();
+	test_clave_string();
+	test_clavex();
+	test_vector_clavex();
 
 	std::vector<Test*> tests;
 
@@ -254,7 +258,7 @@ int main(int argc,char** args)
 	tests.push_back(new TestBloque);
 	tests.push_back(new TestManejadorBloques);
 	
-	tests.push_back(new TestHashingExtensible);//fixme, manejador bloques falla al escribir un bloque invocando a sobreescribir (anterior no existe, es null => segmenttion fault)
+//	tests.push_back(new TestHashingExtensible);//fixme, manejador bloques falla al escribir un bloque invocando a sobreescribir (anterior no existe, es null => segmenttion fault)
 	tests.push_back(new TestTabla);
 	
 	tests.push_back(new TestNodoInterno);

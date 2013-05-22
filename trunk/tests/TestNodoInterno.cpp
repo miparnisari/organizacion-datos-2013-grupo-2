@@ -203,8 +203,6 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 		assert( ni.insertar_clave(cx,ocurrenciaInsercion)== RES_OK );
 		assert( ocurrenciaInsercion== 3 );
 
-		ni.imprimir_claves();//TODO remover
-
 	}//las claves se insertan en el orden apropiado
 
 	{
@@ -239,17 +237,12 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 
 
 	{
-
-		cout<<endl<<"imprimirNodoInterno: "<<endl;
 		NodoInterno ni;
 		typedef NodoInterno::TipoHijo TipoHijo;
 		string claveAcumulada= "dato";
 		const unsigned short CANTIDAD_DATOS= 5;
 		const unsigned short CANTIDAD_HIJOS= CANTIDAD_DATOS+1;
 		ni.modificar_hijo(0,0);
-
-		ni.imprimir_claves();
-		ni.imprimir_hijos();
 
 		for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
 
@@ -262,9 +255,7 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 
 		}assert(ni.get_cantidad_claves()== CANTIDAD_DATOS && ni.get_cantidad_hijos()== CANTIDAD_HIJOS);
 
-		cout<<"imprimo despues de insertar  5 claves y 5 hijos"<<endl;
-		ni.imprimir_claves();
-		ni.imprimir_hijos();
+		//ni.imprimir();
 
 		string datoClaveMitad= "datoCD";
 		ClaveX claveMitad;
@@ -290,10 +281,6 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 
 		}/*pruebo remover la clave de la mitad y los hijos de la misma*/
 
-		cout<<"imprimo despues de remover la clave mitad y los hijos posteriores de claveMitad"<<endl;
-		ni.imprimir_claves();
-		ni.imprimir_hijos();
-
 		NodoInterno nodoNuevo;
 		nodoNuevo.limpiar();
 		nodoNuevo.insertar_hijo(hijosMover.at(0));
@@ -305,13 +292,6 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 			nodoNuevo.insertar_hijo(hijosMover[i+1]);
 
 		}
-
-		cout<<"imprimo nodoNuevo"<<endl;
-		nodoNuevo.imprimir_claves();
-		nodoNuevo.imprimir_hijos();
-
-
-		cout<<endl<<"fin imprimirNodoInterno"<<endl;
 
 	}
 
@@ -374,7 +354,6 @@ void TestNodoInterno::todo_tipo_empaquetado(){
 
 	}
 
-	ni.imprimir_claves();
 	Bloque b;
 	assert( ni.empaquetar(&b)== RES_OK );
 	assert( ni2.desempaquetar(&b)== RES_OK );
