@@ -15,6 +15,10 @@ class TestHashingExtensible : public Test {
 
         private:
 
+                int crear_registro_y_agregar(HashingExtensible &hash1, std::string campo, ClaveX clave);
+
+                void recuperar_dato_registro(char *campoRecuperado, ClaveX clave, HashingExtensible hash1);
+
                 void test_hashing_guardar_y_leer_int();
 
                 void test_crear_hashing();
@@ -37,12 +41,6 @@ class TestHashingExtensible : public Test {
 
                 void test_eliminar_reg_y_dividir_tabla();
                 //Probamos llenando el primer bloque para ver si al eliminar un registro la tabla se divide y se borra un bloque
-
-                /**Son para el funcionamiento interno del test*/
-
-                int crear_registro_y_agregar(HashingExtensible *hash1, std::string campo, ClaveX clave);
-
-                void recuperar_dato_registro(char *campoRecuperado, ClaveX clave, HashingExtensible hash1);
 
 };
 

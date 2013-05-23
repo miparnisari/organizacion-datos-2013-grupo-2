@@ -26,17 +26,17 @@ class HashingExtensible
 
         HashingExtensible();
 
-                virtual ~HashingExtensible();
+		virtual ~HashingExtensible();
 
-                virtual int crear(std::string nombreArchivo);
+		virtual int crear(std::string nombreArchivo);
 
-                virtual int abrir(std::string nombreArchivo);
+		virtual int abrir(std::string nombreArchivo);
 
-                virtual int eliminar();
-                //Eliminamos el hashing extensible junto a todos sus documentos
+		virtual int eliminar();
+		//Eliminamos el hashing extensible junto a todos sus documentos
 
-                virtual int agregar(RegistroClave reg);
-                //Guarda el elemento en el hash, en caso de que ya existe el elemento devuelve YA_EXISTE
+		virtual int agregar(RegistroClave reg);
+		//Guarda el elemento en el hash, en caso de que ya existe el elemento devuelve YA_EXISTE
 
         virtual int devolver(ClaveX clave, RegistroClave *reg);
         //Devuelve el elemento del hash, en caso de que no exista devuelve NO_EXISTE
@@ -55,10 +55,10 @@ class HashingExtensible
         virtual int crear_bloque(int tam, Bloque *bloqueNuevo);
         //Crea un nuevo bloque del Hashing
 
-        virtual int obtener_bloque(ClaveX clave, Bloque& bloque);
+        virtual int obtener_bloque(ClaveX clave, Bloque** bloque);
         //Obtenemos el bloque que corresponde a la clave pasada por parametro
 
-        virtual int obtener_posicion_reg_bloque(ClaveX clave,Bloque bloque);
+        virtual int obtener_posicion_reg_bloque(ClaveX clave,Bloque & bloque);
         //Obtenemos en que posicion se encuentra el registro con la clave que buscamos
         //dentro de un bloque
 
