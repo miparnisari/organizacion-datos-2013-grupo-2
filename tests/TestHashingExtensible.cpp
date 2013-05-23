@@ -155,7 +155,9 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     assert (strcmp(dato,campo.c_str()) == 0);
     delete[] dato;
 
+    manejador.cerrar_archivo();
     hash1.eliminar();
+    delete bloq;
     print_test_ok("test_agregar_y_devolver_registro");
 }
 
@@ -301,6 +303,6 @@ void TestHashingExtensible::recuperar_dato_registro(char** campoRecuperado, Clav
     RegistroClave reg;
     hash1.devolver(clave,&reg);
     *campoRecuperado = new char[reg.get_tamanio_campo(1) +1]();
-    *campoRecuperado [reg.get_tamanio_campo(1)] = '\0';
+    campoRecuperado [reg.get_tamanio_campo(1)] = '\0';
     reg.recuperar_campo(*campoRecuperado,1);
 }
