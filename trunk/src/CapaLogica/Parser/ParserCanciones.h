@@ -24,15 +24,12 @@ class ParserCanciones
 	public:
 		ParserCanciones();
 		~ParserCanciones();
-		int crear (std::string dir);
 		
-		bool fin_directorio();
-		int setFile(std::string path);
-		int	getNextCancion(RegistroCancion & reg);
-		bool eof ();
-		void cerrar ();
+		int crear (std::string dir);
+		bool fin_directorio()const;
+		int	getNextCancion(RegistroCancion & reg, std::string nombreArchivo);
 
-		unsigned int get_cantidad_archivos();
+		unsigned int get_cantidad_archivos()const;
 	
 
 };

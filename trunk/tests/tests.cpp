@@ -35,11 +35,12 @@ void test_leer_de_archivo()
 	assert(parser.crear("../songs/") == RES_OK);
 	RegistroCancion regCancion;
 	std::string parametro = "";
+	std::string nombreArchivo = "";
 
 	// Para cada cancion que tengamos...
 	while (parser.fin_directorio() == false)
 	{
-		if (parser.getNextCancion(regCancion) == RES_OK)
+		if (parser.getNextCancion(regCancion, nombreArchivo) == RES_OK)
 		{
 			// Autores
 			for (unsigned short j=0; j < regCancion.get_cantidad_autores(); j++)

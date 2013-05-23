@@ -18,6 +18,6 @@ class Idioma
 		~Idioma();
 		
 		std::string getIdioma();
-		bool cargar(std::string idioma);	
+		bool cargar(std::string idioma);
 		
 };

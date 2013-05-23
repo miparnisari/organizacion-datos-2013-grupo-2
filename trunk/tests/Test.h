@@ -38,6 +38,7 @@
 #include "../src/CapaLogica/ManejoArchivos/ClaveString.h"
 #include "../src/CapaLogica/ManejoArchivos/ClaveNumerica.h"
 #include "../src/CapaLogica/ManejoArchivos/ClaveX.h"
+#include "../src/CapaLogica/ManejoArchivos/Texto.h"
 #include "../src/Utilitarios/Heap.h"
 
 #include "../src/Constantes.h"

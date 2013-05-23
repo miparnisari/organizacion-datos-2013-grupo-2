@@ -17,7 +17,8 @@ class TestRegistroCancion : public Test {
 		void ejecutar();
 
 	private:
-		void prueba();
+		void test_parametros();
+		void test_obtener_letras_parseadas();
 };
 
 #endif /* TESTREGISTROCANCION_H_ */

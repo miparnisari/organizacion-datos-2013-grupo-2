@@ -16,10 +16,11 @@ TestRegistroCancion::~TestRegistroCancion() {
 
 void TestRegistroCancion::ejecutar()
 {
-	prueba();
+	test_parametros();
+	test_obtener_letras_parseadas();
 }
 
-void TestRegistroCancion::prueba()
+void TestRegistroCancion::test_parametros()
 {
 	RegistroCancion rc2;
 	char linea2[]= "autor1;autor2;autor3-titulo-idiomainvalido\nletrasssssssss\n";
@@ -76,4 +77,39 @@ void TestRegistroCancion::prueba()
 	assert( rc9.contar_parametros()== 4);
 
 	print_test_ok("test_registro_cancion");
-}/*funcionaaa*/
+}
+
+void TestRegistroCancion::test_obtener_letras_parseadas()
+{
+	std::string letra = "(Introducción)\nEste adiós, no maquilla un \"hasta luego\",19998bc 9001,97 hola";
+	std::vector<std::string> palabras;
+	palabras.push_back("introducción");
+	palabras.push_back("este");
+	palabras.push_back("adiós");
+	palabras.push_back("no");
+	palabras.push_back("maquilla");
+	palabras.push_back("un");
+	palabras.push_back("hasta");
+	palabras.push_back("luego");
+	palabras.push_back("1999");
+	palabras.push_back("8bc");
+	palabras.push_back("9001");
+	palabras.push_back("97");
+	palabras.push_back("hola");
+	Texto texto;
+	unsigned int cantidad = texto.parsear(letra);
+	assert (cantidad == palabras.size());
+
+	std::string palabra = "";
+	unsigned int i = 0;
+	while (texto.get_proxima_palabra(palabra) != RES_ERROR)
+	{
+		assert (palabra == palabras[i]);
+		i ++;
+	}
+
+	assert (i == palabras.size());
+
+	print_test_ok("test_obtener_letras_parseadas");
+
+}
