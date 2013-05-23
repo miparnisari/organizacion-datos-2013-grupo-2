@@ -65,6 +65,9 @@ class ArbolBMas
 		int _balancear_secuenciales2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
 				unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo);
 		/*balancea dos nodos secuenciales . Todos los nodos excepto el padre son persistidos*/
+		int _resolver_underflow_interno2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow);
+		int _merge_internos2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
+				unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo);
 
 
 	public:
