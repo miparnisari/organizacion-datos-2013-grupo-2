@@ -17,7 +17,7 @@ class TestHashingExtensible : public Test {
 
                 int crear_registro_y_agregar(HashingExtensible &hash1, std::string campo, ClaveX clave);
 
-                void recuperar_dato_registro(char *campoRecuperado, ClaveX clave, HashingExtensible hash1);
+                void recuperar_dato_registro(char** campoRecuperado, ClaveX & clave, HashingExtensible & hash1);
 
                 void test_hashing_guardar_y_leer_int();
 
