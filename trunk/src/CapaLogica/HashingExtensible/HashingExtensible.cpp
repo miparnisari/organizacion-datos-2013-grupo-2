@@ -31,8 +31,6 @@ int HashingExtensible::abrir(std::string nombreArchivo)
 
 
     this->tabla->set_ruta(this->fileNameTabla);
-    if (resultado == RES_OK)
-    	cout << "el archivo existe" << endl;
     return resultado;
 }
 
@@ -58,7 +56,7 @@ int HashingExtensible::crear(std::string nombreArchivo)
 	int res = this->manejador_bloques.escribir_bloque(bloqueNuevo);//Va a estar en la posicion 0
 	if (res != 0)
 	{
-		cout << "error al escribir un bloque nuevo" << endl;
+		return RES_ERROR;
 	}
 	delete (bloqueNuevo);
 	this->cant_bloques = 1;
@@ -161,13 +159,11 @@ int HashingExtensible::devolver(ClaveX clave, RegistroClave *reg)
     Bloque* bloque = NULL;
     this->manejador_bloques.abrir_archivo(fileName, "rb+");
     //Obtengo el bloque que buscamos
-    this->obtener_bloque(clave, &bloque);
+    int numBloque = this->obtener_bloque(clave, &bloque);
+    if (numBloque == RES_ERROR)
+    	return NO_EXISTE;
     //Modifico el elemento del bloque
 
-    if (bloque == NULL)
-    {
-    	cout << "bloque es NULL!!!!" << endl;
-    }
     posReg = this->obtener_posicion_reg_bloque(clave, *bloque);
 
     if (posReg == RES_ERROR)
@@ -258,11 +254,10 @@ int HashingExtensible::obtener_bloque(ClaveX clave, Bloque** bloque)
     int posTabla = this->obtener_posicion_tabla(clave);
 
     posBloque = this->tabla->obtener_valor(posTabla);
-    //Busco el bloque para agregar el elemento
-    cout << "pos bloque = " << posBloque << endl;
+    if (posBloque < 0)
+    	return RES_ERROR;
+
     Bloque* unbloque = this->manejador_bloques.obtener_bloque(posBloque);
-    if (unbloque == NULL)
-    	cout << "fallo el manejador de bloques al leer un bloque" << endl;
     *bloque = unbloque;
 
     return posBloque;
@@ -299,8 +294,6 @@ int HashingExtensible::obtener_posicion_tabla(ClaveX registro)
     }else{
         registro.get_clave(clave);
     }
-    cout << "clave  =" << clave << endl;
-    cout << "funcion de dispersion = " << funcion_dispersion(clave) << endl;
     return funcion_dispersion(clave);
 }
 
@@ -318,7 +311,9 @@ int HashingExtensible::agregar_registros_bloques(Bloque bloque, RegistroClave re
 
 int HashingExtensible::dividir_tabla()
 {
-    int i=0, mitad=(this->tabla->get_tamanio())/2, resultado=RES_OK;
+    int i=0;
+    int mitad=(this->tabla->get_tamanio())/2;
+    int resultado=RES_OK;
     while ((resultado == RES_OK)&&(i < mitad)){
         if((this->tabla->obtener_valor(i)) != (this->tabla->obtener_valor(i+mitad)))
             resultado = RES_ERROR;
