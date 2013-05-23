@@ -21,7 +21,7 @@ void TestHashingExtensible::ejecutar()
     test_hashing_guardar_y_leer_int();
     test_crear_hashing();
     test_eliminar_registro();
-//    test_agregar_y_devolver_registro();
+    test_agregar_y_devolver_registro();
 //    test_crear_hashing_cerrarlo_y_abrirlo();
 //    test_agregar_varios_registros_y_devolver();
 //    test_agregar_reg_y_duplicar_tabla();
@@ -127,6 +127,7 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     assert (bloq != NULL);
     assert (bloq -> get_cantidad_registros_almacenados() == 2);
     bloq->recuperar_registro(&regVar,0);
+    assert(regVar.get_cantidad_campos() == 1);
     regVar.recuperar_campo((char*)&numeroLeido,0);
 
     assert(numeroLeido == 1);
@@ -137,9 +138,10 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     clave.get_clave(numeroLeido);
     assert(numeroLeido == 23);
 
-
     //Pruebo a ver si encuentra el registro en el hash
     assert(hash1.devolver(clave, &reg) == RES_OK);
+
+    assert(reg.get_cantidad_campos() == 2);
 
     //Pruebo si saco el registro correcto
     clave2 = reg.get_clave();
@@ -148,9 +150,8 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
 
     //Pruebo si se guardo el dato correcto
     char *dato = NULL;
-    this->recuperar_dato_registro(dato, clave, hash1);
-    cout << "campo = " << campo << endl;
-    cout << "dato =" << dato << endl;
+    this->recuperar_dato_registro(&dato, clave, hash1);
+    assert (strlen(dato) == 4);
     assert (strcmp(dato,campo.c_str()) == 0);
     delete[] dato;
 
@@ -177,7 +178,7 @@ void TestHashingExtensible::test_crear_hashing_cerrarlo_y_abrirlo()
 
         HashingExtensible hash2;
         assert( hash2.crear(DIRECCION) == RES_OK);
-    this->recuperar_dato_registro(campoRecuperado, clave, hash2);
+    this->recuperar_dato_registro(&campoRecuperado, clave, hash2);
 
     assert (strcmp(campoRecuperado,campo.c_str()) == 0);
     delete[] campoRecuperado;
@@ -228,7 +229,7 @@ void TestHashingExtensible::test_agregar_varios_registros_y_devolver()
     assert(claveNum == 72);
 
     //Pruebo si se guardo el dato correcto
-    this->recuperar_dato_registro(dato, clave, hash1);
+    this->recuperar_dato_registro(&dato, clave, hash1);
     campo = "Hola mundo";
     assert (strcmp(dato,campo.c_str()) == 0);
     delete[] dato;
@@ -295,11 +296,11 @@ int TestHashingExtensible::crear_registro_y_agregar(HashingExtensible & hash1, s
 
 }
 
-void TestHashingExtensible::recuperar_dato_registro(char *campoRecuperado, ClaveX clave, HashingExtensible hash1)
+void TestHashingExtensible::recuperar_dato_registro(char** campoRecuperado, ClaveX& clave, HashingExtensible & hash1)
 {
     RegistroClave reg;
     hash1.devolver(clave,&reg);
-    campoRecuperado = new char[reg.get_tamanio_campo(1) +1]();
-    campoRecuperado [reg.get_tamanio_campo(1)] = '\0';
-    reg.recuperar_campo(campoRecuperado,1);
+    *campoRecuperado = new char[reg.get_tamanio_campo(1) +1]();
+    *campoRecuperado [reg.get_tamanio_campo(1)] = '\0';
+    reg.recuperar_campo(*campoRecuperado,1);
 }

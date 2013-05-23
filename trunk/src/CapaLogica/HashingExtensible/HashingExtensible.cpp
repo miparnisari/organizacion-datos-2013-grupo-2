@@ -155,6 +155,7 @@ int HashingExtensible::agregar(RegistroClave reg)
 
 int HashingExtensible::devolver(ClaveX clave, RegistroClave *reg)
 {
+	reg->limpiar_campos();
     int posReg;
     Bloque* bloque = NULL;
     this->manejador_bloques.abrir_archivo(fileName, "rb+");
