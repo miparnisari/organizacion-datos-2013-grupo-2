@@ -240,7 +240,7 @@ bool RegistroCancion::obtener_letra()throw(){
 }/*recupera la letra de la cadena de caracteres y la carga en la variable.*/
 
 
-unsigned short RegistroCancion::get_cantidad_autores()throw(){
+unsigned short RegistroCancion::get_cantidad_autores()const throw(){
 	return cantidadAutores;
 }
 

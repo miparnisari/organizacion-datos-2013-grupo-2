@@ -14,7 +14,7 @@ int IndiceInvertidoPorTitulo::crear_indice(std::string directorioSalida)
 {
     int resultado;
     this->ruta = directorioSalida;
-    resultado= resultado+this->indice.crear(this->ruta+"IndicePorTitulo.dat");
+    resultado= resultado+this->indice.crear_archivo(this->ruta+"IndicePorTitulo.dat");
     resultado= resultado+this->listas.crear(this->ruta, "ListasPorTitulo.dat");
     return resultado;
 }
@@ -23,7 +23,7 @@ int IndiceInvertidoPorTitulo::abrir_indice(std::string directorioSalida)
 {
     int resultado;
     this->ruta = directorioSalida;
-    resultado= resultado+this->indice.abrir(this->ruta+"IndicePorTitulo.dat");
+    resultado= resultado+this->indice.abrir_archivo(this->ruta+"IndicePorTitulo.dat");
     resultado= resultado+this->listas.abrir(this->ruta,"ListasPorTitulo.dat");
     if (resultado !=RES_OK) return NO_EXISTE;
 }
@@ -66,8 +66,8 @@ long IndiceInvertidoPorTitulo::buscar_titulo(std::string titulo, RegistroVariabl
 int IndiceInvertidoPorTitulo::borrar_indice()
 {
     int resultado;
-    this->indice.abrir(this->ruta+"IndicePorTitulo.dat");
-    resultado = this->indice.eliminar();
+    this->indice.abrir_archivo(this->ruta+"IndicePorTitulo.dat");
+    resultado = this->indice.eliminar_archivo();
     if (resultado!=RES_OK)  return resultado;
     resultado = this->listas.eliminar(this->ruta,"ListasPorTitulo.dat");
     if (resultado!=RES_OK)  return resultado;

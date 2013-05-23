@@ -37,7 +37,7 @@ class RegistroCancion : public RegistroVariable{
 		/*se carga una cancion como una cadena de caracteres que contiene en la primer linea
 		 * los parametros de la cancion y en las lineas subsiguientes la letra. */
 
-		unsigned short get_cantidad_autores()throw();
+		unsigned short get_cantidad_autores()const throw();
 		string get_autor(unsigned short numeroAutor)throw();
 		int get_anio()throw();
 		string get_idioma()throw();

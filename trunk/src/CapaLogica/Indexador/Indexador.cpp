@@ -14,12 +14,12 @@ Indexador::~Indexador()
 
 int Indexador::init(std::string directorioEntrada, std::string directorioSalida)
 {
-	int res= indicePrimario.crear(directorioSalida+std::string(FILENAME_IDX_PRIM));
+	int res= indicePrimario.crear_archivo(directorioSalida+std::string(FILENAME_IDX_PRIM));
 	res += archivoMaestro.crear_archivo(directorioSalida+std::string(FILENAME_ARCH_MAESTRO));
 	res += archivoMaestro.abrir_archivo(directorioSalida+std::string(FILENAME_ARCH_MAESTRO));
 	res += indiceSecundarioAutor.crear(directorioSalida+std::string(FILENAME_IDX_SECUN_AUTOR));
 	res += indiceSecundarioAutor.abrir(directorioSalida+std::string(FILENAME_IDX_SECUN_AUTOR),"rb+");
-	res += indiceSecundarioTitulo.crear(directorioSalida+std::string(FILENAME_IDX_SECUN_TITULO));
+	res += indiceSecundarioTitulo.crear_archivo(directorioSalida+std::string(FILENAME_IDX_SECUN_TITULO));
 	res += parser.crear(directorioEntrada);
 	if (res != RES_OK)
 		return RES_ERROR;

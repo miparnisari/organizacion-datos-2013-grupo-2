@@ -24,7 +24,8 @@ int IndiceInvertidoListaConDoc::agregar_coincidencia(int IDdoc, char* idtermino,
 
 void IndiceInvertidoListaConDoc::crear_reg_lista_inverida(RegistroVariable *regInvertido, char *pos, int IDdoc)
 {
-    char *doc = itoa(IDdoc, doc, 10);
+    char *doc = NULL;
+//    doc = itoa(IDdoc, doc, 10); FIXME
     regInvertido->agregar_campo(doc, sizeof(doc));
 }
 

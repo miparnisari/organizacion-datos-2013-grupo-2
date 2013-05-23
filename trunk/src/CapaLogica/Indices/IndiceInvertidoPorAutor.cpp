@@ -36,10 +36,11 @@ int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion cancion, int IDcanc
     std::string autor;
     ClaveX clave;
     RegistroClave regAutor;
-    int i, existe, cant_autores = cancion.get_cantidad_autores();
+    int i, existe;
+    const int cant_autores = cancion.get_cantidad_autores();
     //Es la posicion relativa de la proxima lista libre en el archivo de listas de autores
     unsigned short listaVacia= this->listas.get_cantidad_listas();
-    unsigned short lista_autores[cant_autores];
+    unsigned short* lista_autores = new unsigned short[cant_autores];
     for(i=0; i<cant_autores; i++){
         //Obtenemos un autor de la cancion
         autor = cancion.get_autor(i);
@@ -52,10 +53,10 @@ int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion cancion, int IDcanc
             //busco la referencias a la lista del autor
             regAutor.recuperar_campo((char*)&lista, 0);  /***ver si los campos se guardan desde el 0 o el 1**/
             //Agregamos la referencia a la lista para modificar
-            lista_autores[i]=lista;
+            *(lista_autores+i)=lista;
         }else{
             //Como no existe el autor le crearemos una nueva lista y un registro para el indice
-            lista_autores[i]=listaVacia;
+            *(lista_autores+i)=listaVacia;
             //Creamos el registro para el indice con la clave del autor y la referencia a una lista nueva
             regAutor.agregar_campo((char*)&listaVacia,sizeof(listaVacia));
             this->indice.agregar(regAutor);
