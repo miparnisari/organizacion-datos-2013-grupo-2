@@ -40,7 +40,10 @@ int HashingExtensible::crear(std::string nombreArchivo)
     this->fileNameTabla=nombreArchivo+"Tabla.dat";
 
     if (this->manejador_bloques.abrir_archivo(fileName, "rb+") == RES_OK)
+    {
+    	this->manejador_bloques.cerrar_archivo();
     	return YA_EXISTE;
+    }
 
     //Si no existe es porque estamos creando un nuevo Hash
     int resultado = this->manejador_bloques.crear_archivo(fileName, 1024);//tamanio anterior TAM_DEFAULT
