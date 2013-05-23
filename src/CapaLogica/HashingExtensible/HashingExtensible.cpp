@@ -219,7 +219,7 @@ int HashingExtensible::eliminar(ClaveX clave)
         //Me muevo tamDispersion para un lado y para el otro de la lista, si son iguales cambio cada tam disp *2 los bloques de la tabla
         posDer = this->tabla->obtener_valor(posTabla+tamDispersion);
         posIzq = this->tabla->obtener_valor(posTabla-tamDispersion);
-
+        // FIXME aca hay un error! no se esta chequeando que las dos cosas anteriores pueden ser -1!!
         if (posDer == posIzq){
             //Eliminamos el bloque
             Bloque* bloqueVacio = this->manejador_bloques.crear_bloque();
@@ -254,7 +254,10 @@ int HashingExtensible::obtener_bloque(ClaveX clave, Bloque** bloque)
 {
     int posBloque;
     //Busco el numero de bloque que necesitamos
-    posBloque = this->tabla->obtener_valor(this->obtener_posicion_tabla(clave));
+
+    int posTabla = this->obtener_posicion_tabla(clave);
+
+    posBloque = this->tabla->obtener_valor(posTabla);
     //Busco el bloque para agregar el elemento
     cout << "pos bloque = " << posBloque << endl;
     Bloque* unbloque = this->manejador_bloques.obtener_bloque(posBloque);
@@ -296,6 +299,8 @@ int HashingExtensible::obtener_posicion_tabla(ClaveX registro)
     }else{
         registro.get_clave(clave);
     }
+    cout << "clave  =" << clave << endl;
+    cout << "funcion de dispersion = " << funcion_dispersion(clave) << endl;
     return funcion_dispersion(clave);
 }
 
