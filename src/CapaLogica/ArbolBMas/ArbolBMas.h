@@ -35,40 +35,29 @@ class ArbolBMas
 
 		void _imprimir_recursivo(unsigned int numNodo);
 		int _buscar_nodo_con_puntero(int punteroAbuscar);
-		int _quitar_recursivo(unsigned int& numNodoActual, RegistroClave & registro, int & huboUnderflow);
-		int _resolver_underflow_hoja(unsigned int numBloqueUnderflow, unsigned int numBloqueHermano,
-				int numBloqueIzquierdo,bool esUltimo,unsigned int numNodoPadre);
-		int _merge_nodos_secuenciales(NodoSecuencial & nodoUnderflow, NodoSecuencial & hermano);
+
 
 		int persistir(NodoArbol* nodo,unsigned int numeroNodo);
-		int _balancear_secuenciales(NodoSecuencial& uno,NodoSecuencial& otro,
-				NodoInterno& nodoPadre);
-		//el balanceo se produce desde el nodo 'uno' a 'otro' pasando registros en ese orden. El nodoPadre se modifica pertinentemente.
-		//se pasan registros de uno a otro y la clave de nodoPadre es actualizada.
 
-		int _balancear_internos(NodoInterno& uno,NodoInterno& otro,NodoInterno& padre);
-		//se rotan las claves de uno -> padre -> otro como sea necesario.
-
-		int _resolver_underflow_interno();
 
 		/*version distinta del _quitar_recursivo.*/
-		int _quitar_recursivo2(unsigned int& numeroBloqueActual,RegistroClave& registroEliminar,
+		int _quitar_recursivo(unsigned int& numeroBloqueActual,RegistroClave& registroEliminar,
 				int& tipoUnderflow);
 		/*esta version trabaja con persistencias DE MAS por seguridad*/
-		int _merge_secuenciales2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
+		int _merge_secuenciales(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
 				unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo ,
 				unsigned short posicionClaveEliminar,unsigned short posicionHijoEliminar);
 		/*combina dos nodos secuenciales. El nodo anteriormente en underflow es persistido, el nodo hermano es liberado. EL NODO PADRE
 		 * NO ES PERSISTIDO*/
-		int _resolver_underflow_hoja2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow);
+		int _resolver_underflow_hoja(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow);
 		int _liberar_nodo(unsigned int numeroNodo);
-		int _balancear_secuenciales2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
+		int _balancear_secuenciales(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
 				unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo);
 		/*balancea dos nodos secuenciales . Todos los nodos excepto el padre son persistidos*/
-		int _resolver_underflow_interno2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow);
-		int _merge_internos2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
+		int _resolver_underflow_interno(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow);
+		int _merge_internos(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
 				unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo);
-		int _balancear_internos2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
+		int _balancear_internos(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
 				unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo);
 
 
