@@ -36,11 +36,13 @@ int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short 
     if (resultado != RES_OK) return resultado;
     listas_nuevas.abrir_archivo(this->directorioSalida+"ListaAuxiliar.dat");
     if (resultado != RES_OK) return resultado;
-    unsigned short i, j=0, cant_listas = this->archivo.get_cantidad_registros_ocupados();
+    unsigned short i;
+   	int j=0;
+    unsigned short cant_listas = this->archivo.get_cantidad_registros_ocupados();
     for(i=0; i<cant_listas; i++){
         //Obtengo la lista
         this->archivo.get_registro_ocupado(&lista, i);
-        if(ref_listas[j] == i){
+        if(*(ref_listas+j) == i){
             //I es una de las referencias a las listas que hay que agregarle el IDcancion
             lista.agregar_campo((char*)&ID,sizeof(ID));
             j++;
@@ -54,7 +56,7 @@ int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short 
         listas_nuevas.agregar_registro(&lista);
     }
     this->archivo.eliminar_archivo(this->fileName);
-    //Cambiamos el nombre del archivo por el ori¿ginal
+    //Cambiamos el nombre del archivo por el oriï¿½ginal
 /***    rename(this->directorioSalida+"ListaAuxiliar.dat",this->fileName);*////
 }
 

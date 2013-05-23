@@ -28,11 +28,11 @@ class HashingExtensible
 
 		virtual ~HashingExtensible();
 
-		virtual int crear(std::string nombreArchivo);
+		virtual int crear_archivo(std::string nombreArchivo);
 
-		virtual int abrir(std::string nombreArchivo);
+		virtual int abrir_archivo(std::string nombreArchivo);
 
-		virtual int eliminar();
+		virtual int eliminar_archivo();
 		//Eliminamos el hashing extensible junto a todos sus documentos
 
 		virtual int agregar(RegistroClave reg);
@@ -49,28 +49,28 @@ class HashingExtensible
 
     private:
 
-        virtual int funcion_dispersion(int clave);
+        virtual int _funcion_dispersion(int clave);
         //Devuelve el numero de bloque donde se debe guardar esa clave
 
-        virtual int crear_bloque(int tam, Bloque *bloqueNuevo);
+        virtual int _crear_bloque(int tam, Bloque *bloqueNuevo);
         //Crea un nuevo bloque del Hashing
 
-        virtual int obtener_bloque(ClaveX clave, Bloque** bloque);
+        virtual int _obtener_bloque(ClaveX clave, Bloque** bloque);
         //Obtenemos el bloque que corresponde a la clave pasada por parametro
 
-        virtual int obtener_posicion_reg_bloque(ClaveX clave,Bloque & bloque);
+        virtual int _obtener_posicion_reg_bloque(ClaveX clave,Bloque & bloque);
         //Obtenemos en que posicion se encuentra el registro con la clave que buscamos
         //dentro de un bloque
 
-        virtual int obtener_posicion_tabla(ClaveX elemN);
+        virtual int _obtener_posicion_tabla(ClaveX elemN);
         //Dependiendo del tipo de clave que guarde aplica una funcion para sacar un numero
         //al cual le aplica la funcion de hashing para sacar la posicion de la tabla para esa clave
 
-        virtual int agregar_registros_bloques(Bloque bloque, RegistroClave reg);
+        virtual int _agregar_registros_bloques(Bloque bloque, RegistroClave reg);
         //Lo que basicamente es tomar todos los registros del bloque que desbordo junto al nuevo
         //registro y los guarda en el hashing como cualquier registro
 
-        virtual int dividir_tabla();
+        virtual int _dividir_tabla();
         //Vemos si se puede dividir la tabla, si se puede entonces la divide sino no pasa nada
 };
 

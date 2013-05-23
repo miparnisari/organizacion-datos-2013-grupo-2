@@ -62,7 +62,6 @@ class ManejadorBloques:public ManejadorArchivos {
 		 */
 
 		unsigned int get_cantidad_bloques();
-		int get_primer_bloque_libre();
 		unsigned int get_tamanio_bloque();
 
 };

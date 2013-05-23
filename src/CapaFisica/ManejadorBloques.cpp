@@ -23,11 +23,6 @@ std::string ManejadorBloques::get_ruta()
 	return nombreArchivo;
 }
 
-int ManejadorBloques::get_primer_bloque_libre()
-{
-	return this->header.proximoBloqueLibre;
-}/* precondicion: antes abrir el archivo! */
-
 unsigned int ManejadorBloques::get_tamanio_bloque()
 {
 	return this->header.tamanioBloque;

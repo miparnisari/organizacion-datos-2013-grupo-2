@@ -41,7 +41,8 @@ int IndiceInvertidoPorFrase::armar_archivo_coincidencias(std::string doc, int ID
 int IndiceInvertidoPorFrase::agregar_coincidencia(int IDdoc, char* idtermino, int pos)
 {
     RegistroVariable regCoincidencia;
-    char* iterador = itoa (pos, iterador, 10); /*****chanchada para guardar numero como char***/
+    char* iterador = NULL;
+//    iterador = itoa (pos, iterador, 10); /*****chanchada para guardar numero como char***/ FIXME
     regCoincidencia.agregar_campo(idtermino,sizeof(idtermino));
     regCoincidencia.agregar_campo(iterador,sizeof(iterador)); //Posicion dentro del documento
     this->archivo_coincidencias.agregar_registro(&regCoincidencia);
@@ -51,7 +52,8 @@ int IndiceInvertidoPorFrase::agregar_coincidencia(int IDdoc, char* idtermino, in
 
 void IndiceInvertidoPorFrase::crear_reg_lista_inverida(RegistroVariable *regInvertido, char *pos, int IDdoc)
 {
-    char *doc = itoa(IDdoc, doc, 10);
+    char *doc = NULL;
+//    doc = itoa(IDdoc, doc, 10); FIXME
     regInvertido->agregar_campo(doc, sizeof(doc));
     regInvertido->agregar_campo(pos, sizeof(pos));
 }

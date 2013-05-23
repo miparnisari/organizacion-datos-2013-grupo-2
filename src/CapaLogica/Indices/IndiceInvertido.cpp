@@ -45,11 +45,11 @@ int IndiceInvertido::agregar_termino(char* termino, int IDdoc, int pos)
 /******    posNodoSecuencial = this->vocabulario.buscar(regClave);***********/
     if (posNodoSecuencial== RES_ERROR){ /******Si no existe en el buscar del arbol*/
         IDter = this->archivo_terminos.get_cantidad_registros_ocupados();
-        idtermino = itoa (IDter, idtermino, 10); /*****chanchada para guardar numero como char***/
+//        idtermino = itoa (IDter, idtermino, 10); /*****chanchada para guardar numero como char***/ FIXME
         this->crear_termino_vocabulario(clave, idtermino);
     }else{
         /***Busco el IDter dentro del vocabulario*/
-        idtermino = itoa (IDter, idtermino, 10); /*****chanchada para guardar numero como char***/
+//        idtermino = itoa (IDter, idtermino, 10); /*****chanchada para guardar numero como char***/ FIXME
     }
     this->agregar_coincidencia(IDdoc, idtermino, pos);
     return RES_OK;
@@ -116,7 +116,9 @@ int IndiceInvertido::buscar_lista(int IDterLista, Bloque *lista)
     //Devolvemos la posicion de la lista dentro del archivo de listas invertidas y la lista que corresponde
     RegistroClave reg;
     ClaveX clave;
-    char *termino, *refLista, *idtermino = itoa (IDterLista, idtermino, 10); /*****chanchada para guardar numero como char***/
+    char *termino, *refLista;
+    char* idtermino = NULL;
+//    char* idtermino = itoa (IDterLista, idtermino, 10); /*****chanchada para guardar numero como char***/ FIXME
     int num;
     /*****busco el termino en el archivo de terminos, busqueda binaria*/
     clave.set_clave(termino);
@@ -126,7 +128,7 @@ int IndiceInvertido::buscar_lista(int IDterLista, Bloque *lista)
     num = atoi(refLista);   //recupero el numero
     if(num<0){
         //Modifico el registro para que guarde como referencia a la lista el primer bloque libre
-        num = listas_invertidas.get_primer_bloque_libre();
+//        num = listas_invertidas.get_primer_bloque_libre(); //FIXME
         reg.limpiar_campos();
         reg.set_clave(clave);   //Guardo el termino
         reg.agregar_campo(idtermino, sizeof(idtermino));  //Guardo el IDtermino

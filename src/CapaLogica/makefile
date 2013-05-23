@@ -1,7 +1,7 @@
 include ../makefile.inc
 
-DIRS	= ManejoArchivos Parser ArbolBMas Compresor Indexador HashingExtensible
-OBJLIBS	= ManejoArchivos.a Parser.a ArbolBMas.a Compresor.a Indexador.a HashingExtensible.a
+DIRS	= ManejoArchivos Parser ArbolBMas Compresor Indexador Indices HashingExtensible
+OBJLIBS	= ManejoArchivos.a Parser.a ArbolBMas.a Compresor.a Indexador.a Indices.a HashingExtensible.a
 EXTERNOBJ =  $(foreach path, $(DIRS), $(wildcard $(path)/*.o))
 
 TARGETS = main.cpp
