@@ -179,10 +179,7 @@ int ArbolBMas::agregar(RegistroClave & reg)
 
 }
 
-int ArbolBMas::quitar(RegistroClave & reg)
-{
-	return RES_OK;
-}
+
 
 
 int ArbolBMas::_obtener_nodo_interno(unsigned int numeroNodoInterno,NodoInterno& nodo){
@@ -423,6 +420,54 @@ int ArbolBMas::_quitar_recursivo(unsigned int& numNodoActual, RegistroClave & re
 }
 
 
+int ArbolBMas::quitar(RegistroClave& registroEliminar){
+
+
+	int tipoUnderflow;
+	unsigned int numeroNodoActual= NUMERO_BLOQUE_RAIZ;
+	int resultadoQuitar= this->_quitar_recursivo2(numeroNodoActual,registroEliminar,tipoUnderflow);
+
+	if(resultadoQuitar== RES_ERROR || resultadoQuitar== RES_RECORD_DOESNT_EXIST || resultadoQuitar== RES_OK)
+		return resultadoQuitar;
+
+	/*a continuacion se tratara el caso en que la raiz haya quedado en underflow*/
+	NodoArbol nodoRaizArbol(TIPO_HOJA);
+	this->_obtener_nodo_arbol(NUMERO_BLOQUE_RAIZ,nodoRaizArbol);
+
+
+	if(nodoRaizArbol.es_hoja())
+		return RES_OK;
+
+	NodoInterno nodoRaizInterno(header.minCantBytesClaves,header.maxCantBytesClaves);
+	this->_obtener_nodo_interno(NUMERO_BLOQUE_RAIZ,nodoRaizInterno);
+	TipoHijo hijoRaiz;
+	nodoRaizInterno.get_hijo(hijoRaiz,0);
+	NodoArbol nodoHijoRaizArbol(TIPO_HOJA);
+	this->_obtener_nodo_arbol(hijoRaiz , nodoHijoRaizArbol);
+
+
+	if(nodoHijoRaizArbol.es_hoja()){
+
+		NodoSecuencial nodoHijoRaizSecuencial(header.minCantBytesClaves,header.maxCantBytesClaves);
+		this->_obtener_nodo_secuencial(hijoRaiz,nodoHijoRaizSecuencial);
+		this->persistir(&nodoHijoRaizSecuencial,NUMERO_BLOQUE_RAIZ);
+
+	}else{
+
+		NodoInterno nodoHijoRaizInterno(header.minCantBytesClaves,header.maxCantBytesClaves);
+		this->_obtener_nodo_interno(hijoRaiz,nodoHijoRaizInterno);
+		this->persistir(&nodoHijoRaizInterno,NUMERO_BLOQUE_RAIZ);
+
+	}
+
+
+	this->_liberar_nodo(hijoRaiz);
+	return RES_OK;
+
+}
+
+
+
 int ArbolBMas::_quitar_recursivo2(unsigned int& numeroNodoActual,
 		RegistroClave& registroEliminar,int& tipoUnderflow){
 
@@ -450,6 +495,8 @@ int ArbolBMas::_quitar_recursivo2(unsigned int& numeroNodoActual,
 		if(resultadoEliminacionRegistro== RES_ERROR)
 			return RES_ERROR;
 		/*se produjo un error en el borrado del registro. No hay persistencia*/
+		if(resultadoEliminacionRegistro== RES_RECORD_DOESNT_EXIST)
+			return RES_RECORD_DOESNT_EXIST;
 
 		/*a continuacion se llevaran los pasos a llevar a cabo en caso de underflow del nodoSecuencial*/
 		tipoUnderflow= RES_UNDERFLOW_HOJA;
@@ -791,7 +838,7 @@ int ArbolBMas::_merge_internos2(NodoInterno* nodoPadre,unsigned int numeroNodoUn
 	}
 
 	this->persistir( &nodoUnderflow,numeroNodoUnderflow );
-	this->persistir( &nodoHermano,numeroNodoHermanoUnderflow );
+	this->_liberar_nodo(numeroNodoHermanoUnderflow);
 
 
 	return RES_OK;
