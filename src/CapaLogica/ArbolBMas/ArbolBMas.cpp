@@ -672,6 +672,97 @@ int ArbolBMas::_liberar_nodo(unsigned int numeroNodo){
 }
 
 
+int ArbolBMas::_resolver_underflow_interno2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow){
+
+
+	NodoInterno nodoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
+	if( this->_obtener_nodo_interno(numeroNodoUnderflow,nodoUnderflow)== RES_ERROR )
+		return RES_ERROR;
+
+	const unsigned short CANTIDAD_HIJOS_NODO_PADRE= nodoPadre->get_cantidad_hijos();
+	unsigned short posicionNumeroNodoUnderflow;
+	if( nodoPadre->buscar_hijo(numeroNodoUnderflow,posicionNumeroNodoUnderflow) == RES_ERROR )
+		return RES_ERROR;
+
+	bool numeroNodoUnderflowEsUltimoHijo= ( posicionNumeroNodoUnderflow == (CANTIDAD_HIJOS_NODO_PADRE - 1) );
+	TipoHijo numeroNodoHermanoUnderflow;
+
+	if(numeroNodoUnderflowEsUltimoHijo)
+		nodoPadre->get_hijo(numeroNodoHermanoUnderflow,posicionNumeroNodoUnderflow-1);
+	else
+		nodoPadre->get_hijo(numeroNodoHermanoUnderflow,posicionNumeroNodoUnderflow+1);
+
+	NodoInterno nodoHermanoUnderflow;
+	if( this->_obtener_nodo_interno(numeroNodoHermanoUnderflow,nodoHermanoUnderflow)== RES_ERROR )
+		return RES_ERROR;
+	bool nodoHermanoUnderflowTieneCargaMinima= (nodoHermanoUnderflow.get_cantidad_claves() == 1);
+	/*todo , la condicion de carga minima sigue siendo tener un solo registro o clave*/
+
+	if( nodoHermanoUnderflowTieneCargaMinima ){
+
+		this->_merge_internos2(nodoPadre,numeroNodoUnderflow,
+				numeroNodoHermanoUnderflow,numeroNodoUnderflowEsUltimoHijo);
+		return RES_MERGE;
+
+	}
+
+
+	return RES_ERROR;
+
+
+
+}
+
+
+
+int ArbolBMas::_merge_internos2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
+		unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo){
+
+
+	NodoInterno nodoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
+	NodoInterno nodoHermano(header.minCantBytesClaves,header.maxCantBytesClaves);
+
+	if( this->_obtener_nodo_interno(numeroNodoUnderflow,nodoUnderflow)== RES_ERROR ||
+			this->_obtener_nodo_interno(numeroNodoHermanoUnderflow,nodoHermano)== RES_ERROR)
+		return RES_ERROR;
+
+	unsigned short posicionNumeroNodoUnderflow, posicionNumeroNodoHermanoUnferflow;
+	nodoPadre->buscar_hijo(numeroNodoHermanoUnderflow,posicionNumeroNodoHermanoUnferflow);
+	nodoPadre->buscar_hijo(numeroNodoUnderflow,posicionNumeroNodoUnderflow);
+
+
+	vector<ClaveX> clavesHermano= nodoHermano.get_claves();
+	vector<TipoHijo> hijosHermano= nodoHermano.get_hijos();
+	const unsigned short CANTIDAD_HIJOS_HERMANO= hijosHermano.size();
+	const unsigned short CANTIDAD_CLAVES_HERMANO= clavesHermano.size();
+
+	if( numeroNodoUnderflowEsUltimoHijo ){
+
+		for(unsigned short i=0;i<CANTIDAD_CLAVES_HERMANO;i++){
+			ClaveX unaClave= clavesHermano.at(i);
+			unsigned short posicionOcurrencia;
+			if( nodoUnderflow.insertar_clave(unaClave,posicionOcurrencia) ==RES_ERROR)
+				return RES_ERROR;
+			TipoHijo unHijo= hijosHermano.at(i+1);
+			if( nodoUnderflow.insertar_hijo_derecho(unaClave,unHijo)== RES_ERROR)
+				return RES_ERROR;
+		}
+
+		TipoHijo primerHijoHermano= hijosHermano.at(0);
+		nodoUnderflow.insertar_hijo(primerHijoHermano,0);
+
+
+	}
+
+
+	return RES_OK;
+
+}//todo terminarrr!!!
+
+
+
+
+
 int ArbolBMas::_obtener_nodo_arbol(unsigned int numeroNodo,NodoArbol& nodo){
 
 	Bloque* bloqueNodo= archivoNodos.obtener_bloque(numeroNodo);

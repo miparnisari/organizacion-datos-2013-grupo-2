@@ -536,6 +536,11 @@ int NodoInterno::obtener_hijo_siguiente_a(TipoHijo valorHijo,int& hijoSiguiente)
 }
 
 
+vector<ClaveX> NodoInterno::get_claves(){return this->vectorClaves;}
+
+vector<NodoInterno::TipoHijo> NodoInterno::get_hijos(){return this->vectorHijos;}
+
+
 /*METODOS AGREGADOS POR MARTIN -----------------------------------------------*/
 
 

@@ -112,6 +112,9 @@ class NodoInterno : public NodoArbol {
 		int buscar_hijo(TipoHijo valorHijo,unsigned short& posicionHijo);
 		int obtener_hijo_siguiente_a(TipoHijo valorHijo,int& hijoSiguiente);
 
+		vector<ClaveX> get_claves();
+		vector<TipoHijo> get_hijos();
+
 
 
 
