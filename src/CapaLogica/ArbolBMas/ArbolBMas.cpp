@@ -149,8 +149,7 @@ int ArbolBMas::agregar(RegistroClave & reg)
 	TipoHijo raiz= this->numeroBloqueRaiz;
 	TipoHijo hijoPromocionado;
 	ClaveX clavePromocionada;
-	TipoPuntero nodoSecuencialSiguiente= -1;
-	int resultadoInsercion= _insertar_recursivo(raiz,&reg,hijoPromocionado,&clavePromocionada,nodoSecuencialSiguiente);
+	int resultadoInsercion= _insertar_recursivo(raiz,&reg,hijoPromocionado,&clavePromocionada);
 
 	if(resultadoInsercion!= RES_OVERFLOW)
 		return resultadoInsercion;
@@ -899,7 +898,7 @@ int ArbolBMas::_hallar_hoja(RegistroClave* registro,
 
 
 int ArbolBMas::_split_hoja(NodoSecuencial* nodoActual,vector<RegistroClave>* registrosOverflow,
-		TipoHijo& hijoPromocionado,ClaveX* clavePromocionada,TipoPuntero nodoSecuencialSiguiente){
+		TipoHijo& hijoPromocionado,ClaveX* clavePromocionada){
 
 	NodoSecuencial nodoSecuencialNuevo(header.minCantBytesClaves,header.maxCantBytesClaves);
 	const unsigned short CANTIDAD_REGISTROS_OVERFLOW= registrosOverflow->size();
@@ -907,11 +906,13 @@ int ArbolBMas::_split_hoja(NodoSecuencial* nodoActual,vector<RegistroClave>* reg
 		return RES_ERROR;
 	(*clavePromocionada)= registrosOverflow->at(0).get_clave();
 
+	unsigned int siguienteDelOverflow= nodoActual->get_proximo_nodo();
+
 	vector<RegistroClave> ro;
 	for(int i=0;i<CANTIDAD_REGISTROS_OVERFLOW;i++){
 		nodoSecuencialNuevo.insertar(registrosOverflow->at(i),ro);
 	}/*en el nodo secuencial nuevo agrego los registros en overflow y remuevo dichos registros del nodoSecuencialActual*/
-	nodoSecuencialNuevo.set_proximo_nodo(nodoSecuencialSiguiente);
+	nodoSecuencialNuevo.set_proximo_nodo(siguienteDelOverflow);
 
 	Bloque* bloqueNodoSecuencialNuevo = archivoNodos.crear_bloque();
 	nodoSecuencialNuevo.empaquetar(bloqueNodoSecuencialNuevo);
@@ -986,7 +987,7 @@ int ArbolBMas::_split_interno(NodoInterno* nodo,ClaveX* clavePromocionada,
 
 
 int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
-		RegistroClave* registro , TipoHijo& hijoPromocionado,ClaveX* clavePromocionada, TipoPuntero& nodoSecuencialSiguiente)
+		RegistroClave* registro , TipoHijo& hijoPromocionado,ClaveX* clavePromocionada)
 {
 
 	Bloque* bloqueActual= this->archivoNodos.obtener_bloque(numeroBloqueActual);
@@ -1017,7 +1018,7 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 		/*si no ocurre overflow en la insercion del registro, la ejecucion finaliza*/
 
 		_split_hoja(&nodoSecuencialActual,&registrosOverflow,hijoPromocionado,
-				clavePromocionada,nodoSecuencialSiguiente);
+				clavePromocionada);
 		/*divido el nodoSecuencial en overflow , guardo el nodo nuevo en el archivo y en hijoPromocionado retorno el numero de
 		 * bloque donde el nodoNuevo se guardo. En clavePromocionada guardo la clave que debera ser insertada en el nodoInterno
 		 * padre.*/
@@ -1045,12 +1046,12 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 	/*busco el siguiente hijo para acercarme a la hoja*/
 
 	/*determino el nodoSecuencialSiguiente ------------------------------------------------------------------*/
-	nodoActualInterno.obtener_hijo_siguiente_a(numeroBloqueHijo,nodoSecuencialSiguiente);
+	//nodoActualInterno.obtener_hijo_siguiente_a(numeroBloqueHijo,nodoSecuencialSiguiente);
 	/*determino el nodoSecuencialSiguiente ------------------------------------------------------------------*/
-
+	//FIXME estamos haciendo esto mal
 
 	int resultadoInsercion= this->_insertar_recursivo(numeroBloqueHijo,registro,
-			hijoPromocionado,clavePromocionada,nodoSecuencialSiguiente);
+			hijoPromocionado,clavePromocionada);
 
 	if(resultadoInsercion== RES_OK)
 		return RES_OK;

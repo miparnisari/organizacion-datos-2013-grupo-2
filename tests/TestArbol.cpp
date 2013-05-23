@@ -307,7 +307,7 @@ void TestArbol::test_arbol_buscar_secuencial()
 	}
 
 	// Agregamos desde "alan johnson0" hasta "alan johnson9"
-	for(int i=0;i<10;i++){
+	for(int i=0;i<6;i++){
 		RegistroClave reg;
 		ClaveX c;
 
@@ -318,6 +318,18 @@ void TestArbol::test_arbol_buscar_secuencial()
 
 		assert( arbol.agregar(reg)== RES_OK );
 	}
+
+	RegistroClave reg;
+	ClaveX c;
+
+	string clave= "alan johnson ";
+	clave[12]= 48+6;
+	c.set_clave(clave);
+	reg.set_clave(c);
+
+	assert( arbol.agregar(reg)== RES_OK );
+
+
 
 	arbol.imprimir();
 
