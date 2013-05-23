@@ -66,7 +66,7 @@ void TestIndicePorAutor::test_agregar_cancion()
     assert(reg_autor.get_clave() == clave);
     assert(reg_autor.get_cantidad_campos() == 1);
     //Recupero  la referencia a la lista y esta deberia ser la pos 0 del archivo de listas
-    reg_autor.recuperar_campo((char*)&ref_lista),0);
+    reg_autor.recuperar_campo(((char*)&ref_lista),0);
     assert(ref_lista == 0);
 
     this->eliminar_archivos();
