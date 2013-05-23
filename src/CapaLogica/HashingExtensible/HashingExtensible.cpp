@@ -82,15 +82,13 @@ int HashingExtensible::_funcion_dispersion(int clave)
     return (clave % tam_tabla);
 }
 
-int HashingExtensible::agregar(RegistroClave reg)
+int HashingExtensible::agregar(RegistroClave & reg)
 {
     int posBloque, i, resultado, posBloqueNuevo, posReg, tamTabla, posTabla;
     Bloque* bloque = NULL;
     unsigned int tamDispersion;
     RegistroVariable tamDispBloque;
     ClaveX clave_reg = reg.get_clave();
-
-    this->manejador_bloques.abrir_archivo(fileName, "rb+");
 
     tamTabla = tabla->get_tamanio();
     //Obtengo el bloque en donde se guardara el registro
@@ -160,7 +158,7 @@ int HashingExtensible::agregar(RegistroClave reg)
     return resultado;
 }
 
-int HashingExtensible::devolver(ClaveX clave, RegistroClave *reg)
+int HashingExtensible::devolver(ClaveX & clave, RegistroClave *reg)
 {
 	reg->limpiar_campos();
     int posReg;
@@ -191,7 +189,7 @@ int HashingExtensible::devolver(ClaveX clave, RegistroClave *reg)
     return RES_OK;
 }
 
-int HashingExtensible::modificar(RegistroClave elemN)
+int HashingExtensible::modificar(RegistroClave & elemN)
 {
     Bloque* bloque = NULL;
     int posReg, posBloque;
@@ -209,7 +207,7 @@ int HashingExtensible::modificar(RegistroClave elemN)
     return RES_OK;
 }
 
-int HashingExtensible::eliminar(ClaveX clave)
+int HashingExtensible::eliminar(ClaveX & clave)
 {
     int posBloque, i, posDer, posIzq, posReg, posTabla;
     unsigned int tamDispersion;
@@ -268,7 +266,7 @@ int HashingExtensible::_crear_bloque(int tam, Bloque* bloqueNuevo)
     return RES_OK;
 }
 
-int HashingExtensible::_obtener_bloque(ClaveX clave, Bloque** bloque)
+int HashingExtensible::_obtener_bloque(ClaveX & clave, Bloque** bloque)
 {
     int posBloque;
     //Busco el numero de bloque que necesitamos
@@ -285,7 +283,7 @@ int HashingExtensible::_obtener_bloque(ClaveX clave, Bloque** bloque)
     return posBloque;
 }
 
-int HashingExtensible::_obtener_posicion_reg_bloque(ClaveX clave, Bloque& bloque)
+int HashingExtensible::_obtener_posicion_reg_bloque(ClaveX & clave, Bloque& bloque)
 {
     int i = 1,se_encontro = RES_ERROR;
     ClaveX clave_reg;
@@ -303,7 +301,7 @@ int HashingExtensible::_obtener_posicion_reg_bloque(ClaveX clave, Bloque& bloque
     return RES_ERROR;
 }
 
-int HashingExtensible::_obtener_posicion_tabla(ClaveX registro)
+int HashingExtensible::_obtener_posicion_tabla(ClaveX&  registro)
 {   //Se devuelve la clave pasada por la funcion dispersion
     int clave=0;
     unsigned int i;
@@ -319,7 +317,7 @@ int HashingExtensible::_obtener_posicion_tabla(ClaveX registro)
     return _funcion_dispersion(clave);
 }
 
-int HashingExtensible::_agregar_registros_bloques(Bloque bloque, RegistroClave reg)
+int HashingExtensible::_agregar_registros_bloques(Bloque & bloque, RegistroClave & reg)
 {   //Inserta todos los registros y en caso que se desborde el agregar ya se encarga de arreglarlo
     RegistroClave regAux;
     int i;
