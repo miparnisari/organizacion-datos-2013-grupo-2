@@ -22,7 +22,7 @@
 
 class NodoArbol {
 	public:
-		NodoArbol(char tipoNodo);
+		NodoArbol(char tipoNodo= TIPO_HOJA);
 		virtual ~NodoArbol();
 
 		virtual int desempaquetar(const Bloque* bloque);
