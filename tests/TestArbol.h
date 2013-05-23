@@ -21,6 +21,8 @@ class TestArbol:public Test {
 		void test_split_nodo_secuencial();
 		void test_split_raiz();
 		void test_arbol_buscar_secuencial();
+		void test_eliminar_sin_underflow();
+		void test_eliminar_con_merge_secuenciales();
 
 
 	public:

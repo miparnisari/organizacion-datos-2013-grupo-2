@@ -18,6 +18,8 @@ void TestArbol::ejecutar(){
 
 	test_arbol_buscar();
 	test_arbol_buscar_secuencial();
+	test_eliminar_sin_underflow();
+	test_eliminar_con_merge_secuenciales();
 }
 
 void TestArbol::test_arbol_insertar_un_registro()
@@ -408,3 +410,193 @@ void TestArbol::test_arbol_buscar_secuencial()
 
 	print_test_ok("test_arbol_buscar_secuencial");
 }
+
+
+void TestArbol::test_eliminar_sin_underflow(){
+
+	cout<<"inicio test_eliminar_sin_underflow -------------------------"<<endl;
+
+	{
+		ArbolBMas arbol;
+		string nombreArchivo= "arbolSoloRaizEliminar.dat";
+		unsigned int tamanioBloque= 64;
+		assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
+		assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+
+		RegistroClave rc;
+			ClaveX c;
+
+			for(int i=0;i<3;i++){
+				string clave= "aaa";
+				clave[2]= 65+i;
+				c.set_clave(clave);
+				rc.set_clave(c);
+				assert( arbol.agregar(rc)== RES_OK );
+			}
+
+		for(unsigned short i= 0;i<3;i++){
+			string clave= "aaa";
+			clave[2]= 65+i;
+			ClaveX claveEliminar;
+			claveEliminar.set_clave(clave);
+			RegistroClave registroEliminar;
+			registroEliminar.set_clave(claveEliminar);
+			arbol.quitar(registroEliminar);
+		}
+
+		cout<<"imprimiendo arbol con registros solo en raiz eliminados : "<<endl;
+		arbol.imprimir();
+		arbol.cerrar();
+
+
+	}
+
+
+	{
+	ArbolBMas arbol;
+	string nombreArchivo= "arbolSinUnderflow.dat";
+	unsigned int tamanioBloque= 64;
+	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
+	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+
+	RegistroClave rc;
+	ClaveX c;
+
+	for(int i=0;i<8;i++){
+		string clave= "aaa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<2;i++){
+		string clave= "aaCa";
+		clave[3]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<3;i++){
+
+		string clave= "baa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<10;i++){
+
+		string clave= "caa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+
+	}
+
+	cout<<"ARBOL RESULTANTE: "<<endl;
+
+	RegistroClave registroEliminar;
+	ClaveX claveEliminar;
+	claveEliminar.set_clave("aaD");
+	registroEliminar.set_clave(claveEliminar);
+	assert( arbol.quitar(registroEliminar)== RES_OK );
+
+	arbol.imprimir();
+	assert(arbol.cerrar() == RES_OK);
+	}
+
+
+
+	print_test_ok("test_eliminar_sin_underflow");
+
+}
+
+
+void TestArbol::test_eliminar_con_merge_secuenciales(){
+
+	{
+		ArbolBMas arbol;
+		string nombreArchivo= "arbolConUnderflowMergeSecuenciales.dat";
+		unsigned int tamanioBloque= 64;
+		assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
+		assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+
+		RegistroClave rc;
+		ClaveX c;
+
+		for(int i=0;i<8;i++){
+			string clave= "aaa";
+			clave[2]= 65+i;
+			c.set_clave(clave);
+			rc.set_clave(c);
+			assert( arbol.agregar(rc)== RES_OK );
+		}
+
+		for(int i=0;i<2;i++){
+			string clave= "aaCa";
+			clave[3]= 65+i;
+			c.set_clave(clave);
+			rc.set_clave(c);
+			assert( arbol.agregar(rc)== RES_OK );
+		}
+
+		for(int i=0;i<3;i++){
+
+			string clave= "baa";
+			clave[2]= 65+i;
+			c.set_clave(clave);
+			rc.set_clave(c);
+			assert( arbol.agregar(rc)== RES_OK );
+		}
+
+		for(int i=0;i<10;i++){
+
+			string clave= "caa";
+			clave[2]= 65+i;
+			c.set_clave(clave);
+			rc.set_clave(c);
+			assert( arbol.agregar(rc)== RES_OK );
+
+		}
+
+		cout<<"ARBOL RESULTANTE: "<<endl;
+
+
+		{
+			ClaveX ce;
+			RegistroClave re;
+			ce.set_clave("aaC");
+			re.set_clave(ce);
+			arbol.quitar(re);
+			ce.set_clave("aaCA");
+			re.set_clave(ce);
+			arbol.quitar(re);
+			ce.set_clave("aaA");
+			re.set_clave(ce);
+			arbol.quitar(re);
+			ce.set_clave("aaB");
+			re.set_clave(ce);
+			arbol.quitar(re);
+		}
+
+
+		cout<<"imprimiendo arbol con merge de secuenciales "<<endl;
+		arbol.imprimir();
+		assert(arbol.cerrar() == RES_OK);
+
+
+
+
+
+	}
+
+
+
+		print_test_ok("test_eliminar_con_merge_secuenciales");
+
+}
+
