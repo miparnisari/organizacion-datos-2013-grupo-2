@@ -36,9 +36,10 @@ int Indexador::indexar (std::string directorioEntrada, std::string directorioSal
 	identificadorCancion.set_clave(contador);
 	
 	RegistroCancion regCancion;
+	std::string nombreArchivo;
 
 	// Para cada cancion que tengamos...
-	while (parser.getNextCancion(regCancion) == RES_OK)
+	while (parser.getNextCancion(regCancion,nombreArchivo) == RES_OK)
 	{
 		regCancion.comprimir(compresor);
 		long offsetInicialRegCancion = archivoMaestro.agregar_registro(&regCancion);

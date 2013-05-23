@@ -12,12 +12,12 @@ ParserCanciones::~ParserCanciones()
 	chdir(currentWorkingDirectory); // De vuelta al directorio original
 }
 
-unsigned int ParserCanciones::get_cantidad_archivos()
+unsigned int ParserCanciones::get_cantidad_archivos()const
 {
 	return archivos.size();
 }
 
-bool ParserCanciones::fin_directorio()
+bool ParserCanciones::fin_directorio()const
 {
 	return (contadorArchivosLeidos > get_cantidad_archivos());
 }
@@ -37,10 +37,11 @@ int ParserCanciones::crear (std::string dir)
 	return RES_OK;
 }
 
-int ParserCanciones::getNextCancion(RegistroCancion& reg)
+int ParserCanciones::getNextCancion(RegistroCancion& reg, std::string nombreArchivo)
 {
 	// Abrimos el archivo
-	std::ifstream archivo(archivos[contadorArchivosLeidos].c_str(), std::ios::in); 
+	nombreArchivo = archivos[contadorArchivosLeidos];
+	std::ifstream archivo(nombreArchivo.c_str(), std::ios::in);
 	std::string s_contenidoArchivo;
 
 	// Lo leemos
@@ -58,7 +59,7 @@ int ParserCanciones::getNextCancion(RegistroCancion& reg)
 	// el registro
 	char * bufferCancion = new char[s_contenidoArchivo.size() + 1];
 	std::copy(s_contenidoArchivo.begin(), s_contenidoArchivo.end(), bufferCancion);
-	bufferCancion[s_contenidoArchivo.size()] = '\0'; // don't forget the terminating 0
+	bufferCancion[s_contenidoArchivo.size()] = '\0';
 
 	// el tamaño del registro
 	unsigned short sizeOfBuffer = s_contenidoArchivo.size();

@@ -93,8 +93,8 @@ const int RES_BALANCEO				= -5;
 /*
  *Manejo del IndiceInvertido
  */
-
- const int NO_EXISTE_INDICE                         =-1;
+const unsigned int LONGITUD_MAXIMA_NUMERO_INDEXABLE = 4;
+const int NO_EXISTE_INDICE                         =-1;
 // const char* REFE_NULA                               ="";
 
 #endif /* CONSTANTES_H */
