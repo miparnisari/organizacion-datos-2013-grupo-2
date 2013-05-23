@@ -403,6 +403,8 @@ void TestArbol::test_arbol_buscar_secuencial()
 
 
 	arbol.cerrar();
+	arbol.abrir(nombreArchivo,"rb+");
+	arbol.imprimir();
 
 	print_test_ok("test_arbol_buscar_secuencial");
 }

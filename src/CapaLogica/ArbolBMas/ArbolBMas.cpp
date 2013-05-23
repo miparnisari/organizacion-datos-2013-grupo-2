@@ -486,15 +486,21 @@ int ArbolBMas::_quitar_recursivo2(unsigned int& numeroNodoActual,
 			this->_resolver_underflow_hoja2(&nodoActualInterno,proximoNodoInspeccionar);
 		}/*nodos hijos involucrados deben balancearse / mergear y ser persistidos*/
 		else{
-
+			this->_resolver_underflow_interno2(&nodoActualInterno,proximoNodoInspeccionar);
 		}
 
+		this->persistir( &nodoActualInterno,numeroNodoActual );
+
+		if( nodoActualInterno.hay_underflow() ){
+			tipoUnderflow= RES_UNDERFLOW_INTERNO;
+			return RES_UNDERFLOW;
+		}
+
+		return RES_OK;
 
 	}
 
-
-	return RES_UNDERFLOW;
-
+	return RES_OK;
 
 }
 
@@ -706,7 +712,8 @@ int ArbolBMas::_resolver_underflow_interno2(NodoInterno* nodoPadre,unsigned int 
 	}
 
 
-	return RES_ERROR;
+	this->_balancear_internos2(nodoPadre,numeroNodoUnderflow,numeroNodoHermanoUnderflow,numeroNodoUnderflowEsUltimoHijo);
+	return RES_BALANCEO;
 
 
 
@@ -729,6 +736,12 @@ int ArbolBMas::_merge_internos2(NodoInterno* nodoPadre,unsigned int numeroNodoUn
 	nodoPadre->buscar_hijo(numeroNodoHermanoUnderflow,posicionNumeroNodoHermanoUnferflow);
 	nodoPadre->buscar_hijo(numeroNodoUnderflow,posicionNumeroNodoUnderflow);
 
+	ClaveX claveSeparadora;
+	if( numeroNodoUnderflowEsUltimoHijo )
+		nodoPadre->get_clave(posicionNumeroNodoUnderflow - 1,claveSeparadora);
+	else
+		nodoPadre->get_clave(posicionNumeroNodoUnderflow,claveSeparadora);
+
 
 	vector<ClaveX> clavesHermano= nodoHermano.get_claves();
 	vector<TipoHijo> hijosHermano= nodoHermano.get_hijos();
@@ -737,9 +750,14 @@ int ArbolBMas::_merge_internos2(NodoInterno* nodoPadre,unsigned int numeroNodoUn
 
 	if( numeroNodoUnderflowEsUltimoHijo ){
 
+		unsigned short posicionOcurrencia;
+		nodoUnderflow.insertar_clave(claveSeparadora,posicionOcurrencia);
+		nodoPadre->remover_hijo(posicionNumeroNodoUnderflow-1 );
+		nodoPadre->remover_clave(claveSeparadora,posicionOcurrencia);
+
+
 		for(unsigned short i=0;i<CANTIDAD_CLAVES_HERMANO;i++){
 			ClaveX unaClave= clavesHermano.at(i);
-			unsigned short posicionOcurrencia;
 			if( nodoUnderflow.insertar_clave(unaClave,posicionOcurrencia) ==RES_ERROR)
 				return RES_ERROR;
 			TipoHijo unHijo= hijosHermano.at(i+1);
@@ -751,13 +769,123 @@ int ArbolBMas::_merge_internos2(NodoInterno* nodoPadre,unsigned int numeroNodoUn
 		nodoUnderflow.insertar_hijo(primerHijoHermano,0);
 
 
+	}else{
+
+		unsigned short posicionOcurrencia;
+		nodoUnderflow.insertar_clave(claveSeparadora,posicionOcurrencia);
+		nodoPadre->remover_hijo(posicionNumeroNodoUnderflow+1 );
+		nodoPadre->remover_clave(claveSeparadora,posicionOcurrencia);
+
+		nodoUnderflow.insertar_hijo( hijosHermano.at(0) );
+
+		for(unsigned short i=0;i<CANTIDAD_CLAVES_HERMANO;i++){
+			ClaveX unaClave= clavesHermano.at(i);
+			if( nodoUnderflow.insertar_clave(unaClave,posicionOcurrencia) ==RES_ERROR)
+				return RES_ERROR;
+			TipoHijo unHijo= hijosHermano.at(i+1);
+			if( nodoUnderflow.insertar_hijo_derecho(unaClave,unHijo)== RES_ERROR)
+				return RES_ERROR;
+		}
+
+
 	}
+
+	this->persistir( &nodoUnderflow,numeroNodoUnderflow );
+	this->persistir( &nodoHermano,numeroNodoHermanoUnderflow );
 
 
 	return RES_OK;
 
 }//todo terminarrr!!!
 
+
+
+int ArbolBMas::_balancear_internos2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
+		unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo){
+
+	NodoInterno nodoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
+	NodoInterno nodoHermano(header.minCantBytesClaves,header.maxCantBytesClaves);
+
+	if( this->_obtener_nodo_interno(numeroNodoUnderflow,nodoUnderflow)== RES_ERROR ||
+			this->_obtener_nodo_interno(numeroNodoHermanoUnderflow,nodoHermano)== RES_ERROR)
+		return RES_ERROR;
+
+	unsigned short posicionNumeroNodoUnderflow, posicionNumeroNodoHermanoUnferflow;
+	nodoPadre->buscar_hijo(numeroNodoHermanoUnderflow,posicionNumeroNodoHermanoUnferflow);
+	nodoPadre->buscar_hijo(numeroNodoUnderflow,posicionNumeroNodoUnderflow);
+
+
+	vector<ClaveX> clavesHermano= nodoHermano.get_claves();
+	vector<TipoHijo> hijosHermano= nodoHermano.get_hijos();
+	const unsigned short CANTIDAD_HIJOS_HERMANO= hijosHermano.size();
+	const unsigned short CANTIDAD_CLAVES_HERMANO= clavesHermano.size();
+	const unsigned short CANTIDAD_CLAVES_PADRE= nodoPadre->get_cantidad_claves();
+
+	const unsigned short CANTIDAD_HIJOS_PASAR= (short)( CANTIDAD_CLAVES_HERMANO/2 );
+
+	unsigned short ocurrenciaInsercion;
+	unsigned short ocurrenciaBorrado;
+
+
+	if (numeroNodoUnderflowEsUltimoHijo){
+
+		for(unsigned short i=0;i<CANTIDAD_HIJOS_PASAR;i++){
+
+			ClaveX claveSeparadora;
+			unsigned short cantidadClavesPadre= nodoPadre->get_cantidad_claves();
+			nodoPadre->get_clave(cantidadClavesPadre-1,claveSeparadora);
+			nodoUnderflow.insertar_clave(claveSeparadora,ocurrenciaInsercion);
+			nodoPadre->remover_clave(claveSeparadora,ocurrenciaBorrado);
+			/*en el nodo en underflow inserto la clave separadora del hermano y el nUnderflow y la remuevo del nPadre*/
+
+			unsigned short cantidadClavesHermano= nodoHermano.get_cantidad_claves();
+			unsigned short cantidadHijosHermano= nodoHermano.get_cantidad_hijos();
+			ClaveX claveHermano;
+			TipoHijo hijoHermano;
+			nodoHermano.get_hijo(hijoHermano,cantidadHijosHermano-1);
+			nodoHermano.remover_clave(cantidadClavesHermano-1,claveHermano);
+			nodoHermano.remover_hijo(cantidadHijosHermano-1);
+			nodoPadre->insertar_clave(claveHermano,ocurrenciaInsercion);
+			nodoUnderflow.insertar_hijo_izquierdo(claveSeparadora,hijoHermano);
+			/*obtengo la ultima clave y el ultimo hijo del nHermano. La clave obtenida la inserto en el nPadre y el hijo obtenido lo
+			 * inserto como hijo izquierdo de la claveSeparadora insertada en el nUnderflow*/
+
+
+		}
+
+	}else{
+
+
+		for (unsigned short i = 0; i < CANTIDAD_HIJOS_PASAR; i++) {
+			ClaveX claveSeparadora;
+			nodoPadre->get_clave(posicionNumeroNodoUnderflow,claveSeparadora);
+			nodoUnderflow.insertar_clave(claveSeparadora,ocurrenciaInsercion);
+			nodoPadre->remover_clave(claveSeparadora,ocurrenciaBorrado);
+			/*en el nodo en underflow inserto la clave separadora del hermano y el nUnderflow y la remuevo del nPadre*/
+
+
+			ClaveX claveHermano;
+			TipoHijo hijoHermano;
+			nodoHermano.remover_clave(0,claveHermano);
+			nodoHermano.get_hijo(hijoHermano,0);
+			nodoHermano.remover_hijo(0);
+			nodoUnderflow.insertar_hijo_derecho(claveSeparadora,hijoHermano);
+			nodoPadre->insertar_clave(claveHermano,ocurrenciaInsercion);
+		}
+
+
+
+	}
+
+	//cambio la clave del padre al final
+
+	this->persistir( &nodoUnderflow,numeroNodoUnderflow );
+	this->persistir( &nodoHermano,numeroNodoHermanoUnderflow );
+
+
+	return RES_OK;
+
+}
 
 
 

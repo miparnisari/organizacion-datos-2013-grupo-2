@@ -68,6 +68,8 @@ class ArbolBMas
 		int _resolver_underflow_interno2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow);
 		int _merge_internos2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
 				unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo);
+		int _balancear_internos2(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow,
+				unsigned int numeroNodoHermanoUnderflow,bool numeroNodoUnderflowEsUltimoHijo);
 
 
 	public:
