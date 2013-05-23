@@ -97,8 +97,10 @@ int HashingExtensible::agregar(RegistroClave reg)
 
     //Verificamos que no exista la clave del registro que queremos guardar
     posReg = this->obtener_posicion_reg_bloque(clave_reg, *bloque);
-    if (posReg != RES_ERROR)
+    if (posReg != RES_ERROR) {
+    	delete bloque;
     	return YA_EXISTE;
+    }
 
     //Agrego el elemento
     resultado = bloque->agregar_registro(&reg);
@@ -149,6 +151,7 @@ int HashingExtensible::agregar(RegistroClave reg)
     	this->manejador_bloques.sobreescribir_bloque(bloque, posBloque);
     }
 
+    delete bloque;
     this->manejador_bloques.cerrar_archivo();
     return resultado;
 }
@@ -162,14 +165,24 @@ int HashingExtensible::devolver(ClaveX clave, RegistroClave *reg)
     //Obtengo el bloque que buscamos
     int numBloque = this->obtener_bloque(clave, &bloque);
     if (numBloque == RES_ERROR)
+    {
+    	delete bloque;
+    	this->manejador_bloques.cerrar_archivo();
     	return NO_EXISTE;
+    }
     //Modifico el elemento del bloque
 
     posReg = this->obtener_posicion_reg_bloque(clave, *bloque);
 
     if (posReg == RES_ERROR)
+    {
+    	delete bloque;
+    	this->manejador_bloques.cerrar_archivo();
         return NO_EXISTE;
+    }
+
     bloque->recuperar_registro(reg, posReg);
+    delete bloque;
     this->manejador_bloques.cerrar_archivo();
     return RES_OK;
 }
@@ -205,7 +218,10 @@ int HashingExtensible::eliminar(ClaveX clave)
     posBloque = this->obtener_bloque(clave, &bloque);
     posReg = this->obtener_posicion_reg_bloque(clave, *bloque);
     if (posReg == RES_ERROR)
+    {
+    	delete bloque;
         return RES_OK; // No esta la clave en el archivo, es lo mismo que borrarla
+    }
     //Elimino el registro
     bloque->eliminar_registro(posReg);
     if (bloque->get_cantidad_registros_almacenados() == 1){ // o sea que solo esta el tam dispersion
@@ -233,6 +249,7 @@ int HashingExtensible::eliminar(ClaveX clave)
             this->dividir_tabla();
         }
     }
+    delete bloque;
     this->manejador_bloques.cerrar_archivo();
     return RES_OK;
 }
