@@ -39,6 +39,7 @@ class IndiceInvertido
         virtual int buscar_doc_con_frase(RegistroVariable terminos_frase);
         virtual int obtener_canciones_termino(const char *termino, RegistroVariable &canciones);
         virtual int interseccion(RegistroVariable &canciones, RegistroVariable &listaAux);
+        virtual int buscar_cancion_en_lista(int IDcancion, RegistroVariable &canciones);
 
 
 

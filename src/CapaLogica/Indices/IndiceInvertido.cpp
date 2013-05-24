@@ -242,27 +242,66 @@ int IndiceInvertido::obtener_canciones_termino(const char *termino, RegistroVari
 int IndiceInvertido::armar_archivo_terminos_frase(std::string frase, RegistroVariable canciones, RegistroVariable &terminos_frase)
 {
 	Texto texto;
-	//int pos=0;
-	unsigned short IDter, ref_lista;
-	RegistroClave regTerminoVoc;
-	RegistroVariable regTermino, docInterseccion;
-	ClaveX clave;
+	int i, cant_canciones, IDcan, cant_pos, t=0;
+	unsigned short IDter, ref_lista, ref_lista_pos, j;
+	RegistroClave regTerminoVoc, listaCan;
+	RegistroVariable regTermino, listaCanTer, listaPos;
+	ClaveX clave, clave_cancion;
+	char* listaEmpaquetada, *pos;
 	std::string termino;
+	ManejadorRegistrosVariables archivo_temp;
+	if (archivo_temp.crear_archivo(this->ruta+"archivo_terminos_canciones") != RES_OK) return RES_ERROR;
+	archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones");
 	texto.parsear(frase);
 	while(texto.get_proxima_palabra(termino) != RES_ERROR){
-			//Veo si el termino esta en el vocabulario
-			clave.set_clave(termino);
-			if(this->vocabulario.buscar(regTerminoVoc) == RES_ERROR)	return NO_EXISTE;
-
-			//Armo un archivo termporal para buscar las canciones que tienen la frase
-			regTerminoVoc.recuperar_campo((char*) &IDter, 1);
-			regTerminoVoc.recuperar_campo((char*) &ref_lista, 2);
-
-
-
-
+		//Obtengo el IDter
+		this->vocabulario.buscar(regTerminoVoc);
+		regTerminoVoc.recuperar_campo((char*)&IDter, 1);
+		//La agrego a terminos_frase
+		terminos_frase.agregar_datos((char*)&IDter, t);
+		t++;
+		//Obtengo la lista de canciones del termino
+		regTerminoVoc.recuperar_campo((char*)&ref_lista, 2);
+		this->listas_invertidas.devolver(&listaCanTer, ref_lista);
+		cant_canciones = listaCanTer.get_cantidad_campos();
+		//Armo un archivo termporal para buscar las canciones que tienen la frase
+		for(i=0; i<cant_canciones; i++){
+			//Obtengo cancion que contiene la lista
+			listaCanTer.recuperar_campo(listaEmpaquetada, i);
+			listaCan.desempaquetar(listaEmpaquetada);
+			//Recupero el IDcan
+			clave_cancion = listaCan.get_clave();
+			clave_cancion.get_clave(IDcan);
+			if(this->buscar_cancion_en_lista(IDcan, canciones) == RES_OK){
+				//La cancion se encuentra entre las canciones que buscamos
+				//Buscamo la lista de posiciones
+				listaCan.recuperar_campo((char*) &ref_lista_pos, 2);
+				this->listas_posiciones.devolver(&listaPos, ref_lista_pos);
+				cant_pos = listaPos.get_cantidad_campos();
+				for(j=0; j<cant_pos; j++){
+					//Armo el registro (IDcancion, Pos, IDtermino)
+					RegistroVariable regTem;
+					regTem.agregar_campo((char*)&IDcan,0);
+					listaPos.recuperar_campo(pos, j);
+					regTem.agregar_campo(pos, 1);
+					regTem.agregar_campo((char*)&IDter,2);
+					//Agrego el registro al archivo
+					archivo_temp.agregar_registro(&regTem);
+				}
+			}
 		}
+	}
 	return RES_OK;
+}
+
+int IndiceInvertido::buscar_cancion_en_lista(int IDcancion, RegistroVariable &canciones)
+{	//Busca dentro de la la lista de canciones si se encuenta la cancion pasada por parametro
+	int i, IDaux, cant = canciones.get_cantidad_campos();
+	for(i=0; i<cant; i++){
+		canciones.recuperar_campo((char*)&IDaux, i);
+		if(IDaux == IDcancion)	return RES_OK;
+	}
+	return RES_ERROR;
 }
 
 int IndiceInvertido::buscar_doc_con_frase(RegistroVariable terminos_frase)
