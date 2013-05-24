@@ -1,5 +1,7 @@
 #include "ArchivoListas.h"
 
+/**Suponemos que no existen registros vacios**/
+
 ArchivoListas::ArchivoListas()
 {
 
@@ -9,6 +11,7 @@ ArchivoListas::~ArchivoListas()
 {
 
 }
+
 int ArchivoListas::crear(std::string directorioSalida, std::string fileNamee)
 {
     return this->archivo.crear_archivo(directorioSalida+fileNamee);
@@ -21,14 +24,16 @@ int ArchivoListas::abrir(std::string directorioSalidaa, std::string fileNamee)
     return this->archivo.abrir_archivo(this->fileName);
 }
 
-long ArchivoListas::agregar(RegistroVariable *listaDeCanciones)
+unsigned short ArchivoListas::agregar(RegistroVariable *listaDeCanciones)
 {
-	return this->archivo.agregar_registro(listaDeCanciones);
+	unsigned short pos = this->archivo.get_cantidad_registros_ocupados();
+	if(this->archivo.agregar_registro(listaDeCanciones) >0)	return pos;
+	return RES_ERROR;
 }
 
-int ArchivoListas::devolver(RegistroVariable *listaDeCanciones, long pos_lista)
+int ArchivoListas::devolver(RegistroVariable *listaDeCanciones, unsigned short pos_lista)
 {
-    return (this->archivo.get_registro_por_offset(listaDeCanciones, pos_lista));
+    return (this->archivo.get_registro_ocupado(listaDeCanciones, pos_lista));
 }
 
 int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short cant_ref, int ID)
@@ -64,10 +69,11 @@ int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short 
     return RES_OK;
 }
 
-int ArchivoListas::recontruir_listas(long ref_lista, RegistroVariable &listaModificada)
+int ArchivoListas::recontruir_listas(unsigned short ref_lista, RegistroVariable &listaModificada)
 {
 	ManejadorRegistrosVariables listas_nuevas;
-	int i, cant_listas= this->archivo.get_cantidad_registros_ocupados();
+	unsigned short i;
+	int cant_listas= this->archivo.get_cantidad_registros_ocupados();
 	RegistroVariable lista;
 	int resultado;
 	resultado = listas_nuevas.crear_archivo(this->directorioSalida+"ListaAuxiliar.dat");

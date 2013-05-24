@@ -94,7 +94,7 @@ int IndiceInvertido::armar_listas_invertidas(int IDcancion)
 {
 	RegistroVariable regCoincidencia, regTermino, listaInvertida;
 	RegistroClave regTerminoVoc, regCancionTermino;
-	ClaveX clave;
+	ClaveX clave, claveTermino;
 	unsigned short i=0, j;
 	long IDter, IDterAnterior, ref_lista, ref_lista_pos;
 	char* termino, *reg_cancion_termino, *pos;
@@ -110,6 +110,8 @@ int IndiceInvertido::armar_listas_invertidas(int IDcancion)
 		this->archivo_terminos.get_registro_por_offset(&regTermino, IDter);
 		regTermino.recuperar_campo(termino, 0);
 		//Busco la referencia de las lista lista invertida de este termino
+		claveTermino.set_clave(termino);
+		regTerminoVoc.set_clave(claveTermino);
 		if(this->vocabulario.buscar(regTerminoVoc) == RES_ERROR) return RES_ERROR;
 		regTerminoVoc.recuperar_campo((char*)&ref_lista,2);
 		//Obtengo la lista invertida del termino
@@ -178,12 +180,12 @@ int IndiceInvertido::buscar_lista(int IDterLista, RegistroVariable &lista)
     //Devolvemos la posicion de la lista dentro del archivo de listas invertidas y la lista que corresponde
     RegistroClave reg;
     ClaveX clave;
-    char *termino, *refLista, *idtermino; //= itoa (IDterLista, idtermino, 10); /*****chanchada para guardar numero como char***/
+    char *termino, *refLista, *idtermino; //= itoa (IDterLista, idtermino, 10); *****chanchada para guardar numero como char***/
 //    int num;
     /*****busco el termino en el archivo de terminos, busqueda binaria*/
 /*    clave.set_clave(termino);
     reg.set_clave(clave);
-/*********    vocabulario.buscar(reg);**********/
+*********    vocabulario.buscar(reg);**********/
 /*    reg.recuperar_campo(refLista,2);
     num = atoi(refLista);   //recupero el numero
     if(num<0){
