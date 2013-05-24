@@ -34,7 +34,15 @@ class IndiceInvertido
         virtual int buscar_frase(std::string frase, RegistroVariable &lista);
 
     protected:
-        virtual int interseccion_listas_invertidas(std::string archivo);
+        virtual int armar_archivo_terminos_frase(std::string frase, RegistroVariable canciones, RegistroVariable &terminos_frase);
+        virtual int interseccion_listas_invertidas(std::string frase, RegistroVariable &canciones);
+        virtual int buscar_doc_con_frase(RegistroVariable terminos_frase);
+        virtual int obtener_canciones_termino(const char *termino, RegistroVariable &canciones);
+        virtual int interseccion(RegistroVariable &canciones, RegistroVariable &listaAux);
+
+
+
+
      //   virtual void crear_termino_vocabulario(ClaveX clave, char* idtermino);
         //Esto va a depender del indice que armemos
         virtual void crear_reg_lista_inverida(RegistroVariable *regInvertido, char *pos, int IDdoc);
