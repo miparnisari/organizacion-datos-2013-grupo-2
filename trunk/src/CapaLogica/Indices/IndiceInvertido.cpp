@@ -306,8 +306,65 @@ int IndiceInvertido::buscar_cancion_en_lista(int IDcancion, RegistroVariable &ca
 
 int IndiceInvertido::buscar_doc_con_frase(RegistroVariable terminos_frase)
 {
-	/*************/
+	ManejadorRegistrosVariables archivo_temp;
+	RegistroVariable reg;
+	int IDcancion, IDcancionAnterior, i=0, j, cant_reg, IDterminoFrase, IDter=-1, pos=-1, posAnterior=-1;
+	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones") != RES_OK) return RES_ERROR;
+	/****Ordeno el archivo****/
+	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones") != RES_OK) return RES_ERROR;
+	cant_reg = archivo_temp.get_cantidad_registros_ocupados();
+	while(i<cant_reg){
+		j=0;
+		//Recorremos todos los reg del archivo temporal
+		archivo_temp.get_registro_ocupado(&reg, i);
+		//Obtengo su IDcancion
+		reg.recuperar_campo((char*)&IDcancion, 0);
+		//Obtengo su Pos
+		reg.recuperar_campo((char*)&pos, 1);
+		//Saco el primer IDter de la frase
+		terminos_frase.recuperar_campo((char*)&IDterminoFrase, j);
+		i++;
+		this->siguiente_termino_frase(i, 0, pos, IDcancion, terminos_frase);
+	}
+
+	archivo_temp.eliminar_archivo(this->ruta+"archivo_terminos_canciones");
 	return RES_OK;
+}
+
+int IndiceInvertido::siguiente_termino_frase(int &pos_reg, int pos_ter_frase, int &posAnterior, int &IDcancionAnterior, RegistroVariable &terminos_frase)
+{//Recursiva
+	ManejadorRegistrosVariables archivo_temp;
+	int IDter, IDterminoFrase, pos, IDcancion;
+	RegistroVariable reg;
+	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones") != RES_OK) return RES_ERROR;
+	//Saco el IDter de la frase que esta en la pos_ter_frase
+	terminos_frase.recuperar_campo((char*)&IDterminoFrase, pos_ter_frase);
+	pos_ter_frase++;
+	//Saco el termino del archivo
+	archivo_temp.get_registro_ocupado(&reg, pos_reg);
+	pos_reg++;
+	//Obtengo el IDcancion del registro
+	reg.recuperar_campo((char*)&IDcancion,0);
+	if(IDcancion == IDcancionAnterior){
+		//Seguimos en la misma cancion
+		//Recupero el IDter y la pos
+		reg.recuperar_campo((char*)&IDter, 2);
+		reg.recuperar_campo((char*)&pos, 1);
+		if((IDter == IDterminoFrase)&&(pos-posAnterior<2)){
+			//El termino esta en el orden que corresponde, asi que buscamos en el siguiente termino
+			if(pos_reg == archivo_temp.get_cantidad_registros_ocupados()){
+				//Entonces completamos la frase
+				return RES_OK;
+			}else{
+				//Todavia hay terminos por ver
+				return this->siguiente_termino_frase(pos_reg, pos_ter_frase, pos, IDcancion, terminos_frase);
+			}
+		}else{
+			//Entonces este documento no pertenece a la solucion
+			return	NO_PERTENECE;
+		}
+	}
+	return NO_PERTENECE;
 }
 
 

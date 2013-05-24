@@ -40,6 +40,7 @@ class IndiceInvertido
         virtual int obtener_canciones_termino(const char *termino, RegistroVariable &canciones);
         virtual int interseccion(RegistroVariable &canciones, RegistroVariable &listaAux);
         virtual int buscar_cancion_en_lista(int IDcancion, RegistroVariable &canciones);
+        virtual int siguiente_termino_frase(int &pos_reg, int pos_ter_frase, int &posAnterior, int &IDcancionAnterior, RegistroVariable &terminos_frase);
 
 
 
