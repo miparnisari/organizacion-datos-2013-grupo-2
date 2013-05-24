@@ -97,7 +97,7 @@ int IndiceInvertido::armar_listas_invertidas(int IDcancion)
 	ClaveX clave, claveTermino;
 	unsigned short i=0, j;
 	long IDter, IDterAnterior, ref_lista, ref_lista_pos;
-	char* termino, *reg_cancion_termino, *pos;
+
 
 	while (i<this->archivo_coincidencias.get_cantidad_registros_ocupados()){
 		RegistroVariable listaPos;
@@ -108,9 +108,11 @@ int IndiceInvertido::armar_listas_invertidas(int IDcancion)
 		IDterAnterior = IDter;
 		//Busco el termino con ese IDter
 		this->archivo_terminos.get_registro_por_offset(&regTermino, IDter);
+		char* termino = new char[regTermino.get_tamanio_campo(0)]();
 		regTermino.recuperar_campo(termino, 0);
 		//Busco la referencia de las lista lista invertida de este termino
-		claveTermino.set_clave(termino);
+		claveTermino.set_clave(std::string(termino));
+		delete[] termino;
 		regTerminoVoc.set_clave(claveTermino);
 		if(this->vocabulario.buscar(regTerminoVoc) == RES_ERROR) return RES_ERROR;
 		regTerminoVoc.recuperar_campo((char*)&ref_lista,2);
@@ -120,8 +122,10 @@ int IndiceInvertido::armar_listas_invertidas(int IDcancion)
 		j=0;
 		do{//Mientras sean el mismo termino
 			//Guardo la posicion en la lista de posiciones
+			char* pos = new char[regCoincidencia.get_tamanio_campo(1)]();
 			regCoincidencia.recuperar_campo(pos,1);
 			listaPos.agregar_campo(pos, j);
+			delete[] pos;
 			//Guardo el IDter como el anterior
 			IDterAnterior = IDter;
 			//Saco el proximo registro de coincidencia
@@ -139,8 +143,10 @@ int IndiceInvertido::armar_listas_invertidas(int IDcancion)
 		//Le agrego la referencia a la lista de canciones por termino
 		regCancionTermino.agregar_campo((char *)&ref_lista_pos, 1);
 		//Guardo esta lista en la lista invertida de canciones
+		char* reg_cancion_termino = new char[regCancionTermino.get_tamanio_empaquetado()]();
 		regCancionTermino.empaquetar(reg_cancion_termino);
 		listaInvertida.agregar_campo(reg_cancion_termino, 0);
+		delete[] reg_cancion_termino;
 		this->listas_invertidas.recontruir_listas(ref_lista, listaInvertida);
 	}
 	return RES_OK;
@@ -218,7 +224,7 @@ int IndiceInvertido::obtener_canciones_termino(const char *termino, RegistroVari
 	int IDcan;
 	RegistroClave regTerminoVoc, listaCan;
 	RegistroVariable regTermino, listaCanTer;
-	char *listaEmpaquetada;
+
 	ClaveX clave, clave_cancion;
 	clave.set_clave(termino);
 	//Busco el termino en el vocabulario
@@ -229,12 +235,14 @@ int IndiceInvertido::obtener_canciones_termino(const char *termino, RegistroVari
 	cant_listas= listaCanTer.get_cantidad_campos();
 	for(i=0; i<cant_listas; i++){
 		//Obtengo cancion que contiene el termino pasado por parametro
+		char* listaEmpaquetada = new char[listaCanTer.get_tamanio_campo(i)]();
 		listaCanTer.recuperar_campo(listaEmpaquetada, i);
 		listaCan.desempaquetar(listaEmpaquetada);
 		clave_cancion = listaCan.get_clave();
 		clave_cancion.get_clave(IDcan);
 		//Guardo el IDcancion en la lista de canciones
 		canciones.agregar_campo((char*)&IDcan, i);
+		delete[] listaEmpaquetada;
 	}
 	return RES_OK;
 }
@@ -247,7 +255,6 @@ int IndiceInvertido::armar_archivo_terminos_frase(std::string frase, RegistroVar
 	RegistroClave regTerminoVoc, listaCan;
 	RegistroVariable regTermino, listaCanTer, listaPos;
 	ClaveX clave, clave_cancion;
-	char* listaEmpaquetada, *pos;
 	std::string termino;
 	ManejadorRegistrosVariables archivo_temp;
 	if (archivo_temp.crear_archivo(this->ruta+"archivo_terminos_canciones") != RES_OK) return RES_ERROR;
@@ -267,8 +274,10 @@ int IndiceInvertido::armar_archivo_terminos_frase(std::string frase, RegistroVar
 		//Armo un archivo termporal para buscar las canciones que tienen la frase
 		for(i=0; i<cant_canciones; i++){
 			//Obtengo cancion que contiene la lista
+			char* listaEmpaquetada = new char[listaCanTer.get_tamanio_campo(i)]();
 			listaCanTer.recuperar_campo(listaEmpaquetada, i);
 			listaCan.desempaquetar(listaEmpaquetada);
+			delete[] listaEmpaquetada;
 			//Recupero el IDcan
 			clave_cancion = listaCan.get_clave();
 			clave_cancion.get_clave(IDcan);
@@ -282,9 +291,11 @@ int IndiceInvertido::armar_archivo_terminos_frase(std::string frase, RegistroVar
 					//Armo el registro (IDcancion, Pos, IDtermino)
 					RegistroVariable regTem;
 					regTem.agregar_campo((char*)&IDcan,0);
+					char* pos = new char[listaPos.get_tamanio_campo(j)]();
 					listaPos.recuperar_campo(pos, j);
 					regTem.agregar_campo(pos, 1);
 					regTem.agregar_campo((char*)&IDter,2);
+					delete[] pos;
 					//Agrego el registro al archivo
 					archivo_temp.agregar_registro(&regTem);
 				}
