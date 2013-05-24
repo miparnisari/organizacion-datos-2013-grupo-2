@@ -57,7 +57,7 @@ int HashingExtensible::crear_archivo(std::string nombreArchivo)
 	Bloque* bloqueNuevo = this->manejador_bloques.crear_bloque();
 	this->_crear_bloque(1, bloqueNuevo);
 	int res = this->manejador_bloques.escribir_bloque(bloqueNuevo);//Va a estar en la posicion 0
-	if (res != 0)
+	if (res < 0)
 	{
 		return RES_ERROR;
 	}
@@ -99,7 +99,7 @@ int HashingExtensible::agregar(RegistroClave & reg)
     //Verificamos que no exista la clave del registro que queremos guardar
     posReg = this->_obtener_posicion_reg_bloque(clave_reg, *bloque);
     if (posReg != RES_ERROR) {
-    	this->manejador_bloques.cerrar_archivo();
+    	//this->manejador_bloques.cerrar_archivo();
     	delete bloque;
     	return YA_EXISTE;
     }
@@ -154,9 +154,14 @@ int HashingExtensible::agregar(RegistroClave & reg)
     }
 
     delete bloque;
-    this->manejador_bloques.cerrar_archivo();
+    //this->manejador_bloques.cerrar_archivo();
     return resultado;
 }
+
+int HashingExtensible::cerrar_archivo(){
+	return this->manejador_bloques.cerrar_archivo();
+}
+
 
 int HashingExtensible::devolver(ClaveX & clave, RegistroClave *reg)
 {
