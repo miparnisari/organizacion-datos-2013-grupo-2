@@ -12,20 +12,22 @@ IndiceInvertidoPorTitulo::~IndiceInvertidoPorTitulo()
 
 int IndiceInvertidoPorTitulo::crear_indice(std::string directorioSalida)
 {
-    int resultado;
     this->ruta = directorioSalida;
-    resultado= resultado+this->indice.crear(this->ruta+"IndicePorTitulo.dat");
-    resultado= resultado+this->listas.crear(this->ruta, "ListasPorTitulo.dat");
-    return resultado;
+    int resultado1 = this->indice.crear_archivo(this->ruta+"IndicePorTitulo.dat");
+    int resultado2 = this->listas.crear(this->ruta, "ListasPorTitulo.dat");
+    if (resultado1 == RES_OK && resultado2 == RES_OK)
+    	return RES_OK;
+    return RES_ERROR;
 }
 
 int IndiceInvertidoPorTitulo::abrir_indice(std::string directorioSalida)
 {
-    int resultado;
     this->ruta = directorioSalida;
-    resultado= resultado+this->indice.abrir(this->ruta+"IndicePorTitulo.dat");
-    resultado= resultado+this->listas.abrir(this->ruta,"ListasPorTitulo.dat");
-    if (resultado !=RES_OK) return NO_EXISTE;
+    int resultado = this->indice.abrir_archivo(this->ruta+"IndicePorTitulo.dat");
+    resultado += this->listas.abrir(this->ruta,"ListasPorTitulo.dat");
+    if (resultado != RES_OK)
+    	return NO_EXISTE;
+    return RES_OK;
 }
 
 int IndiceInvertidoPorTitulo::agregar_cancion(RegistroCancion cancion, int IDcancion)
@@ -56,7 +58,8 @@ long IndiceInvertidoPorTitulo::buscar_titulo(std::string titulo, RegistroVariabl
     ClaveX clave;
     clave.set_clave(titulo);
     //Veo si el titulo se encuentra en el indice
-    if(this->indice.devolver(clave, &reg_cancion) == NO_EXISTE)   return NO_EXISTE;
+    if(this->indice.devolver(clave, &reg_cancion) == NO_EXISTE)
+    	return NO_EXISTE;
     //Busco la posicion relativa de la lista en el archivo de listas
     reg_cancion.recuperar_campo((char*)&ref_lista, 0);  /***ver si los campos se guardan desde el 0 o el 1**/
     //Le pido la lista al archivo de listas
@@ -65,10 +68,9 @@ long IndiceInvertidoPorTitulo::buscar_titulo(std::string titulo, RegistroVariabl
 
 int IndiceInvertidoPorTitulo::borrar_indice()
 {
-    int resultado;
-    this->indice.abrir(this->ruta+"IndicePorTitulo.dat");
-    resultado = this->indice.eliminar();
-    if (resultado!=RES_OK)  return resultado;
-    resultado = this->listas.eliminar(this->ruta,"ListasPorTitulo.dat");
-    if (resultado!=RES_OK)  return resultado;
+    int resultado1= this->indice.eliminar_archivo();
+    int resultado2 = this->listas.eliminar(this->ruta,"ListasPorTitulo.dat");
+    if (resultado1 == RES_OK && resultado2 == RES_OK)
+    	return RES_OK;
+    return RES_ERROR;
 }

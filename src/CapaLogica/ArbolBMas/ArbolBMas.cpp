@@ -207,7 +207,7 @@ int ArbolBMas::_buscar_nodo_con_puntero(int punteroAbuscar)
 {
 	TipoHijo numNodoSecuencial;
 	this->obtener_primer_nodo_secuencial(numNodoSecuencial);
-	if (numNodoSecuencial == punteroAbuscar)
+	if (numNodoSecuencial == (unsigned)punteroAbuscar)
 		return -1; //El primer nodo secuencial no es apuntado por nadie
 
 	NodoSecuencial nodoSecuencialActual(header.minCantBytesClaves,header.maxCantBytesClaves) ;
@@ -598,7 +598,6 @@ int ArbolBMas::_merge_internos(NodoInterno* nodoPadre,unsigned int numeroNodoUnd
 
 	vector<ClaveX> clavesHermano= nodoHermano.get_claves();
 	vector<TipoHijo> hijosHermano= nodoHermano.get_hijos();
-	const unsigned short CANTIDAD_HIJOS_HERMANO= hijosHermano.size();
 	const unsigned short CANTIDAD_CLAVES_HERMANO= clavesHermano.size();
 
 	if( numeroNodoUnderflowEsUltimoHijo ){
@@ -670,9 +669,7 @@ int ArbolBMas::_balancear_internos(NodoInterno* nodoPadre,unsigned int numeroNod
 
 	vector<ClaveX> clavesHermano= nodoHermano.get_claves();
 	vector<TipoHijo> hijosHermano= nodoHermano.get_hijos();
-	const unsigned short CANTIDAD_HIJOS_HERMANO= hijosHermano.size();
 	const unsigned short CANTIDAD_CLAVES_HERMANO= clavesHermano.size();
-	const unsigned short CANTIDAD_CLAVES_PADRE= nodoPadre->get_cantidad_claves();
 
 	const unsigned short CANTIDAD_HIJOS_PASAR= (short)( CANTIDAD_CLAVES_HERMANO/2 );
 
