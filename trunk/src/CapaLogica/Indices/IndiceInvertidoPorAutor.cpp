@@ -17,7 +17,7 @@ int IndiceInvertidoPorAutor::crear_indice(std::string directorioSalida)
 {
     int resultado;
     this->ruta = directorioSalida;
-    resultado= resultado+this->indice.crear(this->ruta+"IndicePorAutor.dat", BLOQUE_TAM_DEFAULT);
+    resultado= this->indice.crear(this->ruta+"IndicePorAutor.dat", BLOQUE_TAM_DEFAULT);
     resultado= resultado+this->listas.crear(this->ruta,"ListasPorAutor.dat");
     return resultado;
 }
@@ -26,9 +26,10 @@ int IndiceInvertidoPorAutor::abrir_indice(std::string directorioSalida)
 {
     int resultado;
     this->ruta = directorioSalida;
-    resultado= resultado+this->indice.abrir(this->ruta+"IndicePorAutor.dat", "rb+");
+    resultado= this->indice.abrir(this->ruta+"IndicePorAutor.dat", "rb+");
     resultado= resultado+this->listas.abrir(this->ruta, "ListasPorAutor.dat");
     if (resultado !=RES_OK) return NO_EXISTE;
+    return resultado;
 }
 
 int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion cancion, int IDcancion)
@@ -45,7 +46,8 @@ int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion cancion, int IDcanc
         autor = cancion.get_autor(i);
         clave.set_clave(autor);
         regAutor.set_clave(clave);
-        /*****existe = this->indice.buscar(regAutor);  //Busco el autor en el indice*/
+        //Busco el autor en el indice
+        existe = this->indice.buscar(regAutor);
         if(existe == RES_OK){
             //Como existe entonces buscamos la referencia a la lista de ese autor
             int lista;
@@ -73,6 +75,7 @@ int IndiceInvertidoPorAutor::borrar_indice()
     if (resultado!=RES_OK)  return resultado;
     resultado = this->listas.eliminar(this->ruta,"ListasPorAutor.dat");
     if (resultado!=RES_OK)  return resultado;
+    return RES_OK;
 }
 
 long IndiceInvertidoPorAutor::buscar_autor(std::string autor, RegistroVariable &listaDeCanciones)
@@ -83,9 +86,10 @@ long IndiceInvertidoPorAutor::buscar_autor(std::string autor, RegistroVariable &
     ClaveX clave;
     clave.set_clave(autor);
     reg_autor.set_clave(clave);
-    /****existe = this->indice.buscar(reg_autor);    //Busco el registro del autor*/
+    //Busco las canciones del autor
+    existe = this->indice.buscar(reg_autor);
     if(existe != RES_OK)    return NO_EXISTE;
     //Recupero la referencia a la lista
-    reg_autor.recuperar_campo((char*)&(lista), 0);  /*****Esto funciona segun los test que hizo ines en el hash sobre int***/
+    reg_autor.recuperar_campo((char*)&(lista), 0);
     return this->listas.devolver(&listaDeCanciones, lista);
 }
