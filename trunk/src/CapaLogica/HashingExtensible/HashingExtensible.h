@@ -35,6 +35,8 @@ class HashingExtensible
 		virtual int eliminar_archivo();
 		//Eliminamos el hashing extensible junto a todos sus documentos
 
+		virtual int cerrar_archivo();
+
 		virtual int agregar(RegistroClave & reg);
 		//Guarda el elemento en el hash, en caso de que ya existe el elemento devuelve YA_EXISTE
 
