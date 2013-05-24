@@ -148,19 +148,126 @@ int IndiceInvertido::armar_listas_invertidas(int IDcancion)
 
 int IndiceInvertido::buscar_frase(std::string frase, RegistroVariable &lista)
 {
+	RegistroVariable docInterseccion, terminos_frase;
+	//Busco la interseccion de las lista de los documentos de cada termino de la frase
+	if(this->interseccion_listas_invertidas(frase, docInterseccion) != RES_OK) return NO_EXISTE;
+	//Armo un archivo termporal para buscar las canciones que tienen la frase
+	if(this->armar_archivo_terminos_frase(frase, docInterseccion, terminos_frase) != RES_OK)  return RES_ERROR;
+	//Armo lista que contienen la frase dentro de la cancion
+	return this->buscar_doc_con_frase(terminos_frase);
+}
+
+int IndiceInvertido::interseccion_listas_invertidas(std::string frase, RegistroVariable &canciones)
+{
+    /***aca buscamos la interseccion de estas listas por IDdoc y guardamos las listas en un nuevo archivo de reg variables con el nombre pasado por parametro**/
 	Texto texto;
-	/*int pos=0;
-	long IDter, ref_lista;*/
+	int resultado = RES_OK;
 	RegistroClave regTerminoVoc;
-	RegistroVariable regTermino, regCoincidencia;
+	RegistroVariable regTermino, docInterseccion, listaCanTer, listaCancionesAux;
+	ClaveX clave;
+	std::string termino;
+	texto.parsear(frase);
+	//Saco la primera palabra de la frase
+	if (texto.get_proxima_palabra(termino) == RES_ERROR) return NO_EXISTE;
+	//Busco las canciones que tienen este termino en la letra
+	resultado = this->obtener_canciones_termino(termino.c_str(), canciones);
+	if(resultado != RES_OK)	return resultado;
+	while(texto.get_proxima_palabra(termino) != RES_ERROR){
+		//Busco las canciones que tienen este termino en la letra
+		resultado = this->obtener_canciones_termino(termino.c_str(), listaCancionesAux);
+		if(resultado != RES_OK)	return resultado;
+		//Veo que canciones se encuentran en ambas listas
+		if (this->interseccion(canciones, listaCancionesAux) != RES_OK) return NO_EXISTE;
+	}
+	return RES_OK;
+}
+
+int IndiceInvertido::interseccion(RegistroVariable &canciones, RegistroVariable &listaAux)
+{	//Busco la interseccion de las dos listas y la guardo en la lista canciones
+	int IDcan, IDcanAux, i=1, j=1, k=0;
+	RegistroVariable interseccion;
+	//Obtenemos los primeros IDcanciones
+	canciones.recuperar_campo((char*)&IDcan, 0);
+	listaAux.recuperar_campo((char*)&IDcanAux, 0);
+	while((i<canciones.get_cantidad_campos())&&(j<listaAux.get_cantidad_campos())){
+		if(IDcan<IDcanAux){
+			canciones.recuperar_campo((char*)&IDcan, i);
+			i++;
+		}else{
+			if(IDcan>IDcanAux){
+				listaAux.recuperar_campo((char*)&IDcan, i);
+				j++;
+			}else{
+				interseccion.agregar_campo((char*)&IDcan, k);
+				k++;
+			}
+		}
+	}
+	//Actualizo las canciones
+	canciones.limpiar_campos();
+	for(i=0; i<k; i++){
+		interseccion.recuperar_campo((char*)&IDcan, i);
+		canciones.agregar_campo((char*)&IDcan, i);
+	}
+	return RES_OK;
+}
+
+int IndiceInvertido::obtener_canciones_termino(const char *termino, RegistroVariable &canciones)
+{//Guarda en la lista de canciones todas aquellas canciones en las que aparece el termino pasado por parametro
+	unsigned short ref_lista, i, cant_listas;
+	int IDcan;
+	RegistroClave regTerminoVoc, listaCan;
+	RegistroVariable regTermino, listaCanTer;
+	char *listaEmpaquetada;
+	ClaveX clave, clave_cancion;
+	clave.set_clave(termino);
+	//Busco el termino en el vocabulario
+	if(this->vocabulario.buscar(regTerminoVoc) == RES_ERROR)	return NO_EXISTE;
+	//Recupero la lista de canciones que contienen ese termino
+	regTerminoVoc.recuperar_campo((char*)&ref_lista, 2);
+	this->listas_invertidas.devolver(&listaCanTer, ref_lista);
+	cant_listas= listaCanTer.get_cantidad_campos();
+	for(i=0; i<cant_listas; i++){
+		//Obtengo cancion que contiene el termino pasado por parametro
+		listaCanTer.recuperar_campo(listaEmpaquetada, i);
+		listaCan.desempaquetar(listaEmpaquetada);
+		clave_cancion = listaCan.get_clave();
+		clave_cancion.get_clave(IDcan);
+		//Guardo el IDcancion en la lista de canciones
+		canciones.agregar_campo((char*)&IDcan, i);
+	}
+	return RES_OK;
+}
+
+int IndiceInvertido::armar_archivo_terminos_frase(std::string frase, RegistroVariable canciones, RegistroVariable &terminos_frase)
+{
+	Texto texto;
+	//int pos=0;
+	unsigned short IDter, ref_lista;
+	RegistroClave regTerminoVoc;
+	RegistroVariable regTermino, docInterseccion;
 	ClaveX clave;
 	std::string termino;
 	texto.parsear(frase);
 	while(texto.get_proxima_palabra(termino) != RES_ERROR){
-		clave.set_clave(termino);
-		if(this->vocabulario.buscar(regTerminoVoc) == RES_ERROR)	return NO_EXISTE;
+			//Veo si el termino esta en el vocabulario
+			clave.set_clave(termino);
+			if(this->vocabulario.buscar(regTerminoVoc) == RES_ERROR)	return NO_EXISTE;
 
-	}
+			//Armo un archivo termporal para buscar las canciones que tienen la frase
+			regTerminoVoc.recuperar_campo((char*) &IDter, 1);
+			regTerminoVoc.recuperar_campo((char*) &ref_lista, 2);
+
+
+
+
+		}
+	return RES_OK;
+}
+
+int IndiceInvertido::buscar_doc_con_frase(RegistroVariable terminos_frase)
+{
+	/*************/
 	return RES_OK;
 }
 
@@ -202,11 +309,6 @@ int IndiceInvertido::buscar_lista(int IDterLista, RegistroVariable &lista)
     return num;
 }
 */
-int IndiceInvertido::interseccion_listas_invertidas(std::string archivo)
-{
-    /***aca buscamos la interseccion de estas listas por IDdoc y guardamos las listas en un nuevo archivo de reg variables con el nombre pasado por parametro**/
-    return RES_OK;
-}
 
 
 int IndiceInvertido::buscar(char *elem_busqueda, std::string conjunto_iddoc)
