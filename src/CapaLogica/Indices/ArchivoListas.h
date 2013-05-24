@@ -26,14 +26,17 @@ class ArchivoListas
         virtual int abrir(std::string directorioSalidaa, std::string fileNamee);
         //Abre el archivo con la direccion y el nombre que se le pasan por parametro
 
-        virtual int devolver(RegistroVariable *listaDeCanciones, unsigned short pos_lista);
+        virtual long agregar(RegistroVariable *listaDeCanciones);
+        //Agrega una lista al archivo y devuelve el offset de este
+
+        virtual int devolver(RegistroVariable *listaDeCanciones, long pos_lista);
         //Guarda en la listaDeCanciones la lista que se encuentra en la posicion pos_lista dentro del archivo
 
         virtual int recontruir_listas(unsigned short* ref_listas, unsigned short cant_ref, int ID);
         //Agrega el ID a las listas de las posiciones que guarda ref_listas
 
-        virtual int recontruir_listas(unsigned short* ref_listas, unsigned short cant_ref, int ID, int *pos);
-        /****ver si me sirve para indice por frase**/
+        virtual int recontruir_listas(long ref_lista, RegistroVariable &listaModificada);
+        //Modifico la lista que se pasa por referencia. Se penso para el indice invertido por frase
 
         virtual int eliminar(std::string directorioSalida, std::string fileNamee);
         //Elimina el archivo con la direccion y el nombre que se le pasan por parametro

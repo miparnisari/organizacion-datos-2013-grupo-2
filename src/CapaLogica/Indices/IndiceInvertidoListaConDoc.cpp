@@ -9,11 +9,11 @@ IndiceInvertidoListaConDoc::~IndiceInvertidoListaConDoc()
 {
 
 }
-
+/*
 int IndiceInvertidoListaConDoc::armar_archivo_coincidencias(std::string doc, int IDdoc)
 {   //En este caso string doc que se pasa va a ser lo que queremos que se guarde como identificador del documento en el vocabulario
-/*****    this->agregar_termino(doc, IDdoc, 1); error raro*/
-}
+*****    this->agregar_termino(doc, IDdoc, 1); error raro*/
+/*}
 
 int IndiceInvertidoListaConDoc::agregar_coincidencia(int IDdoc, char* idtermino, int pos)
 {
@@ -24,8 +24,7 @@ int IndiceInvertidoListaConDoc::agregar_coincidencia(int IDdoc, char* idtermino,
 
 void IndiceInvertidoListaConDoc::crear_reg_lista_inverida(RegistroVariable *regInvertido, char *pos, int IDdoc)
 {
-    char *doc = NULL;
-//    doc = itoa(IDdoc, doc, 10); FIXME
+    char *doc; //= itoa(IDdoc, doc, 10);
     regInvertido->agregar_campo(doc, sizeof(doc));
 }
 
@@ -41,8 +40,8 @@ int IndiceInvertidoListaConDoc::buscar(char *elem_busqueda, std::string conjunto
     clave.set_clave(elem_busqueda);
     regTermino.set_clave(clave);
     //Buscamos las listas invertidas de cada termino
-     /**   encontro = this->vocabulario.buscar(&regTermino); /****revisar cuando tengamos el buscar del arbol creado***/
-    if (encontro == RES_ERROR)  return NO_EXISTE;
+     **   encontro = this->vocabulario.buscar(&regTermino); ****revisar cuando tengamos el buscar del arbol creado***/
+/*    if (encontro == RES_ERROR)  return NO_EXISTE;
     //Guardo la lista en cinjunto_iddoc
     lista = listas_invertidas.obtener_bloque(encontro); //saco la lista de iddoc
     documento.crear_archivo(conjunto_iddoc);
@@ -53,3 +52,4 @@ int IndiceInvertidoListaConDoc::buscar(char *elem_busqueda, std::string conjunto
     }
     return RES_OK;
 }
+*/

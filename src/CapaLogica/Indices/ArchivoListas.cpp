@@ -21,9 +21,14 @@ int ArchivoListas::abrir(std::string directorioSalidaa, std::string fileNamee)
     return this->archivo.abrir_archivo(this->fileName);
 }
 
-int ArchivoListas::devolver(RegistroVariable *listaDeCanciones, unsigned short pos_lista)
+long ArchivoListas::agregar(RegistroVariable *listaDeCanciones)
 {
-    return (this->archivo.get_registro_ocupado(listaDeCanciones, pos_lista));
+	return this->archivo.agregar_registro(listaDeCanciones);
+}
+
+int ArchivoListas::devolver(RegistroVariable *listaDeCanciones, long pos_lista)
+{
+    return (this->archivo.get_registro_por_offset(listaDeCanciones, pos_lista));
 }
 
 int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short cant_ref, int ID)
@@ -36,13 +41,11 @@ int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short 
     if (resultado != RES_OK) return resultado;
     listas_nuevas.abrir_archivo(this->directorioSalida+"ListaAuxiliar.dat");
     if (resultado != RES_OK) return resultado;
-    unsigned short i;
-   	int j=0;
-    unsigned short cant_listas = this->archivo.get_cantidad_registros_ocupados();
+    unsigned short i, j=0, cant_listas = this->archivo.get_cantidad_registros_ocupados();
     for(i=0; i<cant_listas; i++){
         //Obtengo la lista
         this->archivo.get_registro_ocupado(&lista, i);
-        if(*(ref_listas+j) == i){
+        if(ref_listas[j] == i){
             //I es una de las referencias a las listas que hay que agregarle el IDcancion
             lista.agregar_campo((char*)&ID,sizeof(ID));
             j++;
@@ -58,12 +61,33 @@ int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short 
     this->archivo.eliminar_archivo(this->fileName);
     //Cambiamos el nombre del archivo por el ori�ginal
 /***    rename(this->directorioSalida+"ListaAuxiliar.dat",this->fileName);*////
+    return RES_OK;
 }
 
-int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short cant_ref, int ID, int *pos)
+int ArchivoListas::recontruir_listas(long ref_lista, RegistroVariable &listaModificada)
 {
-    /************esta sirve para el indice por frase, ver con cuidado, conviene usar el archivo de coincidencias*****************/
-    return RES_OK;
+	ManejadorRegistrosVariables listas_nuevas;
+	int i, cant_listas= this->archivo.get_cantidad_registros_ocupados();
+	RegistroVariable lista;
+	int resultado;
+	resultado = listas_nuevas.crear_archivo(this->directorioSalida+"ListaAuxiliar.dat");
+	if (resultado != RES_OK) return resultado;
+	listas_nuevas.abrir_archivo(this->directorioSalida+"ListaAuxiliar.dat");
+	if (resultado != RES_OK) return resultado;
+	for(i=0; i<cant_listas; i++){
+	        //Obtengo la lista
+	        this->archivo.get_registro_ocupado(&lista, i);
+	        if(ref_lista == i){
+	            //I es una de las referencias a las listas que hay que agregarle el IDcancion
+	        	listas_nuevas.agregar_registro(&listaModificada);
+	        }else{
+	        	listas_nuevas.agregar_registro(&lista);
+	        }
+	    }
+	this->archivo.eliminar_archivo(this->fileName);
+	    //Cambiamos el nombre del archivo por el ori�ginal
+	/***    rename(this->directorioSalida+"ListaAuxiliar.dat",this->fileName);*////
+	return RES_OK;
 }
 
 int ArchivoListas::eliminar(std::string directorioSalida, std::string fileNamee)

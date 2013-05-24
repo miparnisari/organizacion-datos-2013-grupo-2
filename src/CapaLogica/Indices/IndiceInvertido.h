@@ -7,6 +7,9 @@
 #include "../ArbolBMas/ArbolBMas.h"
 #include "../../CapaLogica/ManejoArchivos/ClaveX.h"
 #include "../../CapaLogica/ManejoArchivos/RegistroClave.h"
+#include "../../CapaLogica/ManejoArchivos/RegistroCancion.h"
+#include "../../CapaLogica/ManejoArchivos/Texto.h"
+#include "ArchivoListas.h"
 #include "../../Constantes.h"
 
 class IndiceInvertido
@@ -14,26 +17,27 @@ class IndiceInvertido
     //Atributos
     protected:
         std::string fileName;
+        std::string ruta;
         ManejadorRegistrosVariables archivo_terminos;
         ArbolBMas vocabulario;
-        ManejadorBloques listas_invertidas;
+        ArchivoListas listas_invertidas;
+        ArchivoListas listas_posiciones;
         ManejadorRegistrosVariables archivo_coincidencias;
 
     public:
+        IndiceInvertido();
+        virtual ~IndiceInvertido();
         virtual int crear_indice(std::string directorioSalida, std::string fileNamee);
         virtual int abrir_indice(std::string directorioSalida, std::string fileNamee);
-        virtual int agregar_documento(std::string documento, int IDdoc);
-        virtual int borrar_documento(int IDdoc);
+        virtual int agregar_cancion(RegistroCancion cancion, int IDcancion);
         virtual int borrar_indice();
-        virtual int buscar_lista(int IDterLista, Bloque* lista);
+        virtual int buscar_frase(std::string frase, RegistroVariable &lista);
 
     protected:
         virtual int interseccion_listas_invertidas(std::string archivo);
-        virtual void crear_termino_vocabulario(ClaveX clave, char* idtermino);
+     //   virtual void crear_termino_vocabulario(ClaveX clave, char* idtermino);
         //Esto va a depender del indice que armemos
         virtual void crear_reg_lista_inverida(RegistroVariable *regInvertido, char *pos, int IDdoc);
-        virtual int agregar_coincidencia(int IDdoc, char* idtermino, int pos);
-        virtual int agregar_termino(char* termino, int IDdoc, int pos);
         virtual int armar_listas_invertidas(int IDdoc);
         virtual int armar_archivo_coincidencias(std::string doc, int IDdoc);
         virtual int buscar(char *elem_busqueda, std::string conjunto_iddoc);
