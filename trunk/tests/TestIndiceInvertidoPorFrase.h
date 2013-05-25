@@ -65,7 +65,7 @@ class TestIndiceInvertidoPorFrase : public Test
 
         virtual void eliminar_archivos();
 
-        virtual void crear_reg_cancion(const char* letra, RegistroCancion &reg);
+        virtual void crear_reg_cancion(std::string letra, RegistroCancion &reg);
 };
 
 #endif // TESTINDICEINVERTIDOPORFRASE_H_INCLUDED

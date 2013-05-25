@@ -425,7 +425,7 @@ void TestIndiceInvertidoPorFrase::eliminar_archivos()
     arbol.eliminar(ARCHIVO_ARBOL);
 }
 
-void TestIndiceInvertidoPorFrase::crear_reg_cancion(const char *letra, RegistroCancion &reg)
+void TestIndiceInvertidoPorFrase::crear_reg_cancion(std::string letra, RegistroCancion &reg)
 {
     //Crea un reg cancion con el autor que nos pasan por parametro
 	std::string cancion = "Bersuit-2013-Un pacto para vivir-Castellano-"+letra;

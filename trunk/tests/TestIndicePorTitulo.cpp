@@ -23,15 +23,15 @@ void TestIndicePorTitulo::ejecutar()
 {
     test_indice_titulo_crear_indice();
     test_indice_titulo_agregar_cancion();
-    test_indice_titulo_devolver_canciones_por_autor();
+    test_indice_titulo_devolver_canciones_por_titulo();
     test_indice_titulo_borrar_indice();
     test_indice_titulo_agregar_muchas_canciones();
-    test_indice_titulo_devolver_muchas_canciones_por_autor();
+    test_indice_titulo_devolver_muchas_canciones_por_titulo();
 }
 
 void TestIndicePorTitulo::test_indice_titulo_crear_indice()
 {
-    IndiceInvertidoPorAutor indice;
+    IndiceInvertidoPorTitulo indice;
     ArchivoListas listas;
     HashingExtensible hash;
     indice.crear_indice("");
@@ -84,7 +84,7 @@ void TestIndicePorTitulo::test_indice_titulo_agregar_cancion()
     print_test_ok("test_indice_titulo_agregar_cancion");
 }
 
-void TestIndicePorTitulo::test_indice_titulo_devolver_canciones_por_autor()
+void TestIndicePorTitulo::test_indice_titulo_devolver_canciones_por_titulo()
 {
 	IndiceInvertidoPorTitulo indice;
 	HashingExtensible hash;
@@ -110,7 +110,7 @@ void TestIndicePorTitulo::test_indice_titulo_devolver_canciones_por_autor()
 	//Veo que sea el id correcto
 	assert(id == 23);
     this->eliminar_archivos();
-    print_test_ok("test_devolver_canciones_por_autor");
+    print_test_ok("test_devolver_canciones_por_titulo");
 }
 
 void TestIndicePorTitulo::test_indice_titulo_borrar_indice()
@@ -195,7 +195,7 @@ void TestIndicePorTitulo::test_indice_titulo_agregar_muchas_canciones()
     print_test_ok("test_indice_titulo_agregar_muchas_canciones");
 }
 
-void TestIndicePorTitulo::test_indice_titulo_devolver_muchas_canciones_por_autor()
+void TestIndicePorTitulo::test_indice_titulo_devolver_muchas_canciones_por_titulo()
 {
 	IndiceInvertidoPorTitulo indice;
 	HashingExtensible hash;
@@ -204,7 +204,7 @@ void TestIndicePorTitulo::test_indice_titulo_devolver_muchas_canciones_por_autor
     RegistroVariable lista1, lista2;
     RegistroClave reg_titulo;
     ClaveX clave;
-    int ref_lista, id;
+    int id;
     indice.crear_indice("");
     indice.abrir_indice("");
 
@@ -238,7 +238,7 @@ void TestIndicePorTitulo::test_indice_titulo_devolver_muchas_canciones_por_autor
     assert(id == 25);
 
     this->eliminar_archivos();
-    print_test_ok("test_indice_titulo_devolver_muchas_canciones_por_autor");
+    print_test_ok("test_indice_titulo_devolver_muchas_canciones_por_titulo");
 }
 
 void TestIndicePorTitulo::eliminar_archivos()
@@ -250,7 +250,7 @@ void TestIndicePorTitulo::eliminar_archivos()
     hash.eliminar_archivo();
 }
 
-void TestIndicePorTitulo::crear_reg_cancion(const char *titulo, RegistroCancion &reg)
+void TestIndicePorTitulo::crear_reg_cancion(std::string titulo, RegistroCancion &reg)
 {
     //Crea un reg cancion con el autor que nos pasan por parametro
 	std::string cancion = "Pink Floyd-2013-"+titulo+"-Ingles-Pink Floyd";

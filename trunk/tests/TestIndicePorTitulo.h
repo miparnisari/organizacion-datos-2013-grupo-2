@@ -35,7 +35,7 @@ class TestIndicePorTitulo : public Test
         void test_indice_titulo_agregar_cancion();
         //Agregamos una cancion y verificamos que se guarde correctamente en todos los archivos
 
-        void test_indice_titulo_devolver_canciones_por_autor();
+        void test_indice_titulo_devolver_canciones_por_titulo();
         //Probamos que si no se agrego ninguna cancion devuelva NO_EXISTE, luego agregamos una cancion
         //y vemos si la devuelve correctamente y tambien probamos pedirle una cancion que no existe,
         //deberia devolver NO_EXISTE
@@ -47,7 +47,7 @@ class TestIndicePorTitulo : public Test
         //Probamos que al agregar muchas canciones en el indice las listas se creen correctamente y
         //vemos si se guarda correctamente los registros de titulos como corresponde
 
-        void test_indice_titulo_devolver_muchas_canciones_por_autor();
+        void test_indice_titulo_devolver_muchas_canciones_por_titulo();
         //Probamos que se devuelvan todas las canciones que correspondan a un titulo con muchas canciones
         // y a otro con pocas canciones asociadas a el
 
@@ -55,7 +55,7 @@ class TestIndicePorTitulo : public Test
 
         virtual void eliminar_archivos();
 
-        virtual void crear_reg_cancion(const char* titulo, RegistroCancion &reg);
+        virtual void crear_reg_cancion(std::string titulo, RegistroCancion &reg);
 };
 
 #endif // TESTINDICEPORTITULO_H_INCLUDED
