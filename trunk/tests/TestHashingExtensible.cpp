@@ -326,8 +326,6 @@ void TestHashingExtensible::test_eliminar_reg_y_dividir_tabla()
 	hash1.cerrar_archivo();
 	assert(1 == tabla.get_tamanio()); //Vemos si se dividio la tabla
 
-
-
     print_test_ok("test_eliminar_reg_y_dividir_tabla");
 }
 
