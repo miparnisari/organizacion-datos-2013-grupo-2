@@ -31,7 +31,7 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 			if (file_handler == NULL)
 				return RES_ERROR;
 
-			int res = ftruncate(fileno(file_handler), cantidadDatosDeseados*sizeof(TipoDato));
+			int res = ftruncate(fileno(file_handler), sizeof(header.cantidadDatosGuardados)+ cantidadDatosDeseados*sizeof(TipoDato));
 			if (res == 0)
 			{
 				header.cantidadDatosGuardados = cantidadDatosDeseados;

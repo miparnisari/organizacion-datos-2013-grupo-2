@@ -83,7 +83,11 @@ int Tabla::dividir()
 {
 	if (archivo.abrir_archivo(this->rutaArchivo, "rb+") == RES_OK)
 	{
-		archivo.truncar(archivo.get_cantidad_datos_guardados() / 2);
+		int cantidadDatos = archivo.get_cantidad_datos_guardados();
+		if (cantidadDatos > 1)
+		{
+			archivo.truncar(cantidadDatos / 2);
+		}
 	}
 
 	return archivo.cerrar_archivo();
