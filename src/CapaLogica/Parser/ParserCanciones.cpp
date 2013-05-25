@@ -3,14 +3,21 @@
 
 ParserCanciones::ParserCanciones()
 {
-	contadorArchivosLeidos = 0;
-	currentWorkingDirectory[0] = '\0';
+	_init();
 }
 
 ParserCanciones::~ParserCanciones()
 {
 	chdir(currentWorkingDirectory); // De vuelta al directorio original
 }
+
+
+void ParserCanciones::_init()
+{
+	contadorArchivosLeidos = 0;
+	currentWorkingDirectory[0] = '\0';
+}
+
 
 unsigned int ParserCanciones::get_cantidad_archivos()const
 {
@@ -29,6 +36,7 @@ char ParserCanciones::_estandarizar (char caracter)
 
 int ParserCanciones::crear (std::string dir)
 {
+	_init();
 	getcwd(currentWorkingDirectory, sizeof(currentWorkingDirectory));
 	int res = chdir(dir.c_str()); // Cambia el directorio al del repositorio, para poder indexar
 	if (res == -1)

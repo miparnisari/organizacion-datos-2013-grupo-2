@@ -30,10 +30,10 @@ const int RES_FIN 					=	-18;
 /*
  * Nombres de archivos
  */
-const char FILENAME_IDX_PRIM[]			= "idx_prim.txt";
-const char FILENAME_IDX_SECUN_AUTOR[]	= "idx_sec_autor.txt";
-const char FILENAME_IDX_SECUN_TITULO[]	= "idx_sec_titulo.txt";
-const char FILENAME_ARCH_MAESTRO[]		= "arch_maestro.txt";
+const char FILENAME_IDX_PRIM[]			= "idx_prim.dat";
+const char FILENAME_IDX_SECUN_AUTOR[]	= "idx_sec_autor.dat";
+const char FILENAME_IDX_SECUN_TITULO[]	= "idx_sec_titulo.dat";
+const char FILENAME_ARCH_MAESTRO[]		= "arch_maestro.dat";
 
 /*
  * Manejo de bloques

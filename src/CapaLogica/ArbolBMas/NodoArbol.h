@@ -16,7 +16,6 @@
 #include "../../Constantes.h"
 #include "../../CapaFisica/RegistroVariable.h"
 #include "../../CapaFisica/Bloque.h"
-#include "../ManejoArchivos/Clave.h"
 #include "../ManejoArchivos/ClaveX.h"
 #include "../ManejoArchivos/RegistroClave.h"
 

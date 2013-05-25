@@ -23,7 +23,6 @@ class Indexador
 	
 		int indexar(std::string directorioEntrada, std::string directorioSalida);
 
-
 	private:
 		HashingExtensible indicePrimario;
 		ManejadorRegistrosVariables archivoMaestro;
@@ -32,7 +31,8 @@ class Indexador
 		ParserCanciones parser;
 		CompresorPPMC compresor;
 
-		int init(std::string directorioEntrada, std::string directorioSalida);
+		int _init(std::string directorioEntrada, std::string directorioSalida);
+		int _finalizar();
 };
 
 #endif /* INDEXADOR_H */ 

@@ -20,6 +20,7 @@ class ParserCanciones
 		unsigned int contadorArchivosLeidos;
 
 		char _estandarizar(char caracter);
+		void _init();
 
 	public:
 		ParserCanciones();

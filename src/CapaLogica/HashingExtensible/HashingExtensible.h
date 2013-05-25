@@ -7,7 +7,6 @@
 #include "../../CapaFisica/Bloque.h"
 #include "../../CapaFisica/ManejadorBloques.h"
 #include "../../CapaLogica/ManejoArchivos/ClaveX.h"
-#include "../../CapaLogica/ManejoArchivos/Clave.h"
 #include "../../CapaLogica/ManejoArchivos/RegistroClave.h"
 #include "../../Utilitarios/Utilitarios.h"
 
