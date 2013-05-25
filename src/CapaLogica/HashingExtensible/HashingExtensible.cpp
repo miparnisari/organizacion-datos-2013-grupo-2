@@ -25,13 +25,12 @@ int HashingExtensible::abrir_archivo(std::string nombreArchivo)
     this->fileNameTabla=nombreArchivo+"Tabla"+".dat";
 	resultado = this->manejador_bloques.abrir_archivo(fileName, "rb+");
     this->cant_bloques = manejador_bloques.get_cantidad_bloques();
-
-//    this->manejador_bloques.cerrar_archivo();
-//    resultado = resultado + this->tabla->crear(fileNameTabla);
-
-
     this->tabla->set_ruta(this->fileNameTabla);
     return resultado;
+}
+
+int HashingExtensible::cerrar_archivo(){
+	return this->manejador_bloques.cerrar_archivo();
 }
 
 int HashingExtensible::crear_archivo(std::string nombreArchivo)
@@ -55,7 +54,7 @@ int HashingExtensible::crear_archivo(std::string nombreArchivo)
 
 	//Creamos un nuevo bloque con dispersion 1 y lo guardamos en el archivo de bloques del Hash
 	Bloque* bloqueNuevo = this->manejador_bloques.crear_bloque();
-	this->_crear_bloque(1, bloqueNuevo);
+	this->_crear_bloque(1, &bloqueNuevo);
 	int res = this->manejador_bloques.escribir_bloque(bloqueNuevo);//Va a estar en la posicion 0
 	if (res < 0)
 	{
@@ -86,7 +85,7 @@ int HashingExtensible::agregar(RegistroClave & reg)
 {
     int posBloque, i, resultado, posBloqueNuevo, posReg, tamTabla, posTabla;
     Bloque* bloque = NULL;
-    unsigned int tamDispersion;
+    int tamDispersion;
     RegistroVariable tamDispBloque;
     ClaveX clave_reg = reg.get_clave();
 
@@ -94,6 +93,7 @@ int HashingExtensible::agregar(RegistroClave & reg)
     //Obtengo el bloque en donde se guardara el registro
 
     posBloque = this->_obtener_bloque(clave_reg, &bloque);
+    cout << "numero de bloque donde vamos a agregar =" << posBloque << endl;
     posTabla = this->_obtener_posicion_tabla(clave_reg);
 
     //Verificamos que no exista la clave del registro que queremos guardar
@@ -112,8 +112,13 @@ int HashingExtensible::agregar(RegistroClave & reg)
         Bloque* bloqueNuevo = this->manejador_bloques.crear_bloque();
         Bloque* bloqueAux = this->manejador_bloques.crear_bloque();
         //Recupero el tamaño de dispersion del bloque
-        bloque->recuperar_registro(&tamDispBloque,0);
-        tamDispBloque.recuperar_campo((char*)&tamDispersion,0);
+        int res = bloque->recuperar_registro(&tamDispBloque,0);
+        if (res == RES_ERROR)
+        	cout << "no se pudo recuperar un registro del bloque" << endl;
+        res = tamDispBloque.recuperar_campo((char*)&tamDispersion,0);
+        cout << "cant regs bloque = " << bloque->get_cantidad_registros_almacenados() << endl;
+        if (res == RES_ERROR)
+        	cout << "no se pudo recuperar el tamanio de dispersion del bloque" << endl;
 
         //La pos del nuevo bloque es el libre
         posBloqueNuevo = this->manejador_bloques.escribir_bloque(bloqueNuevo);
@@ -125,8 +130,8 @@ int HashingExtensible::agregar(RegistroClave & reg)
         	this->tabla->cambiar_valor(posTabla, posBloqueNuevo);
 
             //Creamos el bloque con el tam de dispersion del tamanio de la tabla
-            this->_crear_bloque(tamTabla*2, bloqueNuevo);
-            this->_crear_bloque(tamTabla*2, bloqueAux);
+            this->_crear_bloque(tamTabla*2, &bloqueNuevo);
+            this->_crear_bloque(tamTabla*2, &bloqueAux);
 
         }else{
 
@@ -138,8 +143,8 @@ int HashingExtensible::agregar(RegistroClave & reg)
                 this->tabla->cambiar_valor(i,posBloqueNuevo);
             }
             //Creo un bloque con la dispersion que corresponde
-            this->_crear_bloque(tamDispersion*2, bloqueNuevo);
-            this->_crear_bloque(tamDispersion*2, bloqueAux);
+            this->_crear_bloque(tamDispersion*2, &bloqueNuevo);
+            this->_crear_bloque(tamDispersion*2, &bloqueAux);
         }
         cant_bloques++;
         //agrego los bloques vacios con el tamanio de dispersion que corresponde
@@ -168,13 +173,13 @@ int HashingExtensible::devolver(ClaveX & clave, RegistroClave *reg)
 	reg->limpiar_campos();
     int posReg;
     Bloque* bloque = NULL;
-    this->manejador_bloques.abrir_archivo(fileName, "rb+");
+//    this->manejador_bloques.abrir_archivo(fileName, "rb+");
     //Obtengo el bloque que buscamos
     int numBloque = this->_obtener_bloque(clave, &bloque);
     if (numBloque == RES_ERROR)
     {
     	delete bloque;
-    	this->manejador_bloques.cerrar_archivo();
+//    	this->manejador_bloques.cerrar_archivo();
     	return NO_EXISTE;
     }
     //Modifico el elemento del bloque
@@ -184,13 +189,13 @@ int HashingExtensible::devolver(ClaveX & clave, RegistroClave *reg)
     if (posReg == RES_ERROR)
     {
     	delete bloque;
-    	this->manejador_bloques.cerrar_archivo();
+//    	this->manejador_bloques.cerrar_archivo();
         return NO_EXISTE;
     }
 
     bloque->recuperar_registro(reg, posReg);
     delete bloque;
-    this->manejador_bloques.cerrar_archivo();
+//    this->manejador_bloques.cerrar_archivo();
     return RES_OK;
 }
 
@@ -199,7 +204,7 @@ int HashingExtensible::modificar(RegistroClave & elemN)
     Bloque* bloque = NULL;
     int posReg, posBloque;
     ClaveX clave_reg =  elemN.get_clave();
-    this->manejador_bloques.abrir_archivo(fileName, "rb+");
+//    this->manejador_bloques.abrir_archivo(fileName, "rb+");
     //obtengo el bloque que buscamos
     posBloque = this->_obtener_bloque(clave_reg, &bloque);
     //Busco el registro a modificar
@@ -208,7 +213,7 @@ int HashingExtensible::modificar(RegistroClave & elemN)
     bloque->agregar_registro(&elemN);    //Guardo el nuevo registro
     //Modifico el bloque en los bloques
     this->manejador_bloques.sobreescribir_bloque(bloque, posBloque);
-    this->manejador_bloques.cerrar_archivo();
+//    this->manejador_bloques.cerrar_archivo();
     return RES_OK;
 }
 
@@ -219,7 +224,7 @@ int HashingExtensible::eliminar(ClaveX & clave)
     Bloque* bloque = NULL;
     RegistroVariable regTamDisp;
 
-    this->manejador_bloques.abrir_archivo(fileName, "rb+");
+//    this->manejador_bloques.abrir_archivo(fileName, "rb+");
     //Busco el bloque para agregar el elemento
     posTabla = this->_obtener_posicion_tabla(clave);
     posBloque = this->_obtener_bloque(clave, &bloque);
@@ -257,17 +262,17 @@ int HashingExtensible::eliminar(ClaveX & clave)
         }
     }
     delete bloque;
-    this->manejador_bloques.cerrar_archivo();
+//    this->manejador_bloques.cerrar_archivo();
     return RES_OK;
 }
 
-int HashingExtensible::_crear_bloque(int tam, Bloque* bloqueNuevo)
+int HashingExtensible::_crear_bloque(int tam, Bloque** bloqueNuevo)
 {
-        if (bloqueNuevo == NULL)
-                return RES_ERROR;
+	if (*bloqueNuevo == NULL)
+		return RES_ERROR;
     RegistroVariable regTamDisp;
     regTamDisp.agregar_campo((char*)&tam,sizeof(tam));
-    bloqueNuevo->agregar_registro(&regTamDisp);
+    (*bloqueNuevo)->agregar_registro(&regTamDisp);
     return RES_OK;
 }
 
