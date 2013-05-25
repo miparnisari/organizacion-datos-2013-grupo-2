@@ -23,6 +23,7 @@ void TestArbol::ejecutar(){
 	test_eliminar_con_balanceo_secuenciales();
 	test_eliminar_con_merge_interno();
 	test_eliminar_con_merge_interno_en_ultimo();
+	test_eliminar_con_balanceo_interno();
 }
 
 void TestArbol::test_arbol_insertar_un_registro()
@@ -911,5 +912,88 @@ void TestArbol::test_eliminar_con_merge_interno_en_ultimo(){
 
 	assert(arbol.cerrar() == RES_OK);
 	print_test_ok("test_eliminar_con_merge_internos");
+}
+
+
+void TestArbol::test_eliminar_con_balanceo_interno(){
+
+	ArbolBMas arbol;
+	string nombreArchivo= "arbolConUnderflowMergeInternosEnUltimo.dat";
+	unsigned int tamanioBloque= 64;
+	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
+	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+
+	RegistroClave rc;
+	ClaveX c;
+
+	for(int i=0;i<8;i++){
+		string clave= "aaa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<2;i++){
+		string clave= "aaCa";
+		clave[3]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<3;i++){
+
+		string clave= "baa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<10;i++){
+
+		string clave= "caa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+
+	}
+
+	cout<<"imprimiendo arbol original: ----------------------"<<endl;
+	arbol.imprimir();
+
+	ClaveX ce;
+	RegistroClave re;
+	ce.set_clave("aaA");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("aaB");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("aaC");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("aaD");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("aaE");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("aaCA");
+	re.set_clave(ce);
+	arbol.quitar(re);
+
+
+	cout<<"imprimiendo arbol justo antes de balancear: ----------------------"<<endl;
+	arbol.imprimir();
+
+	ce.set_clave("aaCB");
+	re.set_clave(ce);
+	arbol.quitar(re);
+
+	cout<<"imprimiendo arbol despues de balancear: ----------------------"<<endl;
+	arbol.imprimir();
 }
 
