@@ -12,6 +12,7 @@
 #include "TestManejadorArchivoDatosBasicos.h"
 #include "TestArbol.h"
 #include "TestTabla.h"
+#include "TestOrdenamientoExterno.h"
 
 #include <cassert>
 #include <iostream>
@@ -267,6 +268,8 @@ int main(int argc,char** args)
 
 	tests.push_back(new TestHeap);
 	tests.push_back(new TestArbol);
+
+	tests.push_back(new TestOrdenamientoExterno);
 
 	for (unsigned int i = 0; i < tests.size(); i++)
 	{

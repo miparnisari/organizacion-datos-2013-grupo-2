@@ -40,6 +40,7 @@
 #include "../src/CapaLogica/ManejoArchivos/ClaveX.h"
 #include "../src/CapaLogica/ManejoArchivos/Texto.h"
 #include "../src/Utilitarios/Heap.h"
+#include "../src/Utilitarios/SortExterno.h"
 
 #include "../src/Constantes.h"
 
