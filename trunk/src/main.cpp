@@ -7,34 +7,47 @@ int main (int argc, char* argv[])
 		std::cout << "Se requieren al menos 4 parametros." << std::endl;
 		return RES_OK;
 	}
-	std::string directorioEntrada = std::string(argv[2]);
-	std::string directorioSalida = std::string(argv[3]);
+
 	std::string operacion = std::string(argv[1]);
-	
+
+
 	Indexador indexador;
 	
 	// Indexar por primera vez
 	if (operacion == "-indexar")
 	{
+		std::string directorioEntrada = std::string(argv[2]);
+		std::string directorioSalida = std::string(argv[3]);
 		indexador.indexar ( directorioEntrada, directorioSalida );
 	}
 	
 	// Re-indexar
-	if (operacion == "-reindexar")
+	else if (operacion == "-reindexar")
 	{
 		// TODO
 	}
 	
 	// Consultar por titulo
-	if (operacion == "-consultarTitulo")
+	else if (operacion == "-consultarTitulo")
 	{
 		// TODO		
 	}
 	
 	// Consultar por autor
-	if (operacion == "-consultarAutor")
+	else if (operacion == "-consultarAutor")
 	{
-		// TODO	
+		std::string directorioSalida = std::string(argv[2]);
+		std::string autor = std::string(argv[3]);
+		indexador.consultar_autor(directorioSalida, autor);
+	}
+	// Consultar por frase
+	else if (operacion == "-consultarFrase")
+	{
+
+	}
+	else
+	{
+		std::cout << "La operacion" << operacion << "no esta permitida." << std::endl;
 	}
 	
 }
