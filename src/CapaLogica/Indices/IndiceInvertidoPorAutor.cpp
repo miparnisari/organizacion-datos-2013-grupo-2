@@ -49,7 +49,7 @@ int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion cancion, int IDcanc
         regAutor.set_clave(clave);
         //Busco el autor en el indice
         int existe = this->indice.buscar(regAutor);
-        if(existe == RES_OK){
+        if(existe == RES_OKlista_autores){
             //Como existe entonces buscamos la referencia a la lista de ese autor
             int lista;
             //busco la referencias a la lista del autor
