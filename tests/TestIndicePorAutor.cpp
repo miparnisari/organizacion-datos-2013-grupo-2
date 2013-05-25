@@ -69,7 +69,7 @@ void TestIndicePorAutor::test_indice_autor_agregar_cancion()
     assert(arbol.buscar(reg_autor) == RES_OK);
     clave_aux.set_clave("Pink Floyd");
     assert(reg_autor.get_clave() == clave_aux);
-    assert(reg_autor.get_cantidad_campos() == 1);
+    assert(reg_autor.get_cantidad_campos() == 2);
     //Recupero  la referencia a la lista y esta deberia ser la pos 0 del archivo de listas
     reg_autor.recuperar_campo(((char*)&ref_lista),0);
     assert(ref_lista == 0);
@@ -166,7 +166,7 @@ void TestIndicePorAutor::test_indice_autor_agregar_muchas_canciones()
     assert(arbol.buscar(reg_autor) == RES_OK);
     clave.set_clave("Pink Floyd");
     assert(reg_autor.get_clave() == clave);
-    assert(reg_autor.get_cantidad_campos() == 1);
+    assert(reg_autor.get_cantidad_campos() == 2);
     //Recupero  la referencia a la lista y esta deberia ser la pos 0 del archivo de listas
 	reg_autor.recuperar_campo(((char*)&ref_lista),0);
 	//Veo que guarde 3 canciones

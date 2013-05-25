@@ -75,7 +75,7 @@ void TestIndicePorTitulo::test_indice_titulo_agregar_cancion()
     assert(hash.devolver(clave, &reg_titulo) == RES_OK);
     clave_aux.set_clave("The final cut");
     assert(reg_titulo.get_clave() == clave_aux);
-    assert(reg_titulo.get_cantidad_campos() == 1);
+    assert(reg_titulo.get_cantidad_campos() == 2);
     //Recupero  la referencia a la lista y esta deberia ser la pos 0 del archivo de listas
     reg_titulo.recuperar_campo(((char*)&ref_lista),0);
     assert(ref_lista == 0);
@@ -171,7 +171,7 @@ void TestIndicePorTitulo::test_indice_titulo_agregar_muchas_canciones()
     assert(hash.devolver(clave, &reg_titulo) == RES_OK);
     clave.set_clave("The final cut");
     assert(reg_titulo.get_clave() == clave);
-    assert(reg_titulo.get_cantidad_campos() == 1);
+    assert(reg_titulo.get_cantidad_campos() == 2);
     //Recupero  la referencia a la lista y esta deberia ser la pos 0 del archivo de listas
 	reg_titulo.recuperar_campo(((char*)&ref_lista),0);
 	//Veo que guarde 3 canciones
