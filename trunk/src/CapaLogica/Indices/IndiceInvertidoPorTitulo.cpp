@@ -47,7 +47,7 @@ int IndiceInvertidoPorTitulo::agregar_cancion(RegistroCancion cancion, int IDcan
         reg_cancion.recuperar_campo((char*)&ref_lista, 0);  /***ver si los campos se guardan desde el 0 o el 1**/
     }
     //Actualizamos la lista del titulo agregandole el IDcancion
-    ref_listas[1]= ref_lista;
+    ref_listas[0]= ref_lista;
     return this->listas.recontruir_listas(ref_listas, 1, IDcancion);
 }
 

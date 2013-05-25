@@ -9,6 +9,7 @@
 #define TABLA_H_
 #include <iostream>
 #include <cstddef>
+#include <string>
 #include "../../Constantes.h"
 #include "../../CapaFisica/ManejadorArchivoDatosBasicos.h"
 
