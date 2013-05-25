@@ -32,7 +32,7 @@ class RegistroClave:public RegistroVariable {
 
 		virtual void set_clave(const ClaveX& clave);
 		/* Setea el campo 0 del registro como la clave unica del registro.
-		 * PRECONDICION: debe llamarse antes de agregarle mas campos al registro. FIXME
+		 * PRECONDICION: debe llamarse antes de agregarle mas campos al registro.
 		 */
 		virtual ClaveX get_clave() const;
 

@@ -54,7 +54,7 @@ class HashingExtensible
         virtual int _funcion_dispersion(int clave);
         //Devuelve el numero de bloque donde se debe guardar esa clave
 
-        virtual int _crear_bloque(int tam, Bloque *bloqueNuevo);
+        virtual int _crear_bloque(int tam, Bloque** bloqueNuevo);
         //Crea un nuevo bloque del Hashing
 
         virtual int _obtener_bloque(ClaveX & clave, Bloque** bloque);

@@ -69,10 +69,11 @@ void TestHashingExtensible::test_crear_hashing()
 {
     HashingExtensible hash1;
     if (hash1.abrir_archivo(DIRECCION) == RES_OK){
+    	assert (hash1.cerrar_archivo() == RES_OK);
     	assert (hash1.eliminar_archivo() == RES_OK);
     }
+
     assert (hash1.crear_archivo(DIRECCION) == RES_OK);
-    assert (hash1.eliminar_archivo() == RES_OK);
 
     print_test_ok("crear_hashing");
 }
@@ -82,6 +83,7 @@ void TestHashingExtensible::test_eliminar_registro()
     HashingExtensible hash1;
 
     if (hash1.abrir_archivo(DIRECCION) == RES_OK){
+    	assert (hash1.cerrar_archivo() == RES_OK);
     	assert (hash1.eliminar_archivo() == RES_OK);
     }
 
@@ -90,12 +92,13 @@ void TestHashingExtensible::test_eliminar_registro()
     ClaveX clave;
     clave.set_clave("esta es una clave");
     std::string campo = "Hola";
-    this->crear_registro_y_agregar(hash1, campo, clave);
 
+    assert (hash1.abrir_archivo(DIRECCION) == RES_OK);
+    this->crear_registro_y_agregar(hash1, campo, clave);
     assert (hash1.eliminar(clave) == RES_OK);
     assert(hash1.devolver(clave, &reg) == NO_EXISTE);
+    assert (hash1.cerrar_archivo() == RES_OK);
 
-    assert(hash1.eliminar_archivo() == RES_OK);
     print_test_ok("test_eliminar_registro");
 }
 
@@ -107,6 +110,7 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     	assert(hash1.eliminar_archivo() == RES_OK);
     }
 
+    assert (hash1.cerrar_archivo() == RES_OK);
     assert( hash1.crear_archivo(DIRECCION) == RES_OK);
     RegistroClave reg;
     int claveNum;
@@ -121,7 +125,9 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     clave.set_clave(23);
 
     std::string campo = "Hola";
+    assert (hash1.abrir_archivo(DIRECCION) == RES_OK);
     assert(this->crear_registro_y_agregar(hash1, campo, clave) == RES_OK);
+    assert (hash1.cerrar_archivo() == RES_OK);
 
     manejador.abrir_archivo("HashingDePrueba.dat", "rb+");
     bloq = manejador.obtener_bloque(0);
@@ -138,8 +144,9 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
 
     clave.get_clave(numeroLeido);
     assert(numeroLeido == 23);
-
+    manejador.cerrar_archivo();
     //Pruebo a ver si encuentra el registro en el hash
+    assert (hash1.abrir_archivo(DIRECCION) == RES_OK);
     assert(hash1.devolver(clave, &reg) == RES_OK);
 
     assert(reg.get_cantidad_campos() == 2);
@@ -156,9 +163,10 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     assert (strcmp(dato,campo.c_str()) == 0);
     delete[] dato;
 
-    manejador.cerrar_archivo();
-    hash1.eliminar_archivo();
+    assert (hash1.cerrar_archivo() == RES_OK);
+
     delete bloq;
+
     print_test_ok("test_agregar_y_devolver_registro");
 }
 
@@ -176,16 +184,19 @@ void TestHashingExtensible::test_crear_hashing_cerrarlo_y_abrirlo()
     char* campoRecuperado = NULL;
     clave.set_clave(23);
     std::string campo = "Hola";
+    hash1.abrir_archivo(DIRECCION);
     this->crear_registro_y_agregar(hash1, campo, clave);
+
 
 	HashingExtensible hash2;
 	assert( hash2.crear_archivo(DIRECCION) == YA_EXISTE);
-    this->recuperar_dato_registro(&campoRecuperado, clave, hash1);
 
+    this->recuperar_dato_registro(&campoRecuperado, clave, hash1);
+    hash1.cerrar_archivo();
     assert (strcmp(campoRecuperado,campo.c_str()) == 0);
 
     delete[] campoRecuperado;
-    hash1.eliminar_archivo();
+
     print_test_ok("test_crear_hashing_cerrarlo_y_abrirlo");
 }
 
@@ -207,6 +218,7 @@ void TestHashingExtensible::test_agregar_varios_registros_y_devolver()
     //Creo varios registro
     clave.set_clave(23);
     campo = "Hola";
+    hash1.abrir_archivo(DIRECCION);
     this->crear_registro_y_agregar(hash1, campo, clave);
 
     clave.set_clave(32);
@@ -236,7 +248,7 @@ void TestHashingExtensible::test_agregar_varios_registros_y_devolver()
     assert (strcmp(dato,campo.c_str()) == 0);
     delete[] dato;
 
-    hash1.eliminar_archivo();
+    hash1.cerrar_archivo();
     print_test_ok("test_agregar_varios_registros_y_devolver");
 }
 
@@ -252,6 +264,7 @@ void TestHashingExtensible::test_agregar_reg_y_duplicar_tabla()
 	}
 
 	assert( hash1.crear_archivo(DIRECCION) == RES_OK);
+	hash1.abrir_archivo(DIRECCION);
 	Tabla tabla;
 	tabla.crear(DIRECCIONTABLA);
 	assert(1 == tabla.get_tamanio()); //Vemos si la tabla comienza con un elemento
@@ -264,33 +277,41 @@ void TestHashingExtensible::test_agregar_reg_y_duplicar_tabla()
 	assert(this->crear_registro_y_agregar(hash1, campo, clave) == RES_OK);
 	assert(2 == tabla.get_tamanio()); //Vemos si se duplico la tabla
 	assert(tabla.obtener_valor(1) != tabla.obtener_valor(0)); //vemos si los bloques son distintos de cada elemento de la tabla
+
+	hash1.cerrar_archivo();
 	print_test_ok("test_agregar_reg_y_duplicar_tabla");
 }
 
 void TestHashingExtensible::test_eliminar_reg_y_dividir_tabla()
 {   /**Desbloquear cuando tengamos la tabla y ver cuantos registros necesitamos para duplicar la tabla*/
+	cout << "COMIENZO TEST DIVIDIR TABLA" << endl;
+
 	ClaveX clave;
-		int i;
-		std::string campo = "Dato de relleno ..............";
-		HashingExtensible hash1;
+	int i;
+	std::string campo = "Dato de relleno ..............";
+	HashingExtensible hash1;
 
-		if (hash1.abrir_archivo(DIRECCION) == RES_OK){
-			hash1.eliminar_archivo();
-		}
+	if (hash1.abrir_archivo(DIRECCION) == RES_OK){
+		assert(hash1.eliminar_archivo() == RES_OK);
+	}
 
-		assert( hash1.crear_archivo(DIRECCION) == RES_OK);
-		Tabla tabla;
-		tabla.crear(DIRECCIONTABLA);
-		assert(1 == tabla.get_tamanio()); //Vemos si la tabla comienza con un elemento
-		for(i=0; i<24;i++){ //Agregamos cantidad de elementos hasta que se llene un bloque
-			clave.set_clave(i);
-			assert(this->crear_registro_y_agregar(hash1, campo, clave) == RES_OK);
-		}
-		// Agregamos el elemento que provoca que la tabla se duplique
-		clave.set_clave(25);
+	assert( hash1.crear_archivo(DIRECCION) == RES_OK);
+	hash1.abrir_archivo(DIRECCION);
+	Tabla tabla;
+	tabla.crear(DIRECCIONTABLA);
+	assert(1 == tabla.get_tamanio()); //Vemos si la tabla comienza con un elemento
+	for(i=0; i<24;i++){ //Agregamos cantidad de elementos hasta que se llene un bloque
+		clave.set_clave(i);
 		assert(this->crear_registro_y_agregar(hash1, campo, clave) == RES_OK);
-		assert(2 == tabla.get_tamanio());//	hash1.eliminar(clave); //Elimino el ultimo registro
+	}
+	// Agregamos el elemento que provoca que la tabla se duplique
+	clave.set_clave(25);
+	assert(this->crear_registro_y_agregar(hash1, campo, clave) == RES_OK);
+	assert(2 == tabla.get_tamanio());//	hash1.eliminar(clave); //Elimino el ultimo registro
 //	assert(1 == tabla.get_tamanio()); //Vemos si se dividio la tabla
+
+
+	hash1.cerrar_archivo();
     print_test_ok("test_eliminar_reg_y_dividir_tabla");
 }
 
@@ -299,11 +320,7 @@ int TestHashingExtensible::crear_registro_y_agregar(HashingExtensible & hash1, s
     RegistroClave reg;
     reg.set_clave(clave);
     reg.agregar_campo(campo.c_str(), campo.size());
-    hash1.abrir_archivo(DIRECCION);
-    int res = hash1.agregar(reg);
-    hash1.cerrar_archivo();
-    return res;
-
+    return hash1.agregar(reg);
 }
 
 void TestHashingExtensible::recuperar_dato_registro(char** campoRecuperado, ClaveX& clave, HashingExtensible & hash1)
