@@ -246,7 +246,7 @@ void TestIndicePorAutor::eliminar_archivos()
     arbol.eliminar(ARCHIVO_ARBOL);
 }
 
-void TestIndicePorAutor::crear_reg_cancion(const char *autor, RegistroCancion &reg)
+void TestIndicePorAutor::crear_reg_cancion(std::string autor, RegistroCancion &reg)
 {
     //Crea un reg cancion con el autor que nos pasan por parametro
 	std::string cancion = autor+"-2013-The wall-Ingles-Pink Floyd";

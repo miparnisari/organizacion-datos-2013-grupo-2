@@ -48,7 +48,7 @@ class TestIndicePorAutor : public Test
 
         virtual void eliminar_archivos();
 
-        virtual void crear_reg_cancion(const char* autor, RegistroCancion &reg);
+        virtual void crear_reg_cancion(std::string autor, RegistroCancion &reg);
 };
 
 #endif // TESTINDICEPORAUTOR_H_INCLUDED
