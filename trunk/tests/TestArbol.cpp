@@ -20,6 +20,7 @@ void TestArbol::ejecutar(){
 	test_arbol_buscar_secuencial();
 	test_eliminar_sin_underflow();
 	test_eliminar_con_merge_secuenciales();
+	test_eliminar_con_balanceo_secuenciales();
 }
 
 void TestArbol::test_arbol_insertar_un_registro()
@@ -78,7 +79,10 @@ void TestArbol::test_arbol_abrir_cerrar()
 	ArbolBMas arbol;
 	assert (arbol.crear("unArbol.dat",BLOQUE_TAM_DEFAULT) == RES_OK);
 	assert (arbol.abrir("unArbol.dat","rb+") == RES_OK);
-	assert (arbol.get_cant_minima_nodo() == sizeof(TipoHijo));
+	//assert (arbol.get_cant_minima_nodo() == sizeof(TipoHijo));
+	assert (arbol.get_cant_minima_nodo() == 1);
+	//FIXME cambiado 25/5/13
+
 
 	assert (arbol.get_cant_maxima_nodo() == (int)(BLOQUE_TAM_DEFAULT * ArbolBMas::FACTOR_CARGA/100));
 	assert (arbol.cerrar() == RES_OK);
@@ -582,22 +586,107 @@ void TestArbol::test_eliminar_con_merge_secuenciales(){
 			ce.set_clave("aaB");
 			re.set_clave(ce);
 			arbol.quitar(re);
+			/*merge de secuencial no ultimo hijo*/
+
+			cout<<"imprimiendo arbol con merge sin ultimo hijo: ----------------------"<<endl;
+			arbol.imprimir();
+
+
+			/*funciona hasta aqui*/
+
+			ce.set_clave("baB");
+			re.set_clave(ce);
+			arbol.quitar(re);
+			ce.set_clave("baC");
+			re.set_clave(ce);
+			arbol.quitar(re);
+			ce.set_clave("caB");
+			re.set_clave(ce);
+			arbol.quitar(re);
+			ce.set_clave("caC");
+			re.set_clave(ce);
+			arbol.quitar(re);
+			ce.set_clave("caD");
+			re.set_clave(ce);
+			arbol.quitar(re);
+
+			cout<<"imprimiendo arbol con merge con ultimo hijo: ----------------------"<<endl;
+			arbol.imprimir();
+
 		}
 
 
-		cout<<"imprimiendo arbol con merge de secuenciales "<<endl;
-		arbol.imprimir();
 		assert(arbol.cerrar() == RES_OK);
+	}
+		print_test_ok("test_eliminar_con_merge_secuenciales");
 
+}
 
+void TestArbol::test_eliminar_con_balanceo_secuenciales(){
 
+	ArbolBMas arbol;
+	string nombreArchivo= "arbolConUnderflowBalanceoSecuenciales.dat";
+	unsigned int tamanioBloque= 64;
+	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
+	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
 
+	RegistroClave rc;
+	ClaveX c;
+
+	for(int i=0;i<8;i++){
+		string clave= "aaa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<2;i++){
+		string clave= "aaCa";
+		clave[3]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<3;i++){
+
+		string clave= "baa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<10;i++){
+
+		string clave= "caa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
 
 	}
 
+//	ClaveX ce;
+//	RegistroClave re;
+//	ce.set_clave("aaC");
+//	re.set_clave(ce);
+//	arbol.quitar(re);
+//	ce.set_clave("aaCA");
+//	re.set_clave(ce);
+//	arbol.quitar(re);
+//	ce.set_clave("aaA");
+//	re.set_clave(ce);
+//	arbol.quitar(re);
+//	ce.set_clave("aaB");
+//	re.set_clave(ce);
+//	arbol.quitar(re);
 
+	cout<<"imprimiendo arbol con balanceo sin ultimo hijo: ----------------------"<<endl;
+	arbol.imprimir();
 
-		print_test_ok("test_eliminar_con_merge_secuenciales");
-
+	assert(arbol.cerrar() == RES_OK);
+	print_test_ok("test_eliminar_con_balancear_secuenciales");
 }
 

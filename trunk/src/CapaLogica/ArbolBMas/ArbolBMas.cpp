@@ -29,7 +29,10 @@ int ArbolBMas::_set_header()
 		return RES_ERROR;
 
 	RegistroVariable registroHeader;
-	header.minCantBytesClaves = sizeof(TipoHijo);
+	//header.minCantBytesClaves = sizeof(TipoHijo);
+	header.minCantBytesClaves = 1;
+	//FIXME cambiado 25/5/13. Esta seteado en 1 tal que los underflow puedan existir,  de lo contrario
+	//si minCantBytesCLaves== 0 no habra underflow
 	header.maxCantBytesClaves = tamanioMaximoNodo;
 	registroHeader.agregar_campo((char*)&header.minCantBytesClaves,sizeof(header.minCantBytesClaves));
 	registroHeader.agregar_campo((char*)&header.maxCantBytesClaves,sizeof(header.maxCantBytesClaves));
@@ -197,24 +200,27 @@ int ArbolBMas::_obtener_nodo_secuencial(int numNodoSecuencial,NodoSecuencial& no
 
 }
 
-int ArbolBMas::_buscar_nodo_con_puntero(int punteroAbuscar)
+int ArbolBMas::_buscar_nodo_con_puntero(int punteroBuscar)
 {
 	TipoHijo numNodoSecuencial;
 	this->obtener_primer_nodo_secuencial(numNodoSecuencial);
-	if (numNodoSecuencial == (unsigned)punteroAbuscar)
+	if (numNodoSecuencial == punteroBuscar)
 		return -1; //El primer nodo secuencial no es apuntado por nadie
 
 	NodoSecuencial nodoSecuencialActual(header.minCantBytesClaves,header.maxCantBytesClaves) ;
 	_obtener_nodo_secuencial(numNodoSecuencial,nodoSecuencialActual);
 
-	while (nodoSecuencialActual.get_proximo_nodo() != punteroAbuscar)
+	while (nodoSecuencialActual.get_proximo_nodo() != punteroBuscar)
 	{
+		numNodoSecuencial= nodoSecuencialActual.get_proximo_nodo();
 		_obtener_nodo_secuencial(nodoSecuencialActual.get_proximo_nodo(),nodoSecuencialActual);
 		if (nodoSecuencialActual.get_proximo_nodo() == -1)
 			return -1; //No deberia llegar nunca aca
 	}
 
 	return numNodoSecuencial;
+
+
 }/* Devuelve el numero del bloque del nodo secuencial cuyo puntero es el parametro. */
 
 
@@ -354,6 +360,7 @@ int ArbolBMas::_quitar_recursivo(unsigned int& numeroNodoActual,
 
 int ArbolBMas::_resolver_underflow_hoja(NodoInterno* nodoPadre,unsigned int numeroNodoUnderflow){
 
+	const unsigned short CANTIDAD_CLAVES_PADRE= nodoPadre->get_cantidad_claves();
 
 	NodoSecuencial nodoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
 	if( this->_obtener_nodo_secuencial(numeroNodoUnderflow,nodoUnderflow)== RES_ERROR )
@@ -366,7 +373,11 @@ int ArbolBMas::_resolver_underflow_hoja(NodoInterno* nodoPadre,unsigned int nume
 
 	bool numeroNodoUnderflowEsUltimoHijo= ( posicionNumeroNodoUnderflow == (CANTIDAD_HIJOS_NODO_PADRE - 1) );
 	TipoHijo numeroNodoHermanoUnderflow;
-
+	if(numeroNodoUnderflowEsUltimoHijo){
+		nodoPadre->get_hijo(numeroNodoHermanoUnderflow,posicionNumeroNodoUnderflow-1);
+	}else{
+		nodoPadre->get_hijo(numeroNodoHermanoUnderflow,posicionNumeroNodoUnderflow+1);
+	}
 
 
 	NodoSecuencial nodoHermanoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
@@ -378,14 +389,12 @@ int ArbolBMas::_resolver_underflow_hoja(NodoInterno* nodoPadre,unsigned int nume
 
 
 		if(!numeroNodoUnderflowEsUltimoHijo){
-			nodoPadre->get_hijo(numeroNodoHermanoUnderflow,posicionNumeroNodoUnderflow+1);
 			posicionClaveEliminar= posicionNumeroNodoUnderflow;
 			posicionHijoEliminar= posicionClaveEliminar+1;
 		}
 		else{
-			nodoPadre->get_hijo(numeroNodoHermanoUnderflow,posicionNumeroNodoUnderflow-1);
-			posicionClaveEliminar= posicionNumeroNodoUnderflow-1;
-			posicionHijoEliminar= posicionClaveEliminar+1;
+			posicionClaveEliminar= CANTIDAD_CLAVES_PADRE-1;//posicionClaveEliminar es CANTIDAD_CLAVES_PADRE-1
+			posicionHijoEliminar= CANTIDAD_HIJOS_NODO_PADRE-2;//es CANTIDAD_HIJOS_PADRE- 2
 		}
 
 		if(_merge_secuenciales(nodoPadre,numeroNodoUnderflow,numeroNodoHermanoUnderflow,numeroNodoUnderflowEsUltimoHijo,
@@ -410,7 +419,7 @@ int ArbolBMas::_merge_secuenciales(NodoInterno* nodoPadre,unsigned int numeroNod
 	if( this->_obtener_nodo_secuencial(numeroNodoUnderflow,nodoUnderflow) == RES_ERROR)
 		return RES_ERROR;
 	NodoSecuencial nodoHermanoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
-	if( this->_obtener_nodo_secuencial(numeroNodoUnderflow,nodoHermanoUnderflow) == RES_ERROR){
+	if( this->_obtener_nodo_secuencial(numeroNodoHermanoUnderflow,nodoHermanoUnderflow) == RES_ERROR){
 		return RES_ERROR;
 	}
 
