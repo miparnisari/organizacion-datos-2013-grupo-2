@@ -13,6 +13,10 @@
 #include "TestArbol.h"
 #include "TestTabla.h"
 //#include "TestOrdenamientoExterno.h"
+#include "TestIndiceInvertidoPorFrase.h"
+#include "TestIndicePorAutor.h"
+#include "TestIndicePorTitulo.h"
+#include "TestArchivoListas.h"
 
 #include <cassert>
 #include <iostream>
@@ -49,7 +53,7 @@ void test_leer_de_archivo()
 				std::string autor = regCancion.get_autor(j);
 				assert(autor.size() > 1);
 			}
-			
+
 			// Atributos de la cancion (NO la letra)
 			for(unsigned short i=1;i<regCancion.contar_parametros();i++)
 			{
@@ -103,7 +107,7 @@ void test_clave_string(){
 
 	clave2.desempaquetar(cadena ,10 );
 	assert(clave1== clave2);
-	
+
 	delete[] cadena;
 
 	print_test_ok("test_clave_string");
@@ -259,15 +263,20 @@ int main(int argc,char** args)
 
 	tests.push_back(new TestBloque);
 	tests.push_back(new TestManejadorBloques);
-	
+
 	tests.push_back(new TestHashingExtensible);
 	tests.push_back(new TestTabla);
-	
+
 	tests.push_back(new TestNodoInterno);
 	tests.push_back(new TestNodoSecuencial);
 
 	tests.push_back(new TestHeap);
 	tests.push_back(new TestArbol);
+
+    tests.push_back(new TestArchivoListas);
+    tests.push_back(new TestIndiceInvertidoPorFrase);
+	tests.push_back(new TestIndicePorAutor);
+	tests.push_back(new TestIndicePorTitulo);
 
 	//tests.push_back(new TestOrdenamientoExterno);
 
