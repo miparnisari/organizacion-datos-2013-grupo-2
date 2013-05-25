@@ -26,7 +26,7 @@ unsigned int ParserCanciones::get_cantidad_archivos()const
 
 bool ParserCanciones::fin_directorio()const
 {
-	return (contadorArchivosLeidos > get_cantidad_archivos());
+	return (contadorArchivosLeidos >= get_cantidad_archivos());
 }
 
 char ParserCanciones::_estandarizar (char caracter)
@@ -45,7 +45,7 @@ int ParserCanciones::crear (std::string dir)
 	return RES_OK;
 }
 
-int ParserCanciones::obtener_proxima_cancion(RegistroCancion& reg, std::string nombreArchivo)
+int ParserCanciones::obtener_proxima_cancion(RegistroCancion& reg, std::string & nombreArchivo)
 {
 	// Abrimos el archivo
 	nombreArchivo = archivos[contadorArchivosLeidos];

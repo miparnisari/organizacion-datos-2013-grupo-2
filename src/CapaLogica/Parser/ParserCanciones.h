@@ -28,7 +28,7 @@ class ParserCanciones
 		
 		int crear (std::string dir);
 		bool fin_directorio()const;
-		int	obtener_proxima_cancion(RegistroCancion & reg, std::string nombreArchivo);
+		int	obtener_proxima_cancion(RegistroCancion & reg, std::string & nombreArchivo);
 
 		unsigned int get_cantidad_archivos()const;
 };

@@ -34,6 +34,7 @@ const char FILENAME_IDX_PRIM[]			= "idx_prim.dat";
 const char FILENAME_IDX_SECUN_AUTOR[]	= "idx_sec_autor.dat";
 const char FILENAME_IDX_SECUN_TITULO[]	= "idx_sec_titulo.dat";
 const char FILENAME_ARCH_MAESTRO[]		= "arch_maestro.dat";
+const char FILENAME_ID_DOCS[]			= "id_docs.dat";
 
 /*
  * Manejo de bloques
