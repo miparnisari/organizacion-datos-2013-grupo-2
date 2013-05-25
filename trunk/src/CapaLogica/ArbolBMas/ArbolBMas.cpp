@@ -612,6 +612,10 @@ int ArbolBMas::_merge_internos(NodoInterno* nodoPadre,unsigned int numeroNodoUnd
 		nodoPadre->remover_hijo(posicionNumeroNodoUnderflow-1 );
 		nodoPadre->remover_clave(claveSeparadora,posicionOcurrencia);
 
+		TipoHijo hijoMayor;
+		nodoUnderflow.get_hijo(hijoMayor,0);
+		/*todo . este codigo funciona unicamente si la condicion de un underflow es 0 claves!*/
+
 
 		for(unsigned short i=0;i<CANTIDAD_CLAVES_HERMANO;i++){
 			ClaveX unaClave= clavesHermano.at(i);
@@ -623,7 +627,12 @@ int ArbolBMas::_merge_internos(NodoInterno* nodoPadre,unsigned int numeroNodoUnd
 		}
 
 		TipoHijo primerHijoHermano= hijosHermano.at(0);
-		nodoUnderflow.insertar_hijo(primerHijoHermano,0);
+		nodoUnderflow.modificar_hijo(primerHijoHermano,0);
+
+
+
+		nodoUnderflow.insertar_hijo(hijoMayor);
+		/*todo . este codigo funciona unicamente si la condicion de un underflow es 0 claves!*/
 
 
 	}else{
