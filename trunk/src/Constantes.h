@@ -97,6 +97,7 @@ const unsigned int LONGITUD_MAXIMA_NUMERO_INDEXABLE = 4;
 const int NO_EXISTE_INDICE                         =-1;
 const int NO_PERTENECE								= -2;
 const int NO_EXISTE                                = 3;
+const int RES_OKlista_autores						= 0;//FIXME, NO SE QUE VALOR DEBE TOMAR, LO AGREGO X Q SINO NO COMPILA EL PROYECTO...
 // const char* REFE_NULA                               ="";
 
 #endif /* CONSTANTES_H */
