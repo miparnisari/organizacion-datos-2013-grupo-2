@@ -220,16 +220,21 @@ int NodoInterno::empaquetar(Bloque* bloque)
 	registroTipoNodo.agregar_campo( (char*)&ti , sizeof(tipoNodo) );
 
 	const unsigned short CANTIDAD_CLAVES= vectorClaves.size();
-	for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
+	if(CANTIDAD_CLAVES> 0)
+		for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
 
-		ClaveX unaClave= vectorClaves[i];
-		unsigned short tamanioClaveEmpaquetada= unaClave.get_tamanio_empaquetado();
-		char* bufferClaveEmpaquetada= new char[tamanioClaveEmpaquetada];
-		unaClave.empaquetar(bufferClaveEmpaquetada);
-		registroClaves.agregar_campo(bufferClaveEmpaquetada,tamanioClaveEmpaquetada);
+			ClaveX unaClave= vectorClaves[i];
+			unsigned short tamanioClaveEmpaquetada= unaClave.get_tamanio_empaquetado();
+			char* bufferClaveEmpaquetada= new char[tamanioClaveEmpaquetada];
+			unaClave.empaquetar(bufferClaveEmpaquetada);
+			registroClaves.agregar_campo(bufferClaveEmpaquetada,tamanioClaveEmpaquetada);
 
-		delete[] bufferClaveEmpaquetada;
+			delete[] bufferClaveEmpaquetada;
 
+		}
+	else{
+		char nulo= (char)0;
+		registroClaves.agregar_campo( (char*)&nulo,sizeof(nulo) );
 	}
 
 	const unsigned short CANTIDAD_HIJOS= vectorHijos.size();
@@ -264,21 +269,8 @@ int NodoInterno::desempaquetar(const Bloque* bloque)
 
 	registroTipoNodo.recuperar_campo((char*)&tipoNodo , 0);
 
-	const unsigned short CANTIDAD_CLAVES= registroClaves.get_cantidad_campos();
-	for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
 
-		ClaveX unaClave;
-		unsigned short tamanioClaveEmpaquetada= registroClaves.get_tamanio_campo(i);
-		char* bufferClaveEmpaquetada= new char[tamanioClaveEmpaquetada];
-		registroClaves.recuperar_campo(bufferClaveEmpaquetada,i);
-		unaClave.desempaquetar(bufferClaveEmpaquetada,tamanioClaveEmpaquetada);
-		this->vectorClaves.push_back(unaClave);
 
-		cantidadBytesOcupados+= tamanioClaveEmpaquetada;
-
-		delete[] bufferClaveEmpaquetada;
-
-	}
 
 	const unsigned short CANTIDAD_HIJOS= registroHijos.get_cantidad_campos();
 	for(unsigned short i=0;i<CANTIDAD_HIJOS;i++){
@@ -291,7 +283,41 @@ int NodoInterno::desempaquetar(const Bloque* bloque)
 
 	}
 
-	cantidadBytesOcupados+= sizeof(tipoNodo);
+
+	const unsigned short CANTIDAD_CLAVES= registroClaves.get_cantidad_campos();
+	if(CANTIDAD_CLAVES== 1){
+
+		if( registroClaves.get_tamanio_campo(0)== 1 ){
+
+			char campo;
+			registroClaves.recuperar_campo( (char*)&campo,0 );
+			if( campo== (char)0 )
+				return RES_OK;
+
+		}
+
+	}
+
+	for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
+
+		ClaveX unaClave;
+		unsigned short tamanioClaveEmpaquetada= registroClaves.get_tamanio_campo(i);
+		char* bufferClaveEmpaquetada= new char[tamanioClaveEmpaquetada];
+		registroClaves.recuperar_campo(bufferClaveEmpaquetada,i);
+
+
+		unaClave.desempaquetar(bufferClaveEmpaquetada,tamanioClaveEmpaquetada);
+
+		this->vectorClaves.push_back(unaClave);
+
+		cantidadBytesOcupados+= tamanioClaveEmpaquetada;
+
+		delete[] bufferClaveEmpaquetada;
+
+	}
+
+	//cantidadBytesOcupados+= sizeof(tipoNodo);
+	/*fixme este byte esta de mas, no es considerado en ningun lado del codigo*/
 
 	return RES_OK;
 
@@ -391,7 +417,7 @@ int NodoInterno::remover_hijo(unsigned short numeroHijo){
 		return RES_ERROR;
 
 	this->vectorHijos.erase( vectorHijos.begin() + numeroHijo );
-	this->cantidadBytesOcupados-= sizeof(numeroHijo);
+	this->cantidadBytesOcupados-= sizeof(TipoHijo);
 	if(this->hay_underflow())
 		return RES_UNDERFLOW;
 	if(this->hay_overflow())

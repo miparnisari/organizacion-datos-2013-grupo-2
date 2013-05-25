@@ -22,6 +22,7 @@ void TestArbol::ejecutar(){
 	test_eliminar_con_merge_secuenciales();
 	test_eliminar_con_balanceo_secuenciales();
 	test_eliminar_con_merge_interno();
+	test_eliminar_con_merge_interno_en_ultimo();
 }
 
 void TestArbol::test_arbol_insertar_un_registro()
@@ -767,15 +768,145 @@ void TestArbol::test_eliminar_con_merge_interno(){
 
 	ClaveX ce;
 	RegistroClave re;
-	ce.set_clave("aaA");
+	ce.set_clave("baB");
 	re.set_clave(ce);
 	arbol.quitar(re);
-	ce.set_clave("aaB");
+	ce.set_clave("baC");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("caB");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("caC");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("caD");
+	re.set_clave(ce);
+	arbol.quitar(re);
+
+
+	ce.set_clave("aaG");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("aaH");
+	re.set_clave(ce);
+	arbol.quitar(re);
+
+
+	cout<<"imprimiendo arbol justo antes de merge de internos: ----------------------"<<endl;
+	arbol.imprimir();
+
+	ce.set_clave("baA");
 	re.set_clave(ce);
 	arbol.quitar(re);
 
 
 	cout<<"imprimiendo arbol con merge interno sin ultimo hijo: ----------------------"<<endl;
+	arbol.imprimir();
+
+	assert(arbol.cerrar() == RES_OK);
+	print_test_ok("test_eliminar_con_merge_internos");
+}
+
+
+void TestArbol::test_eliminar_con_merge_interno_en_ultimo(){
+
+	ArbolBMas arbol;
+	string nombreArchivo= "arbolConUnderflowMergeInternosEnUltimo.dat";
+	unsigned int tamanioBloque= 64;
+	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
+	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+
+	RegistroClave rc;
+	ClaveX c;
+
+	for(int i=0;i<8;i++){
+		string clave= "aaa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<2;i++){
+		string clave= "aaCa";
+		clave[3]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<3;i++){
+
+		string clave= "baa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<10;i++){
+
+		string clave= "caa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+
+	}
+
+	cout<<"imprimiendo arbol original: ----------------------"<<endl;
+	arbol.imprimir();
+
+	ClaveX ce;
+	RegistroClave re;
+	ce.set_clave("baB");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("baC");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("caB");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("caC");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("caD");
+	re.set_clave(ce);
+	arbol.quitar(re);
+
+
+	ce.set_clave("aaG");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("aaH");
+	re.set_clave(ce);
+	arbol.quitar(re);
+
+
+	ce.set_clave("caE");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("caF");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("caH");
+	re.set_clave(ce);
+	arbol.quitar(re);
+	ce.set_clave("caJ");
+	re.set_clave(ce);
+	arbol.quitar(re);
+
+	cout<<"imprimiendo arbol justo antes de merge de internos: ----------------------"<<endl;
+	arbol.imprimir();
+
+	ce.set_clave("caG");
+	re.set_clave(ce);
+	arbol.quitar(re);
+
+
+	cout<<"imprimiendo arbol con merge interno en el ultimo: ----------------------"<<endl;
 	arbol.imprimir();
 
 	assert(arbol.cerrar() == RES_OK);
