@@ -180,22 +180,18 @@ void TestManejadorRegistrosVariables::test_eliminar_por_offset()
 	RegistroVariable registros[CANT_DATOS];
 
 
-	{
-
-		for(int i=0;i<CANT_DATOS;i++){
-			offsetsRegistros[i]= mrv.get_tamanio_archivo();
-			registros[i].agregar_campo( datos[i].c_str() , datos[i].length() );
-			mrv.agregar_registro( &registros[i] );
-		}
-		assert( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
-
-		assert( mrv.eliminar_registro_por_offset( offsetsRegistros[3] )== RES_OK );
-		assert( mrv.get_cantidad_registros_ocupados()== (CANT_DATOS - 1) );
-		assert( mrv.agregar_registro( &registros[0] ) > offsetsRegistros[3] );
-		assert( mrv.get_cantidad_registros_ocupados() == CANT_DATOS );
-		assert( mrv.get_cantidad_registros()== CANT_DATOS + 1 );
-
+	for(int i=0;i<CANT_DATOS;i++){
+		offsetsRegistros[i]= mrv.get_tamanio_archivo();
+		registros[i].agregar_campo( datos[i].c_str() , datos[i].length() );
+		mrv.agregar_registro( &registros[i] );
 	}
+	assert( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
+
+	assert( mrv.eliminar_registro_por_offset( offsetsRegistros[3] )== RES_OK );
+	assert( mrv.get_cantidad_registros_ocupados()== (CANT_DATOS - 1) );
+	assert( mrv.agregar_registro( &registros[0] ) > offsetsRegistros[3] );
+	assert( mrv.get_cantidad_registros_ocupados() == CANT_DATOS );
+	assert( mrv.get_cantidad_registros()== CANT_DATOS + 1 );
 
 	print_test_ok("test_manejador_registros_variables_eliminar_por_offset");
 

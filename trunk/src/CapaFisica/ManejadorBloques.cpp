@@ -44,9 +44,7 @@ int ManejadorBloques::abrir_archivo(std::string p_nombreArchivo, std::string mod
 
 	return __get_header();
 
-}/* Abre un archivo con un modo de apertura especifico.
-Para info sobre los modos posibles: http://www.cplusplus.com/reference/cstdio/fopen/
-*/
+}
 
 int ManejadorBloques::cerrar_archivo()
 {
@@ -79,8 +77,7 @@ int ManejadorBloques::crear_archivo(std::string p_nombreArchivo, unsigned int ta
 
 	res = cerrar_archivo();
 	return res;
-} /* Crea un archivo de bloques nuevo, sin bloques para usar.
-Si el archivo ya existia, sus contenidos se pisaran. */
+}
 
 int ManejadorBloques::eliminar_archivo(std::string p_nombreArchivo)
 {
@@ -235,9 +232,7 @@ int ManejadorBloques:: sobreescribir_bloque(Bloque* bloque, unsigned int numBloq
 	return __escribir_bloque(bloque,offset);
 
 
-}/* Devuelve un bloque del archivo.
-PRECONDICION: el archivo se debe abrir en modo escritura.
-POSTCONDICION: se lo debe cerrar. */
+}
 
 Bloque* ManejadorBloques::crear_bloque()
 {
@@ -273,6 +268,4 @@ Bloque* ManejadorBloques :: obtener_bloque(unsigned int numBloque)
 	bloqueLeido->desempaquetar(buffer);
 	delete[] buffer;
 	return bloqueLeido;
-}/* Devuelve un bloque del archivo.
-PRECONDICION: el archivo se debe abrir en modo lectura.
-POSTCONDICION: se lo debe cerrar. */
+}

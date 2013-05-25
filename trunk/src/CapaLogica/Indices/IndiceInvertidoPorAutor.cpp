@@ -37,7 +37,7 @@ int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion cancion, int IDcanc
     std::string autor;
     ClaveX clave;
     RegistroClave regAutor;
-    int i, existe;
+    int i;
     const int cant_autores = cancion.get_cantidad_autores();
     //Es la posicion relativa de la proxima lista libre en el archivo de listas de autores
     unsigned short listaVacia= this->listas.get_cantidad_listas();
@@ -48,7 +48,7 @@ int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion cancion, int IDcanc
         clave.set_clave(autor);
         regAutor.set_clave(clave);
         //Busco el autor en el indice
-        existe = this->indice.buscar(regAutor);
+        int existe = this->indice.buscar(regAutor);
         if(existe == RES_OK){
             //Como existe entonces buscamos la referencia a la lista de ese autor
             int lista;

@@ -22,8 +22,6 @@ class RegistroVariable {
 		unsigned short tamanio;
 		char* buffer;
 
-		virtual int remover_datos(unsigned short offset,unsigned short tamanioBorrar)throw();
-		/*remueve una parte de los datos*/
 		virtual int seek_numero_campo(unsigned short numeroCampo);
 
 		virtual std::string mostrar_campo(unsigned short numeroCampo);
@@ -68,13 +66,10 @@ class RegistroVariable {
 
 		virtual bool fue_eliminado()throw();
 
-		int comprimir (Compresor & compresor);
+		virtual int comprimir (Compresor & compresor);
 
-		bool esta_limpio(){return tamanio==0;};
+		virtual bool esta_limpio(){return tamanio==0;};
 		/*retorna true si el registru fue limpiado y el mismo no se cargo de nuevo con datos.*/
-
-		virtual int eliminar_y_encadenar(int offsetRegistro);
-		/*marca al registro como eliminado y en el campo 2 guarda el valor offsetRegistro*/
 
 /*--------------------------------------------------------------------------------------------------*/
 /*LOS SIGUIENTES METODOS SE CREARON POR CUESTION DE PRUEBAS O PARA CUMPLIR CON CONSIGNAS DEL TP0*/
@@ -84,10 +79,6 @@ class RegistroVariable {
 		/*agrega datos al final del registro (append) sin agregar delimitador de tamanio del
 		 * dato agregado*/
 		// TODO eliminarla? es lo mismo q agregar un campo..
-		virtual int guardar(ostream& stream)throw();
-		/*guarda los datos del registro variable en un objeto ostream: tamanioRegsitro|datosRegistro */
 
-};/*RegistroVariable
-*/
-
+};
 #endif /* REGISTROVARIABLE_H_ */

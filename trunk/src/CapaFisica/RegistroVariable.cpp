@@ -13,8 +13,6 @@ RegistroVariable::RegistroVariable()
 	tamanio= 0;
 }
 
-// RegVar este = otro;
-
 RegistroVariable& RegistroVariable::operator = (const RegistroVariable& otro)
 {
 	if (this != &otro)
@@ -77,46 +75,8 @@ int RegistroVariable::agregar_datos(const char* datos,unsigned short tamanioDato
 
 	return RES_OK;
 
-}/*agrega datos al buffer menor que REG_VAR_MAX_TAM. Los datos se agregan de forma directa sin separadores*/
-
-
-int RegistroVariable::remover_datos(unsigned short offset,unsigned short tamanioBorrar)throw(){
-
-	const unsigned short OFFSET_FINAL= offset+ tamanioBorrar;
-	if(OFFSET_FINAL > tamanio || tamanioBorrar== 0)
-		return RES_ERROR;
-
-	const unsigned short TAMANIO_RESTO_BUFFER= tamanio - OFFSET_FINAL;
-	stringstream stream;
-	stream.write(buffer,tamanio);//cargo el stream
-	stream.seekg(0,ios::beg);
-
-	stringstream streamFinal;
-	if(offset){
-		char* bufferInicial= new char[offset];
-		stream.read(bufferInicial,offset);
-		streamFinal.write(bufferInicial,offset);
-		delete[] bufferInicial;
-	}
-
-	stream.seekg(OFFSET_FINAL ,ios::beg);
-	if(TAMANIO_RESTO_BUFFER){
-		char* restoBuffer= new char[TAMANIO_RESTO_BUFFER];
-		stream.read(restoBuffer,TAMANIO_RESTO_BUFFER);
-		streamFinal.write(restoBuffer,TAMANIO_RESTO_BUFFER);
-		delete[] restoBuffer;
-	}
-
-	tamanio-= tamanioBorrar;
-	delete[] buffer;
-	buffer= new char[tamanio];
-	streamFinal.seekg(0,ios::beg);
-
-	streamFinal.read(buffer,tamanio);
-
-	return RES_OK;
-
-}/*remueve datos de una zona*/
+}/*agrega datos al buffer menor que REG_VAR_MAX_TAM.
+Los datos se agregan de forma directa sin separadores*/
 
 
 int RegistroVariable::agregar_campo(const char* campo,unsigned short tamanioCampo)throw(){
@@ -172,19 +132,6 @@ std::string RegistroVariable::mostrar()throw()
 }
 
 
-int RegistroVariable::guardar(ostream& stream)throw(){
-
-	if(!stream.good())
-		return RES_ERROR;
-
-	stream.write((char*)(&tamanio),sizeof(tamanio));
-	stream.write(buffer,tamanio);
-
-	return RES_OK;
-
-}/*escribe los datos dentro del registro en el stream*/
-
-
 int RegistroVariable::eliminar()throw(){
 
 	if(this->fue_eliminado())
@@ -205,32 +152,6 @@ int RegistroVariable::eliminar()throw(){
 }/*marca al registro como eliminado:
 en el primer campo, en su longitud, pone "1", y en el valor pone
 un caracter de marca de borrado * */
-
-
-int RegistroVariable::eliminar_y_encadenar(int offsetRegistro){
-
-	if(this->fue_eliminado())
-		return RES_OK;
-
-	stringstream stream;
-	stream.write(buffer,tamanio);
-	unsigned short uno= 1;
-	stream.seekp(0,ios::beg);
-
-	stream.write( (char*)(&uno),sizeof(uno) );
-	stream.write( (char*)(&MARCA_BORRADO) , sizeof(MARCA_BORRADO) );
-	//stream.write( (char*)&sizeof(offsetRegistro) , sizeof(tamanio) );
-	/*guarde el tamanio del campo*/
-	stream.write( (char*)&offsetRegistro , sizeof(offsetRegistro) );
-
-	stream.seekg(0,ios::beg);
-	stream.read(buffer,tamanio);
-
-	return RES_OK;
-
-
-}
-
 
 bool RegistroVariable::fue_eliminado()throw(){
 
@@ -309,36 +230,29 @@ int RegistroVariable::seek_numero_campo(unsigned short numeroCampo){
 
 	if (this->fue_eliminado())
 			return RES_ERROR;
-		if (numeroCampo >= this->get_cantidad_campos())
-			return RES_ERROR;
+	if (numeroCampo >= this->get_cantidad_campos())
+		return RES_ERROR;
 
-		stringstream stream;
-		stream.write(buffer,tamanio);
-		stream.seekg(0,ios::beg);
+	stringstream stream;
+	stream.write(buffer,tamanio);
+	stream.seekg(0,ios::beg);
 
-		unsigned short contadorCampo= 0;
-		unsigned short offsetCampo= 0;
+	unsigned short contadorCampo= 0;
+	unsigned short offsetCampo= 0;
 
-		while(contadorCampo<numeroCampo){
+	while(contadorCampo < numeroCampo){
 
-			unsigned short tamanioCampo;
-			stream.read( (char*)&tamanioCampo , sizeof(tamanioCampo) );
-			offsetCampo+= sizeof(tamanioCampo)+tamanioCampo;
-			char* dummyBuffer= new char[tamanioCampo];
-			stream.read(dummyBuffer,tamanioCampo);
-			delete[] dummyBuffer;
+		unsigned short tamanioCampo;
+		stream.read( (char*)&tamanioCampo , sizeof(tamanioCampo) );
+		offsetCampo+= sizeof(tamanioCampo)+tamanioCampo;
+		char* dummyBuffer= new char[tamanioCampo];
+		stream.read(dummyBuffer,tamanioCampo);
+		delete[] dummyBuffer;
 
-			contadorCampo++;
+		contadorCampo++;
+	}
 
-
-		}
-
-
-
-		return offsetCampo;
-
-
-
+	return offsetCampo;
 }
 
 
@@ -386,7 +300,8 @@ int RegistroVariable::recuperar_campo(char* copia,unsigned short numeroCampo)thr
 
 	return tamanioCampo;
 
-}/*recupera un campo del registro y lo inserta en el buffer copia. Retorna la cantidad de bytes leidos*/
+}/*recupera un campo del registro y lo inserta en el buffer copia.
+Retorna la cantidad de bytes leidos*/
 
 
 int RegistroVariable::desempaquetar(const char* copia)throw()
@@ -435,5 +350,6 @@ unsigned short RegistroVariable::get_tamanio()throw()
 
 int RegistroVariable::comprimir (Compresor & compresor)
 {
+	//TODO
 	return RES_OK;
 }

@@ -197,6 +197,7 @@ en caso de que la clave no exista devuelve RES_RECORD_DOESNT_EXIST.*/
 
 int HashingExtensible::modificar(RegistroClave & elemN)
 {
+	//TODO realizar test
     Bloque* bloque = NULL;
     int posReg, posBloque;
     ClaveX clave_reg =  elemN.get_clave();
@@ -216,7 +217,7 @@ int HashingExtensible::modificar(RegistroClave & elemN)
 
 int HashingExtensible::eliminar(ClaveX & clave)
 {
-    int posBloque, i, posDer, posIzq, posReg, posTabla;
+    int posBloque, posReg, posTabla;
     unsigned int tamDispersion;
     Bloque* bloque = NULL;
     RegistroVariable regTamDisp;
@@ -239,8 +240,8 @@ int HashingExtensible::eliminar(ClaveX & clave)
         regTamDisp.recuperar_campo((char*)&tamDispersion,0);
 
         //Me muevo tamDispersion para un lado y para el otro de la lista, si son iguales cambio cada tam disp *2 los bloques de la tabla
-        posIzq = this->tabla->obtener_valor(posTabla-tamDispersion);
-        posDer = this->tabla->obtener_valor(posTabla+tamDispersion);
+        int posIzq = this->tabla->obtener_valor(posTabla-tamDispersion);
+        int posDer = this->tabla->obtener_valor(posTabla+tamDispersion);
 
         if (posDer == posIzq){
             //Eliminamos el bloque
@@ -251,6 +252,7 @@ int HashingExtensible::eliminar(ClaveX & clave)
             //Reemplazamos en donde estaba la posicion del bloque viejo por la posicion que corresponda
             if (posDer != RES_ERROR && posIzq != RES_ERROR)
             {
+            	int i;
 				for(i=posTabla; i<tabla->get_tamanio(); i=i+tamDispersion*2){ //hacia la derecha
 					this->tabla->cambiar_valor(i,posDer);
 				}

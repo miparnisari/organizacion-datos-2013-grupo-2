@@ -84,17 +84,16 @@ int Texto::parsear(std::string unTexto)
     palabraActual.push_back(caracterActual);
     this->elTexto.push_back(palabraActual);
     return this->elTexto.size();
-} /* Parsea un string de palabras a un vector de palabras sin espacios delimitadores ni numeros muy grandes.
-Devuelve la cantidad de palabras en la que se descompuso el texto. */
+}
 
 int Texto::get_proxima_palabra(std::string & palabra)
 {
 	unsigned int cantidadPalabras = elTexto.size();
 	if (contador_palabra +1 > cantidadPalabras)
-		return RES_ERROR;
+		return RES_FIN;
 
 	palabra = elTexto.at(contador_palabra);
 	contador_palabra++;
 	return RES_OK;
-} /* Devuelve la siguiente palabra del texto a procesar, o RES_ERROR si no hay mas palabras. */
+}
 

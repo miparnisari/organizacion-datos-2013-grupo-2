@@ -26,6 +26,7 @@ RegistroClave& RegistroClave::operator=(const RegistroClave& otro)
 		this->tamanio = otro.tamanio;
 		delete[] buffer;
 		this->buffer= new char[tamanio];
+//		memcpy(buffer,otro.buffer,tamanio);
 		stringstream ss;
 		ss.write(otro.buffer,tamanio);
 		ss.seekg(0,ios::beg);
@@ -83,36 +84,6 @@ void RegistroClave::set_clave(const ClaveX& clave){
 		this->agregar_campo(copiaDato,strlen(copiaDato));
 		delete[] copiaDato;
 	}
-
-
-	/*_agregar_campo_clave();
-
-
-	const unsigned short CANTIDAD_CAMPOS= this->get_cantidad_campos();
-	RegistroVariable registroCopia;
-	unsigned short tamanioEmpaquetamiento= this->get_tamanio_empaquetado();
-	char* bufferRegistroCopia= new char[tamanioEmpaquetamiento]();
-	this->empaquetar(bufferRegistroCopia);
-	registroCopia.desempaquetar(bufferRegistroCopia);
-	//hago una copia del registro original
-
-	this->limpiar_campos();
-
-
-	if(CANTIDAD_CAMPOS>1)
-		for(unsigned short i=1;i<CANTIDAD_CAMPOS;i++){
-
-			unsigned short tamanioCampo= registroCopia.get_tamanio_campo(i);
-			char* bufferCampo= new char[tamanioCampo]();
-			registroCopia.recuperar_campo(bufferCampo,i);
-			this->agregar_campo(bufferCampo,tamanioCampo);
-
-			delete[] bufferCampo;
-
-		}
-		//agrego los campos viejos en el registro nuevamente
-
-	delete[] bufferRegistroCopia;*/
 
 }
 

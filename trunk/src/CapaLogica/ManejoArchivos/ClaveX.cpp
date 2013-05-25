@@ -79,14 +79,6 @@ TipoClave ClaveX::get_tipo_clave()const
 	return tipoClave;
 }
 
-
-void ClaveX::_resetear_datos()
-{
-	for(unsigned int i=0;i<CANTIDAD_TIPOS_CLAVE;i++)
-		claves[i]->resetear();
-}
-
-
 int ClaveX::get_tamanio_empaquetado()const
 {
 	return this->get_tamanio_clave() + sizeof(char);
