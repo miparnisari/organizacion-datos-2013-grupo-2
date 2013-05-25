@@ -61,7 +61,6 @@ const unsigned short CANTIDAD_MAXIMA_PARAMETROS		= 4;
 const int MAXTAM                                    = 256;
 const int DESBORDO                                  = -1;
 const int ESTA_VACIO                                = 1;
-const int YA_EXISTE                                 = 2;
 const int NO_EXISTE                                 = 3;
 
 

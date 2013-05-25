@@ -19,7 +19,7 @@ class HashingExtensible
         std::string fileName;
         std::string fileNameTabla;
         int cant_bloques;
-        ManejadorBloques manejador_bloques;
+        ManejadorBloques* manejador_bloques;
         Tabla* tabla;
 
         public:
@@ -29,25 +29,17 @@ class HashingExtensible
 		virtual ~HashingExtensible();
 
 		virtual int crear_archivo(std::string nombreArchivo);
+		virtual int eliminar_archivo();
 
 		virtual int abrir_archivo(std::string nombreArchivo);
-
-		virtual int eliminar_archivo();
-		//Eliminamos el hashing extensible junto a todos sus documentos
-
 		virtual int cerrar_archivo();
 
+
+
 		virtual int agregar(RegistroClave & reg);
-		//Guarda el elemento en el hash, en caso de que ya existe el elemento devuelve YA_EXISTE
-
         virtual int devolver(ClaveX & clave, RegistroClave *reg);
-        //Devuelve el elemento del hash, en caso de que no exista devuelve NO_EXISTE
-
         virtual int modificar(RegistroClave & elemN);
-        //Modifica el elemento buscado, en caso de no encontrarlo devuelve NO_EXISTE
-
         virtual int eliminar(ClaveX & clave);
-        //Elimina el elemento
 
     private:
 
@@ -69,7 +61,7 @@ class HashingExtensible
         //al cual le aplica la funcion de hashing para sacar la posicion de la tabla para esa clave
 
         virtual int _agregar_registros_bloques(Bloque & bloque, RegistroClave & reg);
-        //Lo que basicamente es tomar todos los registros del bloque que desbordo junto al nuevo
+        //Tomar todos los registros del bloque que desbordo junto al nuevo
         //registro y los guarda en el hashing como cualquier registro
 
         virtual int _dividir_tabla();

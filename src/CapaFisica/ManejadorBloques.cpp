@@ -64,7 +64,8 @@ int ManejadorBloques::crear_archivo(std::string p_nombreArchivo, unsigned int ta
 {
 	if (! utilitarios::validFileName(p_nombreArchivo))
 		return RES_INVALID_FILENAME;
-
+	header.cantidadBloques = 0;
+	header.proximoBloqueLibre = -1;
 	nombreArchivo = p_nombreArchivo;
 	file_handler = fopen(nombreArchivo.c_str(), "wb+");
 	if (file_handler == NULL)
