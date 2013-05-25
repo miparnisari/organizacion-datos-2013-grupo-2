@@ -477,6 +477,8 @@ int ArbolBMas::_balancear_secuenciales(NodoInterno* nodoPadre,unsigned int numer
 
 	NodoSecuencial nodoUnderflow(header.minCantBytesClaves,header.maxCantBytesClaves);
 	NodoSecuencial nodoHermano(header.minCantBytesClaves,header.maxCantBytesClaves);
+	this->_obtener_nodo_secuencial(numeroNodoUnderflow,nodoUnderflow);
+	this->_obtener_nodo_secuencial(numeroNodoHermanoUnderflow,nodoHermano);
 	vector<RegistroClave> registrosHermano= nodoHermano.get_registros();
 	const unsigned short CANTIDAD_REGISTROS_HERMANO= registrosHermano.size();
 
