@@ -102,7 +102,7 @@ void TestRegistroCancion::test_obtener_letras_parseadas()
 
 	std::string palabra = "";
 	unsigned int i = 0;
-	while (texto.get_proxima_palabra(palabra) != RES_ERROR)
+	while (texto.get_proxima_palabra(palabra) != RES_FIN)
 	{
 		assert (palabra == palabras[i]);
 		i ++;

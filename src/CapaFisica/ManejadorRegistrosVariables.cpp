@@ -9,6 +9,13 @@
 
 using std::stringstream;
 
+ManejadorRegistrosVariables::ManejadorRegistrosVariables():ManejadorArchivos(){
+
+	_desvincular();
+	_resetear_header();
+
+}
+
 
 void ManejadorRegistrosVariables::_pegar_registro(RegistroVariable* registro,long offset){
 
@@ -316,7 +323,6 @@ long ManejadorRegistrosVariables::eliminar_registro_ocupado(unsigned short numer
 }
 
 
-
 long ManejadorRegistrosVariables::_append_registro(RegistroVariable* registro){
 
 	fstream archivo(nombreArchivo.c_str());
@@ -349,7 +355,6 @@ void ManejadorRegistrosVariables::_cerrar_archivo(fstream* archivo){
 
 	//archivo->seekg(0,ios::end);
 	archivo->close();
-
 }
 
 
@@ -412,9 +417,7 @@ int ManejadorRegistrosVariables::crear_archivo(string nombreArchivo){
 	_resetear_header();
 	_guardar_header();
 
-
 	return RES_OK;
-
 }
 
 
@@ -426,7 +429,6 @@ int ManejadorRegistrosVariables::get_cantidad_registros(){
 	_leer_header();
 
 	return header.cantidadRegistros;
-
 }
 
 
@@ -467,7 +469,7 @@ long ManejadorRegistrosVariables::agregar_registro(RegistroVariable* registro){
 		this->_append_registro(registro);
 		return RES_OK;
 	}
-	TODO si no funca eliminar comentarios*/
+	TODO si no anda eliminar comentarios*/
 
 	if(OFFSET_REGISTRO_LIBRE== RES_ERROR){
 		return this->_append_registro(registro);
@@ -584,15 +586,5 @@ int ManejadorRegistrosVariables::eliminar_registro_por_offset(unsigned long offs
 	header.cantidadRegistrosLibres++;
 	_guardar_header();
 	return RES_OK;
-
-}
-
-
-
-
-ManejadorRegistrosVariables::ManejadorRegistrosVariables():ManejadorArchivos(){
-
-	_desvincular();
-	_resetear_header();
 
 }

@@ -37,7 +37,7 @@ class ArbolBMas
 		int _buscar_nodo_con_puntero(int punteroAbuscar);
 
 
-		int persistir(NodoArbol* nodo,unsigned int numeroNodo);
+		int _persistir_nodo(NodoArbol* nodo,unsigned int numeroNodo);
 
 
 		/*version distinta del _quitar_recursivo.*/

@@ -26,7 +26,6 @@ class Bloque {
 		virtual void _escribir_espacio_libre()throw();
 		virtual unsigned int _obtener_offset_final()const throw();
 		virtual unsigned int _obtener_offset_registro(unsigned short numeroRegistro)const throw();
-		virtual unsigned int _calcular_resto_bloque(unsigned int offsetRegistro)const throw();
 		virtual void _limpiar_buffer()throw();
 		virtual int _agregar_registro(char* dato,unsigned short tamanioDato)throw();
 

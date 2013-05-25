@@ -40,7 +40,7 @@ void test_leer_de_archivo()
 	// Para cada cancion que tengamos...
 	while (parser.fin_directorio() == false)
 	{
-		if (parser.getNextCancion(regCancion, nombreArchivo) == RES_OK)
+		if (parser.obtener_proxima_cancion(regCancion, nombreArchivo) == RES_OK)
 		{
 			// Autores
 			for (unsigned short j=0; j < regCancion.get_cantidad_autores(); j++)

@@ -21,18 +21,6 @@ ArbolBMas::~ArbolBMas()
 {
 }
 
-int ArbolBMas::persistir(NodoArbol* nodo, unsigned int numeroNodo){
-
-	Bloque* bloqueNodo= archivoNodos.crear_bloque();
-	nodo->empaquetar(bloqueNodo);
-	archivoNodos.sobreescribir_bloque(bloqueNodo,numeroNodo);
-
-	delete bloqueNodo;
-	return RES_OK;
-}
-
-
-
 int ArbolBMas::_set_header()
 {
 	// El bloque 0 debe tener datos del arbol
@@ -90,6 +78,16 @@ int ArbolBMas::_get_header()
 		return RES_ERROR;
 	}
 	return RES_ERROR;
+}
+
+int ArbolBMas::_persistir_nodo(NodoArbol* nodo, unsigned int numeroNodo){
+
+	Bloque* bloqueNodo= archivoNodos.crear_bloque();
+	nodo->empaquetar(bloqueNodo);
+	int res = archivoNodos.sobreescribir_bloque(bloqueNodo,numeroNodo);
+
+	delete bloqueNodo;
+	return res;
 }
 
 unsigned int ArbolBMas::get_cant_minima_nodo()
@@ -165,12 +163,8 @@ int ArbolBMas::agregar(RegistroClave & reg)
 	/*escribo la vieja raiz ya modificada en un bloque apropiado (nuevo o reciclado). Modifico el hijo izquierdo de la nueva raiz para que
 	 * apunte a el bloque de la vieja raiz.*/
 
-	Bloque* bloqueRaizNueva=  archivoNodos.crear_bloque();
-	nodoRaizNuevo.empaquetar(bloqueRaizNueva);
-	int res= archivoNodos.sobreescribir_bloque(bloqueRaizNueva,NUMERO_BLOQUE_RAIZ);
+	int res = _persistir_nodo(&nodoRaizNuevo,NUMERO_BLOQUE_RAIZ);
 
-
-	delete bloqueRaizNueva;
 	delete bloqueRaizAntigua;
 	return res;
 
@@ -256,13 +250,13 @@ int ArbolBMas::quitar(RegistroClave& registroEliminar){
 
 		NodoSecuencial nodoHijoRaizSecuencial(header.minCantBytesClaves,header.maxCantBytesClaves);
 		this->_obtener_nodo_secuencial(hijoRaiz,nodoHijoRaizSecuencial);
-		this->persistir(&nodoHijoRaizSecuencial,NUMERO_BLOQUE_RAIZ);
+		this->_persistir_nodo(&nodoHijoRaizSecuencial,NUMERO_BLOQUE_RAIZ);
 
 	}else{
 
 		NodoInterno nodoHijoRaizInterno(header.minCantBytesClaves,header.maxCantBytesClaves);
 		this->_obtener_nodo_interno(hijoRaiz,nodoHijoRaizInterno);
-		this->persistir(&nodoHijoRaizInterno,NUMERO_BLOQUE_RAIZ);
+		this->_persistir_nodo(&nodoHijoRaizInterno,NUMERO_BLOQUE_RAIZ);
 
 	}
 
@@ -292,7 +286,7 @@ int ArbolBMas::_quitar_recursivo(unsigned int& numeroNodoActual,
 		int resultadoEliminacionRegistro= nodoActualSecuencial.eliminar(claveRegistroEliminar,vectorUnderflow);
 
 		if(resultadoEliminacionRegistro== RES_OK){
-			this->persistir(&nodoActualSecuencial,numeroNodoActual);
+			this->_persistir_nodo(&nodoActualSecuencial,numeroNodoActual);
 			tipoUnderflow= RES_NO_UNDERFLOW;
 			return RES_OK;
 		}/*el borrado del registro en el nodoSecuencial ocurrio exitosamente sin ocurrin underflow. El nodoSecuencial
@@ -306,7 +300,7 @@ int ArbolBMas::_quitar_recursivo(unsigned int& numeroNodoActual,
 
 		/*a continuacion se llevaran los pasos a llevar a cabo en caso de underflow del nodoSecuencial*/
 		tipoUnderflow= RES_UNDERFLOW_HOJA;
-		this->persistir(&nodoActualSecuencial , numeroNodoActual);
+		this->_persistir_nodo(&nodoActualSecuencial , numeroNodoActual);
 		/*FIXME, esta persistencia deberia ocurrir desde una instancia superior, pero por ahora no se me ocurre otra solucion ... */
 		return RES_UNDERFLOW;
 
@@ -342,7 +336,7 @@ int ArbolBMas::_quitar_recursivo(unsigned int& numeroNodoActual,
 			this->_resolver_underflow_interno(&nodoActualInterno,proximoNodoInspeccionar);
 		}
 
-		this->persistir( &nodoActualInterno,numeroNodoActual );
+		this->_persistir_nodo( &nodoActualInterno,numeroNodoActual );
 
 		if( nodoActualInterno.hay_underflow() ){
 			tipoUnderflow= RES_UNDERFLOW_INTERNO;
@@ -435,7 +429,7 @@ int ArbolBMas::_merge_secuenciales(NodoInterno* nodoPadre,unsigned int numeroNod
 			NodoSecuencial nodoIzquierdo(header.minCantBytesClaves,header.maxCantBytesClaves);
 			this->_obtener_nodo_secuencial(numeroNodoIzquierdo,nodoIzquierdo);
 			nodoIzquierdo.set_proximo_nodo(numeroNodoUnderflow);
-			this->persistir(&nodoIzquierdo,numeroNodoIzquierdo);
+			this->_persistir_nodo(&nodoIzquierdo,numeroNodoIzquierdo);
 		}
 	}else{
 
@@ -445,7 +439,7 @@ int ArbolBMas::_merge_secuenciales(NodoInterno* nodoPadre,unsigned int numeroNod
 	}
 
 
-	this->persistir(&nodoUnderflow,numeroNodoUnderflow);
+	this->_persistir_nodo(&nodoUnderflow,numeroNodoUnderflow);
 	this->_liberar_nodo(numeroNodoHermanoUnderflow);
 
 	ClaveX cr;
@@ -512,8 +506,8 @@ int ArbolBMas::_balancear_secuenciales(NodoInterno* nodoPadre,unsigned int numer
 	/*actualizo la nueva clave de division*/
 
 
-	this->persistir(&nodoUnderflow,numeroNodoUnderflow);
-	this->persistir(&nodoHermano,numeroNodoHermanoUnderflow);
+	this->_persistir_nodo(&nodoUnderflow,numeroNodoUnderflow);
+	this->_persistir_nodo(&nodoHermano,numeroNodoHermanoUnderflow);
 
 	return RES_OK;
 
@@ -642,7 +636,7 @@ int ArbolBMas::_merge_internos(NodoInterno* nodoPadre,unsigned int numeroNodoUnd
 
 	}
 
-	this->persistir( &nodoUnderflow,numeroNodoUnderflow );
+	this->_persistir_nodo( &nodoUnderflow,numeroNodoUnderflow );
 	this->_liberar_nodo(numeroNodoHermanoUnderflow);
 
 
@@ -729,8 +723,8 @@ int ArbolBMas::_balancear_internos(NodoInterno* nodoPadre,unsigned int numeroNod
 
 	//cambio la clave del padre al final
 
-	this->persistir( &nodoUnderflow,numeroNodoUnderflow );
-	this->persistir( &nodoHermano,numeroNodoHermanoUnderflow );
+	this->_persistir_nodo( &nodoUnderflow,numeroNodoUnderflow );
+	this->_persistir_nodo( &nodoHermano,numeroNodoHermanoUnderflow );
 
 
 	return RES_OK;
@@ -985,13 +979,7 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 			return RES_RECORD_EXISTS;
 		if(resultadoInsercionSecuencial== RES_OK)
 		{
-
-			Bloque* bloqueModificado = archivoNodos.crear_bloque();
-			nodoSecuencialActual.empaquetar(bloqueModificado);
-
-			int res = archivoNodos.sobreescribir_bloque(bloqueModificado,numeroBloqueActual);
-			delete bloqueModificado;
-			return res;
+			return _persistir_nodo(&nodoSecuencialActual,numeroBloqueActual);
 		}
 		/*si no ocurre overflow en la insercion del registro, la ejecucion finaliza*/
 
@@ -1000,12 +988,8 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 		/*divido el nodoSecuencial en overflow , guardo el nodo nuevo en el archivo y en hijoPromocionado retorno el numero de
 		 * bloque donde el nodoNuevo se guardo. En clavePromocionada guardo la clave que debera ser insertada en el nodoInterno
 		 * padre.*/
-		Bloque* bloqueNodoSecuencialActualModificado = archivoNodos.crear_bloque();
-		nodoSecuencialActual.empaquetar(bloqueNodoSecuencialActualModificado);
-		this->archivoNodos.sobreescribir_bloque(bloqueNodoSecuencialActualModificado,numeroBloqueActual);
-		/*persisto en el archivo el nodoSecuencial modificado*/
 
-		delete bloqueNodoSecuencialActualModificado;
+		_persistir_nodo(&nodoSecuencialActual,numeroBloqueActual);
 
 		return RES_OVERFLOW;
 
@@ -1045,12 +1029,7 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 
 
 	if(resultadoInsercionNodoInterno== RES_OK){
-		Bloque* bloqueNodoInternoActualModificado = archivoNodos.crear_bloque();
-		nodoActualInterno.empaquetar(bloqueNodoInternoActualModificado);
-		this->archivoNodos.sobreescribir_bloque(bloqueNodoInternoActualModificado,numeroBloqueActual);
-		/*se sobreescribe el nodo original en el archivo de bloques*/
-
-		delete bloqueNodoInternoActualModificado;
+		_persistir_nodo(&nodoActualInterno,numeroBloqueActual);
 		return RES_OK;
 	}
 	if(resultadoInsercionNodoInterno== RES_ERROR)
@@ -1062,14 +1041,8 @@ int ArbolBMas::_insertar_recursivo(unsigned int& numeroBloqueActual ,
 	 * clavePromocionada se retorna la clave a insertar en un nodoInterno en una instancia superior de _insertar_recursivo . El nodoInterno
 	 * nuevo creado es guardado en el archivo*/
 
-	Bloque* bloqueNodoInternoActualModificado = archivoNodos.crear_bloque();
-	nodoActualInterno.empaquetar(bloqueNodoInternoActualModificado);
-	this->archivoNodos.sobreescribir_bloque(bloqueNodoInternoActualModificado,numeroBloqueActual);
-	/*se sobreescribe el nodo original en el archivo de bloques*/
-
-	delete bloqueNodoInternoActualModificado;
+	_persistir_nodo(&nodoActualInterno,numeroBloqueActual);
 	return RES_OVERFLOW;
-
 
 }
 
@@ -1090,11 +1063,11 @@ void ArbolBMas::obtener_primer_nodo_secuencial(TipoHijo& numeroPrimerNodo){
 	NodoInterno nodoActualInterno(header.minCantBytesClaves,header.maxCantBytesClaves);
 	NodoArbol nodoActual(TIPO_INTERNO);
 	TipoHijo primerHijo= NUMERO_BLOQUE_RAIZ;
-	Bloque* bloqueActual;
+
 
 	while(nodoActual.es_interno()){
 
-		bloqueActual= archivoNodos.obtener_bloque(primerHijo);
+		Bloque* bloqueActual = archivoNodos.obtener_bloque(primerHijo);
 		nodoActual.desempaquetar(bloqueActual);
 
 		if(nodoActual.es_interno())

@@ -87,14 +87,6 @@ int Bloque::obtener_ref_prox_bloque(){
 
 }
 
-unsigned int Bloque::_calcular_resto_bloque(unsigned int offsetRegistro)const throw()
-{
-	const unsigned int ESPACIO_OCUPADO = this->_calcular_espacio_ocupado();
-	return (ESPACIO_OCUPADO - offsetRegistro);
-
-}/*calcula la cantidad de datos restantes validos en buffer a partir de un offsetDeterminado*/
-
-
 unsigned int Bloque::_calcular_espacio_libre()const throw(){
 
 	return  espacioLibre;

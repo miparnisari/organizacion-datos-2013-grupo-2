@@ -95,7 +95,7 @@ int IndiceInvertido::armar_listas_invertidas(int IDcancion)
 	RegistroVariable regCoincidencia, regTermino, listaInvertida;
 	RegistroClave regTerminoVoc, regCancionTermino;
 	ClaveX clave, claveTermino;
-	unsigned short i=0, j;
+	unsigned short i=0;
 	long IDter, IDterAnterior, ref_lista, ref_lista_pos;
 
 
@@ -119,7 +119,7 @@ int IndiceInvertido::armar_listas_invertidas(int IDcancion)
 		//Obtengo la lista invertida del termino
 		this->listas_invertidas.devolver(&listaInvertida, ref_lista);
 		//Armo la lista de posiciones
-		j=0;
+		int j=0;
 		do{//Mientras sean el mismo termino
 			//Guardo la posicion en la lista de posiciones
 			char* pos = new char[regCoincidencia.get_tamanio_campo(1)]();

@@ -37,7 +37,7 @@ int ParserCanciones::crear (std::string dir)
 	return RES_OK;
 }
 
-int ParserCanciones::getNextCancion(RegistroCancion& reg, std::string nombreArchivo)
+int ParserCanciones::obtener_proxima_cancion(RegistroCancion& reg, std::string nombreArchivo)
 {
 	// Abrimos el archivo
 	nombreArchivo = archivos[contadorArchivosLeidos];
