@@ -13,6 +13,8 @@ NodoSecuencial::NodoSecuencial(unsigned int minBytesOcupados, unsigned int maxBy
 	minCantidadBytesOcupados = minBytesOcupados;
 	maxCantidadBytesOcupados = maxBytesOcupados + sizeof(TIPO_HOJA) + sizeof(proximoNodo);
 	bytesOcupados = sizeof(TIPO_HOJA) + sizeof(proximoNodo);
+	minCantidadBytesOcupados+= bytesOcupados;
+	//FIXME agregado 25/5/13
 	proximoNodo = -1;
 }
 

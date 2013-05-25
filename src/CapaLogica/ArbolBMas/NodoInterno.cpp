@@ -8,8 +8,10 @@ NodoInterno::NodoInterno(unsigned int p_minCantidadBytes, unsigned int p_maxCant
 	cantidadBytesOcupados = 0;
 	vectorHijos.push_back(HIJO_INVALIDO);
 	cantidadBytesOcupados+= sizeof(TipoHijo);
+	minCantidadBytes+= cantidadBytesOcupados;
+	//FIXME agregado 25/5/13
 	/* Primer hijo, para que cuando agreguemos una clave solo halla que agregar un hijo */
-}
+}/*si p_minCantBytes== 0 -> jamas habra underflow! para que haya underflow en nodo vacio, p_minCantBytes > 0*/
 
 NodoInterno::~NodoInterno()
 {
@@ -40,7 +42,9 @@ bool NodoInterno::hay_overflow()const{
 
 bool NodoInterno::hay_underflow()const{
 
+	//return ( cantidadBytesOcupados < minCantidadBytes );
 	return ( cantidadBytesOcupados < minCantidadBytes );
+	//FIXME agregado 25/5/13
 
 }
 

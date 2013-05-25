@@ -49,7 +49,7 @@ void TestNodoInterno::insertar_hijos(){
 		assert( ni.get_tamanio_ocupado()== (signed)TAMANIO_INICIAL);
 		for(unsigned short i=0;i<2;i++)
 			assert( ni.insertar_hijo(hijos[i],i+1)==RES_UNDERFLOW );
-		assert( ni.insertar_hijo(hijos[2],3)== RES_OK );
+		assert( ni.insertar_hijo(hijos[2],3)== RES_UNDERFLOW );
 
 		assert( ni.insertar_hijo(hijos[3],0)== RES_OK );
 
