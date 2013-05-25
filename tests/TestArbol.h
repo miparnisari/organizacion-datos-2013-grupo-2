@@ -27,6 +27,7 @@ class TestArbol:public Test {
 		void test_eliminar_con_merge_interno();
 		void test_eliminar_con_merge_interno_en_ultimo();
 		void test_eliminar_con_balanceo_interno();
+		void test_eliminar_con_balanceo_interno_con_ultimo_nodo();
 
 
 	public:
