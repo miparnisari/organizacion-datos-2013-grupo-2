@@ -190,21 +190,19 @@ int HashingExtensible::devolver(ClaveX & clave, RegistroClave *reg)
 
     int res = bloque->recuperar_registro(reg, posReg);
     delete bloque;
-    return RES_OK;
+    return res;
 }/* Devuelve el registro que contiene una clave,
 en caso de que la clave no exista devuelve RES_RECORD_DOESNT_EXIST.*/
 
 int HashingExtensible::modificar(RegistroClave & elemN)
 {
-	//TODO realizar test
     Bloque* bloque = NULL;
-    int posReg, posBloque;
     ClaveX clave_reg =  elemN.get_clave();
 
     //obtengo el bloque que buscamos
-    posBloque = this->_obtener_bloque(clave_reg, &bloque);
+    int posBloque = this->_obtener_bloque(clave_reg, &bloque);
     //Busco el registro a modificar
-    posReg = this->_obtener_posicion_reg_bloque(clave_reg, *bloque);
+    int posReg = this->_obtener_posicion_reg_bloque(clave_reg, *bloque);
     if (posReg == RES_ERROR){
     	return NO_EXISTE;
     }

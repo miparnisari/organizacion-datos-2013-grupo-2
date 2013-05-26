@@ -4,6 +4,25 @@
 
  namespace utilitarios
 {
+ 	 int remover_archivos_de_directorio(std::string directorio)
+ 	 {
+	 // These are data types defined in the "dirent" header
+	  struct dirent *next_file;
+	  DIR *dir;
+
+	  char filepath[256];
+
+	  dir = opendir(directorio.c_str());
+	  next_file = readdir(dir);
+	  while ( next_file != NULL  )
+	  {
+		  // build the full path for each file in the folder
+		  sprintf(filepath, "%s/%s", directorio.c_str(), next_file->d_name);
+		  remove(filepath);
+		  next_file = readdir(dir);
+	  }
+	  return 0;
+	}
 	bool directorio_existe( std::string dir )
 	{
 		DIR *pDir;
