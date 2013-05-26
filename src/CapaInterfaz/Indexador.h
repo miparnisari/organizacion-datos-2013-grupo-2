@@ -2,6 +2,8 @@
 #define INDEXADOR_H
 
 #include <string>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "../CapaFisica/ManejadorRegistrosVariables.h"
 #include "../CapaFisica/RegistroVariable.h"

@@ -172,7 +172,7 @@ void SortExterno::_merge()
 		out << numeroDeMerge;
 		numeroMerge = out.str();
 
-		cout<<"numeroMerge : "<<numeroMerge<<endl;//todo
+//		cout<<"numeroMerge : "<<numeroMerge<<endl;//todo
 
 		rutaMerge= "Merge"+numeroMerge+".dat";
 
@@ -190,11 +190,11 @@ void SortExterno::_merge()
 		//todo extraer a funcion
 		while ( (regPrimero < regClaveMax) && (regSegundo < regClaveMax) )
 		{
-			cout<<"par de claves: "<<endl; //todo
-			regPrimero.get_clave().imprimir_dato();
-			cout<<endl;
-			regSegundo.get_clave().imprimir_dato();
-			cout<<endl;
+//			cout<<"par de claves: "<<endl; //todo
+//			regPrimero.get_clave().imprimir_dato();
+//			cout<<endl;
+//			regSegundo.get_clave().imprimir_dato();
+//			cout<<endl;
 
 			//comparo y avanzo en el correspondiente
 			if (regPrimero <= regSegundo)
@@ -253,13 +253,13 @@ void SortExterno::_merge()
 
 	while ( (regPrimero < regClaveMax) && (regSegundo < regClaveMax ) )
 	{
-		cout<<"------------------------- ULTIMO MERGE ------------------------"<<endl; //todo
-
-		cout<<"par de claves: "<<endl; //todo borrar
-		regPrimero.get_clave().imprimir_dato();
-		cout<<endl;
-		regSegundo.get_clave().imprimir_dato();
-		cout<<endl;
+//		cout<<"------------------------- ULTIMO MERGE ------------------------"<<endl; //todo
+//
+//		cout<<"par de claves: "<<endl; //todo borrar
+//		regPrimero.get_clave().imprimir_dato();
+//		cout<<endl;
+//		regSegundo.get_clave().imprimir_dato();
+//		cout<<endl;
 
 		//comparo y avanzo en el correspondiente
 		if (regPrimero <= regSegundo)

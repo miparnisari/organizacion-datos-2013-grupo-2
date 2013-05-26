@@ -12,11 +12,11 @@ using namespace std;
 
 namespace utilitarios
 {
+	bool directorio_existe (std::string dir);
 	wstring StringToWString(const string& s);
 	string WStringToString (const wstring& s);
     unsigned int pasarBufferAInt(char* value);
 	void copyIntToBuffer (char* buffer, int integer);
 	bool validFileName (std::string fileName);
-	void imprimir_argumentos (int argc,char** args);
 	int listpath (std::string dir, std::vector<std::string> &files, std::string extension);
 }

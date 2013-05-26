@@ -56,16 +56,6 @@
 		return true;
 	}/*verifica que un string sea un nombre de archivo valido.*/
 
-	void imprimir_argumentos(int argc,char** args)
-	{
-		std::cout<<" Argumentos programa: "<<std::endl<<std::endl;
-
-		std::cout<<argc<<std::endl;
-		for(int i=0;i<argc;i++)
-			std::cout<<args[i]<<std::endl;
-
-	}/*imprime argumentos del programa*/
-
 	int listpath (std::string dir, std::vector<std::string> & files, std::string extension)
 	{
 		DIR* dp;
