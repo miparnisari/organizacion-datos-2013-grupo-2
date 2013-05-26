@@ -315,10 +315,9 @@ int Indexador::indexar (std::string & directorioEntrada, std::string & directori
 	{
 		if (opcion == OPCION_ANEXAR)
 		{
-			cout << "voy a anexar canciones" << endl;
 			int res2 = _abrir_archivos_indices(directorioEntrada,directorioSalida);
 			if (res2 != RES_OK) {
-				cout << "No se pudieron abrir los archivos necesarios." << endl;
+				cout << "ERROR: No se pudieron abrir los archivos necesarios." << endl;
 			}
 			else {
 				_anexar(directorioEntrada,directorioSalida);
@@ -329,7 +328,7 @@ int Indexador::indexar (std::string & directorioEntrada, std::string & directori
 		{
 			int res2 = _crear_archivos_indices(directorioEntrada,directorioSalida);
 			if (res2 != RES_OK) {
-				cout << "No se pudieron crear los archivos necesarios." << endl;
+				cout << "ERROR: No se pudieron crear los archivos necesarios." << endl;
 			}
 			else {
 				_abrir_archivos_indices(directorioEntrada,directorioSalida);
@@ -340,6 +339,6 @@ int Indexador::indexar (std::string & directorioEntrada, std::string & directori
 	}
 	int res_fin =  _finalizar();
 	if (res_fin != RES_OK)
-		std::cout << "No se pudieron cerrar los archivos.";
+		std::cout << "ERROR: No se pudieron cerrar los archivos.";
 }
 
