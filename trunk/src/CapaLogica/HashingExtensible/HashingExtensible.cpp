@@ -191,7 +191,7 @@ int HashingExtensible::devolver(ClaveX & clave, RegistroClave *reg)
 
     int res = bloque->recuperar_registro(reg, posReg);
     if (res == RES_ERROR)
-    	std::cout << "se recupero bien el registro" << std::endl;
+    	std::cout << "se recupero mal el registro" << std::endl;
     delete bloque;
     return RES_OK;
 }/* Devuelve el registro que contiene una clave,
