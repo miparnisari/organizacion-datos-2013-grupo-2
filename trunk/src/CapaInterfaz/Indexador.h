@@ -29,6 +29,9 @@ class Indexador
 		int consultar_titulo(std::string & directorioSalida, std::string & titulo);
 
 	private:
+		static const int OPCION_REINDEXAR = 1;
+		static const int OPCION_ANEXAR = 2;
+
 		HashingExtensible indicePrimario;
 		ManejadorRegistrosVariables archivoMaestro;
 		ArbolBMas indiceSecundarioAutor;
@@ -39,6 +42,9 @@ class Indexador
 
 		int _init(std::string & directorioEntrada, std::string & directorioSalida);
 		int _finalizar();
+		int _anexar(std::string & directorioEntrada, std::string & directorioSalida);
+		void _indexar(std::string & directorioEntrada, std::string & directorioSalida);
+		int _mostrar_opciones(std::string & directorioEntrada, std::string & directorioSalida);
 };
 
 #endif /* INDEXADOR_H */ 
