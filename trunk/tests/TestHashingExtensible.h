@@ -22,11 +22,15 @@ class TestHashingExtensible : public Test {
                 void test_guardar_y_recuperar_ints();
                 void test_hashing_guardar_y_leer_int();
 
+
                 void test_crear_hashing();
                 //Probamos que se cree la tabla y el primer bloque de registros cuando se cree el hashing
 
                 void test_eliminar_registro();
-        //Probamos eliminar un registro y ver si nos devuelve algo al buscarlo
+                //Probamos eliminar un registro y ver si nos devuelve algo al buscarlo
+
+                void test_hash_modificar_un_valor();
+                //Probamos que se modifique el campo de un registro dado, y que no se modifique un campo si la clave no se encuentra.
 
                 void test_agregar_y_devolver_registro();
                 //Probamos que se agregue y se devuelva correctamente los datos
