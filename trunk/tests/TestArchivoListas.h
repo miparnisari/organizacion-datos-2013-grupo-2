@@ -8,9 +8,6 @@
 #ifndef TESTARCHIVOLISTAS_H_
 #define TESTARCHIVOLISTAS_H_
 
-#include "../src/CapaLogica/Indices/ArchivoListas.h"
-#include "../src/CapaFisica/ManejadorArchivos.h"
-#include "../src/CapaFisica/RegistroVariable.h"
 #include "Test.h"
 
 
@@ -20,7 +17,7 @@ class TestArchivoListas : public Test {
 
 				TestArchivoListas();
 
-                virtual ~TestArchivoListas();
+                ~TestArchivoListas();
 
                 void ejecutar();
 

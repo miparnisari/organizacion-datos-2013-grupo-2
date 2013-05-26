@@ -182,14 +182,16 @@ int HashingExtensible::devolver(ClaveX & clave, RegistroClave *reg)
     //Modifico el elemento del bloque
 
     posReg = this->_obtener_posicion_reg_bloque(clave, *bloque);
-
+    std::cout << "pos reg = " << posReg << std::endl;
     if (posReg == RES_ERROR)
     {
     	delete bloque;
         return RES_RECORD_DOESNT_EXIST;
     }
 
-    bloque->recuperar_registro(reg, posReg);
+    int res = bloque->recuperar_registro(reg, posReg);
+    if (res == RES_ERROR)
+    	std::cout << "se recupero bien el registro" << std::endl;
     delete bloque;
     return RES_OK;
 }/* Devuelve el registro que contiene una clave,
@@ -305,18 +307,19 @@ y actualiza el parametro pasado por referencia "bloque". */
 
 int HashingExtensible::_obtener_posicion_reg_bloque(ClaveX & clave, Bloque& bloque)
 {
-    int i = 1,se_encontro = RES_ERROR;
+    int i = 1;
+    bool se_encontro = false;
     ClaveX clave_reg;
     RegistroClave reg;
 
-    while((se_encontro!=RES_OK)&&(i< bloque.get_cantidad_registros_almacenados())){
+    while((! se_encontro) && (i< bloque.get_cantidad_registros_almacenados())){
         bloque.recuperar_registro(&reg, i);
         clave_reg = reg.get_clave();
         if(clave_reg== clave)
-                se_encontro=RES_OK;
+                se_encontro=true;
         i++;
     }
-    if (se_encontro ==RES_OK)
+    if (se_encontro == true )
         return (i -1);
     return RES_ERROR;
 } /* Devuelve la posicion de una clave dentro de un bloque. */
