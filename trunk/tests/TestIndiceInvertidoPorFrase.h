@@ -57,6 +57,16 @@ class TestIndiceInvertidoPorFrase : public Test
         //y vemos si devuelve una frase correctamente y tambien probamos pedirle una cancion que no existe,
         //deberia devolver NO_EXISTE
 
+        void test_indice_por_frase_devolver_canciones_con_una_cancion_terminos_repetidos();
+        //Probamos que si no se agrego ninguna cancion devuelva NO_EXISTE, luego agregamos una cancion
+        //y vemos si la devuelve una frase correctamente y tambien probamos pedirle una cancion que no existe,
+        //deberia devolver NO_EXISTE
+
+        void test_indice_por_frase_devolver_canciones_con_varias_canciones_terminos_repetidos();
+        //Probamos que si no se agrego ninguna cancion devuelva NO_EXISTE, luego agregamos varias cancion
+        //y vemos si devuelve una frase correctamente y tambien probamos pedirle una cancion que no existe,
+        //deberia devolver NO_EXISTE
+
         void test_indice_por_frase_borrar_indice();
         //Probamos que se borren todos los archivos que tenian
 
