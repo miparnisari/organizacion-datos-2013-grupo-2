@@ -237,11 +237,17 @@ unsigned short Bloque::get_cantidad_registros_almacenados()const throw(){
 int Bloque::recuperar_registro(RegistroVariable* registro,unsigned short numeroRegistro)const throw()
 {
 	if(registro== NULL)
+	{
 		return RES_ERROR;
+	}
 	if(this->esta_vacio())
+	{
 		return RES_ERROR;
+	}
 	if(this->get_cantidad_registros_almacenados() <= numeroRegistro)
+	{
 		return RES_ERROR;
+	}
 
 	unsigned short cuentaRegistros= 0;
 	stringstream stream(ios::in | ios::out);
@@ -259,7 +265,7 @@ int Bloque::recuperar_registro(RegistroVariable* registro,unsigned short numeroR
 	}
 
 	stream.read( (char*)(&tamanioBufferAux),sizeof(tamanioBufferAux) );
-	char* bufferAux = new char[tamanioBufferAux + 1];
+	char* bufferAux = new char[tamanioBufferAux ];
 	stream.read(bufferAux , tamanioBufferAux);
 	/*se recupera el registro. bufferAux tendra la siguiente estructura:
 	 * 	tamanioCampo1|campo1|tamanioCampo2|campo2|...  */
@@ -274,12 +280,12 @@ int Bloque::recuperar_registro(RegistroVariable* registro,unsigned short numeroR
 	streamEscritura.read(bufferEscritura , TAMANIO_BUFFER_ESCRITURA);
 	registro->desempaquetar(bufferEscritura);
 
-
 	//registro->agregar_datos(bufferAux,tamanioBufferAux);
 
 
 	delete[] bufferAux;
 	delete[] bufferEscritura;
+
 	return tamanioBufferAux;
 }/*recupera el registro con numero numeroRegistro. Los registros se cuentan a partir del 0.*/
 

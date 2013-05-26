@@ -277,6 +277,7 @@ int RegistroVariable::recuperar_campo(char* copia,unsigned short numeroCampo)thr
 
 	if(this->fue_eliminado() && numeroCampo> CAMPO_ENCADENAMIENTO_LIBRES)
 		return RES_ERROR;
+
 	if (numeroCampo >= this->get_cantidad_campos())
 		return RES_ERROR;
 
@@ -295,6 +296,7 @@ int RegistroVariable::recuperar_campo(char* copia,unsigned short numeroCampo)thr
 	}
 
 	unsigned short tamanioCampo;
+
 	stream.read( (char*)&tamanioCampo,sizeof(tamanioCampo) );
 	stream.read(copia,tamanioCampo);
 
