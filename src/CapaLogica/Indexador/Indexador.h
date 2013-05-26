@@ -24,6 +24,7 @@ class Indexador
 	
 		int indexar(std::string & directorioEntrada, std::string & directorioSalida);
 		int consultar_autor(std::string & directorioSalida, std::string & unAutor);
+		int consultar_titulo(std::string & directorioSalida, std::string & titulo);
 
 	private:
 		HashingExtensible indicePrimario;

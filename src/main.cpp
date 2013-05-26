@@ -9,8 +9,6 @@ int main (int argc, char* argv[])
 	}
 
 	std::string operacion = std::string(argv[1]);
-
-
 	Indexador indexador;
 	
 	// Indexar por primera vez
@@ -30,7 +28,9 @@ int main (int argc, char* argv[])
 	// Consultar por titulo
 	else if (operacion == "-consultarTitulo")
 	{
-		// TODO		
+		std::string directorioSalida = std::string(argv[2]);
+		std::string titulo = std::string(argv[3]);
+		indexador.consultar_titulo(directorioSalida, titulo);
 	}
 	
 	// Consultar por autor
@@ -47,8 +47,7 @@ int main (int argc, char* argv[])
 	}
 	else
 	{
-		std::cout << "La operacion" << operacion << "no esta permitida." << std::endl;
+		std::cout << "La operación " << operacion << " no está permitida." << std::endl;
 	}
 	
 }
-

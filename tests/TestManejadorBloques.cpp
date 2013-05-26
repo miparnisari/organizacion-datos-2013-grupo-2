@@ -18,7 +18,7 @@ void TestManejadorBloques::ejecutar()
 {
 	test_manejador_bloques_crear();
 	test_manejador_bloques_escribir_bloques();
-	test_manejador_bloques_masivo();
+//	test_manejador_bloques_masivo();
 	test_eliminar();
 }
 

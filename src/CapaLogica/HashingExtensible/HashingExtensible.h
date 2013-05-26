@@ -36,7 +36,7 @@ class HashingExtensible
 
 
 		virtual int agregar(RegistroClave & reg);
-        virtual int devolver(ClaveX & clave, RegistroClave *reg);
+        virtual int devolver(ClaveX & clave, RegistroClave* reg);
         virtual int modificar(RegistroClave & elemN);
         virtual int eliminar(ClaveX & clave);
 

@@ -11,6 +11,62 @@ Indexador::~Indexador()
 	
 }
 
+int Indexador::consultar_titulo(std::string & directorioSalida, std::string & titulo)
+{
+	int res = indiceSecundarioTitulo.abrir_archivo(directorioSalida+std::string(FILENAME_IDX_SECUN_TITULO));
+	if (res == RES_ERROR)
+	{
+		std::cout << "ERROR: No se pudo abrir el indice por titulo. " << std::endl;
+	}
+	documentos.abrir_archivo(directorioSalida+std::string(FILENAME_ID_DOCS));
+	ClaveX claveTitulo;
+	claveTitulo.set_clave(titulo);
+
+	RegistroClave regDevuelto;
+	res = indiceSecundarioTitulo.devolver(claveTitulo,&regDevuelto);
+	if (res == RES_RECORD_DOESNT_EXIST)
+	{
+		std::cout << "La cancion " << titulo << " no fue encontrada." << std::endl;
+	}
+	else {
+
+		// Recupero el IDdoc
+		std::cout << "tamanio campo 0 = " << regDevuelto.get_tamanio_campo(0) << std::endl;
+		std::cout << "tamanio campo 1 = " << regDevuelto.get_tamanio_campo(1) << std::endl;
+		char* campoRecuperado = new char[regDevuelto.get_tamanio_campo(1) + 1]();
+		campoRecuperado [regDevuelto.get_tamanio_campo(1)] = '\0';
+
+		regDevuelto.recuperar_campo(campoRecuperado,1);
+		std::cout << "strlen (campo recuperado) = " << strlen(campoRecuperado) << std::endl;
+
+		ClaveX claveIdDoc;
+		int idDoc;
+		std::stringstream ss (campoRecuperado);
+
+		ss >> idDoc;
+		std::cout << "ID doc = " << idDoc << std::endl;
+		claveIdDoc.set_clave(idDoc);
+		delete[] campoRecuperado;
+
+
+		// Busco el IDdoc en el archivo de documentos
+		RegistroClave regDevuelto2;
+		documentos.devolver(claveIdDoc,&regDevuelto2);
+
+		char* nombreCancion = new char[regDevuelto2.get_tamanio_campo(1) +1]();
+		nombreCancion[regDevuelto2.get_tamanio_campo(1)] = '\0';
+		regDevuelto2.recuperar_campo(nombreCancion,1);
+
+		std::cout << "Nombre de cancion = " << nombreCancion << std::endl;
+		delete[] nombreCancion;
+
+	}
+
+	indiceSecundarioTitulo.cerrar_archivo();
+	documentos.cerrar_archivo();
+	return RES_OK;
+}
+
 int Indexador::consultar_autor(std::string & directorioSalida, std::string & unAutor)
 {
 	indiceSecundarioAutor.abrir(directorioSalida+std::string(FILENAME_IDX_SECUN_AUTOR),"rb+");
@@ -31,6 +87,7 @@ int Indexador::consultar_autor(std::string & directorioSalida, std::string & unA
 	claveFin.set_clave(autorSiguiente);
 
 	RegistroClave otraCancion;
+	std::cout << "Buscando canciones de " << unAutor << "..." << std::endl;
 	while (buscador.readNext(otraCancion) != RES_FIN && otraCancion.get_clave() < claveFin)
 	{
 		ClaveX clave = otraCancion.get_clave();
@@ -78,9 +135,6 @@ int Indexador::_init(std::string & directorioEntrada, std::string & directorioSa
 	res += indiceSecundarioTitulo.crear_archivo(directorioSalida+std::string(FILENAME_IDX_SECUN_TITULO));
 	res += indiceSecundarioTitulo.abrir_archivo(directorioSalida+std::string(FILENAME_IDX_SECUN_TITULO));
 	res += parser.crear(directorioEntrada);
-	if (res != RES_OK)
-		return RES_ERROR;
-
 	return res;
 }
 
@@ -89,13 +143,17 @@ int Indexador::_finalizar()
 	int res = indicePrimario.cerrar_archivo();
 	res += documentos.cerrar_archivo();
 	res += indiceSecundarioAutor.cerrar();
-	res += indiceSecundarioTitulo.cerrar_archivo();
+	int res1 =indiceSecundarioTitulo.cerrar_archivo();
+	if (res1 == RES_ERROR)
+		cout << "ERROR: el archivo de titulos no se pudo cerrar" << endl;
 	return res;
 }
 
 int Indexador::indexar (std::string & directorioEntrada, std::string & directorioSalida)
 {
-	_init(directorioEntrada,directorioSalida);
+	int res = _init(directorioEntrada,directorioSalida);
+	if (res != RES_OK)
+		cout << "No se pudieron crear y/o abrir los archivos necesarios." << endl;
 
 	ClaveNumerica identificadorCancion(0);
 
@@ -105,7 +163,7 @@ int Indexador::indexar (std::string & directorioEntrada, std::string & directori
 	// Para cada cancion que tengamos...
 	while (! parser.fin_directorio())
 	{
-		int res = parser.obtener_proxima_cancion(regCancion,nombreArchivo);
+		res = parser.obtener_proxima_cancion(regCancion,nombreArchivo);
 		if (res != RES_OK)
 		{
 			std::cout << "No se indexó " << nombreArchivo << " porque no cumple el estandar especificado." << std::endl;
@@ -183,7 +241,11 @@ int Indexador::indexar (std::string & directorioEntrada, std::string & directori
 
 	}
 	
-	_finalizar();
+	res = _finalizar();
+	if (res != RES_OK)
+	{
+		std::cout << "ERROR: no se pudieron cerrar bien los archivos." << std::endl;
+	}
 
 	return RES_OK;
 }

@@ -19,6 +19,7 @@ class TestHashingExtensible : public Test {
 
                 void recuperar_dato_registro(char** campoRecuperado, ClaveX & clave, HashingExtensible & hash1);
 
+                void test_guardar_y_recuperar_ints();
                 void test_hashing_guardar_y_leer_int();
 
                 void test_crear_hashing();

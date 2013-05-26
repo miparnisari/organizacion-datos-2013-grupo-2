@@ -18,6 +18,7 @@ TestHashingExtensible::~TestHashingExtensible()
 
 void TestHashingExtensible::ejecutar()
 {
+//	test_guardar_y_recuperar_ints();
     test_hashing_guardar_y_leer_int();
     test_crear_hashing();
     test_eliminar_registro();
@@ -28,6 +29,41 @@ void TestHashingExtensible::ejecutar()
     test_eliminar_reg_y_dividir_tabla();
 }
 
+void TestHashingExtensible::test_guardar_y_recuperar_ints()
+{
+	// Guardo en el disco
+	HashingExtensible indiceSecundarioTitulo;
+	indiceSecundarioTitulo.crear_archivo("hash_autor_id");
+	indiceSecundarioTitulo.abrir_archivo("hash_autor_id");
+
+	RegistroClave regClave;
+	ClaveX claveTitulo;
+	claveTitulo.set_clave("orgadedatos");
+	int idCancion = 10;
+
+	// Registro = "somewhere only we know" + "10"
+	regClave.set_clave(claveTitulo);
+	regClave.agregar_campo((char*)&idCancion,sizeof(idCancion));
+
+	assert(indiceSecundarioTitulo.agregar(regClave) == RES_OK);
+	indiceSecundarioTitulo.cerrar_archivo();
+
+	// Consulto del disco
+	indiceSecundarioTitulo.abrir_archivo("hash_autor_id");
+	ClaveX claveConsulta;
+	claveConsulta.set_clave("orgadedatos");
+
+	RegistroClave regRecuperado;
+	assert (indiceSecundarioTitulo.devolver(claveConsulta,&regRecuperado) == RES_OK);
+
+	assert (regRecuperado.get_cantidad_campos() == 2);
+	assert (regRecuperado.get_tamanio_campo(0) == 12);
+	assert (regRecuperado.get_tamanio_campo(1) == 4);
+
+	indiceSecundarioTitulo.cerrar_archivo();
+
+	print_test_ok("test_guardar_y_recuperar_ints");
+}
 
 void TestHashingExtensible::test_hashing_guardar_y_leer_int()
 {
@@ -124,7 +160,7 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     RegistroVariable regVar;
     int numeroLeido;
 
-    //Creo un nuevo registro
+    //Creo un nuevo registro "23" (clave) + "Hola" (dato)
     clave.set_clave(23);
 
     std::string campo = "Hola";
