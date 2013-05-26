@@ -32,6 +32,8 @@ void TestIndiceInvertidoPorFrase::ejecutar()
     test_indice_por_frase_devolver_canciones_con_1termino_varias_canciones();
     test_indice_por_frase_devolver_canciones_con_una_cancion();
     test_indice_por_frase_devolver_canciones_con_varias_canciones();
+    test_indice_por_frase_devolver_canciones_con_una_cancion_terminos_repetidos();
+    test_indice_por_frase_devolver_canciones_con_varias_canciones_terminos_repetidos();
     test_indice_por_frase_borrar_indice();
 }
 
@@ -385,6 +387,114 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_v
     print_test_ok("test_indice_por_frase_devolver_canciones_con_varias_canciones");
 }
 
+
+
+void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_una_cancion_terminos_repetidos()
+{
+		IndiceInvertido indice;
+		ManejadorRegistrosVariables terminos;
+		ArchivoListas listasInvertidas, listasPos;
+		ArbolBMas vocabulario;
+		RegistroCancion cancion;
+		RegistroVariable lista, termino;
+		RegistroClave listaCan;
+		RegistroClave reg_termino;
+		ClaveX clave, clave_aux;
+		char* campo = new char[100];
+		int id;
+		indice.crear_indice("", NOMBRE_INDICE);
+		indice.abrir_indice("", NOMBRE_INDICE);
+		this->crear_reg_cancion("La casa junto a la casa oscura", cancion);
+		indice.agregar_cancion(cancion, 23);
+		//Abro los archivos del indice y veo si se crearon los registros correspondientes
+		//Vemos si se creo el archivo de listas invertidas
+		assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);
+		//Vemos si se creo el archivo de listas invertidas
+		assert(listasPos.abrir("",ARCHIVO_LISTAS_POS) == RES_OK);
+		//Vemos si se creo el arbol
+		assert(vocabulario.abrir(ARCHIVO_ARBOL, "rb+") == RES_OK);
+		//Vemos si se creo el archivo de terminos
+		assert(terminos.abrir_archivo(ARCHIVO_TERMINOS) == RES_OK);
+
+		//Le pido al indice que me devuelva la lista de canciones que guarda la frase "la casa del lago"
+		assert(indice.buscar_frase("la casa oscura", lista) == RES_OK);
+		//Veo que solo tenga un campo
+		assert(lista.get_cantidad_campos() == 1);
+		lista.recuperar_campo((char*)&id, 0);
+		//Veo que sea el id correcto
+		assert(id == 23);
+
+		//Le pido al indice que me devuelva la lista de canciones que guarda la frase "vaca" y deberia tirar NO_EXISTE
+		assert(indice.buscar_frase("vaca loca", lista) == NO_EXISTE);
+
+	    this->eliminar_archivos();
+	    delete[] campo;
+	    print_test_ok("test_indice_por_frase_devolver_canciones_con_una_cancion_terminos_repetidos");
+}
+
+void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_varias_canciones_terminos_repetidos()
+{
+	IndiceInvertido indice;
+	ManejadorRegistrosVariables terminos;
+	ArchivoListas listasInvertidas, listasPos;
+	ArbolBMas vocabulario;
+	RegistroCancion cancion;
+	RegistroVariable lista, termino;
+	RegistroClave listaCan;
+	RegistroClave reg_termino;
+	ClaveX clave, clave_aux;
+	char* campo = new char[100];
+	int id;
+	indice.crear_indice("", NOMBRE_INDICE);
+	indice.abrir_indice("", NOMBRE_INDICE);
+
+	this->crear_reg_cancion("La casa junto a la casa oscura", cancion);
+	indice.agregar_cancion(cancion, 23);
+	this->crear_reg_cancion("La casa del lago del sur", cancion);
+	indice.agregar_cancion(cancion, 24);
+	this->crear_reg_cancion("La granja del lago", cancion);
+	indice.agregar_cancion(cancion, 25);
+
+	indice.agregar_cancion(cancion, 23);
+	//Abro los archivos del indice y veo si se crearon los registros correspondientes
+	//Vemos si se creo el archivo de listas invertidas
+	assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);
+	//Vemos si se creo el archivo de listas invertidas
+	assert(listasPos.abrir("",ARCHIVO_LISTAS_POS) == RES_OK);
+	//Vemos si se creo el arbol
+	assert(vocabulario.abrir(ARCHIVO_ARBOL, "rb+") == RES_OK);
+	//Vemos si se creo el archivo de terminos
+	assert(terminos.abrir_archivo(ARCHIVO_TERMINOS) == RES_OK);
+
+	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "la casa del lago"
+	assert(indice.buscar_frase("la casa del lago", lista) == RES_OK);
+	//Veo que solo tenga un campo
+	assert(lista.get_cantidad_campos() == 1);
+	lista.recuperar_campo((char*)&id, 0);
+	//Veo que sea el id correcto
+	assert(id == 24);
+
+	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "la casa del lago"
+	assert(indice.buscar_frase("la casa", lista) == RES_OK);
+	//Veo que solo tenga dos campo
+	assert(lista.get_cantidad_campos() == 2);
+	//Veo la primera cancion
+	lista.recuperar_campo((char*)&id, 0);
+	//Veo que sea el id correcto
+	assert(id == 23);
+	//Veo la segunda cancion
+	lista.recuperar_campo((char*)&id, 0);
+	//Veo que sea el id correcto
+	assert(id == 24);
+
+	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "vaca" y deberia tirar NO_EXISTE
+	assert(indice.buscar_frase("vaca loca", lista) == NO_EXISTE);
+
+    this->eliminar_archivos();
+    delete[] campo;
+    print_test_ok("test_indice_por_frase_devolver_canciones_con_varias_canciones_terminos_repetidos");
+}
+
 void TestIndiceInvertidoPorFrase::test_indice_por_frase_borrar_indice()
 {
 	IndiceInvertido indice;
@@ -414,7 +524,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_borrar_indice()
     this->eliminar_archivos();
     print_test_ok("test_indice_por_frase_borrar_indice");
 }
-
 
 void TestIndiceInvertidoPorFrase::eliminar_archivos()
 {

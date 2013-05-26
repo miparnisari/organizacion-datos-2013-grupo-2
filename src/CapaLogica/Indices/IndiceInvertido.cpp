@@ -86,7 +86,7 @@ int IndiceInvertido::armar_archivo_coincidencias(std::string letra)
 		this->archivo_coincidencias.agregar_registro(&regCoincidencia);
 		pos++;
 	}
-	/**Ordeno el archivo por IDter+pos*/
+	/**Ordeno el archivo por IDter+pos************************************************************/
 	return RES_OK;
 }
 
@@ -321,7 +321,7 @@ int IndiceInvertido::buscar_cancion_con_frase(RegistroVariable terminos_frase, R
 	RegistroVariable reg;
 	int IDcancion= -1, i=0, cant_reg, pos=-1, k=0;
 	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones") != RES_OK) return RES_ERROR;
-	/****Ordeno el archivo****/
+	/****Ordeno el archivo**************************************************************************************/
 	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones") != RES_OK) return RES_ERROR;
 	cant_reg = archivo_temp.get_cantidad_registros_ocupados();
 	while(i<cant_reg){
