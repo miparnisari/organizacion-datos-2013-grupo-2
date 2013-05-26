@@ -190,7 +190,7 @@ int HashingExtensible::devolver(ClaveX & clave, RegistroClave *reg)
 
     int res = bloque->recuperar_registro(reg, posReg);
     delete bloque;
-    return res;
+    return RES_OK;
 }/* Devuelve el registro que contiene una clave,
 en caso de que la clave no exista devuelve RES_RECORD_DOESNT_EXIST.*/
 
