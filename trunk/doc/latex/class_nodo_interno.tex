@@ -1,0 +1,182 @@
+\hypertarget{class_nodo_interno}{\section{\-Referencia de la \-Clase \-Nodo\-Interno}
+\label{class_nodo_interno}\index{\-Nodo\-Interno@{\-Nodo\-Interno}}
+}
+
+
+\-Diagrama de herencias de \-Nodo\-Interno
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=150pt]{class_nodo_interno__inherit__graph}
+\end{center}
+\end{figure}
+
+
+\-Diagrama de colaboración para \-Nodo\-Interno\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=150pt]{class_nodo_interno__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{\-Tipos públicos}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_nodo_interno_a8a75c95764b6a641dc16fbb9ad39bcb8}{typedef vector$<$ \hyperlink{class_clave_x}{\-Clave\-X} $>$\-::iterator {\bfseries \-Iterador\-Vector\-Claves}}\label{class_nodo_interno_a8a75c95764b6a641dc16fbb9ad39bcb8}
+
+\item 
+\hypertarget{class_nodo_interno_ad1badd4d0f17df29c031392e40456dca}{typedef unsigned int {\bfseries \-Tipo\-Hijo}}\label{class_nodo_interno_ad1badd4d0f17df29c031392e40456dca}
+
+\end{DoxyCompactItemize}
+\subsection*{\-Métodos públicos}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_nodo_interno_adeb0e2b45aa8c0360877bc4db98c1980}{{\bfseries \-Nodo\-Interno} (unsigned int min\-Cantidad\-Bytes=\-M\-I\-N\-I\-M\-A\-\_\-\-C\-A\-N\-T\-I\-D\-A\-D\-\_\-\-B\-Y\-T\-E\-S\-\_\-\-D\-E\-F\-A\-U\-L\-T, unsigned int max\-Cantidad\-Bytes=\-M\-A\-X\-I\-M\-A\-\_\-\-C\-A\-N\-T\-I\-D\-A\-D\-\_\-\-B\-Y\-T\-E\-S\-\_\-\-D\-E\-F\-A\-U\-L\-T)}\label{class_nodo_interno_adeb0e2b45aa8c0360877bc4db98c1980}
+
+\item 
+\hypertarget{class_nodo_interno_ae0dfe3150aa4231e6ea3e361f9d2b377}{bool {\bfseries esta\-\_\-vacio} () const }\label{class_nodo_interno_ae0dfe3150aa4231e6ea3e361f9d2b377}
+
+\item 
+\hypertarget{class_nodo_interno_afd601d62c9edeec9deefbaa5f50cdea9}{int {\bfseries get\-\_\-tamanio\-\_\-ocupado} ()}\label{class_nodo_interno_afd601d62c9edeec9deefbaa5f50cdea9}
+
+\item 
+\hypertarget{class_nodo_interno_ae11a53f4a17bc51218f975606c19f303}{unsigned short {\bfseries get\-\_\-cantidad\-\_\-claves} ()}\label{class_nodo_interno_ae11a53f4a17bc51218f975606c19f303}
+
+\item 
+\hypertarget{class_nodo_interno_ae7767989acab35c50a899458b9137492}{unsigned short {\bfseries get\-\_\-cantidad\-\_\-hijos} ()}\label{class_nodo_interno_ae7767989acab35c50a899458b9137492}
+
+\item 
+\hypertarget{class_nodo_interno_a4ae880d12dcfbba0be738b6eb95ae340}{int {\bfseries set\-\_\-hijo\-\_\-izquierdo} (const \hyperlink{class_clave_x}{\-Clave\-X} \&clave, \-Tipo\-Hijo valor)}\label{class_nodo_interno_a4ae880d12dcfbba0be738b6eb95ae340}
+
+\item 
+\hypertarget{class_nodo_interno_a57adb7610f0572173253b31504337899}{int {\bfseries set\-\_\-hijo\-\_\-derecho} (const \hyperlink{class_clave_x}{\-Clave\-X} \&clave, \-Tipo\-Hijo valor)}\label{class_nodo_interno_a57adb7610f0572173253b31504337899}
+
+\item 
+\hypertarget{class_nodo_interno_ac63656665c6c25fad23a1af53acb9868}{virtual int {\bfseries get\-\_\-hijo\-\_\-izquierdo} (\-Tipo\-Hijo \&hijo, const \hyperlink{class_clave_x}{\-Clave\-X} \&clave)}\label{class_nodo_interno_ac63656665c6c25fad23a1af53acb9868}
+
+\item 
+\hypertarget{class_nodo_interno_a000a62081d77fda83cdc4cfa8204cd28}{virtual int {\bfseries get\-\_\-hijo\-\_\-derecho} (\-Tipo\-Hijo \&hijo, const \hyperlink{class_clave_x}{\-Clave\-X} \&clave)}\label{class_nodo_interno_a000a62081d77fda83cdc4cfa8204cd28}
+
+\item 
+\hypertarget{class_nodo_interno_a1ad2999cf1fb7ae040cdaa77bacefda3}{int {\bfseries get\-\_\-clave} (unsigned short numero\-Clave, \hyperlink{class_clave_x}{\-Clave\-X} \&clave)}\label{class_nodo_interno_a1ad2999cf1fb7ae040cdaa77bacefda3}
+
+\item 
+\hypertarget{class_nodo_interno_a7d8d883f13af1be7dde84cf6ee9e1dc0}{virtual int {\bfseries get\-\_\-hijo} (\-Tipo\-Hijo \&hijo, unsigned short numero\-Hijo)}\label{class_nodo_interno_a7d8d883f13af1be7dde84cf6ee9e1dc0}
+
+\item 
+\hypertarget{class_nodo_interno_a7634dccc0c5696daec3ce21a8bab196f}{int {\bfseries get\-\_\-clave\-\_\-mitad} (\hyperlink{class_clave_x}{\-Clave\-X} \&clave)}\label{class_nodo_interno_a7634dccc0c5696daec3ce21a8bab196f}
+
+\item 
+\hypertarget{class_nodo_interno_aa12b90a0e140aeeb5ce818e9f054aadf}{virtual int {\bfseries buscar\-\_\-clave} (const \hyperlink{class_clave_x}{\-Clave\-X} \&clave, unsigned short \&posicion\-Clave)}\label{class_nodo_interno_aa12b90a0e140aeeb5ce818e9f054aadf}
+
+\item 
+\hypertarget{class_nodo_interno_aa565e1543e52791144e1548dec983eb8}{int {\bfseries insertar\-\_\-clave} (const \hyperlink{class_clave_x}{\-Clave\-X} \&clave, unsigned short \&posicion\-Ocurrencia\-Insercion)}\label{class_nodo_interno_aa565e1543e52791144e1548dec983eb8}
+
+\item 
+\hypertarget{class_nodo_interno_a356bb840adf8e625e1660cea3ce81689}{int {\bfseries insertar\-\_\-hijo} (\-Tipo\-Hijo hijo, unsigned short posicion=\-P\-O\-S\-I\-C\-I\-O\-N\-\_\-\-F\-I\-N\-\_\-\-V\-E\-C\-T\-O\-R\-\_\-\-H\-I\-J\-O\-S)}\label{class_nodo_interno_a356bb840adf8e625e1660cea3ce81689}
+
+\item 
+\hypertarget{class_nodo_interno_a73d5f9c5d722a8d7cf5f900b663da5f3}{int {\bfseries modificar\-\_\-hijo} (\-Tipo\-Hijo valor, unsigned short numero\-Hijo)}\label{class_nodo_interno_a73d5f9c5d722a8d7cf5f900b663da5f3}
+
+\item 
+\hypertarget{class_nodo_interno_a6fa4495ca63251e675e44604cf2583aa}{int {\bfseries remover\-\_\-clave} (const \hyperlink{class_clave_x}{\-Clave\-X} \&clave, unsigned short \&posicion\-Eliminacion)}\label{class_nodo_interno_a6fa4495ca63251e675e44604cf2583aa}
+
+\item 
+\hypertarget{class_nodo_interno_aaa988e6edd62e1b4290d87a8798326c3}{int {\bfseries remover\-\_\-clave} (unsigned short numero\-Clave, \hyperlink{class_clave_x}{\-Clave\-X} \&clave)}\label{class_nodo_interno_aaa988e6edd62e1b4290d87a8798326c3}
+
+\item 
+\hypertarget{class_nodo_interno_a7cb3e1aa5be818aad4749a2e29c9219b}{int {\bfseries remover\-\_\-hijo} (unsigned short numero\-Hijo)}\label{class_nodo_interno_a7cb3e1aa5be818aad4749a2e29c9219b}
+
+\item 
+\hypertarget{class_nodo_interno_a639bb283d8c3ec15007b8957e2b938d0}{bool {\bfseries es\-\_\-hoja} ()}\label{class_nodo_interno_a639bb283d8c3ec15007b8957e2b938d0}
+
+\item 
+\hypertarget{class_nodo_interno_a0d0417cafb93dc061ba5e3435ec74cdb}{bool {\bfseries es\-\_\-interno} ()}\label{class_nodo_interno_a0d0417cafb93dc061ba5e3435ec74cdb}
+
+\item 
+\hypertarget{class_nodo_interno_a77e5e302e00ca8c624b0930e1e63924a}{virtual bool {\bfseries hay\-\_\-overflow} () const }\label{class_nodo_interno_a77e5e302e00ca8c624b0930e1e63924a}
+
+\item 
+\hypertarget{class_nodo_interno_ada2cea28133f24104f10f28f73f4cd07}{virtual bool {\bfseries hay\-\_\-underflow} () const }\label{class_nodo_interno_ada2cea28133f24104f10f28f73f4cd07}
+
+\item 
+\hypertarget{class_nodo_interno_a87733b3cb1e7a4375fa2757eb01cae6c}{void {\bfseries imprimir} ()}\label{class_nodo_interno_a87733b3cb1e7a4375fa2757eb01cae6c}
+
+\item 
+\hypertarget{class_nodo_interno_a598f2ed4b7596fd566b7c536e1bd4b65}{void {\bfseries imprimir\-\_\-claves} () const }\label{class_nodo_interno_a598f2ed4b7596fd566b7c536e1bd4b65}
+
+\item 
+\hypertarget{class_nodo_interno_a95d937ea71a54a22626de2f519ef1af8}{void {\bfseries imprimir\-\_\-hijos} () const }\label{class_nodo_interno_a95d937ea71a54a22626de2f519ef1af8}
+
+\item 
+\hypertarget{class_nodo_interno_a8f7a00cad331cf055fc88ab4bfe5e8f7}{int {\bfseries insertar\-\_\-hijo\-\_\-derecho} (const \hyperlink{class_clave_x}{\-Clave\-X} \&clave, \-Tipo\-Hijo valor=\-H\-I\-J\-O\-\_\-\-I\-N\-V\-A\-L\-I\-D\-O)}\label{class_nodo_interno_a8f7a00cad331cf055fc88ab4bfe5e8f7}
+
+\item 
+\hypertarget{class_nodo_interno_ada6e08333096a372b3b4ee258d69d251}{int {\bfseries insertar\-\_\-hijo\-\_\-izquierdo} (const \hyperlink{class_clave_x}{\-Clave\-X} \&clave, \-Tipo\-Hijo valor)}\label{class_nodo_interno_ada6e08333096a372b3b4ee258d69d251}
+
+\item 
+\hypertarget{class_nodo_interno_a4d24df1f2ab05ee951c97a0e7c269f85}{int {\bfseries modificar\-\_\-hijo\-\_\-derecho} (const \hyperlink{class_clave_x}{\-Clave\-X} \&, \-Tipo\-Hijo valor)}\label{class_nodo_interno_a4d24df1f2ab05ee951c97a0e7c269f85}
+
+\item 
+\hypertarget{class_nodo_interno_ad5c9d273aa9b3b1615a2760d67ff5416}{int {\bfseries modificar\-\_\-hijo\-\_\-izquierdo} (const \hyperlink{class_clave_x}{\-Clave\-X} \&, \-Tipo\-Hijo valor)}\label{class_nodo_interno_ad5c9d273aa9b3b1615a2760d67ff5416}
+
+\item 
+\hypertarget{class_nodo_interno_aa22ed222f4a433aa8713831d6030268f}{void {\bfseries limpiar} ()}\label{class_nodo_interno_aa22ed222f4a433aa8713831d6030268f}
+
+\item 
+\hypertarget{class_nodo_interno_a152bbe93e989a064289e11fd3af2b6b3}{int {\bfseries buscar\-\_\-hijo} (\-Tipo\-Hijo valor\-Hijo, unsigned short \&posicion\-Hijo)}\label{class_nodo_interno_a152bbe93e989a064289e11fd3af2b6b3}
+
+\item 
+\hypertarget{class_nodo_interno_adf1d1a474e815f9d01be7f73e51b423a}{int {\bfseries obtener\-\_\-hijo\-\_\-siguiente\-\_\-a} (\-Tipo\-Hijo valor\-Hijo, int \&hijo\-Siguiente)}\label{class_nodo_interno_adf1d1a474e815f9d01be7f73e51b423a}
+
+\item 
+\hypertarget{class_nodo_interno_a04fe50416fd32cd4ee29bdf0510a860b}{vector$<$ \hyperlink{class_clave_x}{\-Clave\-X} $>$ {\bfseries get\-\_\-claves} ()}\label{class_nodo_interno_a04fe50416fd32cd4ee29bdf0510a860b}
+
+\item 
+\hypertarget{class_nodo_interno_ab005e00bb770e14416cd9a7c0aade85d}{vector$<$ \-Tipo\-Hijo $>$ {\bfseries get\-\_\-hijos} ()}\label{class_nodo_interno_ab005e00bb770e14416cd9a7c0aade85d}
+
+\item 
+\hypertarget{class_nodo_interno_a2bd521275fcc33edc81be99af612a740}{int {\bfseries empaquetar} (\hyperlink{class_bloque}{\-Bloque} $\ast$bloque)}\label{class_nodo_interno_a2bd521275fcc33edc81be99af612a740}
+
+\item 
+\hypertarget{class_nodo_interno_a3317d6050526a85af08c546356d5b53e}{int {\bfseries desempaquetar} (const \hyperlink{class_bloque}{\-Bloque} $\ast$bloque)}\label{class_nodo_interno_a3317d6050526a85af08c546356d5b53e}
+
+\end{DoxyCompactItemize}
+\subsection*{\-Atributos públicos estáticos}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_nodo_interno_a4060903d9e1836f56ca63ca27b18bc11}{static const unsigned short {\bfseries \-P\-O\-S\-I\-C\-I\-O\-N\-\_\-\-F\-I\-N\-\_\-\-V\-E\-C\-T\-O\-R\-\_\-\-H\-I\-J\-O\-S} = \-U\-S\-H\-R\-T\-\_\-\-M\-A\-X}\label{class_nodo_interno_a4060903d9e1836f56ca63ca27b18bc11}
+
+\item 
+\hypertarget{class_nodo_interno_a944b7a5c9c93c3a542e5c518db98355e}{static const unsigned int {\bfseries \-M\-I\-N\-I\-M\-A\-\_\-\-C\-A\-N\-T\-I\-D\-A\-D\-\_\-\-B\-Y\-T\-E\-S\-\_\-\-D\-E\-F\-A\-U\-L\-T} = 0}\label{class_nodo_interno_a944b7a5c9c93c3a542e5c518db98355e}
+
+\item 
+\hypertarget{class_nodo_interno_a9004c5fff0fc00b6c3db5b212d6c19f8}{static const unsigned int {\bfseries \-M\-A\-X\-I\-M\-A\-\_\-\-C\-A\-N\-T\-I\-D\-A\-D\-\_\-\-B\-Y\-T\-E\-S\-\_\-\-D\-E\-F\-A\-U\-L\-T} = 4096}\label{class_nodo_interno_a9004c5fff0fc00b6c3db5b212d6c19f8}
+
+\end{DoxyCompactItemize}
+\subsection*{\-Atributos protegidos}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_nodo_interno_a42bdfaef87e9358f783227a2c1124e04}{unsigned int {\bfseries max\-Cantidad\-Bytes}}\label{class_nodo_interno_a42bdfaef87e9358f783227a2c1124e04}
+
+\item 
+\hypertarget{class_nodo_interno_a146d2e7f3c999bfda372417b193a9333}{unsigned int {\bfseries min\-Cantidad\-Bytes}}\label{class_nodo_interno_a146d2e7f3c999bfda372417b193a9333}
+
+\item 
+\hypertarget{class_nodo_interno_adb2c8a3113de80c12326214570d3e708}{unsigned int {\bfseries cantidad\-Bytes\-Ocupados}}\label{class_nodo_interno_adb2c8a3113de80c12326214570d3e708}
+
+\item 
+\hypertarget{class_nodo_interno_a2a1b65de783fe6d559d3de6c566a6059}{std\-::vector$<$ \hyperlink{class_clave_x}{\-Clave\-X} $>$ {\bfseries vector\-Claves}}\label{class_nodo_interno_a2a1b65de783fe6d559d3de6c566a6059}
+
+\item 
+\hypertarget{class_nodo_interno_ab322c57ba874ba7394844ea63fb6d599}{std\-::vector$<$ \-Tipo\-Hijo $>$ {\bfseries vector\-Hijos}}\label{class_nodo_interno_ab322c57ba874ba7394844ea63fb6d599}
+
+\end{DoxyCompactItemize}
+
+
+\-La documentación para esta clase fue generada a partir de los siguientes ficheros\-:\begin{DoxyCompactItemize}
+\item 
+src/\-Capa\-Logica/\-Arbol\-B\-Mas/\-Nodo\-Interno.\-h\item 
+src/\-Capa\-Logica/\-Arbol\-B\-Mas/\-Nodo\-Interno.\-cpp\end{DoxyCompactItemize}

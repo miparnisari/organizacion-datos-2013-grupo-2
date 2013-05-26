@@ -1,0 +1,86 @@
+\hypertarget{class_nodo_secuencial}{\section{\-Referencia de la \-Clase \-Nodo\-Secuencial}
+\label{class_nodo_secuencial}\index{\-Nodo\-Secuencial@{\-Nodo\-Secuencial}}
+}
+
+
+\-Diagrama de herencias de \-Nodo\-Secuencial
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=168pt]{class_nodo_secuencial__inherit__graph}
+\end{center}
+\end{figure}
+
+
+\-Diagrama de colaboración para \-Nodo\-Secuencial\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=168pt]{class_nodo_secuencial__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{\-Métodos públicos}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_nodo_secuencial_a106273bd88d662f3c9addd3366f88b3f}{{\bfseries \-Nodo\-Secuencial} (unsigned int min\-Bytes\-Ocupados, unsigned int max\-Bytes\-Ocupados)}\label{class_nodo_secuencial_a106273bd88d662f3c9addd3366f88b3f}
+
+\item 
+\hypertarget{class_nodo_secuencial_aa9ac47b8ce085738d7772694e076653d}{{\bfseries \-Nodo\-Secuencial} (const \hyperlink{class_nodo_secuencial}{\-Nodo\-Secuencial} \&otro)}\label{class_nodo_secuencial_aa9ac47b8ce085738d7772694e076653d}
+
+\item 
+\hypertarget{class_nodo_secuencial_a5dba3a824a9c4912c00ed2c08edcdd7c}{\hyperlink{class_nodo_secuencial}{\-Nodo\-Secuencial} \& {\bfseries operator=} (const \hyperlink{class_nodo_secuencial}{\-Nodo\-Secuencial} \&otro)}\label{class_nodo_secuencial_a5dba3a824a9c4912c00ed2c08edcdd7c}
+
+\item 
+\hypertarget{class_nodo_secuencial_a778573de969cbd29e3b9c5321f66e09d}{void {\bfseries imprimir} ()}\label{class_nodo_secuencial_a778573de969cbd29e3b9c5321f66e09d}
+
+\item 
+\hypertarget{class_nodo_secuencial_ad4087807bea589ede7b779c3cab551c3}{bool {\bfseries tiene\-\_\-carga\-\_\-minima} ()}\label{class_nodo_secuencial_ad4087807bea589ede7b779c3cab551c3}
+
+\item 
+\hypertarget{class_nodo_secuencial_aa41f85df74de1160902bf2325bc574e7}{void {\bfseries set\-\_\-proximo\-\_\-nodo} (\-Tipo\-Puntero p\-\_\-prox)}\label{class_nodo_secuencial_aa41f85df74de1160902bf2325bc574e7}
+
+\item 
+\hypertarget{class_nodo_secuencial_a13f3746e2dceefb2c45868a3f09f6f8a}{int {\bfseries insertar} (const \hyperlink{class_registro_clave}{\-Registro\-Clave} \&registro, std\-::vector$<$ \hyperlink{class_registro_clave}{\-Registro\-Clave} $>$ \&regs\-Oveflow)}\label{class_nodo_secuencial_a13f3746e2dceefb2c45868a3f09f6f8a}
+
+\item 
+\hypertarget{class_nodo_secuencial_a7d4462178d22906cb72f7ca3cdc4520c}{int {\bfseries eliminar} (const \hyperlink{class_clave_x}{\-Clave\-X} \&clave, std\-::vector$<$ \hyperlink{class_registro_clave}{\-Registro\-Clave} $>$ \&regs\-Underflow)}\label{class_nodo_secuencial_a7d4462178d22906cb72f7ca3cdc4520c}
+
+\item 
+\hypertarget{class_nodo_secuencial_a42c03f4d034f1fac90721a8d7a3df00f}{int {\bfseries buscar} (const \hyperlink{class_clave_x}{\-Clave\-X} \&clave\-Buscada, \hyperlink{class_registro_clave}{\-Registro\-Clave} $\ast$$\ast$reg\-Devuelto)}\label{class_nodo_secuencial_a42c03f4d034f1fac90721a8d7a3df00f}
+
+\item 
+\hypertarget{class_nodo_secuencial_a9d4b616f7554f635dcf7c970a84e3fd1}{int {\bfseries empaquetar} (\hyperlink{class_bloque}{\-Bloque} $\ast$bloque)}\label{class_nodo_secuencial_a9d4b616f7554f635dcf7c970a84e3fd1}
+
+\item 
+\hypertarget{class_nodo_secuencial_ac80948f325e919cf63ea6f79688588f9}{int {\bfseries desempaquetar} (const \hyperlink{class_bloque}{\-Bloque} $\ast$)}\label{class_nodo_secuencial_ac80948f325e919cf63ea6f79688588f9}
+
+\item 
+\hypertarget{class_nodo_secuencial_adb445ede87af35c0bc3a97700adb19ff}{unsigned int {\bfseries get\-\_\-bytes\-\_\-ocupados} () const }\label{class_nodo_secuencial_adb445ede87af35c0bc3a97700adb19ff}
+
+\item 
+\hypertarget{class_nodo_secuencial_a89585ec8f7277785c813e93435b19c59}{\-Tipo\-Puntero {\bfseries get\-\_\-proximo\-\_\-nodo} () const }\label{class_nodo_secuencial_a89585ec8f7277785c813e93435b19c59}
+
+\item 
+\hypertarget{class_nodo_secuencial_af95a29354cb5a18b0d73bbce811d5c66}{unsigned int {\bfseries get\-\_\-cantidad\-\_\-registros} () const }\label{class_nodo_secuencial_af95a29354cb5a18b0d73bbce811d5c66}
+
+\item 
+\hypertarget{class_nodo_secuencial_ab8bb3f25a064354b6b55db06e0e2ca62}{std\-::vector$<$ \hyperlink{class_registro_clave}{\-Registro\-Clave} $>$ {\bfseries get\-\_\-registros} () const }\label{class_nodo_secuencial_ab8bb3f25a064354b6b55db06e0e2ca62}
+
+\item 
+\hypertarget{class_nodo_secuencial_a303fc4a9326f28f33f1e4982b02c4424}{unsigned int {\bfseries get\-\_\-max\-\_\-bytes} () const }\label{class_nodo_secuencial_a303fc4a9326f28f33f1e4982b02c4424}
+
+\item 
+\hypertarget{class_nodo_secuencial_a33e63419a1b5e96a37ddb20371c80b4a}{unsigned int {\bfseries get\-\_\-min\-\_\-bytes} () const }\label{class_nodo_secuencial_a33e63419a1b5e96a37ddb20371c80b4a}
+
+\item 
+\hypertarget{class_nodo_secuencial_a62c4e6b6e5e28052bf519263ce0de3bf}{bool {\bfseries esta\-\_\-vacio} ()}\label{class_nodo_secuencial_a62c4e6b6e5e28052bf519263ce0de3bf}
+
+\end{DoxyCompactItemize}
+
+
+\-La documentación para esta clase fue generada a partir de los siguientes ficheros\-:\begin{DoxyCompactItemize}
+\item 
+src/\-Capa\-Logica/\-Arbol\-B\-Mas/\-Nodo\-Secuencial.\-h\item 
+src/\-Capa\-Logica/\-Arbol\-B\-Mas/\-Nodo\-Secuencial.\-cpp\end{DoxyCompactItemize}

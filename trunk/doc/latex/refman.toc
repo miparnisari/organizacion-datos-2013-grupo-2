@@ -1,0 +1,55 @@
+\select@language {spanish}
+\contentsline {chapter}{\numberline {1}\IeC {\'I}ndice de clases}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}\discretionary {-}{}{}Jerarqu\IeC {\'\i }a de la clase}{1}{section.1.1}
+\contentsline {chapter}{\numberline {2}\IeC {\'I}ndice de clases}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}\discretionary {-}{}{}Lista de clases}{3}{section.2.1}
+\contentsline {chapter}{\numberline {3}\discretionary {-}{}{}Documentaci\IeC {\'o}n de las clases}{5}{chapter.3}
+\contentsline {section}{\numberline {3.1}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Anio}{5}{section.3.1}
+\contentsline {section}{\numberline {3.2}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Arbol\discretionary {-}{}{}B\discretionary {-}{}{}Mas}{5}{section.3.2}
+\contentsline {section}{\numberline {3.3}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Archivo\discretionary {-}{}{}Listas}{7}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}\discretionary {-}{}{}Documentaci\IeC {\'o}n del constructor y destructor}{7}{subsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.1.1}\discretionary {-}{}{}Archivo\discretionary {-}{}{}Listas}{7}{subsubsection.3.3.1.1}
+\contentsline {section}{\numberline {3.4}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Archivo\discretionary {-}{}{}Registros\discretionary {-}{}{}Longitud\discretionary {-}{}{}Fija}{7}{section.3.4}
+\contentsline {section}{\numberline {3.5}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Bloque}{8}{section.3.5}
+\contentsline {section}{\numberline {3.6}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Clave}{9}{section.3.6}
+\contentsline {section}{\numberline {3.7}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Clave\discretionary {-}{}{}Numerica}{10}{section.3.7}
+\contentsline {section}{\numberline {3.8}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Clave\discretionary {-}{}{}String}{11}{section.3.8}
+\contentsline {section}{\numberline {3.9}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Clave\discretionary {-}{}{}X}{13}{section.3.9}
+\contentsline {section}{\numberline {3.10}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Compresor}{14}{section.3.10}
+\contentsline {section}{\numberline {3.11}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Compresor\discretionary {-}{}{}P\discretionary {-}{}{}P\discretionary {-}{}{}M\discretionary {-}{}{}C}{15}{section.3.11}
+\contentsline {section}{\numberline {3.12}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Hashing\discretionary {-}{}{}Extensible}{16}{section.3.12}
+\contentsline {section}{\numberline {3.13}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Estructura \discretionary {-}{}{}Manejador\discretionary {-}{}{}Registros\discretionary {-}{}{}Variables\discretionary {-}{}{}:\discretionary {-}{}{}:\discretionary {-}{}{}Header}{16}{section.3.13}
+\contentsline {section}{\numberline {3.14}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Estructura header\discretionary {-}{}{}\_\discretionary {-}{}{}arbol}{16}{section.3.14}
+\contentsline {section}{\numberline {3.15}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Estructura header\discretionary {-}{}{}\_\discretionary {-}{}{}arlf}{17}{section.3.15}
+\contentsline {section}{\numberline {3.16}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Estructura \discretionary {-}{}{}Manejador\discretionary {-}{}{}Registros\discretionary {-}{}{}Variables\discretionary {-}{}{}:\discretionary {-}{}{}:\discretionary {-}{}{}Header\discretionary {-}{}{}Registro\discretionary {-}{}{}Libre}{17}{section.3.16}
+\contentsline {section}{\numberline {3.17}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Heap}{17}{section.3.17}
+\contentsline {section}{\numberline {3.18}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Idioma}{17}{section.3.18}
+\contentsline {section}{\numberline {3.19}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Indexador}{18}{section.3.19}
+\contentsline {subsection}{\numberline {3.19.1}\discretionary {-}{}{}Documentaci\IeC {\'o}n de las funciones miembro}{18}{subsection.3.19.1}
+\contentsline {subsubsection}{\numberline {3.19.1.1}indexar}{18}{subsubsection.3.19.1.1}
+\contentsline {section}{\numberline {3.20}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Indice\discretionary {-}{}{}Invertido}{18}{section.3.20}
+\contentsline {section}{\numberline {3.21}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Indice\discretionary {-}{}{}Invertido\discretionary {-}{}{}Por\discretionary {-}{}{}Autor}{19}{section.3.21}
+\contentsline {subsection}{\numberline {3.21.1}\discretionary {-}{}{}Documentaci\IeC {\'o}n del constructor y destructor}{19}{subsection.3.21.1}
+\contentsline {subsubsection}{\numberline {3.21.1.1}\discretionary {-}{}{}Indice\discretionary {-}{}{}Invertido\discretionary {-}{}{}Por\discretionary {-}{}{}Autor}{19}{subsubsection.3.21.1.1}
+\contentsline {section}{\numberline {3.22}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Indice\discretionary {-}{}{}Invertido\discretionary {-}{}{}Por\discretionary {-}{}{}Titulo}{20}{section.3.22}
+\contentsline {section}{\numberline {3.23}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Iter\discretionary {-}{}{}Arbol\discretionary {-}{}{}B\discretionary {-}{}{}Mas}{20}{section.3.23}
+\contentsline {section}{\numberline {3.24}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Iter\discretionary {-}{}{}Nodo\discretionary {-}{}{}Secuencial}{20}{section.3.24}
+\contentsline {section}{\numberline {3.25}\discretionary {-}{}{}Referencia de la plantilla de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Manejador\discretionary {-}{}{}Archivo\discretionary {-}{}{}Datos\discretionary {-}{}{}Basicos$<$ \discretionary {-}{}{}Tipo\discretionary {-}{}{}Dato $>$}{21}{section.3.25}
+\contentsline {section}{\numberline {3.26}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Manejador\discretionary {-}{}{}Archivos}{22}{section.3.26}
+\contentsline {section}{\numberline {3.27}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Manejador\discretionary {-}{}{}Archivos\discretionary {-}{}{}Texto}{23}{section.3.27}
+\contentsline {section}{\numberline {3.28}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Manejador\discretionary {-}{}{}Bloques}{24}{section.3.28}
+\contentsline {section}{\numberline {3.29}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Manejador\discretionary {-}{}{}Registros\discretionary {-}{}{}Variables}{25}{section.3.29}
+\contentsline {section}{\numberline {3.30}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Estructura mb\discretionary {-}{}{}\_\discretionary {-}{}{}header}{27}{section.3.30}
+\contentsline {section}{\numberline {3.31}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Estructura mdb\discretionary {-}{}{}\_\discretionary {-}{}{}header}{27}{section.3.31}
+\contentsline {section}{\numberline {3.32}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Nodo\discretionary {-}{}{}Arbol}{27}{section.3.32}
+\contentsline {section}{\numberline {3.33}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Nodo\discretionary {-}{}{}Interno}{28}{section.3.33}
+\contentsline {section}{\numberline {3.34}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Nodo\discretionary {-}{}{}Secuencial}{31}{section.3.34}
+\contentsline {section}{\numberline {3.35}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Normalizador}{32}{section.3.35}
+\contentsline {section}{\numberline {3.36}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Parser\discretionary {-}{}{}Canciones}{32}{section.3.36}
+\contentsline {section}{\numberline {3.37}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Registro\discretionary {-}{}{}Cancion}{33}{section.3.37}
+\contentsline {section}{\numberline {3.38}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Registro\discretionary {-}{}{}Clave}{35}{section.3.38}
+\contentsline {section}{\numberline {3.39}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Registro\discretionary {-}{}{}Fijo}{36}{section.3.39}
+\contentsline {section}{\numberline {3.40}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Registro\discretionary {-}{}{}Variable}{37}{section.3.40}
+\contentsline {section}{\numberline {3.41}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Sort\discretionary {-}{}{}Externo}{38}{section.3.41}
+\contentsline {section}{\numberline {3.42}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Tabla}{38}{section.3.42}
+\contentsline {section}{\numberline {3.43}\discretionary {-}{}{}Referencia de la \discretionary {-}{}{}Clase \discretionary {-}{}{}Texto}{39}{section.3.43}

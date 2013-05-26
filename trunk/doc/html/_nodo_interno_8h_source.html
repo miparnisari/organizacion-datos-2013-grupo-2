@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<title>Organización de Datos: Fichero Fuente src/CapaLogica/ArbolBMas/NodoInterno.h</title>
+
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { searchBox.OnSelectItem(0); });
+</script>
+
+</head>
+<body>
+<div id="top"><!-- do not remove this div! -->
+
+
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  
+  <td id="projectlogo"><img alt="Logo" src="logo_fiuba.png"/></td>
+  
+  
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">Organización de Datos
+   
+   </div>
+   <div id="projectbrief">Indexador de canciones</div>
+  </td>
+  
+  
+  
+ </tr>
+ </tbody>
+</table>
+</div>
+
+<!-- Generado por Doxygen 1.7.6.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="headertitle">
+<div class="title">src/CapaLogica/ArbolBMas/NodoInterno.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="preprocessor">#ifndef NODOINTERNO_H_</span>
+<a name="l00002"></a>00002 <span class="preprocessor"></span><span class="preprocessor">#define NODOINTERNO_H_</span>
+<a name="l00003"></a>00003 <span class="preprocessor"></span>
+<a name="l00004"></a>00004 <span class="preprocessor">#include &quot;NodoArbol.h&quot;</span>
+<a name="l00005"></a>00005 <span class="preprocessor">#include &lt;cmath&gt;</span>
+<a name="l00006"></a>00006 
+<a name="l00007"></a><a class="code" href="class_nodo_interno.html">00007</a> <span class="keyword">class </span><a class="code" href="class_nodo_interno.html">NodoInterno</a> : <span class="keyword">public</span> <a class="code" href="class_nodo_arbol.html">NodoArbol</a> {
+<a name="l00008"></a>00008 
+<a name="l00009"></a>00009         <span class="keyword">public</span>:
+<a name="l00010"></a>00010                 <span class="keyword">typedef</span> vector&lt;ClaveX&gt;::iterator IteradorVectorClaves;
+<a name="l00011"></a>00011                 <span class="comment">//typedef unsigned short TipoHijo;</span>
+<a name="l00012"></a>00012                 <span class="keyword">typedef</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> TipoHijo;
+<a name="l00013"></a>00013 
+<a name="l00014"></a>00014         <span class="keyword">protected</span>:
+<a name="l00015"></a>00015 
+<a name="l00016"></a>00016                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> maxCantidadBytes;
+<a name="l00017"></a>00017                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> minCantidadBytes;
+<a name="l00018"></a>00018                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> cantidadBytesOcupados;
+<a name="l00019"></a>00019                 <span class="comment">/*cantidadBytesOcupados NO TOMA EN CUENTA tamanio de metadatos de registros</span>
+<a name="l00020"></a>00020 <span class="comment">                 * variables a la hora de empaquetar tampoco el tamanio de tipoNodo ...</span>
+<a name="l00021"></a>00021 <span class="comment">                 * seria sensato que al momento de crear un NodoInterno, el parametro de</span>
+<a name="l00022"></a>00022 <span class="comment">                 * maxCantidadBytes sea determinado a partir del tamanio de Bloque donde</span>
+<a name="l00023"></a>00023 <span class="comment">                 * sera empaquetado en el futuro.*/</span>
+<a name="l00024"></a>00024                 std::vector&lt;ClaveX&gt; vectorClaves;
+<a name="l00025"></a>00025                 std::vector&lt;TipoHijo&gt; vectorHijos;
+<a name="l00026"></a>00026 
+<a name="l00027"></a>00027 
+<a name="l00028"></a>00028 
+<a name="l00029"></a>00029         <span class="keyword">public</span>:
+<a name="l00030"></a>00030                 <span class="keyword">const</span> <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> POSICION_FIN_VECTOR_HIJOS= USHRT_MAX;
+<a name="l00031"></a>00031                 <span class="keyword">const</span> <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> MINIMA_CANTIDAD_BYTES_DEFAULT = 0;
+<a name="l00032"></a>00032                 <span class="keyword">const</span> <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> MAXIMA_CANTIDAD_BYTES_DEFAULT = 4096;<span class="comment">//4k</span>
+<a name="l00033"></a>00033 
+<a name="l00034"></a>00034 
+<a name="l00035"></a>00035                 <a class="code" href="class_nodo_interno.html">NodoInterno</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> minCantidadBytes= MINIMA_CANTIDAD_BYTES_DEFAULT,
+<a name="l00036"></a>00036                                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> maxCantidadBytes= MAXIMA_CANTIDAD_BYTES_DEFAULT);
+<a name="l00037"></a>00037                 <span class="keyword">virtual</span> ~<a class="code" href="class_nodo_interno.html">NodoInterno</a>();
+<a name="l00038"></a>00038 
+<a name="l00039"></a>00039                 <span class="keywordtype">bool</span> esta_vacio()<span class="keyword">const</span>;
+<a name="l00040"></a>00040                 <span class="keywordtype">int</span> get_tamanio_ocupado();
+<a name="l00041"></a>00041 
+<a name="l00042"></a>00042                 <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> get_cantidad_claves();
+<a name="l00043"></a>00043                 <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> get_cantidad_hijos();
+<a name="l00044"></a>00044                 <span class="keywordtype">int</span> set_hijo_izquierdo(<span class="keyword">const</span> <a class="code" href="class_clave_x.html">ClaveX</a>&amp; clave, TipoHijo valor);
+<a name="l00045"></a>00045                 <span class="keywordtype">int</span> set_hijo_derecho(<span class="keyword">const</span> <a class="code" href="class_clave_x.html">ClaveX</a>&amp; clave, TipoHijo valor);
+<a name="l00046"></a>00046                 <span class="keyword">virtual</span> <span class="keywordtype">int</span> get_hijo_izquierdo(TipoHijo&amp; hijo,<span class="keyword">const</span> <a class="code" href="class_clave_x.html">ClaveX</a>&amp; clave);
+<a name="l00047"></a>00047                 <span class="keyword">virtual</span> <span class="keywordtype">int</span> get_hijo_derecho(TipoHijo&amp; hijo,<span class="keyword">const</span> <a class="code" href="class_clave_x.html">ClaveX</a>&amp; clave);
+<a name="l00048"></a>00048                 <span class="comment">/*se retornar los hijos izquierdo y derecho respectivamente a partir de una</span>
+<a name="l00049"></a>00049 <span class="comment">                 * clave.*/</span>
+<a name="l00050"></a>00050 
+<a name="l00051"></a>00051 
+<a name="l00052"></a>00052                 <span class="keywordtype">int</span> get_clave(<span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> numeroClave,<a class="code" href="class_clave_x.html">ClaveX</a>&amp; clave);
+<a name="l00053"></a>00053                 <span class="keyword">virtual</span> <span class="keywordtype">int</span> get_hijo(TipoHijo&amp; hijo,<span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> numeroHijo);
+<a name="l00054"></a>00054                 <span class="comment">/*se recupera el hijo en la posicion numeroHijo y se guarda en el parametro</span>
+<a name="l00055"></a>00055 <span class="comment">                 * &#39;hijo&#39;*/</span>
+<a name="l00056"></a>00056                 <span class="keywordtype">int</span> get_clave_mitad(<a class="code" href="class_clave_x.html">ClaveX</a>&amp; clave);
+<a name="l00057"></a>00057                 <span class="keyword">virtual</span> <span class="keywordtype">int</span> buscar_clave(<span class="keyword">const</span> <a class="code" href="class_clave_x.html">ClaveX</a>&amp; clave,<span class="keywordtype">unsigned</span> <span class="keywordtype">short</span>&amp; posicionClave);
+<a name="l00058"></a>00058                 <span class="comment">/*se busca la posicion donde se encuentra la clave &#39;clave&#39; y su valor es devuelto</span>
+<a name="l00059"></a>00059 <span class="comment">                 * en el parametro &#39;posicionClave&#39;*/</span>
+<a name="l00060"></a>00060 
+<a name="l00061"></a>00061                 <span class="comment">/*METODOS AGREGADOS POR MARTIN -----------------------------------------------*/</span>
+<a name="l00062"></a>00062 
+<a name="l00063"></a>00063                 <span class="keywordtype">int</span> insertar_clave(<span class="keyword">const</span> <a class="code" href="class_clave_x.html">ClaveX</a>&amp; clave,
+<a name="l00064"></a>00064                                 <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span>&amp; posicionOcurrenciaInsercion);
+<a name="l00065"></a>00065                 <span class="comment">/*se inserta una clave, se retorna la posicion donde se inserto</span>
+<a name="l00066"></a>00066 <span class="comment">                 * en el parametro posicionInsercion . Se retorna RES_OVERFLOW,</span>
+<a name="l00067"></a>00067 <span class="comment">                 * en caso que despues de la insersion el nodo quede en estado de OVERFLOW ,</span>
+<a name="l00068"></a>00068 <span class="comment">                 * de lo contrario RES_OK */</span>
+<a name="l00069"></a>00069                 <span class="keywordtype">int</span> insertar_hijo(TipoHijo hijo,
+<a name="l00070"></a>00070                                 <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> posicion= POSICION_FIN_VECTOR_HIJOS);
+<a name="l00071"></a>00071                 <span class="comment">/*se inserta un hijo &#39;hijo&#39; en la posicion &#39;posicion&#39; . en caso de que no se</span>
+<a name="l00072"></a>00072 <span class="comment">                 * especifique el parametro posicion, el hijo se agrega al final . En caso que</span>
+<a name="l00073"></a>00073 <span class="comment">                 * despues de la insersion el nodo quede en estado OVERFLOW, se retorna</span>
+<a name="l00074"></a>00074 <span class="comment">                 * RES_OVERFLOW, en caso contrario se retorna RES_OK . Este metodo puede acoplarse</span>
+<a name="l00075"></a>00075 <span class="comment">                 * con insertar_clave tal que despues de insertar clave se usa el parametro</span>
+<a name="l00076"></a>00076 <span class="comment">                 * posicionInsercion para agregar el correspondiente hijo derecho&#39; */</span>
+<a name="l00077"></a>00077                 <span class="keywordtype">int</span> modificar_hijo(TipoHijo valor , <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> numeroHijo);
+<a name="l00078"></a>00078                 <span class="comment">/*el hijo en la posicion &#39;numeroHijo&#39; es modificado por el valor &#39;valor&#39;.</span>
+<a name="l00079"></a>00079 <span class="comment">                 * en caso de pasar un numeroHijo invalido se retorna RES_ERROR */</span>
+<a name="l00080"></a>00080                 <span class="keywordtype">int</span> remover_clave( <span class="keyword">const</span> <a class="code" href="class_clave_x.html">ClaveX</a>&amp; clave, <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span>&amp; posicionEliminacion );
+<a name="l00081"></a>00081                 <span class="comment">/*elimina la clave &#39;clave&#39; del nodo interno, se retorna su posicion de eliminacion</span>
+<a name="l00082"></a>00082 <span class="comment">                 * en la variable posicionEliminacion . En caso q el nodo quede en UNDERFLOW, se</span>
+<a name="l00083"></a>00083 <span class="comment">                 * retrorna RES_UNDERFLOW*/</span>
+<a name="l00084"></a>00084                 <span class="keywordtype">int</span> remover_clave(<span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> numeroClave , <a class="code" href="class_clave_x.html">ClaveX</a>&amp; clave);
+<a name="l00085"></a>00085                 <span class="comment">/*se remueve la clave en la posicion numeroClave, su valor es devuelto en la variable clave.</span>
+<a name="l00086"></a>00086 <span class="comment">                 * Retorna RES_UNDERFLOW en caso que el nodo quede en estado de underflow*/</span>
+<a name="l00087"></a>00087                 <span class="keywordtype">int</span> remover_hijo(<span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> numeroHijo);
+<a name="l00088"></a>00088                 <span class="comment">/*se remueve el hijo en la posicion numeroHijo. en caso de pasar un parametro</span>
+<a name="l00089"></a>00089 <span class="comment">                 * invalido se retorna RES_ERROR . En caso que el nodo interno quede en estado</span>
+<a name="l00090"></a>00090 <span class="comment">                 * underflow se retorna RES_UNDERFLOW.*/</span>
+<a name="l00091"></a>00091                 <span class="keywordtype">bool</span> es_hoja(){<span class="keywordflow">return</span> <span class="keyword">false</span>;}
+<a name="l00092"></a>00092                 <span class="keywordtype">bool</span> es_interno(){<span class="keywordflow">return</span> <span class="keyword">true</span>;}
+<a name="l00093"></a>00093                 <span class="keyword">virtual</span> <span class="keywordtype">bool</span> hay_overflow()<span class="keyword">const</span>;
+<a name="l00094"></a>00094                 <span class="keyword">virtual</span> <span class="keywordtype">bool</span> hay_underflow()<span class="keyword">const</span>;
+<a name="l00095"></a>00095 
+<a name="l00096"></a>00096 
+<a name="l00097"></a>00097                 <span class="keywordtype">void</span> imprimir();
+<a name="l00098"></a>00098                 <span class="keywordtype">void</span> imprimir_claves()<span class="keyword">const</span>;
+<a name="l00099"></a>00099                 <span class="comment">/*imprime todas las claves guardadas en el nodo. En caso que el mismo</span>
+<a name="l00100"></a>00100 <span class="comment">                 * este vacio se imprime NODO_VACIO.*/</span>
+<a name="l00101"></a>00101                 <span class="keywordtype">void</span> imprimir_hijos()<span class="keyword">const</span>;
+<a name="l00102"></a>00102 
+<a name="l00103"></a>00103                 <span class="keywordtype">int</span> insertar_hijo_derecho(<span class="keyword">const</span> <a class="code" href="class_clave_x.html">ClaveX</a>&amp; clave,TipoHijo valor= HIJO_INVALIDO);
+<a name="l00104"></a>00104                 <span class="keywordtype">int</span> insertar_hijo_izquierdo(<span class="keyword">const</span> <a class="code" href="class_clave_x.html">ClaveX</a>&amp; clave,TipoHijo valor);
+<a name="l00105"></a>00105 
+<a name="l00106"></a>00106                 <span class="keywordtype">int</span> modificar_hijo_derecho(<span class="keyword">const</span> <a class="code" href="class_clave_x.html">ClaveX</a>&amp;,TipoHijo valor );
+<a name="l00107"></a>00107                 <span class="keywordtype">int</span> modificar_hijo_izquierdo(<span class="keyword">const</span> <a class="code" href="class_clave_x.html">ClaveX</a>&amp;,TipoHijo valor);
+<a name="l00108"></a>00108 
+<a name="l00109"></a>00109                 <span class="keywordtype">void</span> limpiar();
+<a name="l00110"></a>00110                 <span class="comment">/*vacia los vectores de claves e hijos y resetea el espacio usado*/</span>
+<a name="l00111"></a>00111 
+<a name="l00112"></a>00112                 <span class="keywordtype">int</span> buscar_hijo(TipoHijo valorHijo,<span class="keywordtype">unsigned</span> <span class="keywordtype">short</span>&amp; posicionHijo);
+<a name="l00113"></a>00113                 <span class="keywordtype">int</span> obtener_hijo_siguiente_a(TipoHijo valorHijo,<span class="keywordtype">int</span>&amp; hijoSiguiente);
+<a name="l00114"></a>00114 
+<a name="l00115"></a>00115                 vector&lt;ClaveX&gt; get_claves();
+<a name="l00116"></a>00116                 vector&lt;TipoHijo&gt; get_hijos();
+<a name="l00117"></a>00117 
+<a name="l00118"></a>00118 
+<a name="l00119"></a>00119 
+<a name="l00120"></a>00120 
+<a name="l00121"></a>00121                 <span class="comment">/*METODOS AGREGADOS POR MARTIN -----------------------------------------------*/</span>
+<a name="l00122"></a>00122 
+<a name="l00123"></a>00123 
+<a name="l00124"></a>00124 
+<a name="l00125"></a>00125                 <span class="keywordtype">int</span> empaquetar(<a class="code" href="class_bloque.html">Bloque</a>* bloque);
+<a name="l00126"></a>00126                 <span class="keywordtype">int</span> desempaquetar(<span class="keyword">const</span> <a class="code" href="class_bloque.html">Bloque</a>* bloque);
+<a name="l00127"></a>00127 
+<a name="l00128"></a>00128 
+<a name="l00129"></a>00129 };
+<a name="l00130"></a>00130 
+<a name="l00131"></a>00131 <span class="preprocessor">#endif </span><span class="comment">/* NODOINTERNO_H_ */</span>
+</pre></div></div><!-- contents -->
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Todo</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Clases</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Funciones</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+
+
+<hr class="footer"/><address class="footer"><small>
+Generado el Domingo, 26 de Mayo de 2013 15:34:33 para Organización de Datos por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.7.6.1
+</small></address>
+
+</body>
+</html>
