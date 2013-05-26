@@ -89,7 +89,7 @@ const int RES_BALANCEO				= -5;
 
 const unsigned int TAM_MAX_BUFFER_ORDENAMIENTO	=1024; //en bytes
 //dado que los campos por los que se va a ordenar son secuencias de char...
-const char	CLAVE_TOPE								= char(256);
+const char	CLAVE_TOPE								= char(255);
 
 /*
  *Manejo del IndiceInvertido
