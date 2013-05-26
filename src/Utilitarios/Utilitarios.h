@@ -8,8 +8,12 @@
 
 #include <sstream>
 
+using namespace std;
+
 namespace utilitarios
 {
+	wstring StringToWString(const string& s);
+	string WStringToString (const wstring& s);
     unsigned int pasarBufferAInt(char* value);
 	void copyIntToBuffer (char* buffer, int integer);
 	bool validFileName (std::string fileName);

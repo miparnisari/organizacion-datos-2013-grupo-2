@@ -21,12 +21,13 @@ using namespace std;
 class Normalizador {
 
 	protected:
-
 		char filtrar_char(wchar_t c);
 
 	public:
 
 		char transformar_char(wchar_t c);
+		wstring a_minuscula(wstring & linea);
+		string normalizar_string(wstring & linea);
 		int normalizar(string pathArchivoEntrada,string pathArchivoSalida);
 		/*normaliza un archivo de texto con el nombre pathArchivoEntrada, removiendo
 		 * dieresis, acentos y cambiando el texto a lowerCase y el archivo resultado lo
