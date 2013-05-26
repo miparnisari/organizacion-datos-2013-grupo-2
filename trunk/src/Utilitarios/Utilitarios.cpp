@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace utilitarios
+ namespace utilitarios
 {
 	bool directorio_existe( std::string dir )
 	{
@@ -18,6 +18,18 @@ namespace utilitarios
 		}
 
 		return existe;
+	}
+
+	wstring StringToWString(const string& s) {
+			wstring temp(s.length(),L' ');
+			copy(s.begin(), s.end(), temp.begin());
+			return temp;
+	}
+
+	string WStringToString (const wstring& s) {
+			string simpleString;
+			simpleString.assign(s.begin(), s.end());
+			return simpleString;
 	}
     unsigned int pasarBufferAInt(char* value)
     {

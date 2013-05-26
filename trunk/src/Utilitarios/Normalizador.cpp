@@ -84,6 +84,33 @@ char Normalizador::filtrar_char(wchar_t c){
 }
 
 
+wstring Normalizador::a_minuscula(wstring & linea){
+
+    transform(linea.begin(), linea.end(), linea.begin(),
+            bind2nd(ptr_fun(&tolower<wchar_t>),
+            locale("es_ES.UTF8")));
+
+	return linea;
+
+}
+
+
+string Normalizador::normalizar_string(wstring & linea){
+
+	wstring lineaMinuscula=  this->a_minuscula(linea);
+
+	string s = "";
+	for (unsigned i=0; i < lineaMinuscula.length(); ++i){
+
+			// Se filtra el caracter y se lo agrega al final del string
+			char c = filtrar_char(lineaMinuscula[i]);
+			s.push_back(c);
+	}
+	return s;
+
+}
+
+
 int Normalizador::normalizar(string pathArchivoEntrada , string pathArchivoSalida){
 
     // Abre el archivo como wide char, el archivo debe ser UTF-8
