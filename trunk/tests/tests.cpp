@@ -12,7 +12,7 @@
 #include "TestManejadorArchivoDatosBasicos.h"
 #include "TestArbol.h"
 #include "TestTabla.h"
-//#include "TestOrdenamientoExterno.h"
+#include "TestOrdenamientoExterno.h"
 #include "TestIndiceInvertidoPorFrase.h"
 #include "TestIndicePorAutor.h"
 #include "TestIndicePorTitulo.h"
@@ -278,7 +278,7 @@ int main(int argc,char** args)
 //	tests.push_back(new TestIndicePorAutor);
 //	tests.push_back(new TestIndicePorTitulo);
 
-	//tests.push_back(new TestOrdenamientoExterno);
+	tests.push_back(new TestOrdenamientoExterno);
 
 	for (unsigned int i = 0; i < tests.size(); i++)
 	{
