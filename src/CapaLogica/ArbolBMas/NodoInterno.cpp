@@ -156,28 +156,28 @@ int NodoInterno::remover_clave(unsigned short numeroClave , ClaveX& clave){
 
 
 
-int NodoInterno::set_hijo_izquierdo(const ClaveX& clave, TipoHijo valor)
-{
-
-	unsigned short posicion;
-	if( this->buscar_clave(clave,posicion) ==RES_ERROR)
-		return RES_ERROR;
-
-	vectorHijos[posicion]= valor;
-
-	return RES_OK;
-}
-
-int NodoInterno::set_hijo_derecho(const ClaveX& clave, TipoHijo valor)
-{
-	unsigned short posicion;
-	if( this->buscar_clave(clave,posicion) ==RES_ERROR)
-		return RES_ERROR;
-
-	vectorHijos.insert( vectorHijos.begin() + posicion ,valor);
-
-	return RES_OK;
-}
+//int NodoInterno::set_hijo_izquierdo(const ClaveX& clave, TipoHijo valor)
+//{
+//
+//	unsigned short posicion;
+//	if( this->buscar_clave(clave,posicion) ==RES_ERROR)
+//		return RES_ERROR;
+//
+//	vectorHijos[posicion]= valor;
+//
+//	return RES_OK;
+//}
+//
+//int NodoInterno::set_hijo_derecho(const ClaveX& clave, TipoHijo valor)
+//{
+//	unsigned short posicion;
+//	if( this->buscar_clave(clave,posicion) ==RES_ERROR)
+//		return RES_ERROR;
+//
+//	vectorHijos.insert( vectorHijos.begin() + posicion ,valor);
+//
+//	return RES_OK;
+//}
 
 int NodoInterno::empaquetar(Bloque* bloque)
 {

@@ -41,8 +41,8 @@ class NodoInterno : public NodoArbol {
 
 		unsigned short get_cantidad_claves();
 		unsigned short get_cantidad_hijos();
-		int set_hijo_izquierdo(const ClaveX& clave, TipoHijo valor);
-		int set_hijo_derecho(const ClaveX& clave, TipoHijo valor);
+//		int set_hijo_izquierdo(const ClaveX& clave, TipoHijo valor);
+//		int set_hijo_derecho(const ClaveX& clave, TipoHijo valor);
 		virtual int get_hijo_izquierdo(TipoHijo& hijo,const ClaveX& clave);
 		virtual int get_hijo_derecho(TipoHijo& hijo,const ClaveX& clave);
 		/*se retornar los hijos izquierdo y derecho respectivamente a partir de una
