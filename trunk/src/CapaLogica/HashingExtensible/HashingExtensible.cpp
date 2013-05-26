@@ -170,7 +170,7 @@ devuelve RES_RECORD_EXISTS. */
 int HashingExtensible::devolver(ClaveX & clave, RegistroClave *reg)
 {
 	reg->limpiar_campos();
-    int posReg;
+
     Bloque* bloque = NULL;
     //Obtengo el bloque que buscamos
     int numBloque = this->_obtener_bloque(clave, &bloque);
@@ -181,8 +181,7 @@ int HashingExtensible::devolver(ClaveX & clave, RegistroClave *reg)
     }
     //Modifico el elemento del bloque
 
-    posReg = this->_obtener_posicion_reg_bloque(clave, *bloque);
-    std::cout << "pos reg = " << posReg << std::endl;
+    int posReg = this->_obtener_posicion_reg_bloque(clave, *bloque);
     if (posReg == RES_ERROR)
     {
     	delete bloque;
@@ -190,8 +189,6 @@ int HashingExtensible::devolver(ClaveX & clave, RegistroClave *reg)
     }
 
     int res = bloque->recuperar_registro(reg, posReg);
-    if (res == RES_ERROR)
-    	std::cout << "se recupero mal el registro" << std::endl;
     delete bloque;
     return RES_OK;
 }/* Devuelve el registro que contiene una clave,

@@ -64,10 +64,9 @@ void RegistroClave::set_clave(const ClaveX& clave){
 	RegistroVariable copiaDeDatos;
 	for (int i = 1; i < get_cantidad_campos(); i ++)
 	{
-		char* copiaDato = new char[get_tamanio_campo(i) + 1]();
-		copiaDato[get_tamanio_campo(i)] = '\0';
+		char* copiaDato = new char[get_tamanio_campo(i)]();
 		recuperar_campo(copiaDato,i);
-		copiaDeDatos.agregar_campo(copiaDato,strlen(copiaDato));
+		copiaDeDatos.agregar_campo(copiaDato,get_tamanio_campo(i));
 		delete[] copiaDato;
 	}
 
@@ -78,10 +77,9 @@ void RegistroClave::set_clave(const ClaveX& clave){
 
 	for (int i = 0; i < copiaDeDatos.get_cantidad_campos(); i++)
 	{
-		char* copiaDato = new char[copiaDeDatos.get_tamanio_campo(i) +1]();
-		copiaDato[copiaDeDatos.get_tamanio_campo(i)] = '\0';
+		char* copiaDato = new char[copiaDeDatos.get_tamanio_campo(i)]();
 		copiaDeDatos.recuperar_campo(copiaDato,i);
-		this->agregar_campo(copiaDato,strlen(copiaDato));
+		this->agregar_campo(copiaDato,copiaDeDatos.get_tamanio_campo(i));
 		delete[] copiaDato;
 	}
 
@@ -93,8 +91,8 @@ ClaveX RegistroClave::get_clave()const
 	return clave;
 }
 
-int RegistroClave::desempaquetar(const char* copia)throw(){
-
+int RegistroClave::desempaquetar(const char* copia)throw()
+{
 	int resultado= RegistroVariable::desempaquetar(copia);
 	if (resultado == RES_ERROR)
 		return RES_ERROR;
