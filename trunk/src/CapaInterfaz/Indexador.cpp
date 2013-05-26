@@ -102,6 +102,28 @@ int Indexador::consultar_autor(std::string & directorioSalida, std::string & unA
 
 int Indexador::_init(std::string & directorioEntrada, std::string & directorioSalida)
 {
+	bool dirEntradaExiste = utilitarios::directorio_existe(directorioEntrada);
+	if (! dirEntradaExiste)
+	{
+		std::cout << "ERROR: El directorio a indexar no existe." << std::endl;
+		return RES_DIRECTORY_DOESNT_EXIST;
+	}
+
+	bool dirSalidaExiste = utilitarios::directorio_existe(directorioSalida);
+	if (! dirSalidaExiste)
+	{
+		std::cout << "AVISO: El directorio de salida no existe. Se creará." << std::endl;
+		mkdir(directorioSalida.c_str(),S_IRWXG);
+	}
+	else {
+		std::cout << "AVISO: Ya existe un indice en " << directorioSalida << ". ¿Que desea hacer?" << std::endl;
+		std::cout << "(a) Borrar el indice e indexar desde cero." << std::endl;
+		std::cout << "(b) Anexar las canciones de " << directorioEntrada << " al índice." << std::endl;
+		char c;
+		c = getchar();
+	}
+
+
 	int res = RES_OK;
 	res += indicePrimario.crear_archivo(directorioSalida+std::string(FILENAME_IDX_PRIM));
 	res += indicePrimario.abrir_archivo(directorioSalida+std::string(FILENAME_IDX_PRIM));
