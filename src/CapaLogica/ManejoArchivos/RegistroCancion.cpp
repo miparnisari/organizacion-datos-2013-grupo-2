@@ -283,7 +283,6 @@ string RegistroCancion::get_titulo()throw(){
 
 }/*retorna el titulo de la cancion*/
 
-
 int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
  	int resCarga = RegistroVariable::agregar_datos(dato,tamanioDato);
 	if (resCarga != RES_OK)

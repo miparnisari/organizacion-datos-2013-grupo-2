@@ -13,90 +13,32 @@ Indexador::~Indexador()
 
 int Indexador::consultar_titulo(std::string & directorioSalida, std::string & titulo)
 {
-	int res = indiceSecundarioTitulo.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
-	documentos.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
-	ClaveX claveTitulo;
-	claveTitulo.set_clave(titulo);
-
-	RegistroClave regDevuelto;
-	res = indiceSecundarioTitulo.devolver(claveTitulo,&regDevuelto);
-	if (res == RES_RECORD_DOESNT_EXIST)
+	ResolvedorConsultas rc(directorioSalida);
+	int id = rc.get_id_cancion_titulo(titulo);
+	if (id == RES_RECORD_DOESNT_EXIST)
 	{
-		std::cout << "La cancion " << titulo << " no fue encontrada." << std::endl;
+		std::cout << "No se encontro una cancion con titulo " << titulo << std::endl;
 	}
 	else {
-
-		// Recupero el IDdoc
-		int idDoc;
-		regDevuelto.recuperar_campo((char*)&idDoc,1);
-
-		ClaveX claveIdDoc;
-		claveIdDoc.set_clave(idDoc);
-
-		// Busco el IDdoc en el archivo de documentos
-		RegistroClave regDevuelto2;
-		documentos.devolver(claveIdDoc,&regDevuelto2);
-
-		char* nombreCancion = new char[regDevuelto2.get_tamanio_campo(1) +1]();
-		nombreCancion[regDevuelto2.get_tamanio_campo(1)] = '\0';
-		regDevuelto2.recuperar_campo(nombreCancion,1);
-
-		std::cout << "Nombre de archivo = " << nombreCancion << std::endl;
-		delete[] nombreCancion;
-
+		std::cout << "Nombre archivo = " << rc.get_nombre_archivo(id) << "." << std::endl;
 	}
-
-	indiceSecundarioTitulo.cerrar_archivo();
-	documentos.cerrar_archivo();
 	return RES_OK;
 }
 
-int Indexador::consultar_autor(std::string & directorioSalida, std::string & unAutor)
+int Indexador::consultar_autor(std::string & directorioSalida, std::string & autor)
 {
-	indiceSecundarioAutor.abrir(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_AUTOR),"rb+");
-	documentos.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
-	IterArbolBMas buscador(indiceSecundarioAutor);
-	ClaveX claveInicio;
-	claveInicio.set_clave(unAutor + (char)0);
-	buscador.comienzo(">=",claveInicio);
-
-	ClaveX claveFin;
-	std::string autorSiguiente = unAutor;
-	autorSiguiente[autorSiguiente.size()-1] = (char)(unAutor[unAutor.size()-1] + 1);
-	claveFin.set_clave(autorSiguiente);
-
-	RegistroClave otraCancion;
-	std::cout << "Buscando canciones de " << unAutor << "..." << std::endl;
-	while (buscador.leer_siguiente(otraCancion) != RES_FIN && otraCancion.get_clave() < claveFin)
+	ResolvedorConsultas rc(directorioSalida);
+	std::vector <int> ids = rc.get_id_canciones_autor(autor);
+	if (ids.size() == 0)
 	{
-		ClaveX clave = otraCancion.get_clave();
-
-		std::string autorMasId;
-		clave.get_clave(autorMasId);
-
-		std::string soloID;
-		soloID.append(autorMasId.begin()+unAutor.size(), autorMasId.end());
-		std::istringstream ss(soloID);
-		int idDoc;
-		ss >> idDoc;
-
-		ClaveX claveIDdoc;
-
-		claveIDdoc.set_clave(idDoc);
-
-		RegistroClave regDocumento;
-		documentos.devolver(claveIDdoc,&regDocumento);
-
-		char* nombreCancion = new char[regDocumento.get_tamanio_campo(1) +1]();
-		nombreCancion[regDocumento.get_tamanio_campo(1)] = '\0';
-		regDocumento.recuperar_campo(nombreCancion,1);
-
-		std::cout << "Nombre de cancion = " << nombreCancion << std::endl;
-		delete[] nombreCancion;
+		std::cout << "No se encontraron canciones de " << autor << "." << std::endl;
 	}
-
-	indiceSecundarioAutor.cerrar();
-	documentos.cerrar_archivo();
+	else {
+		for (unsigned int i = 0; i < ids.size(); i ++)
+		{
+			std::cout << "Nombre archivo = " << rc.get_nombre_archivo(ids.at(i)) << "." << std::endl;
+		}
+	}
 	return RES_OK;
 }
 
@@ -121,12 +63,12 @@ int Indexador::_mostrar_opciones(std::string & directorioEntrada, std::string & 
 		}
 		else {
 			std::cout << "Se creó el directorio de salida." << std::endl;
-			return RES_OK;
+			return OPCION_INDEXAR;
 		}
 	}
 	else{
 		int opcion = 0;
-		while (opcion != OPCION_REINDEXAR && opcion != OPCION_ANEXAR)
+		while (opcion != OPCION_INDEXAR && opcion != OPCION_ANEXAR)
 		{
 			std::cout << "AVISO: Ya existe un indice en " << directorioSalida << ". ¿Que desea hacer?" << std::endl;
 			std::cout << "(1) Borrar el indice e indexar desde cero." << std::endl;
@@ -134,36 +76,42 @@ int Indexador::_mostrar_opciones(std::string & directorioEntrada, std::string & 
 			std::cout << "Ingrese opcion: ";
 			cin >> opcion;
 		}
-		if (opcion == OPCION_REINDEXAR)
+		if (opcion == OPCION_INDEXAR)
 		{
 			if (utilitarios::remover_archivos_de_directorio(directorioSalida) == 0)
 			{
-				return RES_OK;
+				return OPCION_INDEXAR;
 			}
 			else {
 				std::cout << "ERROR: No se pudo borrar el indice existente." << std::endl;
 				return RES_ERROR;
 			}
 		}
-		else if (opcion == OPCION_ANEXAR)
+		else
 		{
-			return _anexar(directorioEntrada,directorioSalida);
+			return OPCION_ANEXAR;
 		}
 	}
 }
 
-int Indexador::_init(std::string & directorioEntrada, std::string & directorioSalida)
+int Indexador::_crear_archivos_indices(std::string & directorioEntrada, std::string & directorioSalida)
 {
 	int res = RES_OK;
 	res += indicePrimario.crear_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_PRIM));
-	res += indicePrimario.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_PRIM));
 	res += archivoMaestro.crear_archivo(directorioSalida+'/'+std::string(FILENAME_ARCH_MAESTRO));
-	res += archivoMaestro.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ARCH_MAESTRO));
 	res += documentos.crear_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
-	res += documentos.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
 	res += indiceSecundarioAutor.crear(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_AUTOR));
-	res += indiceSecundarioAutor.abrir(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_AUTOR),"rb+");
 	res += indiceSecundarioTitulo.crear_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
+	return res;
+}
+
+int Indexador::_abrir_archivos_indices(std::string & directorioEntrada, std::string & directorioSalida)
+{
+	int res = RES_OK;
+	res += indicePrimario.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_PRIM));
+//	res += archivoMaestro.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ARCH_MAESTRO));
+	res += documentos.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
+	res += indiceSecundarioAutor.abrir(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_AUTOR),"rb+");
 	res += indiceSecundarioTitulo.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
 	res += parser.crear(directorioEntrada);
 	return res;
@@ -180,13 +128,165 @@ int Indexador::_finalizar()
 
 int Indexador::_anexar(std::string & directorioEntrada, std::string & directorioSalida)
 {
-	// TODO
-	return RES_OK;
+	ClaveNumerica id(archivoMaestro.get_cantidad_registros());
+
+	RegistroCancion regCancion;
+	std::string nombreArchivo;
+	while (! parser.fin_directorio())
+	{
+		int res = parser.obtener_proxima_cancion(regCancion, nombreArchivo);
+		if (res != RES_OK)
+		{
+			std::cout << "No se indexó " << nombreArchivo << " porque no cumple el estandar especificado." << std::endl;
+			continue;
+		}
+
+		std::vector<std::string> autores;
+		for (unsigned int i = 0; i < regCancion.get_cantidad_autores(); i ++)
+		{
+			autores.push_back(regCancion.get_autor(i));
+			cout << "autor a anexar = " << autores[i] << endl;
+		}
+		std::string titulo = regCancion.get_titulo();
+		std::string idioma = regCancion.get_idioma();
+		std::vector<int> idsDelAutor;
+
+		//FIXME quitar
+		cout << "idioma a anexar = " << idioma << endl;
+		cout << "titulo a anexar = " << titulo << endl;
+
+		// Verifico que no haya ninguna cancion ya indexada
+		// que tenga los mismos tres parametros anteriores
+		unsigned int i = 0;
+		bool cancionEstaRepetida = false;
+		while (i < autores.size() && cancionEstaRepetida == false)
+		{
+			ResolvedorConsultas rc(directorioSalida);
+			idsDelAutor = rc.get_id_canciones_autor(autores[i]);
+
+			//FIXME quitar
+			for (unsigned int k = 0; k < idsDelAutor.size(); k++)
+			{
+				cout << "id a comparar = " << idsDelAutor.at(k) << endl;
+			}
+
+			unsigned int j = 0;
+			while (j < idsDelAutor.size() && cancionEstaRepetida == false)
+			{
+				cout << "ESTA ENTRANDO AL CICLO QUE VERIFICA LOS IDS YA EXISTENTES " << endl;
+				ClaveX claveID;
+				claveID.set_clave(idsDelAutor[i]);
+				RegistroClave reg;
+				int res = indicePrimario.devolver(claveID,&reg);
+				if (res == RES_RECORD_DOESNT_EXIST)
+					cout << "no se encontro en el indice primario el ID" << idsDelAutor[i] << endl;
+
+				unsigned long offsetAlMaestro;
+				reg.recuperar_campo((char*)&offsetAlMaestro,1);
+
+				RegistroCancion regCancionAlmacenada;
+
+				archivoMaestro.get_registro_por_offset(&regCancionAlmacenada,offsetAlMaestro);
+
+				cout << "idioma almacenado = " << regCancionAlmacenada.get_idioma() << endl;
+				cout << "titulo almacenado = " << regCancionAlmacenada.get_titulo() << endl;
+				if (regCancionAlmacenada.get_idioma() == idioma && regCancionAlmacenada.get_titulo() == titulo)
+				{
+					cancionEstaRepetida = true;
+				}
+				j++;
+
+			}
+			i++;
+		}
+
+		if (cancionEstaRepetida == true)
+		{
+			std::cout << "No se indexara la cancion " << titulo << " porque esta repetida" << std::endl;
+			continue;
+		}
+
+		_agregar_a_los_indices(id, regCancion,nombreArchivo);
+		id.incrementar();
+
+	}
+
+	return _finalizar();
+}
+
+void Indexador::_agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & regCancion, std::string nombreArchivo)
+{
+	/* ------ guardamos el registro de la cancion en un archivo maestro ------ */
+
+	regCancion.comprimir(compresor);
+	long offsetInicialRegCancion = archivoMaestro.agregar_registro(&regCancion);
+
+	/* ------ guardamos el numero de documento (clave) y el documento -------- */
+
+	RegistroClave regDoc;
+	ClaveX IDdoc;
+	IDdoc.set_clave(id.get_dato());
+
+	regDoc.set_clave(IDdoc);
+	regDoc.agregar_campo(nombreArchivo.c_str(),nombreArchivo.size());
+	this->documentos.agregar(regDoc);
+
+	/* ----- agregamos al indice primario: ID cancion + offset de la cancion ----*/
+
+	RegistroClave regClave;
+	ClaveX clave;
+	clave.set_clave(id.get_dato());
+	regClave.set_clave(clave);
+	regClave.agregar_campo((char*)&offsetInicialRegCancion,sizeof(offsetInicialRegCancion));
+	indicePrimario.agregar(regClave);
+
+
+	/* para cada autor de la cancion:
+	 * ----- agregamos al indice por autor: autor + ID cancion ----
+	 */
+
+	unsigned cantAutores = regCancion.get_cantidad_autores();
+	for (unsigned int i = 0; i < cantAutores; i++)
+	{
+		RegistroClave regAutorID;
+
+		ClaveX claveAutor;
+
+		/*** En la clave hay "autor"(string) + "id cancion"(string) ***/
+		std::string clave = regCancion.get_autor(i);
+		std::stringstream idCancion;
+		idCancion << id.get_dato();
+		clave.append(idCancion.str());
+
+		claveAutor.set_clave(clave);
+
+		regAutorID.set_clave(claveAutor);
+
+		indiceSecundarioAutor.agregar(regAutorID);
+	}
+
+	/* ----- agregamos al indice por titulo: el titulo + ID cancion ----*/
+
+	RegistroClave regClave3;
+	ClaveX claveTitulo;
+	claveTitulo.set_clave(regCancion.get_titulo());
+	regClave3.set_clave(claveTitulo);
+
+	int idCancion = id.get_dato();
+	regClave3.agregar_campo((char*)&idCancion,sizeof(idCancion));
+
+	indiceSecundarioTitulo.agregar(regClave3);
+
+
+	/* TODO crear el indice invertido para las frases */
+
+
+	std::cout << "Se indexó " << nombreArchivo << " correctamente!" << std::endl;
 }
 
 void Indexador::_indexar(std::string & directorioEntrada, std::string & directorioSalida)
 {
-	ClaveNumerica identificadorCancion(0);
+	ClaveNumerica id(0);
 
 	RegistroCancion regCancion;
 	std::string nombreArchivo;
@@ -200,98 +300,46 @@ void Indexador::_indexar(std::string & directorioEntrada, std::string & director
 			std::cout << "No se indexó " << nombreArchivo << " porque no cumple el estandar especificado." << std::endl;
 			continue;
 		}
-
-		/* ------ guardamos el registro de la cancion en un archivo maestro ------ */
-
-		regCancion.comprimir(compresor);
-		long offsetInicialRegCancion = archivoMaestro.agregar_registro(&regCancion);
-
-		/* ------ guardamos el numero de documento (clave) y el documento -------- */
-		RegistroClave regDoc;
-		ClaveX IDdoc;
-		IDdoc.set_clave(identificadorCancion.get_dato());
-
-		regDoc.set_clave(IDdoc);
-		regDoc.agregar_campo(nombreArchivo.c_str(),nombreArchivo.size());
-		this->documentos.agregar(regDoc);
-
-		/* ----- agregamos al indice primario: ID cancion + offset de la cancion ----*/
-
-		RegistroClave regClave;
-		ClaveX clave;
-		clave.set_clave(identificadorCancion.get_dato());
-		regClave.set_clave(clave);
-		regClave.agregar_campo((char*)&offsetInicialRegCancion,sizeof(offsetInicialRegCancion));
-		indicePrimario.agregar(regClave);
-
-
-		/* para cada autor de la cancion:
-		 * ----- agregamos al indice por autor: autor + ID cancion ----
-		 */
-
-		unsigned cantAutores = regCancion.get_cantidad_autores();
-		for (unsigned int i = 0; i < cantAutores; i++)
-		{
-			RegistroClave regAutorID;
-
-			ClaveX claveAutor;
-
-			/*** En la clave hay "autor"(string) + "id cancion"(string) ***/
-			std::string clave = regCancion.get_autor(i);
-			std::stringstream idCancion;
-			idCancion << identificadorCancion.get_dato();
-			clave.append(idCancion.str());
-
-			claveAutor.set_clave(clave);
-
-			regAutorID.set_clave(claveAutor);
-
-			indiceSecundarioAutor.agregar(regAutorID);
-		}
-
-		/* ----- agregamos al indice por titulo: el titulo + ID cancion ----*/
-
-		RegistroClave regClave3;
-		ClaveX claveTitulo;
-		claveTitulo.set_clave(regCancion.get_titulo());
-		regClave3.set_clave(claveTitulo);
-
-		int idCancion = identificadorCancion.get_dato();
-		regClave3.agregar_campo((char*)&idCancion,sizeof(idCancion));
-
-		indiceSecundarioTitulo.agregar(regClave3);
-
-
-		/** incrementamos el ID de la cancion **/
-		identificadorCancion.incrementar();
-
-
-		/* TODO crear el indice invertido para las frases */
-
-
-
-		std::cout << "Se indexó " << nombreArchivo << " correctamente!" << std::endl;
-
+		_agregar_a_los_indices(id, regCancion,nombreArchivo);
+		id.incrementar();
 	}
 }
 
 int Indexador::indexar (std::string & directorioEntrada, std::string & directorioSalida)
 {
-	int res = _mostrar_opciones(directorioEntrada,directorioSalida);
-	if (res != RES_OK)
-		return res;
+	int opcion = _mostrar_opciones(directorioEntrada,directorioSalida);
+	if (opcion == RES_ERROR || opcion == RES_DIRECTORY_DOESNT_EXIST)
+		return opcion;
 
-
-	res = _init(directorioEntrada,directorioSalida);
-	if (res != RES_OK)
-	{
-		cout << "No se pudieron crear y/o abrir los archivos necesarios." << endl;
-	}
 	else
 	{
-		_indexar(directorioEntrada,directorioSalida);
+		if (opcion == OPCION_ANEXAR)
+		{
+			cout << "voy a anexar canciones" << endl;
+			int res2 = _abrir_archivos_indices(directorioEntrada,directorioSalida);
+			if (res2 != RES_OK) {
+				cout << "No se pudieron abrir los archivos necesarios." << endl;
+			}
+			else {
+				_anexar(directorioEntrada,directorioSalida);
+			}
+		}
+
+		else // OPCION = INDEXAR
+		{
+			int res2 = _crear_archivos_indices(directorioEntrada,directorioSalida);
+			if (res2 != RES_OK) {
+				cout << "No se pudieron crear los archivos necesarios." << endl;
+			}
+			else {
+				_abrir_archivos_indices(directorioEntrada,directorioSalida);
+				_indexar(directorioEntrada,directorioSalida);
+			}
+		}
 
 	}
-	return _finalizar();
+	int res_fin =  _finalizar();
+	if (res_fin != RES_OK)
+		std::cout << "No se pudieron cerrar los archivos.";
 }
 
