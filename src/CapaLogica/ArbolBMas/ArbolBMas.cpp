@@ -204,7 +204,7 @@ int ArbolBMas::_buscar_nodo_con_puntero(int punteroBuscar)
 {
 	TipoHijo numNodoSecuencial;
 	this->obtener_primer_nodo_secuencial(numNodoSecuencial);
-	if (numNodoSecuencial == punteroBuscar)
+	if (numNodoSecuencial == (unsigned) punteroBuscar)
 		return -1; //El primer nodo secuencial no es apuntado por nadie
 
 	NodoSecuencial nodoSecuencialActual(header.minCantBytesClaves,header.maxCantBytesClaves) ;

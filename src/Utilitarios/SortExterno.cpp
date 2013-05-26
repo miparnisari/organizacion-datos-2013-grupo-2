@@ -98,7 +98,7 @@ void SortExterno:: _generar_runs()
 				cantRegLeidos++;
 
 
-				if (regClaveLeido >= bufferOrdenamiento[0])//es decir menor que la raiz
+				if (regClaveLeido >= bufferOrdenamiento[0])//es decir mayor que la raiz
 				{//fixme ver si es > o <!!!
 					archivoTemporal.agregar_registro(&bufferOrdenamiento[0]);
 					RegistroClave copia1(regClaveLeido);
@@ -154,6 +154,8 @@ void SortExterno::_merge()
 	//cuando quedan 2 a fusionar lo hago sobre el archivo original
 	while (tamanio > 2)
 	{
+//		cout<<"tamanio:  "<<tamanio<<endl;//todo
+
 		ManejadorRegistrosVariables PrimerArchivoAUnir,SegundoArchivoAUnir;
 		PrimerArchivoAUnir.abrir_archivo(archivosTemporalesAFusionar[tamanio-1]); //empiezo de atras para delante
 		SegundoArchivoAUnir.abrir_archivo(archivosTemporalesAFusionar[tamanio-2]);
@@ -168,8 +170,16 @@ void SortExterno::_merge()
 		PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
 		SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
 //todo extraer a funcion
+		ManejadorRegistrosVariables archivoMerge;
+
 		while ( (regPrimero < regClaveMax) && (regSegundo < regClaveMax) )
 		{
+//			cout<<"par de claves: "<<endl; //todo
+//			regPrimero.get_clave().imprimir_dato();
+//			cout<<endl;
+//			regSegundo.get_clave().imprimir_dato();
+//			cout<<endl;
+
 			//genero archivo donde va la fusion
 
 			std::string numeroMerge;
@@ -177,15 +187,15 @@ void SortExterno::_merge()
 			out << numeroDeMerge;
 			numeroMerge = out.str();
 
-			rutaMerge= "Merge"+numeroMerge+".dat";
+//			cout<<"numeroMerge : "<<numeroMerge<<endl;//todo
 
-			ManejadorRegistrosVariables archivoMerge;
+			rutaMerge= "Merge"+numeroMerge+".dat";
 
 			archivoMerge.crear_archivo(rutaMerge);
 			archivoMerge.abrir_archivo(rutaMerge);
 
 			//comparo y avanzo en el correspondiente
-			if (regPrimero >= regSegundo)
+			if (regPrimero <= regSegundo)
 			{
 				archivoMerge.agregar_registro(&regPrimero);
 				indicePrimero++;
@@ -197,9 +207,11 @@ void SortExterno::_merge()
 			}
 		}
 
+		archivoMerge.agregar_registro(&regClaveMax);
+
 		//borrar los dos archivos y agregar el de merge al vector en la posicion 0.
 		archivosTemporalesAFusionar.insert(archivosTemporalesAFusionar.begin(), rutaMerge);
-
+		tamanio++;
 
 		PrimerArchivoAUnir.eliminar_archivo(archivosTemporalesAFusionar[tamanio-1]);
 		SegundoArchivoAUnir.eliminar_archivo(archivosTemporalesAFusionar[tamanio-2]);
@@ -207,6 +219,7 @@ void SortExterno::_merge()
 		archivosTemporalesAFusionar.pop_back();//saco los que uni y borre de disco
 		archivosTemporalesAFusionar.pop_back();
 		tamanio--;//saco 2 y meto 1
+		tamanio--;
 
 		numeroDeMerge++;
 
@@ -218,6 +231,15 @@ void SortExterno::_merge()
 	PrimerArchivoAUnir.abrir_archivo(archivosTemporalesAFusionar[tamanio-1]); //empiezo de atras para delante
 	SegundoArchivoAUnir.abrir_archivo(archivosTemporalesAFusionar[tamanio-2]);
 
+	//borro el original para sobreescribirlo con el ordenado
+	ManejadorRegistrosVariables archivoMerge;
+
+//	archivoMerge.abrir_archivo(archAOrdenar);
+//	archivoMerge.eliminar_archivo(archAOrdenar);
+
+	archivoMerge.crear_archivo("ordenado.dat");//fixme aca va arch a ordeanr
+	archivoMerge.abrir_archivo("ordenado.dat");
+
 	unsigned short indicePrimero=0;
 	unsigned short indiceSegundo=0;
 
@@ -226,15 +248,19 @@ void SortExterno::_merge()
 	PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
 	SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
 
+
 	while ( (regPrimero < regClaveMax) && (regSegundo < regClaveMax ) )
 	{
-
-		ManejadorRegistrosVariables archivoMerge;
-
-		archivoMerge.abrir_archivo(archAOrdenar);
+//		cout<<"------------------------- ULTIMO MERGE ------------------------"<<endl; //todo
+//
+//		cout<<"par de claves: "<<endl; //todo
+//		regPrimero.get_clave().imprimir_dato();
+//		cout<<endl;
+//		regSegundo.get_clave().imprimir_dato();
+//		cout<<endl;
 
 		//comparo y avanzo en el correspondiente
-		if (regPrimero >= regSegundo)
+		if (regPrimero <= regSegundo)
 		{
 			archivoMerge.agregar_registro(&regPrimero);
 			indicePrimero++;
