@@ -63,7 +63,8 @@ class RegistroCancion : public RegistroVariable{
 		/*recupera el idioma de la cadena de caracteres y lo almacena en la variable idioma*/
 		virtual bool obtener_letra()throw();
 		/*recupera la letra de la cancion y la almacena en la variable letra*/
-
+		int empaquetar(char* copia) throw();
+		int desempaquetar(const char* copia) throw();
 
 
 		int comprimir (Compresor & compresor);

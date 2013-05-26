@@ -15,6 +15,109 @@ RegistroCancion::~RegistroCancion()
 }
 
 
+int RegistroCancion::empaquetar(char* copia) throw(){
+
+	if( this->esta_limpio() || copia== NULL )
+		return RES_ERROR;
+
+	RegistroVariable::limpiar_campos();
+	this->agregar_campo( (char*)&cantidadAutores,sizeof(cantidadAutores) );
+	for( unsigned short i=0;i<cantidadAutores;i++ )
+		this->agregar_campo( autores[i].c_str() , autores[i].length() );
+
+	string idiomaS= idioma.getIdioma();
+	this->agregar_campo( idiomaS.c_str() , idiomaS.length() );
+
+	int anioI= this->anioGrabacion.get_anio();
+	this->agregar_campo( (char*)&anioI , sizeof(anioI) );
+
+	this->agregar_campo( titulo.c_str() , titulo.length() );
+	this->agregar_campo( letra.c_str() , letra.length() );
+
+	RegistroVariable::empaquetar(copia);
+
+	return RES_OK;
+
+}
+
+
+int RegistroCancion::desempaquetar(const char* copia) throw(){
+
+	if(copia== NULL)
+		return RES_ERROR;
+
+	this->limpiar_buffer();
+	RegistroVariable::desempaquetar(copia);
+	unsigned short campoActual= 0;
+
+	this->recuperar_campo( (char*)&cantidadAutores , 0 );
+	campoActual++;
+
+	this->autores= new string[cantidadAutores];
+	for( unsigned short i=0;i<cantidadAutores;i++ ){
+
+		unsigned short tamanioCampo;
+		tamanioCampo= this->get_tamanio_campo(campoActual);
+		char* campo= new char[tamanioCampo];
+		this->recuperar_campo( campo,campoActual );
+		string unAutor(campo,tamanioCampo);
+		this->autores[i]= unAutor;
+		delete[] campo;
+
+		campoActual++;
+	}//desempaqueto autores
+
+	{
+		unsigned short tamanioCampo;
+		tamanioCampo= this->get_tamanio_campo(campoActual);
+		char* campo= new char[tamanioCampo];
+		this->recuperar_campo( campo,campoActual );
+		string idiomaS(campo,tamanioCampo);
+		this->idioma.cargar(idiomaS);
+		campoActual++;
+		delete[] campo;
+	}//desempaqueto idioma
+
+	{
+		int anioI;
+		this->recuperar_campo( (char*)&anioI, campoActual);
+		stringstream ss;
+		ss<<anioI;
+		string anioS;
+		ss>>anioS;
+		this->anioGrabacion.cargar(anioS);
+		campoActual++;
+	}//desempaqueto anio
+
+	{
+		unsigned short tamanioCampo;
+		tamanioCampo= this->get_tamanio_campo(campoActual);
+		char* campo= new char[tamanioCampo];
+		this->recuperar_campo( campo,campoActual );
+		string tituloS(campo,tamanioCampo);
+		this->titulo= tituloS;
+		campoActual++;
+		delete[] campo;
+	}//desempaqueto titulo
+
+	{
+		unsigned short tamanioCampo;
+		tamanioCampo= this->get_tamanio_campo(campoActual);
+		char* campo= new char[tamanioCampo];
+		this->recuperar_campo( campo,campoActual );
+		string letraS(campo,tamanioCampo);
+		this->letra= letraS;
+		campoActual++;
+		delete[] campo;
+	}//desempaqueto letra
+
+
+
+	return RES_OK;
+
+}
+
+
 bool RegistroCancion::obtener_parametro(unsigned short numeroParametro,string& parametro)throw()
 {
 	parametro= "";
