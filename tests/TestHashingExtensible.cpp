@@ -18,8 +18,8 @@ TestHashingExtensible::~TestHashingExtensible()
 
 void TestHashingExtensible::ejecutar()
 {
-//	test_guardar_y_recuperar_ints();
     test_hashing_guardar_y_leer_int();
+//    test_guardar_y_recuperar_ints();
     test_crear_hashing();
     test_eliminar_registro();
     test_agregar_y_devolver_registro();
@@ -56,8 +56,21 @@ void TestHashingExtensible::test_guardar_y_recuperar_ints()
 	RegistroClave regRecuperado;
 	assert (indiceSecundarioTitulo.devolver(claveConsulta,&regRecuperado) == RES_OK);
 
+	cout << "tamanio del reg = " << regRecuperado.get_tamanio() << endl;
+	// Recupero la clave
+	ClaveX clave = regRecuperado.get_clave();
+	clave.imprimir_dato();
+	cout << endl;
+
+	// Recupero el dato
+	int numeroLeido;
+	assert (regRecuperado.recuperar_campo((char*)&numeroLeido,1) > 1);
+	std::cout << "DATO = " << numeroLeido << std::endl;
+
 	assert (regRecuperado.get_cantidad_campos() == 2);
-	assert (regRecuperado.get_tamanio_campo(0) == 12);
+	assert (regRecuperado.get_tamanio_campo(0) == 11 + 1);
+
+	cout << "tamanio del campo 1 = " << regRecuperado.get_tamanio_campo(1) << endl;
 	assert (regRecuperado.get_tamanio_campo(1) == 4);
 
 	indiceSecundarioTitulo.cerrar_archivo();
