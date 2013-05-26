@@ -223,8 +223,6 @@ void SortExterno::_merge()
 
 	RegistroClave regPrimero,regSegundo;
 
-	std::string rutaMerge;
-
 	PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
 	SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
 

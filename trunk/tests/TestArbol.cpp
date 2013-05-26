@@ -25,6 +25,7 @@ void TestArbol::ejecutar(){
 	test_eliminar_con_merge_interno_en_ultimo();
 	test_eliminar_con_balanceo_interno();
 	test_eliminar_con_balanceo_interno_con_ultimo_nodo();
+	test_eliminar_completamente_arbol();
 }
 
 void TestArbol::test_arbol_insertar_un_registro()
@@ -1075,5 +1076,103 @@ void TestArbol::test_eliminar_con_balanceo_interno_con_ultimo_nodo(){
 	cout<<"imprimiendo arbol despues de balancear: ----------------------"<<endl;
 	arbol.imprimir();
 }
+
+void TestArbol::test_eliminar_completamente_arbol(){
+
+	ArbolBMas arbol;
+	string nombreArchivo= "arbolConUnderflowMergeInternosEnUltimo.dat";
+	unsigned int tamanioBloque= 64;
+	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
+	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+
+	RegistroClave rc;
+	ClaveX c;
+
+	for(int i=0;i<8;i++){
+		string clave= "aaa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<2;i++){
+		string clave= "aaCa";
+		clave[3]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<3;i++){
+
+		string clave= "baa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<10;i++){
+
+		string clave= "caa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.agregar(rc)== RES_OK );
+
+	}
+
+	cout<<"imprimiendo arbol original: ----------------------"<<endl;
+	arbol.imprimir();
+
+	for(int i=0;i<8;i++){
+		string clave= "aaa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.quitar(rc)== RES_OK );
+	}
+
+	cout<<"imprimiendo arbol etapa 1: ----------------------"<<endl;
+	arbol.imprimir();
+
+	for(int i=0;i<2;i++){
+		string clave= "aaCa";
+		clave[3]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.quitar(rc)== RES_OK );
+	}
+
+	cout<<"imprimiendo arbol etapa 2: ----------------------"<<endl;
+	arbol.imprimir();
+
+	for(int i=0;i<3;i++){
+
+		string clave= "baa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.quitar(rc)== RES_OK );
+	}
+
+	cout<<"imprimiendo arbol etapa 3: ----------------------"<<endl;
+	arbol.imprimir();
+
+	for(int i=0;i<10;i++){
+
+		string clave= "caa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		assert( arbol.quitar(rc)== RES_OK );
+
+	}
+
+	cout<<"imprimiendo arbol borrado: ----------------------"<<endl;
+	arbol.imprimir();
+}
+
 
 
