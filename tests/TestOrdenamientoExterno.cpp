@@ -59,6 +59,12 @@ void TestOrdenamientoExterno::test_generar_runs(){
 			clave1= regClave1.get_clave();
 			clave2= regClave2.get_clave();
 
+//			cout<<"num del run: "<<i<<endl;
+//
+//			cout<<"claves del run: "<<endl; //todo
+//			clave1.imprimir_dato();
+//			std::cout<<endl;
+
 			assert (clave1 <= clave2);
 		}
 	}
@@ -67,7 +73,7 @@ void TestOrdenamientoExterno::test_generar_runs(){
 
 }
 
-//usp el mismo archivo del test anterior
+//uso el mismo archivo del test anterior, bien pueden pedirme ordenar lo mismo varias veces
 void TestOrdenamientoExterno::test_merge_runs(){
 
 	SortExterno ordenador("archivoOrdenamiento.dat");
@@ -113,6 +119,8 @@ void TestOrdenamientoExterno::test_merge_runs(){
  * Testear que no borre registros (merge final en otro lado y comparar con get cant reg ocupads)
  *
  *
- * Verificar que el tamaño sea igual antes y despues NOOOOOOOOOOOOOOOOOOOOOOOOOOO!!!!!!!!!
+ * Verificar que el tamaño sea igual antes y despues
+ *
+ * y obviamente no podia cumplirse y funcionar de una, no? NOOOOOOOOOOOOOOOOOOOOOOOOOOO!!!!!!!!!
  *
  */

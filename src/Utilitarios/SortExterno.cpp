@@ -87,6 +87,8 @@ void SortExterno:: _generar_runs()
 
 		ManejadorRegistrosVariables archivoTemporal;
 
+		archivoTemporal.eliminar_archivo(nombreDelRun);//solo por si acaso hay runs anteriores las borra
+
 		archivoTemporal.crear_archivo(nombreDelRun);
 		archivoTemporal.abrir_archivo(nombreDelRun);
 		//si no se acaba el archivo, y tengo por lo menos 1 run, hago replacement selection
@@ -160,39 +162,39 @@ void SortExterno::_merge()
 		PrimerArchivoAUnir.abrir_archivo(archivosTemporalesAFusionar[tamanio-1]); //empiezo de atras para delante
 		SegundoArchivoAUnir.abrir_archivo(archivosTemporalesAFusionar[tamanio-2]);
 
-		unsigned short indicePrimero=0;
-		unsigned short indiceSegundo=0;
+		//genero archivo donde va la fusion
+		std::string rutaMerge;
+
+		ManejadorRegistrosVariables archivoMerge;
+
+		std::string numeroMerge;
+		std::stringstream out;
+		out << numeroDeMerge;
+		numeroMerge = out.str();
+
+		cout<<"numeroMerge : "<<numeroMerge<<endl;//todo
+
+		rutaMerge= "Merge"+numeroMerge+".dat";
+
+		archivoMerge.crear_archivo(rutaMerge);
+		archivoMerge.abrir_archivo(rutaMerge);
+
+		unsigned int indicePrimero=0;
+		unsigned int indiceSegundo=0;
 
 		RegistroClave regPrimero,regSegundo;
 
-		std::string rutaMerge;
-
 		PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
 		SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
-//todo extraer a funcion
-		ManejadorRegistrosVariables archivoMerge;
 
+		//todo extraer a funcion
 		while ( (regPrimero < regClaveMax) && (regSegundo < regClaveMax) )
 		{
-//			cout<<"par de claves: "<<endl; //todo
-//			regPrimero.get_clave().imprimir_dato();
-//			cout<<endl;
-//			regSegundo.get_clave().imprimir_dato();
-//			cout<<endl;
-
-			//genero archivo donde va la fusion
-
-			std::string numeroMerge;
-			std::stringstream out;
-			out << numeroDeMerge;
-			numeroMerge = out.str();
-
-//			cout<<"numeroMerge : "<<numeroMerge<<endl;//todo
-
-			rutaMerge= "Merge"+numeroMerge+".dat";
-
-			archivoMerge.crear_archivo(rutaMerge);
-			archivoMerge.abrir_archivo(rutaMerge);
+			cout<<"par de claves: "<<endl; //todo
+			regPrimero.get_clave().imprimir_dato();
+			cout<<endl;
+			regSegundo.get_clave().imprimir_dato();
+			cout<<endl;
 
 			//comparo y avanzo en el correspondiente
 			if (regPrimero <= regSegundo)
@@ -234,14 +236,14 @@ void SortExterno::_merge()
 	//borro el original para sobreescribirlo con el ordenado
 	ManejadorRegistrosVariables archivoMerge;
 
-//	archivoMerge.abrir_archivo(archAOrdenar);
+//	archivoMerge.abrir_archivo(archAOrdenar); //fixme descomentar en version final
 //	archivoMerge.eliminar_archivo(archAOrdenar);
 
 	archivoMerge.crear_archivo("ordenado.dat");//fixme aca va arch a ordeanr
 	archivoMerge.abrir_archivo("ordenado.dat");
 
-	unsigned short indicePrimero=0;
-	unsigned short indiceSegundo=0;
+	unsigned int indicePrimero=0;
+	unsigned int indiceSegundo=0;
 
 	RegistroClave regPrimero,regSegundo;
 
@@ -251,13 +253,13 @@ void SortExterno::_merge()
 
 	while ( (regPrimero < regClaveMax) && (regSegundo < regClaveMax ) )
 	{
-//		cout<<"------------------------- ULTIMO MERGE ------------------------"<<endl; //todo
-//
-//		cout<<"par de claves: "<<endl; //todo
-//		regPrimero.get_clave().imprimir_dato();
-//		cout<<endl;
-//		regSegundo.get_clave().imprimir_dato();
-//		cout<<endl;
+		cout<<"------------------------- ULTIMO MERGE ------------------------"<<endl; //todo
+
+		cout<<"par de claves: "<<endl; //todo borrar
+		regPrimero.get_clave().imprimir_dato();
+		cout<<endl;
+		regSegundo.get_clave().imprimir_dato();
+		cout<<endl;
 
 		//comparo y avanzo en el correspondiente
 		if (regPrimero <= regSegundo)
