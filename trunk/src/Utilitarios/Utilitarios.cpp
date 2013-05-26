@@ -4,6 +4,21 @@
 
 namespace utilitarios
 {
+	bool directorio_existe( std::string dir )
+	{
+		DIR *pDir;
+		bool existe = false;
+
+		pDir = opendir (dir.c_str());
+
+		if (pDir != NULL)
+		{
+			existe = true;
+			(void) closedir (pDir);
+		}
+
+		return existe;
+	}
     unsigned int pasarBufferAInt(char* value)
     {
         unsigned int intValue;
