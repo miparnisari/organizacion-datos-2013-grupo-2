@@ -24,10 +24,10 @@ std::vector<int> ResolvedorConsultas::get_id_canciones_autor(std::string & autor
 	IterArbolBMas buscador(indiceSecundarioAutor);
 	ClaveX claveInicio;
 	claveInicio.set_clave(autor + (char)0);
-	int res = buscador.start(">=",claveInicio);
+	int res = buscador.comienzo(">=",claveInicio);
 	if (res == RES_ERROR)
 	{
-		std::cout << "El autor " << autor << " no fue encontradp." << std::endl;
+		std::cout << "El autor " << autor << " no fue encontrado." << std::endl;
 	}
 	else {
 		ClaveX claveFin;
@@ -36,7 +36,7 @@ std::vector<int> ResolvedorConsultas::get_id_canciones_autor(std::string & autor
 		claveFin.set_clave(autorSiguiente);
 
 		RegistroClave otraCancion;
-		while (buscador.readNext(otraCancion) != RES_FIN && otraCancion.get_clave() < claveFin)
+		while (buscador.leer_siguiente(otraCancion) != RES_FIN && otraCancion.get_clave() < claveFin)
 		{
 			ClaveX clave = otraCancion.get_clave();
 			std::string autorMasId;

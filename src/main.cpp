@@ -11,7 +11,6 @@ int main (int argc, char* argv[])
 	std::string operacion = std::string(argv[1]);
 	Indexador indexador;
 	
-	// Indexar por primera vez
 	if (operacion == "-indexar")
 	{
 		std::string directorioEntrada = std::string(argv[2]);
@@ -19,13 +18,6 @@ int main (int argc, char* argv[])
 		indexador.indexar ( directorioEntrada, directorioSalida );
 	}
 	
-	// Re-indexar
-	else if (operacion == "-reindexar")
-	{
-		// TODO
-	}
-	
-	// Consultar por titulo
 	else if (operacion == "-consultarTitulo")
 	{
 		std::string directorioSalida = std::string(argv[2]);
@@ -33,7 +25,6 @@ int main (int argc, char* argv[])
 		indexador.consultar_titulo(directorioSalida, titulo);
 	}
 	
-	// Consultar por autor
 	else if (operacion == "-consultarAutor")
 	{
 		std::string directorioSalida = std::string(argv[2]);
