@@ -22,6 +22,53 @@ void TestManejadorRegistrosVariables::ejecutar()
 	test_eliminar_por_offset();
 	test_recuperar_espacio_libre();
 	test_masivo();
+	test_contar_registros();
+}
+
+
+void TestManejadorRegistrosVariables::test_contar_registros(){
+
+	ManejadorRegistrosVariables mrv;
+	string nombreArchivo= "test_contar_registros_mrv.dat";
+	mrv.eliminar_archivo(nombreArchivo);
+	assert(mrv.crear_archivo(nombreArchivo)== RES_OK);
+
+	const unsigned short CANTIDAD_REGISTROS_INICIAL= 10;
+	const unsigned short CANTIDAD_REGISTROS_ELIMINAR= 3;
+
+	{
+		for(unsigned short i=0;i<CANTIDAD_REGISTROS_INICIAL;i++){
+			string dato= "datoCuyoNombreResultaSerExtremadamenteLargoYTediosoDeEscribira";
+			const unsigned short LONGITUD_DATO= dato.length();
+			dato[ LONGITUD_DATO-1 ]= (char)(65+i);
+
+			RegistroVariable registro;
+			registro.agregar_campo( dato.c_str() , dato.length() );
+			mrv.agregar_registro(&registro);
+		}
+		assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL && mrv.get_cantidad_registros_ocupados()== CANTIDAD_REGISTROS_INICIAL );
+
+	}
+
+
+	{
+
+		for(unsigned short i=0;i<CANTIDAD_REGISTROS_ELIMINAR;i++){
+			mrv.eliminar_registro_ocupado(i+3);
+
+			string dato= "datoa";
+			const unsigned short LONGITUD_DATO= dato.length();
+			dato[ LONGITUD_DATO-1 ]= (char)(65+i);
+
+			RegistroVariable registro;
+			registro.agregar_campo( dato.c_str() , dato.length() );
+			mrv.agregar_registro(&registro);
+		}
+		assert( mrv.get_cantidad_registros()== (CANTIDAD_REGISTROS_ELIMINAR+CANTIDAD_REGISTROS_INICIAL) );
+		assert( mrv.get_cantidad_registros_ocupados()== CANTIDAD_REGISTROS_INICIAL );
+
+	}
+
 }
 
 void TestManejadorRegistrosVariables::test_masivo(){
