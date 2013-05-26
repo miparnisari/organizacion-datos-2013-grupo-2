@@ -27,6 +27,7 @@ void TestHashingExtensible::ejecutar()
     test_agregar_varios_registros_y_devolver();
     test_agregar_reg_y_duplicar_tabla();
     test_eliminar_reg_y_dividir_tabla();
+    test_hash_modificar_un_valor();
 }
 
 void TestHashingExtensible::test_hashing_guardar_y_leer_int()
@@ -131,6 +132,64 @@ void TestHashingExtensible::test_crear_hashing()
 
     print_test_ok("crear_hashing");
 }
+
+void TestHashingExtensible::test_hash_modificar_un_valor(){
+
+	HashingExtensible hash1;
+	RegistroClave regClave;
+	ClaveX clave;
+	clave.set_clave("clavecita");
+	string campo = "uncampo";
+	string comprobacion_clave;
+
+	if (hash1.abrir_archivo(DIRECCION) == RES_OK){
+		assert (hash1.cerrar_archivo() == RES_OK);
+		assert (hash1.eliminar_archivo() == RES_OK);
+	}
+
+	assert (hash1.cerrar_archivo() == RES_OK);
+	assert (hash1.crear_archivo(DIRECCION) == RES_OK);
+
+
+	assert (hash1.abrir_archivo(DIRECCION) == RES_OK);
+	this->crear_registro_y_agregar(hash1, campo, clave);
+
+	//cambio el campo de la clave
+	regClave.set_clave(clave);
+	campo = "otroCampo";
+	regClave.agregar_campo(campo.c_str(), campo.size());
+
+	//modifico el registro
+	assert(hash1.modificar(regClave) == RES_OK);
+
+	assert(hash1.devolver(clave, &regClave) == RES_OK);
+
+	//verifico que no haya cambios en el numero de clave
+	clave.get_clave(comprobacion_clave);
+	assert(comprobacion_clave == "clavecita");
+
+	//chequeo que se cambio el dato del campo
+	char *dato = NULL;
+	this->recuperar_dato_registro(&dato, clave, hash1);
+	assert (strlen(dato) == 9);
+	assert (strcmp(dato,campo.c_str()) == 0);
+	delete[] dato;
+
+
+	//veo que si entro una clave que no existe, no se modifica ningun valor, ni se agregan datos.
+	clave.set_clave(32);
+	campo = "otracosaaa";
+	regClave.set_clave(clave);
+	regClave.agregar_campo(campo.c_str(), campo.size());
+
+	assert(hash1.modificar(regClave) == NO_EXISTE);
+
+	assert(hash1.devolver(clave, &regClave) == RES_RECORD_DOESNT_EXIST);
+
+	print_test_ok("test_hash_modificar_un_valor");
+}
+
+
 
 void TestHashingExtensible::test_eliminar_registro()
 {
