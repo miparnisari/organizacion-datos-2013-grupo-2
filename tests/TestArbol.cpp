@@ -360,29 +360,29 @@ void TestArbol::test_arbol_buscar_secuencial()
 	claveB.set_clave("b");
 
 	std::cout << "Buscando >= a: " << endl;
-	unIterador.start(">=",claveA);
-	while (unIterador.readNext(actual) != RES_FIN)
+	unIterador.comienzo(">=",claveA);
+	while (unIterador.leer_siguiente(actual) != RES_FIN)
 	{
 		actual.get_clave().imprimir_dato(); cout<<", ";
 	}
 
 	std::cout << "\nBuscando >= abba0:" << endl;
-	unIterador.start(">=",claveABBA);
-	while (unIterador.readNext(actual) != RES_FIN)
+	unIterador.comienzo(">=",claveABBA);
+	while (unIterador.leer_siguiente(actual) != RES_FIN)
 	{
 		actual.get_clave().imprimir_dato(); cout<<", ";
 	}
 
 	std::cout << "\nBuscando >= alan johnson0: " << std::endl;
-	unIterador.start(">=",claveAlan);
-	while (unIterador.readNext(actual) != RES_FIN)
+	unIterador.comienzo(">=",claveAlan);
+	while (unIterador.leer_siguiente(actual) != RES_FIN)
 	{
 		actual.get_clave().imprimir_dato(); cout<<", ";
 	}
 
 	std::cout << "\nBuscando >= arjona0:" << std::endl;
-	unIterador.start(">=",claveArjona);
-	while (unIterador.readNext(actual) != RES_FIN)
+	unIterador.comienzo(">=",claveArjona);
+	while (unIterador.leer_siguiente(actual) != RES_FIN)
 	{
 		actual.get_clave().imprimir_dato(); cout<<", ";
 	}
@@ -390,22 +390,22 @@ void TestArbol::test_arbol_buscar_secuencial()
 	std::cout << std::endl;
 
 	std::cout << "\nBuscando >= b:" << std::endl;
-	unIterador.start(">=",claveB);
-	while (unIterador.readNext(actual) != RES_FIN)
+	unIterador.comienzo(">=",claveB);
+	while (unIterador.leer_siguiente(actual) != RES_FIN)
 	{
 		actual.get_clave().imprimir_dato(); cout<<", ";
 	}
 
 	std::cout << "\nBuscando > arjona0:" << endl;
-	unIterador.start(">",claveArjona);
-	while (unIterador.readNext(actual) != RES_FIN)
+	unIterador.comienzo(">",claveArjona);
+	while (unIterador.leer_siguiente(actual) != RES_FIN)
 	{
 		actual.get_clave().imprimir_dato(); cout<<", ";
 	}
 
 	std::cout << "\nBuscando > alan johnson0:" << endl;
-	unIterador.start(">",claveAlan);
-	while (unIterador.readNext(actual) != RES_FIN)
+	unIterador.comienzo(">",claveAlan);
+	while (unIterador.leer_siguiente(actual) != RES_FIN)
 	{
 		actual.get_clave().imprimir_dato(); cout<<", ";
 	}

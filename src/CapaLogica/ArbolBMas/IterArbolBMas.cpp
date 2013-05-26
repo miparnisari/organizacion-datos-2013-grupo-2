@@ -20,7 +20,7 @@ IterArbolBMas::~IterArbolBMas() {
 	delete arbol;
 }
 
-int IterArbolBMas::start(std::string unOperador, ClaveX claveInicial)
+int IterArbolBMas::comienzo(std::string unOperador, ClaveX claveInicial)
 {
 	operador = unOperador;
 	claveCorte = claveInicial;
@@ -52,7 +52,7 @@ int IterArbolBMas::start(std::string unOperador, ClaveX claveInicial)
 	return RES_OK;
 }
 
-int IterArbolBMas::readNext(RegistroClave & regActual)
+int IterArbolBMas::leer_siguiente(RegistroClave & regActual)
 {
 	NodoSecuencial nodoActual (arbol->get_cant_minima_nodo(), arbol->get_cant_maxima_nodo());
 
@@ -68,7 +68,7 @@ int IterArbolBMas::readNext(RegistroClave & regActual)
 		{
 			numNodoActual = nodoActual.get_proximo_nodo();
 			numRegActual = 0;
-			return readNext(regActual);
+			return leer_siguiente(regActual);
 		}
 		regActual = (nodoActual.get_registros().at(numRegActual));
 		numRegActual++;

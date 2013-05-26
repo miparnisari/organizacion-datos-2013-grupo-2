@@ -58,7 +58,7 @@ int Indexador::consultar_autor(std::string & directorioSalida, std::string & unA
 	IterArbolBMas buscador(indiceSecundarioAutor);
 	ClaveX claveInicio;
 	claveInicio.set_clave(unAutor + (char)0);
-	buscador.start(">=",claveInicio);
+	buscador.comienzo(">=",claveInicio);
 
 	ClaveX claveFin;
 	std::string autorSiguiente = unAutor;
@@ -67,7 +67,7 @@ int Indexador::consultar_autor(std::string & directorioSalida, std::string & unA
 
 	RegistroClave otraCancion;
 	std::cout << "Buscando canciones de " << unAutor << "..." << std::endl;
-	while (buscador.readNext(otraCancion) != RES_FIN && otraCancion.get_clave() < claveFin)
+	while (buscador.leer_siguiente(otraCancion) != RES_FIN && otraCancion.get_clave() < claveFin)
 	{
 		ClaveX clave = otraCancion.get_clave();
 
