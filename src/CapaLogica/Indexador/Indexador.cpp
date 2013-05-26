@@ -14,16 +14,13 @@ Indexador::~Indexador()
 int Indexador::consultar_titulo(std::string & directorioSalida, std::string & titulo)
 {
 	int res = indiceSecundarioTitulo.abrir_archivo(directorioSalida+std::string(FILENAME_IDX_SECUN_TITULO));
-	if (res == RES_ERROR)
-	{
-		std::cout << "ERROR: No se pudo abrir el indice por titulo. " << std::endl;
-	}
 	documentos.abrir_archivo(directorioSalida+std::string(FILENAME_ID_DOCS));
 	ClaveX claveTitulo;
 	claveTitulo.set_clave(titulo);
 
 	RegistroClave regDevuelto;
 	res = indiceSecundarioTitulo.devolver(claveTitulo,&regDevuelto);
+	cout << "tamanio campo 1 = " << regDevuelto.get_tamanio_campo(1) << endl;
 	if (res == RES_RECORD_DOESNT_EXIST)
 	{
 		std::cout << "La cancion " << titulo << " no fue encontrada." << std::endl;
@@ -31,23 +28,11 @@ int Indexador::consultar_titulo(std::string & directorioSalida, std::string & ti
 	else {
 
 		// Recupero el IDdoc
-		std::cout << "tamanio campo 0 = " << regDevuelto.get_tamanio_campo(0) << std::endl;
-		std::cout << "tamanio campo 1 = " << regDevuelto.get_tamanio_campo(1) << std::endl;
-		char* campoRecuperado = new char[regDevuelto.get_tamanio_campo(1) + 1]();
-		campoRecuperado [regDevuelto.get_tamanio_campo(1)] = '\0';
-
-		regDevuelto.recuperar_campo(campoRecuperado,1);
-		std::cout << "strlen (campo recuperado) = " << strlen(campoRecuperado) << std::endl;
+		int idDoc;
+		regDevuelto.recuperar_campo((char*)&idDoc,1);
 
 		ClaveX claveIdDoc;
-		int idDoc;
-		std::stringstream ss (campoRecuperado);
-
-		ss >> idDoc;
-		std::cout << "ID doc = " << idDoc << std::endl;
 		claveIdDoc.set_clave(idDoc);
-		delete[] campoRecuperado;
-
 
 		// Busco el IDdoc en el archivo de documentos
 		RegistroClave regDevuelto2;
@@ -70,16 +55,11 @@ int Indexador::consultar_titulo(std::string & directorioSalida, std::string & ti
 int Indexador::consultar_autor(std::string & directorioSalida, std::string & unAutor)
 {
 	indiceSecundarioAutor.abrir(directorioSalida+std::string(FILENAME_IDX_SECUN_AUTOR),"rb+");
-
 	documentos.abrir_archivo(directorioSalida+std::string(FILENAME_ID_DOCS));
 	IterArbolBMas buscador(indiceSecundarioAutor);
 	ClaveX claveInicio;
 	claveInicio.set_clave(unAutor + (char)0);
 	int res = buscador.start(">=",claveInicio);
-	if (res == RES_ERROR)
-	{
-		std::cout << "no se pudo comenzar la busqueda" << std::endl;
-	}
 
 	ClaveX claveFin;
 	std::string autorSiguiente = unAutor;
@@ -237,15 +217,13 @@ int Indexador::indexar (std::string & directorioEntrada, std::string & directori
 
 		/* TODO crear el indice invertido para las frases */
 
+
+
 		std::cout << "Se indexó " << nombreArchivo << " correctamente!" << std::endl;
 
 	}
 	
 	res = _finalizar();
-	if (res != RES_OK)
-	{
-		std::cout << "ERROR: no se pudieron cerrar bien los archivos." << std::endl;
-	}
 
 	return RES_OK;
 }

@@ -100,7 +100,7 @@ void TestHashingExtensible::test_guardar_y_recuperar_ints()
 	cout << endl;
 
 	// Recupero el dato
-	int intrecuperado = 0;
+	int intrecuperado;
 	assert(regRecuperado.recuperar_campo((char*)(&intrecuperado),1) != RES_ERROR);
 
 	std::cout << "DATO = " << intrecuperado << std::endl;
