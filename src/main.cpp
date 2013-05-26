@@ -1,4 +1,4 @@
-#include "CapaLogica/Indexador/Indexador.h"
+#include "CapaInterfaz/Indexador.h"
 #include "Constantes.h"
 
 int main (int argc, char* argv[])

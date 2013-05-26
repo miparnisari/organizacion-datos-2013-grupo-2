@@ -3,17 +3,17 @@
 
 #include <string>
 
-#include "../../CapaFisica/ManejadorRegistrosVariables.h"
-#include "../../CapaFisica/RegistroVariable.h"
+#include "../CapaFisica/ManejadorRegistrosVariables.h"
+#include "../CapaFisica/RegistroVariable.h"
 
-#include "../HashingExtensible/HashingExtensible.h"
-#include "../ArbolBMas/ArbolBMas.h"
-#include "../ArbolBMas/IterArbolBMas.h"
+#include "../CapaLogica/HashingExtensible/HashingExtensible.h"
+#include "../CapaLogica/ArbolBMas/ArbolBMas.h"
+#include "../CapaLogica/ArbolBMas/IterArbolBMas.h"
 
-#include "../ManejoArchivos/RegistroCancion.h"
-#include "../ManejoArchivos/ClaveNumerica.h"
-#include "../Parser/ParserCanciones.h"
-#include "../Compresor/CompresorPPMC.h"
+#include "../CapaLogica/ManejoArchivos/RegistroCancion.h"
+#include "../CapaLogica/ManejoArchivos/ClaveNumerica.h"
+#include "../CapaLogica/Parser/ParserCanciones.h"
+#include "../CapaLogica/Compresor/CompresorPPMC.h"
 
 
 class Indexador

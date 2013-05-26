@@ -1,7 +1,7 @@
 include makefile.inc
 
 DIRS	= CapaFisica CapaLogica CapaInterfaz Utilitarios
-SUBDIRS = CapaLogica/ArbolBMas CapaLogica/Compresor CapaLogica/HashingExtensible CapaLogica/Indexador CapaLogica/Indices CapaLogica/ManejoArchivos CapaLogica/Parser
+SUBDIRS = CapaLogica/ArbolBMas CapaLogica/Compresor CapaLogica/HashingExtensible CapaLogica/Indices CapaLogica/ManejoArchivos CapaLogica/Parser
 OBJLIBS	= CapaFisica.a CapaLogica.a CapaInterfaz.a Utilitarios.a
 
 EXTERNOBJ =  $(foreach path, $(DIRS), $(wildcard $(path)/*.o))
