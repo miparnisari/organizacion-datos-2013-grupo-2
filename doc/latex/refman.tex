@@ -1,0 +1,114 @@
+\documentclass[a4paper]{book}
+\usepackage{makeidx}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{ifthen}
+\usepackage[table]{xcolor}
+\usepackage{textcomp}
+\usepackage{alltt}
+\usepackage{ifpdf}
+\ifpdf
+\usepackage[pdftex,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            unicode
+           ]{hyperref}
+\else
+\usepackage[ps2pdf,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            unicode
+           ]{hyperref}
+\usepackage{pspicture}
+\fi
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{mathptmx}
+\usepackage[scaled=.90]{helvet}
+\usepackage{courier}
+\usepackage{sectsty}
+\usepackage[titles]{tocloft}
+\usepackage{doxygen}
+\lstset{language=C++,inputencoding=utf8,basicstyle=\footnotesize,breaklines=true,breakatwhitespace=true,tabsize=8,numbers=left }
+\makeindex
+\setcounter{tocdepth}{3}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\familydefault}{\sfdefault}
+\hfuzz=15pt
+\setlength{\emergencystretch}{15pt}
+\hbadness=750
+\tolerance=750
+\begin{document}
+\hypersetup{pageanchor=false,citecolor=blue}
+\begin{titlepage}
+\vspace*{7cm}
+\begin{center}
+{\Large \-Organización de \-Datos }\\
+\vspace*{1cm}
+{\large \-Generado por Doxygen 1.7.6.1}\\
+\vspace*{0.5cm}
+{\small Domingo, 26 de Mayo de 2013 15:34:33}\\
+\end{center}
+\end{titlepage}
+\clearemptydoublepage
+\pagenumbering{roman}
+\tableofcontents
+\clearemptydoublepage
+\pagenumbering{arabic}
+\hypersetup{pageanchor=true,citecolor=blue}
+\chapter{Índice de clases}
+\input{hierarchy}
+\chapter{Índice de clases}
+\input{annotated}
+\chapter{\-Documentación de las clases}
+\input{class_anio}
+\input{class_arbol_b_mas}
+\input{class_archivo_listas}
+\input{class_archivo_registros_longitud_fija}
+\input{class_bloque}
+\input{class_clave}
+\input{class_clave_numerica}
+\input{class_clave_string}
+\input{class_clave_x}
+\input{class_compresor}
+\input{class_compresor_p_p_m_c}
+\input{class_hashing_extensible}
+\input{struct_manejador_registros_variables_1_1_header}
+\input{structheader__arbol}
+\input{structheader__arlf}
+\input{struct_manejador_registros_variables_1_1_header_registro_libre}
+\input{class_heap}
+\input{class_idioma}
+\input{class_indexador}
+\input{class_indice_invertido}
+\input{class_indice_invertido_por_autor}
+\input{class_indice_invertido_por_titulo}
+\input{class_iter_arbol_b_mas}
+\input{class_iter_nodo_secuencial}
+\input{class_manejador_archivo_datos_basicos}
+\input{class_manejador_archivos}
+\input{class_manejador_archivos_texto}
+\input{class_manejador_bloques}
+\input{class_manejador_registros_variables}
+\input{structmb__header}
+\input{structmdb__header}
+\input{class_nodo_arbol}
+\input{class_nodo_interno}
+\input{class_nodo_secuencial}
+\input{class_normalizador}
+\input{class_parser_canciones}
+\input{class_registro_cancion}
+\input{class_registro_clave}
+\input{class_registro_fijo}
+\input{class_registro_variable}
+\input{class_sort_externo}
+\input{class_tabla}
+\input{class_texto}
+\printindex
+\end{document}

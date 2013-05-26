@@ -1,0 +1,5 @@
+<map id="G" name="G">
+<area shape="rect" id="node1" href="$class_nodo_arbol.html" title="NodoArbol" alt="" coords="5,32,88,61"/>
+<area shape="rect" id="node3" href="$class_nodo_interno.html" title="NodoInterno" alt="" coords="148,5,241,35"/>
+<area shape="rect" id="node5" href="$class_nodo_secuencial.html" title="NodoSecuencial" alt="" coords="136,59,253,88"/>
+</map>

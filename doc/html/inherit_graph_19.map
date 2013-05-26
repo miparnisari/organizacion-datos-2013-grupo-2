@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="rect" id="node1" href="$class_manejador_archivos.html" title="ManejadorArchivos" alt="" coords="5,85,139,115"/>
+<area shape="rect" id="node3" href="$class_manejador_archivo_datos_basicos.html" title="ManejadorArchivoDatosBasicos\&lt; TipoDato \&gt;" alt="" coords="187,5,472,35"/>
+<area shape="rect" id="node5" href="$class_manejador_archivos_texto.html" title="ManejadorArchivosTexto" alt="" coords="247,59,412,88"/>
+<area shape="rect" id="node7" href="$class_manejador_bloques.html" title="ManejadorBloques" alt="" coords="265,112,393,141"/>
+<area shape="rect" id="node9" href="$class_manejador_registros_variables.html" title="ManejadorRegistrosVariables" alt="" coords="233,165,425,195"/>
+</map>
