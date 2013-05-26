@@ -16,8 +16,8 @@ class IterArbolBMas {
 	public:
 		IterArbolBMas(ArbolBMas arbol);
 		virtual ~IterArbolBMas();
-		int start(std::string operador, ClaveX claveInicial);
-		int readNext(RegistroClave & regActual);
+		int comienzo(std::string operador, ClaveX claveInicial);
+		int leer_siguiente(RegistroClave & regActual);
 
 	private:
 		ArbolBMas* arbol;
