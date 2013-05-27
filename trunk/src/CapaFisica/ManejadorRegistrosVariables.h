@@ -20,13 +20,13 @@ using namespace std;
 class ManejadorRegistrosVariables:public ManejadorArchivos {
 
 	public:
-		struct Header{
+		typedef struct _Header{
 			long offsetPrimerRegistroLibre;
 			unsigned int tamanioArchivo;
 			unsigned int cantidadRegistros;/*es la cantidad de registros totales contando
 			eliminados y no eliminados*/
 			unsigned int cantidadRegistrosLibres;
-		};
+		}Header;
 		struct HeaderRegistroLibre{
 			unsigned short espacioLibre;
 			char marcaBorrado;

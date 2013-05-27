@@ -17,7 +17,7 @@ int Indexador::consultar_titulo(std::string & directorioSalida, std::string & ti
 	int id = rc.get_id_cancion_titulo(titulo);
 	if (id == RES_RECORD_DOESNT_EXIST)
 	{
-		std::cout << "No se encontro una cancion con titulo " << titulo << std::endl;
+		std::cout << "No se encontró una cancion con titulo "" << titulo << ""." <<std::endl;
 	}
 	else {
 		std::cout << "Nombre archivo = " << rc.get_nombre_archivo(id) << "." << std::endl;
@@ -115,7 +115,7 @@ int Indexador::_abrir_archivos_indices(std::string & directorioEntrada, std::str
 {
 	int res = RES_OK;
 	res += indicePrimario.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_PRIM));
-//	res += archivoMaestro.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ARCH_MAESTRO));
+	res += archivoMaestro.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ARCH_MAESTRO));
 	res += documentos.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
 	res += indiceSecundarioAutor.abrir(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_AUTOR),"rb+");
 	res += indiceSecundarioTitulo.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
@@ -151,15 +151,10 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 		for (unsigned int i = 0; i < regCancion.get_cantidad_autores(); i ++)
 		{
 			autores.push_back(regCancion.get_autor(i));
-			cout << "autor a anexar = " << autores[i] << endl;
 		}
 		std::string titulo = regCancion.get_titulo();
 		std::string idioma = regCancion.get_idioma();
 		std::vector<int> idsDelAutor;
-
-		//FIXME quitar
-		cout << "idioma a anexar = " << idioma << endl;
-		cout << "titulo a anexar = " << titulo << endl;
 
 		// Verifico que no haya ninguna cancion ya indexada
 		// que tenga los mismos tres parametros anteriores
@@ -170,34 +165,20 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 			ResolvedorConsultas rc(directorioSalida);
 			idsDelAutor = rc.get_id_canciones_autor(autores[i]);
 
-			//FIXME quitar
-			for (unsigned int k = 0; k < idsDelAutor.size(); k++)
-			{
-				cout << "id a comparar = " << idsDelAutor.at(k) << endl;
-			}
-
 			unsigned int j = 0;
 			while (j < idsDelAutor.size() && cancionEstaRepetida == false)
 			{
-				cout << "ESTA ENTRANDO AL CICLO QUE VERIFICA LOS IDS YA EXISTENTES " << endl;
 				ClaveX claveID;
-				claveID.set_clave(idsDelAutor[i]);
+				claveID.set_clave(idsDelAutor[j]);
 				RegistroClave reg;
-				int res = indicePrimario.devolver(claveID,&reg);
-				if (res == RES_RECORD_DOESNT_EXIST)
-					cout << "no se encontro en el indice primario el ID" << idsDelAutor[i] << endl;
+				indicePrimario.devolver(claveID,&reg);
 
 				unsigned long offsetAlMaestro;
 				reg.recuperar_campo((char*)&offsetAlMaestro,1);
 
 				RegistroCancion regCancionAlmacenada;
 
-				cout << "offset = " << offsetAlMaestro << endl;
-
 				archivoMaestro.get_registro_por_offset(&regCancionAlmacenada,offsetAlMaestro);
-
-				cout << "idioma almacenado = " << regCancionAlmacenada.get_idioma() << endl;
-				cout << "titulo almacenado = " << regCancionAlmacenada.get_titulo() << endl;
 				if (regCancionAlmacenada.get_idioma() == idioma && regCancionAlmacenada.get_titulo() == titulo)
 				{
 					cancionEstaRepetida = true;
@@ -210,7 +191,7 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 
 		if (cancionEstaRepetida == true)
 		{
-			std::cout << "No se indexara la cancion " << titulo << " porque esta repetida" << std::endl;
+			std::cout << "No se indexará la cancion "" << titulo << "" porque está repetida." << std::endl;
 			continue;
 		}
 
@@ -305,7 +286,7 @@ void Indexador::_indexar(std::string & directorioEntrada, std::string & director
 		int res = parser.obtener_proxima_cancion(regCancion,nombreArchivo);
 		if (res != RES_OK)
 		{
-			std::cout << "No se indexó " << nombreArchivo << " porque no cumple el estandar especificado." << std::endl;
+			std::cout << "No se indexó " << nombreArchivo << " porque no cumple el estándar especificado." << std::endl;
 			continue;
 		}
 		_agregar_a_los_indices(id, regCancion,nombreArchivo);
