@@ -22,7 +22,7 @@ public:
 	SortExterno(std::string archAOrdenar);
 	virtual ~SortExterno();
 
-	//ordenar_archivo(string nombreArchivo);
+	void ordenar_archivo(string nombreArchivo);
 	/*
 	 * Sobreescribe el archivo original
 	 * */

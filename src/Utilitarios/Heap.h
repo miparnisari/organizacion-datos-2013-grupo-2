@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "../CapaLogica/ManejoArchivos/RegistroClave.h"
+#include "../CapaFisica/RegistroVariable.h"
 
 using namespace std;
 
@@ -10,14 +11,16 @@ class Heap
 {
 private:
     int tamanio;
-    void CargarVectorYTransformarEnHeap(RegistroClave vector[]);
-    void ReestructurarHeap(RegistroClave vectorAOrdenar[],int desde,int hasta);
+    void CargarVectorYTransformarEnHeap(RegistroVariable vector[]);
+    void ReestructurarHeap(RegistroVariable vectorAOrdenar[],int desde,int hasta);
 
 public:
     Heap();
     ~Heap();
 
-    void ordenar(RegistroClave vectorAOrdenar[],int tamanio);
+    void ordenar(RegistroVariable vectorAOrdenar[],int tamanio);
+
+    int comparar_registros_variables(RegistroVariable reg1,RegistroVariable reg2);
 };
 
 #endif // HEAP_H
