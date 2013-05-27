@@ -18,6 +18,7 @@ void TestRegistroCancion::ejecutar()
 {
 	test_parametros();
 	test_obtener_letras_parseadas();
+	guardar_en_archivo_registros_variables();
 }
 
 void TestRegistroCancion::test_parametros()
@@ -76,8 +77,49 @@ void TestRegistroCancion::test_parametros()
 	assert( rc9.get_autor(0) == "the beatles");
 	assert( rc9.contar_parametros()== 4);
 
+
+	{
+		char buffer[64];
+		rc9.empaquetar(buffer);
+		RegistroCancion rc10;
+		rc10.desempaquetar(buffer);
+		assert( rc9.get_cantidad_autores() == rc10.get_cantidad_autores() );
+		assert( rc9.get_anio()== rc10.get_anio() );
+		assert( rc9.get_autor(1)== rc10.get_autor(1) );
+		assert( rc9.get_idioma()== rc10.get_idioma() );
+
+	}
+
+
+
 	print_test_ok("test_registro_cancion");
 }
+
+
+void TestRegistroCancion::guardar_en_archivo_registros_variables(){
+
+	ManejadorRegistrosVariables mrv;
+	string nombreArchivo("guardar_en_archivo_registros_variables.dat");
+	mrv.eliminar_archivo(nombreArchivo);
+	mrv.crear_archivo(nombreArchivo);
+
+	{
+		char linea9[]="the beatles;arjona-2012-la vida es bella-english\nesta es\nuna letra\nmuy larga\n";
+		RegistroCancion rc9;
+		assert( rc9.cargar(linea9,strlen(linea9))== RES_OK );
+		assert( rc9.get_cantidad_autores()== 2 );
+		assert( rc9.get_autor(0) == "the beatles");
+		assert( rc9.contar_parametros()== 4);
+
+		mrv.agregar_registro( &rc9 );
+		RegistroCancion rc10;
+		mrv.get_registro_ocupado( &rc10,0 );
+	}
+
+
+}
+
+
 
 void TestRegistroCancion::test_obtener_letras_parseadas()
 {
