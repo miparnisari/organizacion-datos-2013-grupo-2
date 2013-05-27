@@ -16,6 +16,7 @@ class RegistroCancion : public RegistroVariable{
 		Anio 				anioGrabacion;
 		string 				titulo;
 		string 				letra;
+		unsigned short 	cantidadParametros;
 
 		virtual void limpiar_autores()throw();
 		virtual unsigned short obtener_autores()throw();
@@ -47,6 +48,7 @@ class RegistroCancion : public RegistroVariable{
 
 		void limpiar_buffer()throw();
 		/*limpia el buffer y restaura el valor de las variables a sus respectivos DEFAULTS*/
+		unsigned short get_cantidad_parametros();
 		
 		/*METODOS DE ACCESO PUBLICO --------------------------------------------------------*/
 

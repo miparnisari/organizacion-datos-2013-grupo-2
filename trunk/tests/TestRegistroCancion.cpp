@@ -30,19 +30,19 @@ void TestRegistroCancion::test_parametros()
 	RegistroCancion rc3;
 	char linea3[]= "autor1;autor2;autor3-titulo-english\nletrasssssssssssss\n";
 	assert( rc3.cargar(linea3,strlen(linea3))== RES_OK );
-	assert( rc3.contar_parametros()== 3);
+	assert( rc3.get_cantidad_parametros()== 3);
 
-	string parametro;
-	rc3.obtener_parametro(0,parametro);
-	assert(parametro == "autor1;autor2;autor3");
-
-	rc3.obtener_parametro(1,parametro);
-	assert(parametro == "titulo");
-
-	rc3.obtener_parametro(2,parametro);
-	assert(parametro == "english");
-
-	assert(rc3.obtener_parametro(3,parametro) == false);
+//	string parametro;
+//	rc3.obtener_parametro(0,parametro);
+//	assert(parametro == "autor1;autor2;autor3");
+//
+//	rc3.obtener_parametro(1,parametro);
+//	assert(parametro == "titulo");
+//
+//	rc3.obtener_parametro(2,parametro);
+//	assert(parametro == "english");
+//
+//	assert(rc3.obtener_parametro(3,parametro) == false);
 
 	char linea4[]= "arjona-Martin-spanish\nesta es una letra de prueba\ncon varias lineas\nconcatenadas a re loco\n";
 	RegistroCancion rc4;
@@ -67,7 +67,7 @@ void TestRegistroCancion::test_parametros()
 	char linea8[]= "arjona-2012-la vida es bella-english\nesta es una letra\nde varias\nlineas\n";
 	RegistroCancion rc8;
 	assert( rc8.cargar(linea8,strlen(linea8))== RES_OK );
-	assert( rc8.contar_parametros()== 4 );
+	assert( rc8.get_cantidad_parametros()== 4 );
 	assert( rc8.get_titulo() == "la vida es bella");
 
 	char linea9[]="the beatles;arjona-2012-la vida es bella-english\nesta es\nuna letra\nmuy larga\n";
@@ -75,7 +75,7 @@ void TestRegistroCancion::test_parametros()
 	assert( rc9.cargar(linea9,strlen(linea9))== RES_OK );
 	assert( rc9.get_cantidad_autores()== 2 );
 	assert( rc9.get_autor(0) == "the beatles");
-	assert( rc9.contar_parametros()== 4);
+	assert( rc9.get_cantidad_parametros()== 4);
 
 
 	{
@@ -109,7 +109,7 @@ void TestRegistroCancion::guardar_en_archivo_registros_variables(){
 		assert( rc9.cargar(linea9,strlen(linea9))== RES_OK );
 		assert( rc9.get_cantidad_autores()== 2 );
 		assert( rc9.get_autor(0) == "the beatles");
-		assert( rc9.contar_parametros()== 4);
+		assert( rc9.get_cantidad_parametros()== 4);
 
 		mrv.agregar_registro( &rc9 );
 		RegistroCancion rc10;
