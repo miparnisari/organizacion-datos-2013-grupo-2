@@ -23,6 +23,7 @@ class TestManejadorRegistrosVariables: public Test {
 		void test_chequear_registros_ocupados();
 		void test_masivo();
 		void test_contar_registros();
+		void test_recuperar_por_offset();
 };
 
 #endif /* TESTMANEJADORREGISTROSVARIABLES_H_ */

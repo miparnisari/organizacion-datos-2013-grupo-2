@@ -23,7 +23,62 @@ void TestManejadorRegistrosVariables::ejecutar()
 	test_recuperar_espacio_libre();
 	test_masivo();
 	test_contar_registros();
+	test_recuperar_por_offset();
 }
+
+
+void TestManejadorRegistrosVariables::test_recuperar_por_offset(){
+
+	{
+		ManejadorRegistrosVariables mrv;
+		string nombreArchivo= "test_recuperar_por_offset.dat";
+		mrv.eliminar_archivo(nombreArchivo);
+		mrv.crear_archivo(nombreArchivo);
+
+
+		const unsigned short CANTIDAD_REGISTROS= 3;
+		long* offsets= new long[CANTIDAD_REGISTROS];
+		for(unsigned short i=0;i<CANTIDAD_REGISTROS;i++){
+			ClaveX clave;
+			string claveS= "clavea";
+			claveS[ claveS.length()-1 ]= (char)(65+i);
+			clave.set_clave(claveS);
+			RegistroClave registro;
+			registro.set_clave(clave);
+			offsets[i]= mrv.agregar_registro( &registro );
+		}
+
+		for(unsigned short i=0;i<CANTIDAD_REGISTROS;i++){
+
+			RegistroClave registro;
+			mrv.get_registro_por_offset( &registro,offsets[i] );
+			registro.get_clave().imprimir_dato();
+			int unCampo= 99;
+			registro.agregar_campo( (char*)&unCampo,sizeof(unCampo) );
+			cout<<endl;
+
+		}
+
+		mrv.eliminar_registro_ocupado(1);
+		for(unsigned short i=0;i<CANTIDAD_REGISTROS;i++){
+
+			if(i== 1)
+				continue;
+			RegistroClave registro;
+			mrv.get_registro_por_offset( &registro,offsets[i] );
+			registro.get_clave().imprimir_dato();
+			cout<<endl;
+
+		}
+
+
+		delete[] offsets;
+
+	}
+	cout<<endl<<"exito en test_recuperar_por_offset"<<endl;
+
+}
+
 
 
 void TestManejadorRegistrosVariables::test_contar_registros(){

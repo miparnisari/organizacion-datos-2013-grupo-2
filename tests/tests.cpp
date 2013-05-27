@@ -252,10 +252,11 @@ int main(int argc,char** args)
 
 	std::vector<Test*> tests;
 
+	tests.push_back(new TestManejadorRegistrosVariables);
+
 	tests.push_back(new TestRegistroCancion);
 
 	tests.push_back(new TestRegistroVariable);
-	tests.push_back(new TestManejadorRegistrosVariables);
 
 	tests.push_back(new TestManejadorArchivoDatosBasicos);
 

@@ -17,6 +17,8 @@ RegistroCancion::~RegistroCancion()
 
 int RegistroCancion::empaquetar(char* copia) throw(){
 
+	cout<<"empaquetando registro cancion"<<endl;
+
 	if( this->esta_limpio() || copia== NULL )
 		return RES_ERROR;
 
@@ -121,7 +123,7 @@ int RegistroCancion::desempaquetar(const char* copia) throw(){
 bool RegistroCancion::obtener_parametro(unsigned short numeroParametro,string& parametro)throw()
 {
 	parametro= "";
-	if(numeroParametro>= contar_parametros())
+	if(numeroParametro>= cantidadParametros)
 		return false;
 
 	stringstream stream;
@@ -196,6 +198,7 @@ unsigned short RegistroCancion::contar_parametros()throw()
 	if(contadorParametros > CANTIDAD_MAXIMA_PARAMETROS)
 		return 0;
 
+	cantidadParametros= contadorParametros;
 	return contadorParametros;
 
 }/*cuenta la cantidad de parametros de la cancion*/
@@ -204,7 +207,7 @@ unsigned short RegistroCancion::contar_parametros()throw()
 int RegistroCancion::obtener_anio_grabacion()throw(){
 
 	const unsigned short CANTIDAD_PARAMETROS_CON_ANIO= 4;
-	const unsigned short CANTIDAD_PARAMETROS= contar_parametros();
+	const unsigned short CANTIDAD_PARAMETROS= cantidadParametros;
 
 	if(CANTIDAD_PARAMETROS!= CANTIDAD_PARAMETROS_CON_ANIO){
 		anioGrabacion.cargar("-1");
@@ -270,7 +273,7 @@ unsigned short RegistroCancion::obtener_autores()throw(){
 bool RegistroCancion::obtener_titulo()throw(){
 
 	unsigned short numeroParametroTitulo;
-	const unsigned short CANTIDAD_PARAMETROS= contar_parametros();
+	const unsigned short CANTIDAD_PARAMETROS= cantidadParametros;
 
 	if(CANTIDAD_PARAMETROS== 3)
 		numeroParametroTitulo= 1;
@@ -289,7 +292,7 @@ bool RegistroCancion::obtener_titulo()throw(){
 
 bool RegistroCancion::obtener_idioma()throw(){
 
-	const unsigned short CANTIDAD_PARAMETROS= contar_parametros();
+	const unsigned short CANTIDAD_PARAMETROS= cantidadParametros;
 	unsigned short numeroParametroIdioma;
 
 	if(CANTIDAD_PARAMETROS== 3)
@@ -365,6 +368,7 @@ string RegistroCancion::get_letra()throw(){
 
 }
 
+unsigned short RegistroCancion::get_cantidad_parametros(){return cantidadParametros;}
 
 int RegistroCancion::get_anio()throw(){
 
