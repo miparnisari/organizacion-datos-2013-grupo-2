@@ -124,8 +124,7 @@ long ManejadorRegistrosVariables::get_registro(RegistroVariable* registro,
 int ManejadorRegistrosVariables::get_registro_por_offset(RegistroVariable* registro ,
 		unsigned long offset){
 
-
-
+	this->_leer_header();
 	if(offset < OFFSET_PRIMER_REGISTRO || offset > header.tamanioArchivo)
 		return RES_ERROR;
 	if( !archivo_existe(nombreArchivo) || registro== NULL )
@@ -355,9 +354,10 @@ void ManejadorRegistrosVariables::_desvincular(){
 
 void ManejadorRegistrosVariables::_cerrar_archivo(fstream* archivo){
 
-	archivo->seekp(0,ios::end);
+	archivo->seekg(0,ios::end);
 	archivo->seekp(0,ios::end);
 	archivo->close();
+
 }
 
 
@@ -372,7 +372,6 @@ void ManejadorRegistrosVariables::_resetear_header(){
 
 
 void ManejadorRegistrosVariables::_guardar_header(){
-
 	fstream archivo(nombreArchivo.c_str());
 	if (archivo.good()) {
 		archivo.write( (char*)&header , sizeof(header) );
@@ -384,7 +383,6 @@ void ManejadorRegistrosVariables::_guardar_header(){
 
 
 void ManejadorRegistrosVariables::_leer_header(){
-
 	fstream archivo(nombreArchivo.c_str());
 
 	archivo.read( (char*)&header , sizeof(header) );
