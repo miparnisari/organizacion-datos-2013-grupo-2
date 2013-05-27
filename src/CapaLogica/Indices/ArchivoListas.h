@@ -3,6 +3,7 @@
 
 #include "../../CapaFisica/ManejadorRegistrosVariables.h"
 #include "../../CapaFisica/RegistroVariable.h"
+#include <stdio.h>
 
 class ArchivoListas
 {
