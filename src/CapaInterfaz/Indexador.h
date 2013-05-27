@@ -28,6 +28,7 @@ class Indexador
 		int indexar(std::string & directorioEntrada, std::string & directorioSalida);
 		int consultar_autor(std::string & directorioSalida, std::string & unAutor);
 		int consultar_titulo(std::string & directorioSalida, std::string & titulo);
+		int consultar_frase (std::string & directorioSalida, std::string & frase);
 
 	private:
 		static const int OPCION_INDEXAR = 1;

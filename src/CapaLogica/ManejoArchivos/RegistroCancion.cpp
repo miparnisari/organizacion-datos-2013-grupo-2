@@ -23,7 +23,9 @@ int RegistroCancion::empaquetar(char* copia) throw(){
 	RegistroVariable::limpiar_campos();
 	this->agregar_campo( (char*)&cantidadAutores,sizeof(cantidadAutores) );
 	for( unsigned short i=0;i<cantidadAutores;i++ )
+	{
 		this->agregar_campo( autores[i].c_str() , autores[i].length() );
+	}
 
 	string idiomaS= idioma.getIdioma();
 	this->agregar_campo( idiomaS.c_str() , idiomaS.length() );
@@ -34,9 +36,7 @@ int RegistroCancion::empaquetar(char* copia) throw(){
 	this->agregar_campo( titulo.c_str() , titulo.length() );
 	this->agregar_campo( letra.c_str() , letra.length() );
 
-	RegistroVariable::empaquetar(copia);
-
-	return RES_OK;
+	return RegistroVariable::empaquetar(copia);
 
 }
 
@@ -404,6 +404,10 @@ int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
 		limpiar_buffer();
 		return RES_ERROR;
 	}
+
+	char bufferAuxiliar [REG_VAR_MAX_TAM];
+	this->empaquetar(bufferAuxiliar);
+
 
 	return RES_OK;
 }/*carga los datos del registro a partir de un buffer de datos*/

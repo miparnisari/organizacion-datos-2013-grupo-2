@@ -1,1 +1,2 @@
-gdb --args ./main -indexar "../songs" "../output/"
+gdb ./main 
+run -indexar "../songs" "../output"

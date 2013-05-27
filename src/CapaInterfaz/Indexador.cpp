@@ -42,6 +42,12 @@ int Indexador::consultar_autor(std::string & directorioSalida, std::string & aut
 	return RES_OK;
 }
 
+int Indexador::consultar_frase (std::string & directorioSalida, std::string & frase)
+{
+	//TODO
+	return RES_OK;
+}
+
 int Indexador::_mostrar_opciones(std::string & directorioEntrada, std::string & directorioSalida)
 {
 	bool dirEntradaExiste = utilitarios::directorio_existe(directorioEntrada);
@@ -185,6 +191,8 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 				reg.recuperar_campo((char*)&offsetAlMaestro,1);
 
 				RegistroCancion regCancionAlmacenada;
+
+				cout << "offset = " << offsetAlMaestro << endl;
 
 				archivoMaestro.get_registro_por_offset(&regCancionAlmacenada,offsetAlMaestro);
 

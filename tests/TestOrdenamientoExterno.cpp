@@ -82,10 +82,9 @@ void TestOrdenamientoExterno::test_merge_runs(){
 
 	ordenador._merge();
 
-	ManejadorRegistrosVariables mv,mv2;
-	mv2.abrir_archivo("archivoOrdenamiento.dat");
+	ManejadorRegistrosVariables mv;
 
-	mv.abrir_archivo("ordenado.dat");//fixme arch ordenamiento
+	mv.abrir_archivo("archivoOrdenamiento.dat");
 
 	for (int i = 0; i < mv.get_cantidad_registros_ocupados()-1; i++)
 	{
@@ -107,20 +106,5 @@ void TestOrdenamientoExterno::test_merge_runs(){
 		assert (clave1 <= clave2);
 	}
 
-//	assert (mv.get_cantidad_registros_ocupados() == mv2.get_cantidad_registros_ocupados());
-
-
 	print_test_ok("test_merge_runs");
 }
-
-/*
- *
- *
- * Testear que no borre registros (merge final en otro lado y comparar con get cant reg ocupads)
- *
- *
- * Verificar que el tamaño sea igual antes y despues
- *
- * y obviamente no podia cumplirse y funcionar de una, no? NOOOOOOOOOOOOOOOOOOOOOOOOOOO!!!!!!!!!
- *
- */
