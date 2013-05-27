@@ -18,7 +18,7 @@ int ArchivoListas::crear(std::string directorioSalida, std::string fileNamee)
 
 int ArchivoListas::abrir(std::string directorioSalidaa, std::string fileNamee)
 {
-    this->fileName = directorioSalida+fileNamee+".dat";
+    this->fileName = directorioSalidaa+fileNamee+".dat";
     this->directorioSalida = directorioSalidaa;
     return this->archivo.abrir_archivo(this->fileName);
 }
@@ -101,7 +101,7 @@ int ArchivoListas::recontruir_listas(unsigned short ref_lista, RegistroVariable 
 
 int ArchivoListas::eliminar(std::string directorioSalida, std::string fileNamee)
 {
-    return this->archivo.eliminar_archivo(directorioSalida+fileNamee);
+    return this->archivo.eliminar_archivo(directorioSalida+fileNamee+".dat");
 }
 
 unsigned short ArchivoListas::get_cantidad_listas()
