@@ -6,7 +6,8 @@
  */
 
 #include "TestArchivoListas.h"
-#define DIRECCION	"TestArchivoListas.dat"
+#define DIRECCION	"TestArchivoListas"
+#define DIRECCION2 "TestArchivoListas.dat"
 
 TestArchivoListas::TestArchivoListas()
 {
@@ -53,7 +54,7 @@ void TestArchivoListas::test_archivo_listas_eliminar()
 	//Lo intento abrir
 	assert(archivo.abrir("", DIRECCION) == RES_OK);
 	//Lo elimino
-	assert(archivo.eliminar("", DIRECCION) == RES_OK);
+	assert(archivo.eliminar("", DIRECCION2) == RES_OK);
 	//Lo intento abrir
 	assert(archivo.abrir("", DIRECCION) != RES_OK);
 
@@ -176,6 +177,6 @@ void TestArchivoListas::eliminar_archivos()
 {
 	//Elimina los archivos que se usan en cada archivo
 	ManejadorArchivos manejador;
-	manejador.eliminar_archivo(DIRECCION);
+	manejador.eliminar_archivo(DIRECCION2);
 }
 
