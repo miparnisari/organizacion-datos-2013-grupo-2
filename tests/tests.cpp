@@ -274,8 +274,8 @@ int main(int argc,char** args)
 	tests.push_back(new TestHeap);
 	tests.push_back(new TestArbol);
 
-//    tests.push_back(new TestArchivoListas);
-//    tests.push_back(new TestIndiceInvertidoPorFrase);
+//	tests.push_back(new TestArchivoListas);
+//	tests.push_back(new TestIndiceInvertidoPorFrase);
 //	tests.push_back(new TestIndicePorAutor);
 //	tests.push_back(new TestIndicePorTitulo);
 

@@ -2,13 +2,11 @@
 #define ARCHIVO_ARBOL	"IndicePorAutor.dat"
 #define	ARCHIVO_LISTAS	"ListasPorAutor.dat"
 
-TestIndicePorAutor::TestIndicePorAutor()
-{
+TestIndicePorAutor::TestIndicePorAutor(){
 
 }
 
-TestIndicePorAutor::~TestIndicePorAutor()
-{
+TestIndicePorAutor::~TestIndicePorAutor(){
 
 }
 

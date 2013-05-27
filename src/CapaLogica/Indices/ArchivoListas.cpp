@@ -14,12 +14,12 @@ ArchivoListas::~ArchivoListas()
 
 int ArchivoListas::crear(std::string directorioSalida, std::string fileNamee)
 {
-    return this->archivo.crear_archivo(directorioSalida+fileNamee);
+    return this->archivo.crear_archivo(directorioSalida+fileNamee+".dat");
 }
 
 int ArchivoListas::abrir(std::string directorioSalidaa, std::string fileNamee)
 {
-    this->fileName = directorioSalida+fileNamee;
+    this->fileName = directorioSalida+fileNamee+".dat";
     this->directorioSalida = directorioSalidaa;
     return this->archivo.abrir_archivo(this->fileName);
 }
