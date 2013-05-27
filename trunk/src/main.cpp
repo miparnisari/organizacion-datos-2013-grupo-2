@@ -34,7 +34,9 @@ int main (int argc, char* argv[])
 	// Consultar por frase
 	else if (operacion == "-consultarFrase")
 	{
-
+		std::string directorioSalida = std::string(argv[2]);
+		std::string frase = std::string(argv[3]);
+		indexador.consultar_frase(directorioSalida,frase);
 	}
 	else
 	{

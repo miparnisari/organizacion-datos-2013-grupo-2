@@ -328,7 +328,7 @@ long ManejadorRegistrosVariables::_append_registro(RegistroVariable* registro){
 	fstream archivo(nombreArchivo.c_str());
 	archivo.seekp(0,ios::end);
 	long offset= archivo.tellp();
-	const int TAMANIO_EMPAQUETADO= registro->get_tamanio_empaquetado();
+	const unsigned short TAMANIO_EMPAQUETADO= registro->get_tamanio_empaquetado();
 	char* buffer= new char[TAMANIO_EMPAQUETADO]();
 
 	registro->empaquetar(buffer);

@@ -188,7 +188,7 @@ void SortExterno::_merge()
 		SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
 
 		//todo extraer a funcion
-		while ( (regPrimero < regClaveMax) && (regSegundo < regClaveMax) )
+		while ( (regPrimero < regClaveMax) || (regSegundo < regClaveMax) )
 		{
 //			cout<<"par de claves: "<<endl; //todo
 //			regPrimero.get_clave().imprimir_dato();
@@ -236,11 +236,11 @@ void SortExterno::_merge()
 	//borro el original para sobreescribirlo con el ordenado
 	ManejadorRegistrosVariables archivoMerge;
 
-//	archivoMerge.abrir_archivo(archAOrdenar); //fixme descomentar en version final
-//	archivoMerge.eliminar_archivo(archAOrdenar);
+	archivoMerge.abrir_archivo(archAOrdenar);
+	archivoMerge.eliminar_archivo(archAOrdenar);
 
-	archivoMerge.crear_archivo("ordenado.dat");//fixme aca va arch a ordeanr
-	archivoMerge.abrir_archivo("ordenado.dat");
+	archivoMerge.crear_archivo(archAOrdenar);
+	archivoMerge.abrir_archivo(archAOrdenar);
 
 	unsigned int indicePrimero=0;
 	unsigned int indiceSegundo=0;
@@ -251,7 +251,7 @@ void SortExterno::_merge()
 	SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
 
 
-	while ( (regPrimero < regClaveMax) && (regSegundo < regClaveMax ) )
+	while ( (regPrimero < regClaveMax) || (regSegundo < regClaveMax ) )
 	{
 //		cout<<"------------------------- ULTIMO MERGE ------------------------"<<endl; //todo
 //
