@@ -15,6 +15,8 @@
 #include <iostream>
 #include <string>
 #include "../Constantes.h"
+#include <stdio.h>
+#include <string.h>
 
 using namespace std;
 
@@ -32,6 +34,9 @@ class Normalizador {
 		/*normaliza un archivo de texto con el nombre pathArchivoEntrada, removiendo
 		 * dieresis, acentos y cambiando el texto a lowerCase y el archivo resultado lo
 		 * almacena en la direccion de pathArchivoSalida.*/
+		string normalizar_input( string linea );
+		/*dado un string "linea" introducido desde consola, se lo normaliza y se retorna el
+		 * string normalizado*/
 
 };
 
