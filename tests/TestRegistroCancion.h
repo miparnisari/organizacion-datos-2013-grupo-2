@@ -19,6 +19,7 @@ class TestRegistroCancion : public Test {
 	private:
 		void test_parametros();
 		void test_obtener_letras_parseadas();
+		void guardar_en_archivo_registros_variables();
 };
 
 #endif /* TESTREGISTROCANCION_H_ */
