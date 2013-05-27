@@ -21,8 +21,6 @@ void SortExterno:: _generar_runs()
 	ManejadorRegistrosVariables archivoAOrdenar;
 
 	archivoAOrdenar.abrir_archivo(archAOrdenar);
-	//if res_error ya veremos TODO
-	//if no registros ya veremos
 
 	string nombreGeneralDeRun="run";
 	string extension=".dat";
@@ -31,17 +29,17 @@ void SortExterno:: _generar_runs()
 	int cantRegLeidos=0;
 	unsigned tamanioTotal=0;//del vector a ordenar por heapsort en RAM
 
-	RegistroClave regClaveLeido;
+	RegistroVariable regVariableLeido;
 //	RegistroClave* bufferOrdenamiento;
-	RegistroClave bufferOrdenamiento[1000];//fixme
+	RegistroVariable bufferOrdenamiento[1000];//fixme
 
 	//lleno el heap por primera vez
 	//puede que resulta un poco mayor al limite (lo ultimo que leo se puede pasar)
 	while ((tamanioTotal < TAM_MAX_BUFFER_ORDENAMIENTO)&&(archivoAOrdenar.get_cantidad_registros_ocupados()>cantRegLeidos))
 	{
-		archivoAOrdenar.get_registro_ocupado(&regClaveLeido, cantRegLeidos);
+		archivoAOrdenar.get_registro_ocupado(&regVariableLeido, cantRegLeidos);
 		cantRegLeidos++;
-		tamanioTotal += sizeof(regClaveLeido);//esto no creo q este bien pero como indicador servira por ahora
+		tamanioTotal += sizeof(regVariableLeido);
 
 		if (cantRegLeidos > 1) //tengo algo dentro del buffer
 		{
@@ -58,13 +56,13 @@ void SortExterno:: _generar_runs()
 
 //			delete[] bufferAuxiliar;
 
-			bufferOrdenamiento[cantRegLeidos-1]=regClaveLeido;//fixme
+			bufferOrdenamiento[cantRegLeidos-1]=regVariableLeido;//fixme
 
-//			bufferOrdenamiento[cantRegLeidos - 1] = regClaveLeido;//fixme falla aca!
+//			bufferOrdenamiento[cantRegLeidos - 1] = regClaveLeido;//fixme
 		} else //no tengo nada dentro
 		{
 //			bufferOrdenamiento = new RegistroClave[1];
-			bufferOrdenamiento[0]= regClaveLeido;
+			bufferOrdenamiento[0]= regVariableLeido;
 		}
 	}
 //replacement selection
@@ -96,43 +94,45 @@ void SortExterno:: _generar_runs()
 		{
 			if (archivoAOrdenar.get_cantidad_registros_ocupados()>cantRegLeidos)
 			{
-				archivoAOrdenar.get_registro_ocupado(&regClaveLeido,cantRegLeidos);
+				archivoAOrdenar.get_registro_ocupado(&regVariableLeido,cantRegLeidos);
 				cantRegLeidos++;
 
 
-				if (regClaveLeido >= bufferOrdenamiento[0])//es decir mayor que la raiz
-				{//fixme ver si es > o <!!!
+				if ((heap.comparar_registros_variables(regVariableLeido,bufferOrdenamiento[0])==1)||(heap.comparar_registros_variables(regVariableLeido,bufferOrdenamiento[0])==0))//es decir mayor que la raiz
+				{
 					archivoTemporal.agregar_registro(&bufferOrdenamiento[0]);
-					RegistroClave copia1(regClaveLeido);
+					RegistroVariable copia1(regVariableLeido);
 					bufferOrdenamiento[0]=copia1;
 					heap.ordenar(bufferOrdenamiento,tamanioHeapActual);
 				}else
 				{
-					int ultimaPosicionDelHeap = tamanioHeapActual-1; //todo metodo agregar al Heap
+					int ultimaPosicionDelHeap = tamanioHeapActual-1;
 					archivoTemporal.agregar_registro(&bufferOrdenamiento[0]);
-					RegistroClave copia1(bufferOrdenamiento[ultimaPosicionDelHeap]);
+					RegistroVariable copia1(bufferOrdenamiento[ultimaPosicionDelHeap]);
 					bufferOrdenamiento[0]=copia1;
-					RegistroClave copia2(regClaveLeido);
+					RegistroVariable copia2(regVariableLeido);
 					bufferOrdenamiento[ultimaPosicionDelHeap]=copia2;
 					tamanioHeapActual--;
 					heap.ordenar(bufferOrdenamiento,tamanioHeapActual);
 				}
 			}else
 			{
-				int ultimaPosicionDelHeap = tamanioHeapActual-1; //todo metodo agregar al Heap
+				int ultimaPosicionDelHeap = tamanioHeapActual-1;
 				archivoTemporal.agregar_registro(&bufferOrdenamiento[0]);
-				RegistroClave copia1(bufferOrdenamiento[ultimaPosicionDelHeap]);
+				RegistroVariable copia1(bufferOrdenamiento[ultimaPosicionDelHeap]);
 				bufferOrdenamiento[0]=copia1;
 				tamanioHeapActual--;
 				heap.ordenar(bufferOrdenamiento,tamanioHeapActual);
 			}
 		}
 
-		ClaveX clave;
-		clave.set_clave(200); //todo cambiar a clave tope
-		RegistroClave regClave;
-		regClave.set_clave(clave);
-		archivoTemporal.agregar_registro(& regClave);
+		string claveMax;
+		claveMax += ""+CLAVE_TOPE;
+
+		RegistroVariable regClaveMax;
+
+		regClaveMax.agregar_campo(claveMax.c_str(), claveMax.length());
+		archivoTemporal.agregar_registro(& regClaveMax);
 
 		tamanioHeapActual=tamanioHeapInicial;
 
@@ -143,13 +143,13 @@ void SortExterno:: _generar_runs()
 
 void SortExterno::_merge()
 {
+	string claveMax;
+	claveMax += ""+CLAVE_TOPE;
 
-	RegistroClave regClaveMax;
+	RegistroVariable regClaveMax;
+	regClaveMax.agregar_campo(claveMax.c_str(), claveMax.length());
 
-	ClaveX clave;
-	clave.set_clave(200);//todo cambiar a CLAVE_TOPE
-
-	regClaveMax.set_clave(clave);
+	Heap heap;
 
 	int tamanio = archivosTemporalesAFusionar.size();
 	int numeroDeMerge=0;
@@ -188,16 +188,11 @@ void SortExterno::_merge()
 		SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
 
 		//todo extraer a funcion
-		while ( (regPrimero < regClaveMax) || (regSegundo < regClaveMax) )
+		while ( heap.comparar_registros_variables(regPrimero,regClaveMax)==-1 || heap.comparar_registros_variables(regSegundo,regClaveMax)==-1 )
 		{
-//			cout<<"par de claves: "<<endl; //todo
-//			regPrimero.get_clave().imprimir_dato();
-//			cout<<endl;
-//			regSegundo.get_clave().imprimir_dato();
-//			cout<<endl;
 
 			//comparo y avanzo en el correspondiente
-			if (regPrimero <= regSegundo)
+			if (heap.comparar_registros_variables(regPrimero,regSegundo)==0 || heap.comparar_registros_variables(regPrimero,regSegundo)==-1)
 			{
 				archivoMerge.agregar_registro(&regPrimero);
 				indicePrimero++;
@@ -251,18 +246,11 @@ void SortExterno::_merge()
 	SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
 
 
-	while ( (regPrimero < regClaveMax) || (regSegundo < regClaveMax ) )
+	while ( heap.comparar_registros_variables(regPrimero,regClaveMax)==-1 || heap.comparar_registros_variables(regSegundo,regClaveMax)==-1 )
 	{
-//		cout<<"------------------------- ULTIMO MERGE ------------------------"<<endl; //todo
-//
-//		cout<<"par de claves: "<<endl; //todo borrar
-//		regPrimero.get_clave().imprimir_dato();
-//		cout<<endl;
-//		regSegundo.get_clave().imprimir_dato();
-//		cout<<endl;
 
 		//comparo y avanzo en el correspondiente
-		if (regPrimero <= regSegundo)
+		if (heap.comparar_registros_variables(regPrimero,regSegundo)==0 || heap.comparar_registros_variables(regPrimero,regSegundo)==-1)
 		{
 			archivoMerge.agregar_registro(&regPrimero);
 			indicePrimero++;
@@ -277,4 +265,10 @@ void SortExterno::_merge()
 	PrimerArchivoAUnir.eliminar_archivo(archivosTemporalesAFusionar[tamanio-1]);
 	SegundoArchivoAUnir.eliminar_archivo(archivosTemporalesAFusionar[tamanio-2]);
 
+}
+
+void SortExterno::ordenar_archivo(string nombreArchivo)
+{
+	_generar_runs();
+	_merge();
 }

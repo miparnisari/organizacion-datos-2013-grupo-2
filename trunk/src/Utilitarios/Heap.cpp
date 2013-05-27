@@ -17,27 +17,27 @@ Heap::~Heap()
 
 }
 
-void Heap::ReestructurarHeap(RegistroClave vectorAOrdenar[],int desde,int hasta)
+void Heap::ReestructurarHeap(RegistroVariable vectorAOrdenar[],int desde,int hasta)
 {
     int hijoIzq=2*desde+1;
     int hijoDer=2*desde+2;
 
     int posicionMax=desde;
     if (hijoIzq<=hasta)
-    	if((vectorAOrdenar[hijoIzq]>vectorAOrdenar[posicionMax]))
+    	if(comparar_registros_variables(vectorAOrdenar[hijoIzq],vectorAOrdenar[posicionMax])==1)
     	{
     		posicionMax=hijoIzq;
     	}
 
     if(hijoDer<=hasta)
-    	if((vectorAOrdenar[hijoDer]>vectorAOrdenar[posicionMax]))
+    	if( comparar_registros_variables(vectorAOrdenar[hijoDer],vectorAOrdenar[posicionMax])==1)
     	{
     		posicionMax=hijoDer;
     	}
 
     if(posicionMax!=desde)
     {
-    	RegistroClave auxIntercambio=vectorAOrdenar[posicionMax];
+    	RegistroVariable auxIntercambio=vectorAOrdenar[posicionMax];
         vectorAOrdenar[posicionMax]=vectorAOrdenar[desde];
         vectorAOrdenar[desde]=auxIntercambio;
 
@@ -46,7 +46,7 @@ void Heap::ReestructurarHeap(RegistroClave vectorAOrdenar[],int desde,int hasta)
 }
 
 
-void Heap::CargarVectorYTransformarEnHeap(RegistroClave vectorACargar[])
+void Heap::CargarVectorYTransformarEnHeap(RegistroVariable vectorACargar[])
 {
     int UltimoConHijo=(tamanio-2)/2;
 
@@ -56,7 +56,7 @@ void Heap::CargarVectorYTransformarEnHeap(RegistroClave vectorACargar[])
     }
 }
 
-void Heap::ordenar(RegistroClave vectorAOrdenar[],int tamanio)
+void Heap::ordenar(RegistroVariable vectorAOrdenar[],int tamanio)
 {
 
     this->tamanio=tamanio;
@@ -65,11 +65,66 @@ void Heap::ordenar(RegistroClave vectorAOrdenar[],int tamanio)
 
     while (tamanio>0)
     {
-    	RegistroClave auxIntercambio=vectorAOrdenar[tamanio-1];
+    	RegistroVariable auxIntercambio=vectorAOrdenar[tamanio-1];
     	vectorAOrdenar[tamanio-1]=vectorAOrdenar[0];
     	vectorAOrdenar[0]=auxIntercambio;
 
     	ReestructurarHeap(vectorAOrdenar,0,tamanio-2);
     	tamanio--;
     }
+}
+
+int Heap::comparar_registros_variables(RegistroVariable reg1,RegistroVariable reg2)
+{
+	char* campo1Reg1 = new char[reg1.get_tamanio_campo(0)];
+	reg1.recuperar_campo(campo1Reg1,0);
+
+	char* campo1Reg2 = new char[reg2.get_tamanio_campo(0)];
+	reg2.recuperar_campo(campo1Reg2,0);
+
+	if (campo1Reg1==campo1Reg2)
+	{
+		if (reg1.get_cantidad_campos()>=2)
+		{
+			char* campo2Reg1 = new char[reg1.get_tamanio_campo(1)];
+			reg1.recuperar_campo(campo2Reg1,1);
+
+			char* campo2Reg2 = new char[reg2.get_tamanio_campo(1)];
+			reg2.recuperar_campo(campo2Reg2,1);
+
+			if (campo2Reg1==campo2Reg2)
+			{
+				delete[] campo2Reg1;
+				delete[] campo2Reg2;
+				return 0;
+			}else if (campo2Reg1>campo2Reg2)
+			{
+				delete[] campo2Reg1;
+				delete[] campo2Reg2;
+				return 1;
+			}else{
+				delete[] campo2Reg1;
+				delete[] campo2Reg2;
+				return -1;
+			}
+
+		}else
+		{
+			delete[] campo1Reg1;
+			delete[] campo1Reg2;
+			return 0;
+		}
+	}else{
+		if (campo1Reg1>campo1Reg2)
+		{
+			delete[] campo1Reg1;
+			delete[] campo1Reg2;
+			return 1;
+		}else
+		{
+			delete[] campo1Reg1;
+			delete[] campo1Reg2;
+			return -1;
+		}
+	}
 }
