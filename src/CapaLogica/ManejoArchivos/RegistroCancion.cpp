@@ -1,5 +1,8 @@
 #include "RegistroCancion.h"
 
+#define IMP(v)\
+	cout<<#v<<" ="<<v<<endl;
+
 RegistroCancion::RegistroCancion():RegistroVariable()
 {
 	autores= NULL;
@@ -126,16 +129,20 @@ bool RegistroCancion::obtener_parametro(unsigned short numeroParametro,string& p
 	if(numeroParametro>= cantidadParametros)
 		return false;
 
-	stringstream stream;
-	stream.write(buffer,tamanio);
-	stream.seekg(0,ios::beg);
-	string parametros;
+//	stringstream stream;
+//	stream.write(buffer,tamanio);
+//	stream.seekg(0,ios::beg);
+	string parametros(buffer,tamanio);//fixme linea agregada
 
-	const unsigned short TAMANIO_BUFFER_PARAMETROS= 2048;
-	char* bufferParametros= new char[TAMANIO_BUFFER_PARAMETROS]();
-	stream.getline(bufferParametros , TAMANIO_BUFFER_PARAMETROS);
-	parametros= bufferParametros;
-	delete[] bufferParametros;
+//	string parametros;
+
+//	const unsigned short TAMANIO_BUFFER_PARAMETROS= 2048;
+//	char* bufferParametros= new char[TAMANIO_BUFFER_PARAMETROS]();
+//	stream.getline(bufferParametros , TAMANIO_BUFFER_PARAMETROS);
+//	parametros= bufferParametros;
+//	delete[] bufferParametros;
+
+
 
 	unsigned short offset= 0;
 	unsigned short contadorParametro= 0;
@@ -154,7 +161,7 @@ bool RegistroCancion::obtener_parametro(unsigned short numeroParametro,string& p
 
 	char c='x';
 	string parametroLeido;
-	while(offset < parametros.length() && c!= SEPARACION_PARAMETROS){
+	while(offset < parametros.length() && c!= SEPARACION_PARAMETROS ){
 
 		c= parametros.at(offset);
 		if(c!=SEPARACION_PARAMETROS)
@@ -174,13 +181,15 @@ unsigned short RegistroCancion::contar_parametros()throw()
 	stream.write(buffer,tamanio); //Inserts the first n characters of the array pointed by s into the stream.
 	stream.seekg(0,ios::beg);
 		
-	string stringCancion;
+	string stringCancion(buffer,tamanio);//fixme agregado
 
-	const unsigned short TAMANIO_BUFFER_PARAMETROS= 2048;
-	char* bufferParametros= new char[TAMANIO_BUFFER_PARAMETROS]();
-	stream.getline(bufferParametros , TAMANIO_BUFFER_PARAMETROS);
-	stringCancion= bufferParametros;
-	delete[] bufferParametros;
+//	string stringCancion;
+//
+//	const unsigned short TAMANIO_BUFFER_PARAMETROS= 2048;
+//	char* bufferParametros= new char[TAMANIO_BUFFER_PARAMETROS]();
+//	stream.getline(bufferParametros , TAMANIO_BUFFER_PARAMETROS);
+//	stringCancion= bufferParametros;
+//	delete[] bufferParametros;
 
 	const unsigned short OFFSET_FIN_PARAMETROS= stringCancion.length();
 	const char SEPARACION_PARAMETRO= '-';
@@ -199,6 +208,7 @@ unsigned short RegistroCancion::contar_parametros()throw()
 		return 0;
 
 	cantidadParametros= contadorParametros;
+	IMP(cantidadParametros);
 	return contadorParametros;
 
 }/*cuenta la cantidad de parametros de la cancion*/
@@ -304,7 +314,51 @@ bool RegistroCancion::obtener_idioma()throw(){
 		return false;
 
 	string idiomaString;
-	obtener_parametro(numeroParametroIdioma , idiomaString);
+
+
+//	obtener_parametro(numeroParametroIdioma , idiomaString);
+	{
+		unsigned short numeroParametro= numeroParametroIdioma;
+		string parametro;
+		parametro= "";
+		if(numeroParametro>= cantidadParametros)
+			return false;
+
+
+		string parametros(buffer,tamanio);//fixme linea agregada
+
+
+		unsigned short offset= 0;
+		unsigned short contadorParametro= 0;
+		const char SEPARACION_PARAMETROS= '-';
+
+		while(contadorParametro< numeroParametro){
+			char c;
+			c= parametros.at(offset);
+
+			if(c== SEPARACION_PARAMETROS)
+				contadorParametro++;
+
+			offset++;
+
+		}
+
+		char c='x';
+		string parametroLeido;
+		while(offset < parametros.length() && c!= SEPARACION_PARAMETROS && c!='\n' ){
+
+			c= parametros.at(offset);
+			if(c!=SEPARACION_PARAMETROS && c!='\n')
+				parametroLeido.push_back(c);
+			offset++;
+
+		}
+
+		parametro= parametroLeido;
+		idiomaString= parametro;
+	}
+
+
 
 	return idioma.cargar(idiomaString);
 
@@ -396,13 +450,29 @@ int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
 		return resCarga;
 	
 	bool val1 = (contar_parametros() == 0);
+	IMP(val1);
 	bool val2 = (this->obtener_autores() == 0);
+	IMP(val2);
 	bool val3 = (this->obtener_anio_grabacion() == -1);
+	IMP(val3);
 	bool val4 = (this->obtener_titulo() == false);
+	IMP(val4);
 	bool val5 = (this->obtener_idioma() == false);
+	IMP(val5);
 	bool val6 = (this->obtener_letra() == false);
+	IMP(val6);
 	
-	bool noPudoValidar = val1 || val2 || val3 || val4 || val5 || val6;
+	IMP(cantidadParametros);
+	IMP(cantidadAutores);
+	IMP(anioGrabacion.get_anio());
+	IMP(titulo);
+	IMP(idioma.getIdioma());
+
+
+
+//
+//	bool noPudoValidar = val1 || val2 || val3 || val4 || val5 || val6;
+	bool noPudoValidar = val1 || val2  || val4 || val5 || val6;
 
 	if (noPudoValidar){
 		limpiar_buffer();

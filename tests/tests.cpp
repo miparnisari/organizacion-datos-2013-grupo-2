@@ -55,11 +55,11 @@ void test_leer_de_archivo()
 			}
 
 			// Atributos de la cancion (NO la letra)
-			for(unsigned short i=1;i<regCancion.contar_parametros();i++)
-			{
-				regCancion.obtener_parametro(i,parametro);
-				assert(parametro.size() > 1);
-			}
+//			for(unsigned short i=1;i<regCancion.contar_parametros();i++)
+//			{
+//				regCancion.obtener_parametro(i,parametro);
+//				assert(parametro.size() > 1);
+//			}
 
 			// 50 caracteres de la letra
 			std::string letra = regCancion.get_letra();
@@ -278,9 +278,11 @@ void test_input_string(){
 
 
 
+
+
+
 int main(int argc,char** args)
 {
-	test_input_string();
 //	test_leer_de_archivo();
 	test_clave_numerica();
 	test_clave_string();
