@@ -17,8 +17,8 @@ int IndiceInvertido::crear_indice(std::string directorioSalida, std::string file
 	this->fileName= directorioSalida+fileNamee;
 	this->archivo_terminos.crear_archivo(this->fileName+"Terminos.dat");
 	this->vocabulario.crear(this->fileName+"Vocabulario.dat", BLOQUE_TAM_DEFAULT);
-	this->listas_invertidas.crear(directorioSalida, "ListasInvertidas.dat");
-	this->listas_posiciones.crear(directorioSalida, "ListasPosiciones.dat");
+	this->listas_invertidas.crear(directorioSalida, "ListasInvertidas");
+	this->listas_posiciones.crear(directorioSalida, "ListasPosiciones");
 	return RES_OK;
 }
 
@@ -29,8 +29,8 @@ int IndiceInvertido::abrir_indice(std::string directorioSalida, std::string file
 	this->ruta=directorioSalida;
 	resultado = resultado + this->archivo_terminos.abrir_archivo(this->fileName+"Terminos.dat");
 	resultado = resultado + this->vocabulario.abrir(this->fileName+"Vocabulario.dat", "rb+");
-	resultado = resultado + this->listas_invertidas.abrir(directorioSalida, "ListasInvertidas.dat");
-	resultado = resultado + this->listas_posiciones.abrir(directorioSalida, "ListasPosiciones.dat");
+	resultado = resultado + this->listas_invertidas.abrir(directorioSalida, "ListasInvertidas");
+	resultado = resultado + this->listas_posiciones.abrir(directorioSalida, "ListasPosiciones");
 	if (resultado != 0) return NO_EXISTE_INDICE;
 	return RES_OK;
 }
@@ -383,7 +383,7 @@ int IndiceInvertido::borrar_indice()
 {
 	this->archivo_terminos.eliminar_archivo(this->fileName+"Terminos.dat");
 	this->vocabulario.eliminar(this->fileName+"Vocabulario.dat");
-	this->listas_invertidas.eliminar(this->ruta, "ListasInvertidas.dat");
-	this->listas_posiciones.eliminar(this->ruta, "ListasPosiciones.dat");
+	this->listas_invertidas.eliminar(this->ruta, "ListasInvertidas");
+	this->listas_posiciones.eliminar(this->ruta, "ListasPosiciones");
 	return RES_OK;
 }

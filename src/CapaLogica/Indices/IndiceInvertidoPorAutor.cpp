@@ -18,7 +18,7 @@ int IndiceInvertidoPorAutor::crear_indice(std::string directorioSalida)
     int resultado;
     this->ruta = directorioSalida;
     resultado= this->indice.crear(this->ruta+"IndicePorAutor.dat", BLOQUE_TAM_DEFAULT);
-    resultado= resultado+this->listas.crear(this->ruta,"ListasPorAutor.dat");
+    resultado= resultado+this->listas.crear(this->ruta,"ListasPorAutor");
     return resultado;
 }
 
@@ -27,7 +27,7 @@ int IndiceInvertidoPorAutor::abrir_indice(std::string directorioSalida)
     int resultado;
     this->ruta = directorioSalida;
     resultado= this->indice.abrir(this->ruta+"IndicePorAutor.dat", "rb+");
-    resultado= resultado+this->listas.abrir(this->ruta, "ListasPorAutor.dat");
+    resultado= resultado+this->listas.abrir(this->ruta, "ListasPorAutor");
     if (resultado !=RES_OK) return NO_EXISTE;
     return resultado;
 }
@@ -72,9 +72,9 @@ int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion cancion, int IDcanc
 int IndiceInvertidoPorAutor::borrar_indice()
 {
     int resultado;
-    resultado = this->indice.eliminar(this->ruta+"Indice");
+    resultado = this->indice.eliminar(this->ruta+"Indice.dat");
     if (resultado!=RES_OK)  return resultado;
-    resultado = this->listas.eliminar(this->ruta,"ListasPorAutor.dat");
+    resultado = this->listas.eliminar(this->ruta,"ListasPorAutor");
     if (resultado!=RES_OK)  return resultado;
     return RES_OK;
 }
