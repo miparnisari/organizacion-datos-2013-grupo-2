@@ -23,6 +23,19 @@ class RegistroCancion : public RegistroVariable{
 		/*recupera los autores en un arreglo de strings. Retorna la cantidad de autores
 		 * recuperados*/
 
+		virtual unsigned short contar_parametros()throw();
+		/*cuenta la cantidad de parametros de la cancion.*/
+		virtual bool obtener_parametro(unsigned short numeroParametro,string& parametro)throw();
+		/*recupera un determinado parametro. los mismos se cuentan desde el 0*/
+		virtual int obtener_anio_grabacion()throw();
+		/*recupera el anio de grabacion de la cancion.
+		 * En caso que no este incluido en la linea, se retorna -1*/
+		virtual bool obtener_titulo()throw();
+		/*recupera el titulo de la linea de caracteres y lo almacena en la variable titulo*/
+		virtual bool obtener_idioma()throw();
+		/*recupera el idioma de la cadena de caracteres y lo almacena en la variable idioma*/
+		virtual bool obtener_letra()throw();
+		/*recupera la letra de la cancion y la almacena en la variable letra*/
 
 		
 	public:
@@ -52,19 +65,7 @@ class RegistroCancion : public RegistroVariable{
 		
 		/*METODOS DE ACCESO PUBLICO --------------------------------------------------------*/
 
-		virtual unsigned short contar_parametros()throw();
-		/*cuenta la cantidad de parametros de la cancion.*/
-		virtual bool obtener_parametro(unsigned short numeroParametro,string& parametro)throw();
-		/*recupera un determinado parametro. los mismos se cuentan desde el 0*/
-		virtual int obtener_anio_grabacion()throw();
-		/*recupera el anio de grabacion de la cancion.
-		 * En caso que no este incluido en la linea, se retorna -1*/
-		virtual bool obtener_titulo()throw();
-		/*recupera el titulo de la linea de caracteres y lo almacena en la variable titulo*/
-		virtual bool obtener_idioma()throw();
-		/*recupera el idioma de la cadena de caracteres y lo almacena en la variable idioma*/
-		virtual bool obtener_letra()throw();
-		/*recupera la letra de la cancion y la almacena en la variable letra*/
+
 		int empaquetar(char* copia) throw();
 		int desempaquetar(const char* copia) throw();
 

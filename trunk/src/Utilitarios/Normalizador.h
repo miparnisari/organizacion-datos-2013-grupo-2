@@ -14,9 +14,9 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include "../Constantes.h"
 #include <stdio.h>
 #include <string.h>
+#include "../Constantes.h"
 
 using namespace std;
 
