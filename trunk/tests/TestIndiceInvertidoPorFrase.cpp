@@ -7,11 +7,11 @@
 
 #include "TestIndiceInvertidoPorFrase.h"
 
-#define NOMBRE_INDICE 			"IndicePorFrase"
-#define ARCHIVO_ARBOL			"IndicePorFraseVocabulario"
+#define NOMBRE_INDICE 			"IndicePorFrase.dat"
+#define ARCHIVO_ARBOL			"IndicePorFraseVocabulario.dat"
 #define	ARCHIVO_LISTAS			"ListasInvertidas.dat"
 #define	ARCHIVO_LISTAS_POS		"ListasPosiciones.dat"
-#define ARCHIVO_TERMINOS		"IndicePorFraseTerminos"
+#define ARCHIVO_TERMINOS		"IndicePorFraseTerminos.dat"
 #define ARCHIVO_TEMPORAL		"archivo_terminos_canciones.dat"
 
 TestIndiceInvertidoPorFrase::TestIndiceInvertidoPorFrase()
