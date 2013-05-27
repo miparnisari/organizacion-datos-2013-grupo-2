@@ -1,6 +1,5 @@
 #include "ArchivoListas.h"
 
-/**Suponemos que no existen registros vacios**/
 
 ArchivoListas::ArchivoListas()
 {
@@ -38,13 +37,14 @@ int ArchivoListas::devolver(RegistroVariable *listaDeCanciones, unsigned short p
 
 int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short cant_ref, int ID)
 {
-     /***estoy pensando que no va a haber listas libres por el medio**/
+	string file1 = this->directorioSalida+"ListaAuxiliar.dat";
+	string file2 = this->fileName;
     ManejadorRegistrosVariables listas_nuevas;
     RegistroVariable lista;
     int resultado;
-    resultado = listas_nuevas.crear_archivo(this->directorioSalida+"ListaAuxiliar.dat");
+    resultado = listas_nuevas.crear_archivo(file1);
     if (resultado != RES_OK) return resultado;
-    listas_nuevas.abrir_archivo(this->directorioSalida+"ListaAuxiliar.dat");
+    listas_nuevas.abrir_archivo(file1);
     if (resultado != RES_OK) return resultado;
     unsigned short i, j=0, cant_listas = this->archivo.get_cantidad_registros_ocupados();
     for(i=0; i<cant_listas; i++){
@@ -66,20 +66,22 @@ int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short 
     this->archivo.eliminar_archivo(this->fileName);
     delete ref_listas;
     //Cambiamos el nombre del archivo por el original
-/***    rename(this->directorioSalida+"ListaAuxiliar.dat",this->fileName);*////
+    rename(file1.c_str(),file2.c_str());
     return RES_OK;
 }
 
 int ArchivoListas::recontruir_listas(unsigned short ref_lista, RegistroVariable &listaModificada)
 {
+	string file1 = this->directorioSalida+"ListaAuxiliar.dat";
+	string file2 = this->fileName;
 	ManejadorRegistrosVariables listas_nuevas;
 	unsigned short i;
 	int cant_listas= this->archivo.get_cantidad_registros_ocupados();
 	RegistroVariable lista;
 	int resultado;
-	resultado = listas_nuevas.crear_archivo(this->directorioSalida+"ListaAuxiliar.dat");
+	resultado = listas_nuevas.crear_archivo(file1);
 	if (resultado != RES_OK) return resultado;
-	listas_nuevas.abrir_archivo(this->directorioSalida+"ListaAuxiliar.dat");
+	listas_nuevas.abrir_archivo(file1);
 	if (resultado != RES_OK) return resultado;
 	for(i=0; i<cant_listas; i++){
 	        //Obtengo la lista
@@ -92,8 +94,8 @@ int ArchivoListas::recontruir_listas(unsigned short ref_lista, RegistroVariable 
 	        }
 	    }
 	this->archivo.eliminar_archivo(this->fileName);
-	    //Cambiamos el nombre del archivo por el ori�ginal
-	/***    rename(this->directorioSalida+"ListaAuxiliar.dat",this->fileName);*////
+	//Cambiamos el nombre del archivo por el original
+	rename(file1.c_str(),file2.c_str());
 	return RES_OK;
 }
 
