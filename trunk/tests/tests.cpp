@@ -242,8 +242,45 @@ void test_vector_clavex(){
 
 }
 
+
+void test_input_string(){
+
+//	string entrada;
+//	cout<<"ingrese entrada:";
+//	cin>>entrada;
+//	ofstream archivoSalida("salida.txt");
+//	archivoSalida<<entrada;
+//	archivoSalida<<'\n';
+//	archivoSalida.close();
+//
+//
+//	Normalizador n;
+//	n.normalizar("salida.txt","salidaNormalizada.txt");
+//
+//	ifstream archivoEntrada("salidaNormalizada.txt");
+//	char* lineaLeida= new char[64]();
+//	archivoEntrada.getline(lineaLeida,64);
+//	IMPRIMIR_VARIABLE(lineaLeida);
+//	IMPRIMIR_VARIABLE( strlen(lineaLeida) ); FUNCAAA
+
+
+
+	string entrada;
+	cout<<"ingrese entrada:";
+	cin>>entrada;
+	Normalizador n;
+	string lineaNormalizada;
+	lineaNormalizada= n.normalizar_input(entrada);
+	IMPRIMIR_VARIABLE(lineaNormalizada);
+	int espera;
+	cin>>espera;
+}
+
+
+
 int main(int argc,char** args)
 {
+	test_input_string();
 //	test_leer_de_archivo();
 	test_clave_numerica();
 	test_clave_string();

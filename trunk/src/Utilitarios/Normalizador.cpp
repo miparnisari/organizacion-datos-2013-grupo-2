@@ -111,6 +111,28 @@ string Normalizador::normalizar_string(wstring & linea){
 }
 
 
+string Normalizador::normalizar_input( string linea ){
+
+	string nombreArchivoTemporal= "normalizar_input.txt";
+	string nombreArchivoTemporalNormalizado= "normalizar_input_normalizado.txt";
+	ofstream archivoTemporal(nombreArchivoTemporal.c_str());
+	archivoTemporal<<linea;
+	archivoTemporal<<'\n';
+	archivoTemporal.close();
+
+	normalizar(nombreArchivoTemporal,nombreArchivoTemporalNormalizado);
+	ifstream archivoResultado(nombreArchivoTemporalNormalizado.c_str());
+	const unsigned short TAMANIO_BUFFER_INPUT= 256;
+	char bufferInput[TAMANIO_BUFFER_INPUT];
+	archivoResultado.getline(bufferInput , TAMANIO_BUFFER_INPUT);
+	unsigned short longitudLineaNormalizada= strlen(bufferInput);
+
+	string resultado(bufferInput,longitudLineaNormalizada);
+	return resultado;
+
+}
+
+
 int Normalizador::normalizar(string pathArchivoEntrada , string pathArchivoSalida){
 
     // Abre el archivo como wide char, el archivo debe ser UTF-8
