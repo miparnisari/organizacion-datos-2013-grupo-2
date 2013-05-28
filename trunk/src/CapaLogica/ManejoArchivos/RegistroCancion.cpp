@@ -345,10 +345,11 @@ bool RegistroCancion::obtener_idioma()throw(){
 
 		char c='x';
 		string parametroLeido;
-		while(offset < parametros.length() && c!= SEPARACION_PARAMETROS && c!='\n' ){
+		while(offset < parametros.length() && c!= SEPARACION_PARAMETROS && c!='\n'
+				&& c!='\0'){
 
 			c= parametros.at(offset);
-			if(c!=SEPARACION_PARAMETROS && c!='\n')
+			if(c!=SEPARACION_PARAMETROS && c!='\n' && c!='\0')
 				parametroLeido.push_back(c);
 			offset++;
 
@@ -358,7 +359,8 @@ bool RegistroCancion::obtener_idioma()throw(){
 		idiomaString= parametro;
 	}
 
-
+	IMP(idiomaString);
+	IMP(idiomaString.length());
 
 	return idioma.cargar(idiomaString);
 
@@ -446,6 +448,8 @@ string RegistroCancion::get_titulo()throw(){
 
 int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
  	int resCarga = RegistroVariable::agregar_datos(dato,tamanioDato);
+ 	char finLinea= '\n';
+ 	resCarga = RegistroVariable::agregar_datos( (char*)&finLinea,1 );
 	if (resCarga != RES_OK)
 		return resCarga;
 	
@@ -464,9 +468,11 @@ int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
 	
 	IMP(cantidadParametros);
 	IMP(cantidadAutores);
+	IMP(autores[0]);
 	IMP(anioGrabacion.get_anio());
 	IMP(titulo);
 	IMP(idioma.getIdioma());
+	IMP(idioma.getIdioma().length());
 
 
 
