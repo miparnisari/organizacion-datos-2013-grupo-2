@@ -5,8 +5,9 @@
 
 RegistroCancion::RegistroCancion():RegistroVariable()
 {
-	autores= NULL;
-	cantidadAutores= 0;
+	autores = NULL;
+	cantidadAutores = 0;
+	cantidadParametros = 0;
 	titulo= "";
 	letra= "";
 }

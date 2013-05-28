@@ -329,5 +329,6 @@ int Indexador::indexar (std::string & directorioEntrada, std::string & directori
 	int res_fin =  _finalizar();
 	if (res_fin != RES_OK)
 		std::cout << "ERROR: No se pudieron cerrar los archivos.";
+	return RES_OK;
 }
 
