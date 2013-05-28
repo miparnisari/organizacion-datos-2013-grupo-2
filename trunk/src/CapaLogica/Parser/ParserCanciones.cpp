@@ -49,6 +49,7 @@ int ParserCanciones::obtener_proxima_cancion(RegistroCancion& reg, std::string &
 {
 	// Abrimos el archivo
 	nombreArchivo = archivos[contadorArchivosLeidos];
+
 	std::ifstream archivo(nombreArchivo.c_str(), std::ios::in);
 	std::string s_contenidoArchivo;
 
@@ -66,11 +67,16 @@ int ParserCanciones::obtener_proxima_cancion(RegistroCancion& reg, std::string &
 	
 	// el registro
 	char * bufferCancion = new char[s_contenidoArchivo.size() + 1];
-	std::copy(s_contenidoArchivo.begin(), s_contenidoArchivo.end(), bufferCancion);
 	bufferCancion[s_contenidoArchivo.size()] = '\0';
+	std::copy(s_contenidoArchivo.begin(), s_contenidoArchivo.end(), bufferCancion);
 
 	// el tamaño del registro
 	unsigned short sizeOfBuffer = s_contenidoArchivo.size();
+	if (sizeOfBuffer == 0)
+	{
+		delete[] bufferCancion;
+		return RES_OK;
+	}
 	
 	// lo cargamos en el registro
 	reg.limpiar_buffer();

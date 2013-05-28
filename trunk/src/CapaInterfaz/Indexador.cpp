@@ -17,7 +17,7 @@ int Indexador::consultar_titulo(std::string & directorioSalida, std::string & ti
 	int id = rc.get_id_cancion_titulo(titulo);
 	if (id == RES_RECORD_DOESNT_EXIST)
 	{
-		std::cout << "No se encontró una cancion con titulo "" << titulo << ""." <<std::endl;
+		std::cout << "No se encontró una cancion con titulo " << titulo << "." <<std::endl;
 	}
 	else {
 		std::cout << "Nombre archivo = " << rc.get_nombre_archivo(id) << "." << std::endl;
@@ -44,8 +44,11 @@ int Indexador::consultar_autor(std::string & directorioSalida, std::string & aut
 
 int Indexador::consultar_frase (std::string & directorioSalida, std::string & frase)
 {
-	//TODO
-	return RES_OK;
+	RegistroVariable listaInvertida;
+	int res = indiceSecundarioFrases.buscar_frase(frase,listaInvertida);
+
+
+	return res;
 }
 
 int Indexador::_mostrar_opciones(std::string & directorioEntrada, std::string & directorioSalida)
@@ -191,7 +194,7 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 
 		if (cancionEstaRepetida == true)
 		{
-			std::cout << "No se indexará la cancion "" << titulo << "" porque está repetida." << std::endl;
+			std::cout << "No se indexará la cancion " << titulo << " porque está repetida." << std::endl;
 			continue;
 		}
 
