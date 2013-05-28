@@ -27,12 +27,20 @@ int IndiceInvertido::abrir_indice(std::string directorioSalida, std::string file
 	int resultado=0;
 	this->fileName= directorioSalida+fileNamee;
 	this->ruta=directorioSalida;
-	resultado = resultado + this->archivo_terminos.abrir_archivo(this->fileName+"Terminos.dat");
-	resultado = resultado + this->vocabulario.abrir(this->fileName+"Vocabulario.dat", "rb+");
-	resultado = resultado + this->listas_invertidas.abrir(directorioSalida, "ListasInvertidas");
-	resultado = resultado + this->listas_posiciones.abrir(directorioSalida, "ListasPosiciones");
-	if (resultado != 0) return NO_EXISTE_INDICE;
+	resultado += this->archivo_terminos.abrir_archivo(this->fileName+"Terminos.dat");
+	resultado += this->vocabulario.abrir(this->fileName+"Vocabulario.dat", "rb+");
+	resultado += this->listas_invertidas.abrir(directorioSalida, "ListasInvertidas");
+	resultado += this->listas_posiciones.abrir(directorioSalida, "ListasPosiciones");
+	if (resultado != RES_OK)
+		return NO_EXISTE_INDICE;
 	return RES_OK;
+}
+
+int IndiceInvertido::cerrar_indice()
+{
+	int res=0;
+	res += this->vocabulario.cerrar();
+	return res;
 }
 
 int IndiceInvertido::agregar_cancion(RegistroCancion cancion, int IDcancion)
@@ -156,9 +164,11 @@ int IndiceInvertido::buscar_frase(std::string frase, RegistroVariable &lista)
 {
 	RegistroVariable docInterseccion, terminos_frase;
 	//Busco la interseccion de las lista de los documentos de cada termino de la frase
-	if(this->interseccion_listas_invertidas(frase, docInterseccion) != RES_OK) return NO_EXISTE;
+	if(this->interseccion_listas_invertidas(frase, docInterseccion) != RES_OK)
+		return NO_EXISTE;
 	//Armo un archivo termporal para buscar las canciones que tienen la frase
-	if(this->armar_archivo_terminos_frase(frase, docInterseccion, terminos_frase) != RES_OK)  return RES_ERROR;
+	if(this->armar_archivo_terminos_frase(frase, docInterseccion, terminos_frase) != RES_OK)
+		return RES_ERROR;
 	//Armo lista que contienen la frase dentro de la cancion
 	return this->buscar_cancion_con_frase(terminos_frase, lista);
 }
@@ -174,16 +184,20 @@ int IndiceInvertido::interseccion_listas_invertidas(std::string frase, RegistroV
 	std::string termino;
 	texto.parsear(frase);
 	//Saco la primera palabra de la frase
-	if (texto.get_proxima_palabra(termino) == RES_ERROR) return NO_EXISTE;
+	if (texto.get_proxima_palabra(termino) == RES_ERROR)
+		return NO_EXISTE;
 	//Busco las canciones que tienen este termino en la letra
 	resultado = this->obtener_canciones_termino(termino.c_str(), canciones);
-	if(resultado != RES_OK)	return resultado;
+	if(resultado != RES_OK)
+		return resultado;
 	while(texto.get_proxima_palabra(termino) != RES_ERROR){
 		//Busco las canciones que tienen este termino en la letra
 		resultado = this->obtener_canciones_termino(termino.c_str(), listaCancionesAux);
-		if(resultado != RES_OK)	return resultado;
+		if(resultado != RES_OK)
+			return resultado;
 		//Veo que canciones se encuentran en ambas listas
-		if (this->interseccion(canciones, listaCancionesAux) != RES_OK) return NO_EXISTE;
+		if (this->interseccion(canciones, listaCancionesAux) != RES_OK)
+			return NO_EXISTE;
 	}
 	return RES_OK;
 }

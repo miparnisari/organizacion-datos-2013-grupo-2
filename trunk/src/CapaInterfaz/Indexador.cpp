@@ -15,11 +15,8 @@ int Indexador::consultar_titulo(std::string & directorioSalida, std::string & ti
 {
 	ResolvedorConsultas rc(directorioSalida);
 	int id = rc.get_id_cancion_titulo(titulo);
-	if (id == RES_RECORD_DOESNT_EXIST)
+	if (id != RES_RECORD_DOESNT_EXIST)
 	{
-		std::cout << "No se encontró una cancion con titulo " << titulo << "." <<std::endl;
-	}
-	else {
 		std::cout << "Nombre archivo = " << rc.get_nombre_archivo(id) << "." << std::endl;
 	}
 	return RES_OK;
@@ -29,26 +26,22 @@ int Indexador::consultar_autor(std::string & directorioSalida, std::string & aut
 {
 	ResolvedorConsultas rc(directorioSalida);
 	std::vector <int> ids = rc.get_id_canciones_autor(autor);
-	if (ids.size() == 0)
+	for (unsigned int i = 0; i < ids.size(); i ++)
 	{
-		std::cout << "No se encontraron canciones de " << autor << "." << std::endl;
-	}
-	else {
-		for (unsigned int i = 0; i < ids.size(); i ++)
-		{
-			std::cout << "Nombre archivo = " << rc.get_nombre_archivo(ids.at(i)) << "." << std::endl;
-		}
+		std::cout << "Nombre archivo = " << rc.get_nombre_archivo(ids.at(i)) << "." << std::endl;
 	}
 	return RES_OK;
 }
 
 int Indexador::consultar_frase (std::string & directorioSalida, std::string & frase)
 {
-	RegistroVariable listaInvertida;
-	int res = indiceSecundarioFrases.buscar_frase(frase,listaInvertida);
-
-
-	return res;
+	ResolvedorConsultas rc(directorioSalida);
+	std::vector <int> ids = rc.get_ids_canciones_frases(frase);
+	for (unsigned int i = 0; i < ids.size(); i ++)
+	{
+		std::cout << "Nombre archivo = " << rc.get_nombre_archivo(ids.at(i)) << "." << std::endl;
+	}
+	return RES_OK;
 }
 
 int Indexador::_mostrar_opciones(std::string & directorioEntrada, std::string & directorioSalida)

@@ -16,6 +16,28 @@ ResolvedorConsultas::~ResolvedorConsultas()
 
 }
 
+std::vector<int> ResolvedorConsultas::get_ids_canciones_frases(std::string & frase)
+{
+	std::vector<int> ids;
+	RegistroVariable listaInvertida;
+	indiceSecundarioFrases.abrir_indice(directorioSalida+'/',std::string(FILENAME_IDX_SECUN_FRASES));
+
+	int res = indiceSecundarioFrases.buscar_frase(frase,listaInvertida);
+	cout << "res = " << res << endl;
+
+	// Cada campo de la lista invertida tiene un ID de cancion
+	unsigned int q = listaInvertida.get_cantidad_campos();
+	for (unsigned int i = 0; i < q; i++)
+	{
+		int iDdoc;
+		listaInvertida.recuperar_campo((char*)&iDdoc,i);
+		ids.push_back(iDdoc);
+	}
+
+	indiceSecundarioFrases.cerrar_indice();
+	return ids;
+}
+
 std::vector<int> ResolvedorConsultas::get_id_canciones_autor(std::string & autor)
 {
 	std::vector<int> ids;

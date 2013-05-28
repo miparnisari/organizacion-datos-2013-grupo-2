@@ -37,6 +37,8 @@ class IndiceInvertido
         virtual int abrir_indice(std::string directorioSalida, std::string fileNamee);
         //Abre los archivos que necesita el indice
 
+        virtual int cerrar_indice();
+
         virtual int agregar_cancion(RegistroCancion cancion, int IDcancion);
         //Agrega los terminos de la cancion al indice junto a su posicion
 
