@@ -448,23 +448,20 @@ string RegistroCancion::get_titulo()throw(){
 
 int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
  	int resCarga = RegistroVariable::agregar_datos(dato,tamanioDato);
- 	char finLinea= '\n';
- 	resCarga = RegistroVariable::agregar_datos( (char*)&finLinea,1 );
+// 	char finLinea= '\n';
+// 	resCarga = RegistroVariable::agregar_datos( (char*)&finLinea,1 );
+
+ 	string cancionCargar(buffer,tamanio);
+
 	if (resCarga != RES_OK)
 		return resCarga;
 	
 	bool val1 = (contar_parametros() == 0);
-	IMP(val1);
 	bool val2 = (this->obtener_autores() == 0);
-	IMP(val2);
 	bool val3 = (this->obtener_anio_grabacion() == -1);
-	IMP(val3);
 	bool val4 = (this->obtener_titulo() == false);
-	IMP(val4);
 	bool val5 = (this->obtener_idioma() == false);
-	IMP(val5);
 	bool val6 = (this->obtener_letra() == false);
-	IMP(val6);
 	
 	IMP(cantidadParametros);
 	IMP(cantidadAutores);
@@ -473,6 +470,7 @@ int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
 	IMP(titulo);
 	IMP(idioma.getIdioma());
 	IMP(idioma.getIdioma().length());
+	IMP(cancionCargar);
 
 
 
