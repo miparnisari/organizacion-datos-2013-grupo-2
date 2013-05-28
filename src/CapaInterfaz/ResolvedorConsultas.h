@@ -14,6 +14,7 @@
 #include "../CapaLogica/HashingExtensible/HashingExtensible.h"
 #include "../CapaLogica/ArbolBMas/ArbolBMas.h"
 #include "../CapaLogica/ArbolBMas/IterArbolBMas.h"
+#include "../CapaLogica/Indices/IndiceInvertido.h"
 
 #include "../CapaLogica/ManejoArchivos/ClaveX.h"
 #include "../CapaLogica/ManejoArchivos/RegistroCancion.h"
@@ -25,14 +26,16 @@ public:
 	virtual ~ResolvedorConsultas();
 
 	std::vector<int> get_id_canciones_autor(std::string & autor);
-	int get_id_cancion_titulo(std::string & titulo);
 	std::string get_nombre_archivo (int id_cancion);
+	std::vector<int> get_ids_canciones_frases(std::string & frase);
+	int get_id_cancion_titulo(std::string & titulo);
 
 private:
 	HashingExtensible indicePrimario;
 	ManejadorRegistrosVariables archivoMaestro;
 	ArbolBMas indiceSecundarioAutor;
 	HashingExtensible indiceSecundarioTitulo;
+	IndiceInvertido indiceSecundarioFrases;
 	HashingExtensible documentos;
 
 	std::string directorioSalida;
