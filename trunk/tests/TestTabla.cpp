@@ -139,6 +139,3 @@ void TestTabla::test_tabla_hash_posiciones_correctas_al_dividir(){
 	print_test_ok("test_tabla_hash_posiciones_correctas_al_dividir");
 }
 
-void TestTabla::test_tabla_hash_integracion(){
-	//TODO ?
-}
