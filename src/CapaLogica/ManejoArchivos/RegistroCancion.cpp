@@ -19,9 +19,6 @@ RegistroCancion::~RegistroCancion()
 
 
 int RegistroCancion::empaquetar(char* copia) throw(){
-
-	cout<<"empaquetando registro cancion"<<endl;
-
 	if( this->esta_limpio() || copia== NULL )
 		return RES_ERROR;
 
@@ -129,18 +126,18 @@ bool RegistroCancion::obtener_parametro(unsigned short numeroParametro,string& p
 	if(numeroParametro>= cantidadParametros)
 		return false;
 
-//	stringstream stream;
-//	stream.write(buffer,tamanio);
-//	stream.seekg(0,ios::beg);
-	string parametros(buffer,tamanio);//fixme linea agregada
+	stringstream stream;
+	stream.write(buffer,tamanio);
+	stream.seekg(0,ios::beg);
+//	string parametros(buffer,tamanio);//fixme linea agregada
 
-//	string parametros;
+	string parametros;
 
-//	const unsigned short TAMANIO_BUFFER_PARAMETROS= 2048;
-//	char* bufferParametros= new char[TAMANIO_BUFFER_PARAMETROS]();
-//	stream.getline(bufferParametros , TAMANIO_BUFFER_PARAMETROS);
-//	parametros= bufferParametros;
-//	delete[] bufferParametros;
+	const unsigned short TAMANIO_BUFFER_PARAMETROS= 2048;
+	char* bufferParametros= new char[TAMANIO_BUFFER_PARAMETROS]();
+	stream.getline(bufferParametros , TAMANIO_BUFFER_PARAMETROS);
+	parametros= bufferParametros;
+	delete[] bufferParametros;
 
 
 
@@ -181,15 +178,15 @@ unsigned short RegistroCancion::contar_parametros()throw()
 	stream.write(buffer,tamanio); //Inserts the first n characters of the array pointed by s into the stream.
 	stream.seekg(0,ios::beg);
 		
-	string stringCancion(buffer,tamanio);//fixme agregado
+//	string stringCancion(buffer,tamanio);//fixme agregado
 
-//	string stringCancion;
-//
-//	const unsigned short TAMANIO_BUFFER_PARAMETROS= 2048;
-//	char* bufferParametros= new char[TAMANIO_BUFFER_PARAMETROS]();
-//	stream.getline(bufferParametros , TAMANIO_BUFFER_PARAMETROS);
-//	stringCancion= bufferParametros;
-//	delete[] bufferParametros;
+	string stringCancion;
+
+	const unsigned short TAMANIO_BUFFER_PARAMETROS= 2048;
+	char* bufferParametros= new char[TAMANIO_BUFFER_PARAMETROS]();
+	stream.getline(bufferParametros , TAMANIO_BUFFER_PARAMETROS);
+	stringCancion= bufferParametros;
+	delete[] bufferParametros;
 
 	const unsigned short OFFSET_FIN_PARAMETROS= stringCancion.length();
 	const char SEPARACION_PARAMETRO= '-';
@@ -208,7 +205,6 @@ unsigned short RegistroCancion::contar_parametros()throw()
 		return 0;
 
 	cantidadParametros= contadorParametros;
-	IMP(cantidadParametros);
 	return contadorParametros;
 
 }/*cuenta la cantidad de parametros de la cancion*/
@@ -359,9 +355,6 @@ bool RegistroCancion::obtener_idioma()throw(){
 		idiomaString= parametro;
 	}
 
-	IMP(idiomaString);
-	IMP(idiomaString.length());
-
 	return idioma.cargar(idiomaString);
 
 }/*recupera el idioma de la cadena de caracteres y lo almacena en la variable idioma*/
@@ -451,38 +444,39 @@ int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
 // 	char finLinea= '\n';
 // 	resCarga = RegistroVariable::agregar_datos( (char*)&finLinea,1 );
 
- 	string cancionCargar(buffer,tamanio);
+// 	string cancionCargar(buffer,tamanio);
 
 	if (resCarga != RES_OK)
 		return resCarga;
 	
-	bool val1 = (contar_parametros() == 0);
-	bool val2 = (this->obtener_autores() == 0);
-	bool val3 = (this->obtener_anio_grabacion() == -1);
-	bool val4 = (this->obtener_titulo() == false);
-	bool val5 = (this->obtener_idioma() == false);
-	bool val6 = (this->obtener_letra() == false);
-	
-	IMP(cantidadParametros);
-	IMP(cantidadAutores);
-	IMP(autores[0]);
-	IMP(anioGrabacion.get_anio());
-	IMP(titulo);
-	IMP(idioma.getIdioma());
-	IMP(idioma.getIdioma().length());
-	IMP(cancionCargar);
-
-
-
-//
-//	bool noPudoValidar = val1 || val2 || val3 || val4 || val5 || val6;
-	bool noPudoValidar = val1 || val2  || val4 || val5 || val6;
-
-	if (noPudoValidar){
+	// El autor, el titulo y el idioma son obligatorios
+	if (contar_parametros() < 3){
 		limpiar_buffer();
 		return RES_ERROR;
 	}
-
+	if (this->obtener_autores() == 0){
+		limpiar_buffer();
+		return RES_ERROR;
+	}
+	if (this->obtener_anio_grabacion() == -1){
+		limpiar_buffer();
+		return RES_ERROR;
+	}
+	if (this->obtener_titulo() == false){
+		limpiar_buffer();
+		return RES_ERROR;
+	}
+	if (this->obtener_idioma() == false)
+	{
+		limpiar_buffer();
+		return RES_ERROR;
+	}
+	if (this->obtener_letra() == false)
+	{
+		limpiar_buffer();
+		return RES_ERROR;
+	}
+	
 	char bufferAuxiliar [REG_VAR_MAX_TAM];
 	this->empaquetar(bufferAuxiliar);
 
