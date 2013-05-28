@@ -52,10 +52,8 @@ void TestManejadorRegistrosVariables::test_recuperar_por_offset(){
 
 			RegistroClave registro;
 			mrv.get_registro_por_offset( &registro,offsets[i] );
-			registro.get_clave().imprimir_dato();
 			int unCampo= 99;
 			registro.agregar_campo( (char*)&unCampo,sizeof(unCampo) );
-			cout<<endl;
 
 		}
 
@@ -66,8 +64,6 @@ void TestManejadorRegistrosVariables::test_recuperar_por_offset(){
 				continue;
 			RegistroClave registro;
 			mrv.get_registro_por_offset( &registro,offsets[i] );
-			registro.get_clave().imprimir_dato();
-			cout<<endl;
 
 		}
 
@@ -75,7 +71,7 @@ void TestManejadorRegistrosVariables::test_recuperar_por_offset(){
 		delete[] offsets;
 
 	}
-	cout<<endl<<"exito en test_recuperar_por_offset"<<endl;
+	print_test_ok("test_recuperar_por_offset");
 
 }
 
