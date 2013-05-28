@@ -277,12 +277,28 @@ void test_input_string(){
 }
 
 
+void test_cancion_sabina(){
 
+	RegistroCancion rc;
+	ifstream archivo("cancionSabina.txt");
+	char buffer[128];
+	archivo.getline(buffer,128);
+	IMPRIMIR_VARIABLE(strlen(buffer));
+	buffer[strlen(buffer)]= '\n';
+
+	rc.cargar(buffer,128);
+	cout<<"test_cancion_sabina"<<endl;
+	int i;
+	cout<<"ingrese tecla para continuar"<<endl;
+	cin>>i;
+
+}
 
 
 
 int main(int argc,char** args)
 {
+	test_cancion_sabina();
 //	test_leer_de_archivo();
 	test_clave_numerica();
 	test_clave_string();
