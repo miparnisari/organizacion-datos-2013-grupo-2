@@ -68,7 +68,7 @@ int IndiceInvertido::armar_archivo_coincidencias(std::string letra)
 	ClaveX clave;
 	std::string termino;
 	texto.parsear(letra);
-	while(texto.get_proxima_palabra(termino) != RES_ERROR){
+	while(texto.get_proxima_palabra(termino) != RES_FIN){
 		clave.set_clave(termino);
 		if(this->vocabulario.buscar(regTerminoVoc) == RES_ERROR){
 			//Como no existe en el vocabulario entonces creamos un nuevo registro y lo guardamos en el vocabulario
@@ -184,13 +184,13 @@ int IndiceInvertido::interseccion_listas_invertidas(std::string frase, RegistroV
 	std::string termino;
 	texto.parsear(frase);
 	//Saco la primera palabra de la frase
-	if (texto.get_proxima_palabra(termino) == RES_ERROR)
+	if (texto.get_proxima_palabra(termino) == RES_FIN)
 		return NO_EXISTE;
 	//Busco las canciones que tienen este termino en la letra
 	resultado = this->obtener_canciones_termino(termino.c_str(), canciones);
 	if(resultado != RES_OK)
 		return resultado;
-	while(texto.get_proxima_palabra(termino) != RES_ERROR){
+	while(texto.get_proxima_palabra(termino) != RES_FIN){
 		//Busco las canciones que tienen este termino en la letra
 		resultado = this->obtener_canciones_termino(termino.c_str(), listaCancionesAux);
 		if(resultado != RES_OK)
@@ -274,7 +274,7 @@ int IndiceInvertido::armar_archivo_terminos_frase(std::string frase, RegistroVar
 	if (archivo_temp.crear_archivo(this->ruta+"archivo_terminos_canciones") != RES_OK) return RES_ERROR;
 	archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones");
 	texto.parsear(frase);
-	while(texto.get_proxima_palabra(termino) != RES_ERROR){
+	while(texto.get_proxima_palabra(termino) != RES_FIN){
 		//Obtengo el IDter
 		this->vocabulario.buscar(regTerminoVoc);
 		regTerminoVoc.recuperar_campo((char*)&IDter, 1);
@@ -334,9 +334,11 @@ int IndiceInvertido::buscar_cancion_con_frase(RegistroVariable terminos_frase, R
 	ManejadorRegistrosVariables archivo_temp;
 	RegistroVariable reg;
 	int IDcancion= -1, i=0, cant_reg, pos=-1, k=0;
-	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones") != RES_OK) return RES_ERROR;
+	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones") != RES_OK)
+		return RES_ERROR;
 	/****Ordeno el archivo**************************************************************************************/
-	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones") != RES_OK) return RES_ERROR;
+	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones") != RES_OK)
+		return RES_ERROR;
 	cant_reg = archivo_temp.get_cantidad_registros_ocupados();
 	while(i<cant_reg){
 		//Recorremos todos los reg del archivo temporal
