@@ -188,7 +188,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_1
 	RegistroClave listaCan;
 	RegistroClave reg_termino;
 	ClaveX clave, clave_aux;
-	char* campo = new char[100];
 	int id;
 	indice.crear_indice("", NOMBRE_INDICE);
 	indice.abrir_indice("", NOMBRE_INDICE);
@@ -215,7 +214,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_1
 	assert(indice.buscar_frase("vaca", lista) == NO_EXISTE);
 
     this->eliminar_archivos();
-    delete[] campo;
     print_test_ok("test_indice_por_frase_devolver_canciones_con_1termino_1cancion");
 }
 
@@ -230,7 +228,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_1
 	RegistroClave listaCan;
 	RegistroClave reg_termino;
 	ClaveX clave, clave_aux;
-	char* campo = new char[100];
 	int id;
 	indice.crear_indice("", NOMBRE_INDICE);
 	indice.abrir_indice("", NOMBRE_INDICE);
@@ -277,7 +274,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_1
 	assert(indice.buscar_frase("vaca", lista) == NO_EXISTE);
 
     this->eliminar_archivos();
-    delete[] campo;
     print_test_ok("test_indice_por_frase_devolver_canciones_con_1termino_varias_canciones");
 }
 
@@ -292,7 +288,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_u
 	RegistroClave listaCan;
 	RegistroClave reg_termino;
 	ClaveX clave, clave_aux;
-	char* campo = new char[100];
 	int id;
 	indice.crear_indice("", NOMBRE_INDICE);
 	indice.abrir_indice("", NOMBRE_INDICE);
@@ -320,7 +315,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_u
 	assert(indice.buscar_frase("vaca loca", lista) == NO_EXISTE);
 
     this->eliminar_archivos();
-    delete[] campo;
     print_test_ok("test_indice_por_frase_devolver_canciones_con_una_cancion");
 }
 
@@ -335,7 +329,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_v
 	RegistroClave listaCan;
 	RegistroClave reg_termino;
 	ClaveX clave, clave_aux;
-	char* campo = new char[100];
 	int id;
 	indice.crear_indice("", NOMBRE_INDICE);
 	indice.abrir_indice("", NOMBRE_INDICE);
@@ -383,7 +376,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_v
 	assert(indice.buscar_frase("vaca loca", lista) == NO_EXISTE);
 
     this->eliminar_archivos();
-    delete[] campo;
     print_test_ok("test_indice_por_frase_devolver_canciones_con_varias_canciones");
 }
 
@@ -400,7 +392,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_u
 		RegistroClave listaCan;
 		RegistroClave reg_termino;
 		ClaveX clave, clave_aux;
-		char* campo = new char[100];
 		int id;
 		indice.crear_indice("", NOMBRE_INDICE);
 		indice.abrir_indice("", NOMBRE_INDICE);
@@ -428,7 +419,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_u
 		assert(indice.buscar_frase("vaca loca", lista) == NO_EXISTE);
 
 	    this->eliminar_archivos();
-	    delete[] campo;
 	    print_test_ok("test_indice_por_frase_devolver_canciones_con_una_cancion_terminos_repetidos");
 }
 
@@ -443,7 +433,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_v
 	RegistroClave listaCan;
 	RegistroClave reg_termino;
 	ClaveX clave, clave_aux;
-	char* campo = new char[100];
 	int id;
 	indice.crear_indice("", NOMBRE_INDICE);
 	indice.abrir_indice("", NOMBRE_INDICE);
@@ -491,7 +480,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_v
 	assert(indice.buscar_frase("vaca loca", lista) == NO_EXISTE);
 
     this->eliminar_archivos();
-    delete[] campo;
     print_test_ok("test_indice_por_frase_devolver_canciones_con_varias_canciones_terminos_repetidos");
 }
 

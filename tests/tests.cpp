@@ -39,7 +39,6 @@ void test_leer_de_archivo()
 	ParserCanciones parser;
 	assert(parser.crear("../songs/") == RES_OK);
 	RegistroCancion regCancion;
-	std::string parametro = "";
 	std::string nombreArchivo = "";
 
 	// Para cada cancion que tengamos...

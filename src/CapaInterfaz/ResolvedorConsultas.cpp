@@ -23,15 +23,20 @@ std::vector<int> ResolvedorConsultas::get_ids_canciones_frases(std::string & fra
 	indiceSecundarioFrases.abrir_indice(directorioSalida+'/',std::string(FILENAME_IDX_SECUN_FRASES));
 
 	int res = indiceSecundarioFrases.buscar_frase(frase,listaInvertida);
-	cout << "res = " << res << endl;
-
-	// Cada campo de la lista invertida tiene un ID de cancion
-	unsigned int q = listaInvertida.get_cantidad_campos();
-	for (unsigned int i = 0; i < q; i++)
+	if (res != RES_OK)
 	{
-		int iDdoc;
-		listaInvertida.recuperar_campo((char*)&iDdoc,i);
-		ids.push_back(iDdoc);
+		std::cout << "La frase " << frase << " no fue encontrada." << std::endl;
+	}
+	else {
+
+		// Cada campo de la lista invertida tiene un ID de cancion
+		unsigned int q = listaInvertida.get_cantidad_campos();
+		for (unsigned int i = 0; i < q; i++)
+		{
+			int iDdoc;
+			listaInvertida.recuperar_campo((char*)&iDdoc,i);
+			ids.push_back(iDdoc);
+		}
 	}
 
 	indiceSecundarioFrases.cerrar_indice();
@@ -90,6 +95,7 @@ int ResolvedorConsultas::get_id_cancion_titulo(std::string & titulo)
 	if (res == RES_RECORD_DOESNT_EXIST)
 	{
 		std::cout << "La cancion " << titulo << " no fue encontrada." << std::endl;
+		indiceSecundarioTitulo.cerrar_archivo();
 		return RES_RECORD_DOESNT_EXIST;
 	}
 	else {

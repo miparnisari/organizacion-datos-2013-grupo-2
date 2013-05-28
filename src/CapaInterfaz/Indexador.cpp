@@ -104,6 +104,7 @@ int Indexador::_crear_archivos_indices(std::string & directorioEntrada, std::str
 	res += documentos.crear_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
 	res += indiceSecundarioAutor.crear(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_AUTOR));
 	res += indiceSecundarioTitulo.crear_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
+	res += indiceSecundarioFrases.crear_indice(directorioSalida+'/',std::string(FILENAME_IDX_SECUN_FRASES));
 	return res;
 }
 
@@ -115,6 +116,7 @@ int Indexador::_abrir_archivos_indices(std::string & directorioEntrada, std::str
 	res += documentos.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
 	res += indiceSecundarioAutor.abrir(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_AUTOR),"rb+");
 	res += indiceSecundarioTitulo.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
+	res += indiceSecundarioFrases.abrir_indice(directorioSalida+'/',std::string(FILENAME_IDX_SECUN_FRASES));
 	res += parser.crear(directorioEntrada);
 	return res;
 }
@@ -125,6 +127,7 @@ int Indexador::_finalizar()
 	res += documentos.cerrar_archivo();
 	res += indiceSecundarioAutor.cerrar();
 	res += indiceSecundarioTitulo.cerrar_archivo();
+	res += indiceSecundarioFrases.cerrar_indice();
 	return res;
 }
 
@@ -263,7 +266,8 @@ void Indexador::_agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & re
 	indiceSecundarioTitulo.agregar(regClave3);
 
 
-	/* TODO crear el indice invertido para las frases */
+	/* ----- agregamos al indice por frase: frases ----*/
+	indiceSecundarioFrases.agregar_cancion(regCancion,id.get_dato());
 
 
 	std::cout << "Se indexó " << nombreArchivo << " correctamente!" << std::endl;

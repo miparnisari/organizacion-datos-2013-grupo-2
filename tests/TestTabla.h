@@ -43,7 +43,6 @@ private:
 
 	void test_tabla_hash_posiciones_correctas_al_dividir();
 
-	void test_tabla_hash_integracion();
 };
 
 
