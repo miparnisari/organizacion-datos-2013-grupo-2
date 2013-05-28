@@ -283,14 +283,8 @@ void test_cancion_sabina(){
 	ifstream archivo("cancionSabina.txt");
 	char buffer[128];
 	archivo.getline(buffer,128);
-	IMPRIMIR_VARIABLE(strlen(buffer));
 	buffer[strlen(buffer)]= '\n';
-
 	rc.cargar(buffer,128);
-	cout<<"test_cancion_sabina"<<endl;
-	int i;
-	cout<<"ingrese tecla para continuar"<<endl;
-	cin>>i;
 
 }
 

@@ -83,10 +83,8 @@ void TestHashingExtensible::test_guardar_y_recuperar_ints()
 	// Registro = "orgadedatos" + "10"
 	regClave.set_clave(claveTitulo);
 	regClave.agregar_campo((char*)&idCancion,sizeof(idCancion));
-
 	assert(indiceSecundarioTitulo.agregar(regClave) == RES_OK);
 	indiceSecundarioTitulo.cerrar_archivo();
-
 	// Consulto del disco
 	indiceSecundarioTitulo.abrir_archivo("hash_autor_id");
 	ClaveX claveConsulta;
@@ -97,19 +95,12 @@ void TestHashingExtensible::test_guardar_y_recuperar_ints()
 
 	// Recupero la clave
 	ClaveX clave = regRecuperado.get_clave();
-	clave.imprimir_dato();
-	cout << endl;
 
 	// Recupero el dato
 	int intrecuperado;
 	assert(regRecuperado.recuperar_campo((char*)(&intrecuperado),1) != RES_ERROR);
-
-	std::cout << "DATO = " << intrecuperado << std::endl;
-
 	assert (regRecuperado.get_cantidad_campos() == 2);
 	assert (regRecuperado.get_tamanio_campo(0) == 11 + 1);
-
-	cout << "tamanio del campo 1 = " << regRecuperado.get_tamanio_campo(1) << endl;
 	assert (regRecuperado.get_tamanio_campo(1) == 4);
 
 	indiceSecundarioTitulo.cerrar_archivo();
@@ -186,6 +177,8 @@ void TestHashingExtensible::test_hash_modificar_un_valor(){
 
 	assert(hash1.devolver(clave, &regClave) == RES_RECORD_DOESNT_EXIST);
 
+	assert(hash1.cerrar_archivo() == RES_OK);
+
 	print_test_ok("test_hash_modificar_un_valor");
 }
 
@@ -234,7 +227,6 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     ManejadorBloques manejador;
     Bloque* bloq = NULL;
     RegistroVariable regVar;
-    int numeroLeido;
 
     //Creo un nuevo registro "23" (clave) + "Hola" (dato)
     clave.set_clave(23);
@@ -244,22 +236,6 @@ void TestHashingExtensible::test_agregar_y_devolver_registro()
     assert(this->crear_registro_y_agregar(hash1, campo, clave) == RES_OK);
     assert (hash1.cerrar_archivo() == RES_OK);
 
-//    manejador.abrir_archivo("HashingDePrueba.dat", "rb+");
-//    bloq = manejador.obtener_bloque(0);
-//    assert (bloq != NULL);
-//    assert (bloq -> get_cantidad_registros_almacenados() == 2);
-//    bloq->recuperar_registro(&regVar,0);
-//    assert(regVar.get_cantidad_campos() == 1);
-//    regVar.recuperar_campo((char*)&numeroLeido,0);
-//
-//    assert(numeroLeido == 1);
-//
-//    bloq->recuperar_registro(&reg,1);
-//    clave = reg.get_clave();
-//
-//    clave.get_clave(numeroLeido);
-//    assert(numeroLeido == 23);
-//    manejador.cerrar_archivo();
     //Pruebo a ver si encuentra el registro en el hash
     assert (hash1.abrir_archivo(DIRECCION) == RES_OK);
     assert(hash1.devolver(clave, &reg) == RES_OK);

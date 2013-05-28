@@ -997,6 +997,8 @@ void TestArbol::test_eliminar_con_balanceo_interno(){
 
 	cout<<"imprimiendo arbol despues de balancear: ----------------------"<<endl;
 	arbol.imprimir();
+
+	arbol.cerrar();
 }
 
 
@@ -1075,6 +1077,7 @@ void TestArbol::test_eliminar_con_balanceo_interno_con_ultimo_nodo(){
 
 	cout<<"imprimiendo arbol despues de balancear: ----------------------"<<endl;
 	arbol.imprimir();
+	arbol.cerrar();
 }
 
 void TestArbol::test_eliminar_completamente_arbol(){
@@ -1172,7 +1175,5 @@ void TestArbol::test_eliminar_completamente_arbol(){
 
 	cout<<"imprimiendo arbol borrado: ----------------------"<<endl;
 	arbol.imprimir();
+	arbol.cerrar();
 }
-
-
-
