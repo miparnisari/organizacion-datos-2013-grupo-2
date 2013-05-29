@@ -35,7 +35,6 @@
 			existe = true;
 			(void) closedir (pDir);
 		}
-
 		return existe;
 	}
 
@@ -77,13 +76,8 @@
 
 	int listpath (std::string dir, std::vector<std::string> & files, std::string extension)
 	{
-		DIR* dp;
+		DIR* dp = opendir(dir.c_str());
 		struct dirent* dirp;
-		if ( (dp  = opendir(dir.c_str()))  == NULL) {
-			std::cout << "Error(" << errno << ") abriendo " << dir << std::endl;
-			return errno;
-		}
-
 		std::string filename = "";
 
 		while ((dirp = readdir(dp)) != NULL) {

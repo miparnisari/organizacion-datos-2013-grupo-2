@@ -1,6 +1,6 @@
 #include "IndiceInvertido.h"
 
-/******falta implementar borrar_documento(int IDdoc)**/
+/******TODO implementar borrar_documento(int IDdoc)**/
 
 IndiceInvertido::IndiceInvertido()
 {

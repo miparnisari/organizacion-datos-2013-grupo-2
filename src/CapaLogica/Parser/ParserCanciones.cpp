@@ -38,10 +38,13 @@ int ParserCanciones::crear (std::string dir)
 {
 	_init();
 	getcwd(currentWorkingDirectory, sizeof(currentWorkingDirectory));
+	utilitarios::listpath (dir, archivos, ".txt");
 	int res = chdir(dir.c_str()); // Cambia el directorio al del repositorio, para poder indexar
 	if (res == -1)
+	{
 		return RES_DIRECTORY_DOESNT_EXIST;
-	utilitarios::listpath (dir, archivos, ".txt");
+	}
+
 	return RES_OK;
 }
 

@@ -4,7 +4,7 @@
 int main (int argc, char* argv[])
 {
 	if (argc < 4) {
-		std::cout << "Se requieren al menos 4 parametros." << std::endl;
+		std::cout << "ERROR: Se requieren al menos 4 parametros." << std::endl;
 		return RES_OK;
 	}
 
@@ -40,7 +40,7 @@ int main (int argc, char* argv[])
 	}
 	else
 	{
-		std::cout << "La operación " << operacion << " no está permitida." << std::endl;
+		std::cout << "ERROR: La operación " << operacion << " no está permitida." << std::endl;
 	}
 	
 }
