@@ -31,7 +31,7 @@ int main (int argc, char* argv[])
 		std::string autor = std::string(argv[3]);
 		indexador.consultar_autor(directorioSalida, autor);
 	}
-	// Consultar por frase
+
 	else if (operacion == "-consultarFrase")
 	{
 		std::string directorioSalida = std::string(argv[2]);

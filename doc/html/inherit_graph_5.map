@@ -1,5 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node1" href="$class_clave.html" title="Clave" alt="" coords="5,32,61,61"/>
-<area shape="rect" id="node3" href="$class_clave_numerica.html" title="ClaveNumerica" alt="" coords="109,5,221,35"/>
-<area shape="rect" id="node5" href="$class_clave_string.html" title="ClaveString" alt="" coords="120,59,211,88"/>
-</map>
