@@ -1,5 +1,5 @@
 #include "../HashingExtensible/HashingExtensible.h"
-#include <sstream>
+
 
 HashingExtensible::HashingExtensible()
 {

@@ -26,7 +26,8 @@ int ArchivoListas::abrir(std::string directorioSalidaa, std::string fileNamee)
 unsigned short ArchivoListas::agregar(RegistroVariable *listaDeCanciones)
 {
 	unsigned short pos = this->archivo.get_cantidad_registros_ocupados();
-	if(this->archivo.agregar_registro(listaDeCanciones) >0)	return pos;
+	if (this->archivo.agregar_registro(listaDeCanciones) >0)
+		return pos;
 	return RES_ERROR;
 }
 
@@ -43,9 +44,11 @@ int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short 
     RegistroVariable lista;
     int resultado;
     resultado = listas_nuevas.crear_archivo(file1);
-    if (resultado != RES_OK) return resultado;
+    if (resultado != RES_OK)
+    	return resultado;
     listas_nuevas.abrir_archivo(file1);
-    if (resultado != RES_OK) return resultado;
+    if (resultado != RES_OK)
+    	return resultado;
     unsigned short i, j=0, cant_listas = this->archivo.get_cantidad_registros_ocupados();
     for(i=0; i<cant_listas; i++){
         //Obtengo la lista
@@ -80,9 +83,11 @@ int ArchivoListas::recontruir_listas(unsigned short ref_lista, RegistroVariable 
 	RegistroVariable lista;
 	int resultado;
 	resultado = listas_nuevas.crear_archivo(file1);
-	if (resultado != RES_OK) return resultado;
+	if (resultado != RES_OK)
+		return resultado;
 	listas_nuevas.abrir_archivo(file1);
-	if (resultado != RES_OK) return resultado;
+	if (resultado != RES_OK)
+		return resultado;
 	for(i=0; i<cant_listas; i++){
 	        //Obtengo la lista
 	        this->archivo.get_registro_ocupado(&lista, i);

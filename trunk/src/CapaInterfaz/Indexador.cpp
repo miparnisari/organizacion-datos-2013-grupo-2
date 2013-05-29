@@ -96,7 +96,7 @@ int Indexador::_mostrar_opciones(std::string & directorioEntrada, std::string & 
 	}
 }
 
-int Indexador::_crear_archivos_indices(std::string & directorioEntrada, std::string & directorioSalida)
+int Indexador::_crear_archivos_indices(std::string & directorioSalida)
 {
 	int res = RES_OK;
 	res += indicePrimario.crear_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_PRIM));
@@ -206,6 +206,7 @@ void Indexador::_agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & re
 {
 	/* ------ guardamos el registro de la cancion en un archivo maestro ------ */
 
+
 	regCancion.comprimir(compresor);
 	long offsetInicialRegCancion = archivoMaestro.agregar_registro(&regCancion);
 
@@ -262,7 +263,6 @@ void Indexador::_agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & re
 
 	int idCancion = id.get_dato();
 	regClave3.agregar_campo((char*)&idCancion,sizeof(idCancion));
-
 	indiceSecundarioTitulo.agregar(regClave3);
 
 
@@ -273,7 +273,7 @@ void Indexador::_agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & re
 	std::cout << "Se indexó " << nombreArchivo << " correctamente!" << std::endl;
 }
 
-void Indexador::_indexar(std::string & directorioEntrada, std::string & directorioSalida)
+void Indexador::_indexar()
 {
 	ClaveNumerica id(0);
 
@@ -315,13 +315,13 @@ int Indexador::indexar (std::string & directorioEntrada, std::string & directori
 
 		else // OPCION = INDEXAR
 		{
-			int res2 = _crear_archivos_indices(directorioEntrada,directorioSalida);
+			int res2 = _crear_archivos_indices(directorioSalida);
 			if (res2 != RES_OK) {
 				cout << "ERROR: No se pudieron crear los archivos necesarios." << endl;
 			}
 			else {
 				_abrir_archivos_indices(directorioEntrada,directorioSalida);
-				_indexar(directorioEntrada,directorioSalida);
+				_indexar();
 			}
 		}
 
