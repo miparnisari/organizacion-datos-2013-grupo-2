@@ -108,11 +108,20 @@ int ResolvedorConsultas::get_id_cancion_titulo(std::string & titulo)
 
 std::string ResolvedorConsultas::get_letra (int id_cancion)
 {
+	indicePrimario.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_PRIM));
 	std::string letra = "";
 	RegistroCancion regCancion;
-	long offset;
-	//TODO
+	ClaveX claveID;
+	claveID.set_clave(id_cancion);
 
+	RegistroClave reg;
+	indicePrimario.devolver(claveID, &reg);
+	indicePrimario.cerrar_archivo();
+
+	archivoMaestro.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ARCH_MAESTRO));
+
+	long offset;
+	reg.recuperar_campo((char*)&offset,1);
 
 	archivoMaestro.get_registro_por_offset(&regCancion,offset);
 

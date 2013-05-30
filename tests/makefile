@@ -22,6 +22,7 @@ all : $(EXE)
 	ar cr $@ $^
 
 tests:  $(OBJLIBS) $(OBJS)
+	$(ECHO) $(CC) $(CFLAGS) $(EXTERNOBJ) $(OBJS) $(EXTERNOBJ-CAPALOGICA) -o $@ $(TARGETS)
 	$(CC) $(CFLAGS) $(EXTERNOBJ) $(OBJS) $(EXTERNOBJ-CAPALOGICA) -o $@ $(TARGETS)
 
 clean :

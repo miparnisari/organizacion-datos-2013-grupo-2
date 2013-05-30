@@ -26,7 +26,7 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 		{
 		}
 
-		int truncar(long long cantidadDatosDeseados)
+		int truncar(long cantidadDatosDeseados)
 		{
 			if (file_handler == NULL)
 				return RES_ERROR;
