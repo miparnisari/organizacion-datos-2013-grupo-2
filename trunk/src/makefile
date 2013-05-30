@@ -12,6 +12,10 @@ EXE	= main
 
 all : $(EXE)
 
+%.o: %.cpp %.h
+	$(ECHO) $(CC) -c $(CFLAGS) $<
+	$(CC) -c $(CFLAGS) $<
+
 %.a :
 	-for d in $(DIRS); do (cd $$d; $(MAKE)); done
 	ar cr $@ $^
