@@ -6,10 +6,10 @@
 #include <errno.h>
 #include <vector>
 #include <cstring>
-
 #include <sstream>
-
+#include "../Constantes.h"
 using namespace std;
+
 
 namespace utilitarios
 {
@@ -17,7 +17,7 @@ namespace utilitarios
 	bool directorio_existe (std::string dir);
 	wstring StringToWString(const string& s);
 	string WStringToString (const wstring& s);
-    unsigned int pasarBufferAInt(char* value);
+    unsigned int copyBufferToInt(char* value);
 	void copyIntToBuffer (char* buffer, int integer);
 	bool validFileName (std::string fileName);
 	int listpath (std::string dir, std::vector<std::string> &files, std::string extension);

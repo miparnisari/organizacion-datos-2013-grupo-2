@@ -14,7 +14,6 @@ using namespace utilitarios;
 class ParserCanciones
 {
 	private:
-		char currentWorkingDirectory[1024];
 		Normalizador normalizador;
 		std::vector<std::string> archivos;
 		unsigned int contadorArchivosLeidos;

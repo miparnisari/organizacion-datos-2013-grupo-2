@@ -6,7 +6,6 @@
 {
  	 int remover_archivos_de_directorio(std::string directorio)
  	 {
-	 // These are data types defined in the "dirent" header
 	  struct dirent *next_file;
 	  DIR *dir;
 
@@ -16,12 +15,11 @@
 	  next_file = readdir(dir);
 	  while ( next_file != NULL  )
 	  {
-		  // build the full path for each file in the folder
 		  sprintf(filepath, "%s/%s", directorio.c_str(), next_file->d_name);
 		  remove(filepath);
 		  next_file = readdir(dir);
 	  }
-	  return 0;
+	  return RES_OK;
 	}
 	bool directorio_existe( std::string dir )
 	{
@@ -49,7 +47,7 @@
 			simpleString.assign(s.begin(), s.end());
 			return simpleString;
 	}
-    unsigned int pasarBufferAInt(char* value)
+    unsigned int copyBufferToInt(char* value)
     {
         unsigned int intValue;
         std::stringstream strValue;
@@ -96,6 +94,6 @@
 			}
 		}
 		closedir(dp);
-		return 0;
+		return RES_OK;
 	}/* Dado un directorio, crea un vector con los nombres de los archivos. */
 }

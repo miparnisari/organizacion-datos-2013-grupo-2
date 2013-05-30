@@ -8,14 +8,12 @@ ParserCanciones::ParserCanciones()
 
 ParserCanciones::~ParserCanciones()
 {
-	chdir(currentWorkingDirectory); // De vuelta al directorio original
 }
 
 
 void ParserCanciones::_init()
 {
 	contadorArchivosLeidos = 0;
-	currentWorkingDirectory[0] = '\0';
 }
 
 
@@ -37,15 +35,7 @@ char ParserCanciones::_estandarizar (char caracter)
 int ParserCanciones::crear (std::string dir)
 {
 	_init();
-	getcwd(currentWorkingDirectory, sizeof(currentWorkingDirectory));
-	utilitarios::listpath (dir, archivos, ".txt");
-	int res = chdir(dir.c_str()); // Cambia el directorio al del repositorio, para poder indexar
-	if (res == -1)
-	{
-		return RES_DIRECTORY_DOESNT_EXIST;
-	}
-
-	return RES_OK;
+	return utilitarios::listpath (dir, archivos, ".txt");
 }
 
 int ParserCanciones::obtener_proxima_cancion(RegistroCancion& reg, std::string & nombreArchivo)
