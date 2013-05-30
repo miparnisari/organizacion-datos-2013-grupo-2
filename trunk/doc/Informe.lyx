@@ -73,7 +73,7 @@
 \rightmargin 3cm
 \bottommargin 3cm
 \secnumdepth 1
-\tocdepth 0
+\tocdepth 2
 \paragraph_separation skip
 \defskip smallskip
 \quotes_language english
@@ -93,12 +93,14 @@
 
 \begin_layout Title
 
-\emph on
+\series bold
 Universidad de Buenos Aires
 \begin_inset Newline linebreak
 \end_inset
 
 Facultad de Ingeniería
+\series default
+
 \begin_inset Newline linebreak
 \end_inset
 
@@ -392,9 +394,8 @@ type "mailto:"
 \end_layout
 
 \begin_layout Standard
-\begin_inset CommandInset index_print
-LatexCommand printindex
-type "idx"
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
 
 \end_inset
 
@@ -1391,14 +1392,25 @@ Archivo_terminos
 IDtermino
 \family default
 .
+ Sus registros tienen la siguiente estructura:
 \end_layout
 
+\begin_deeper
+\begin_layout Standard
+\noindent
+\align center
+
+\family typewriter
+(término)
+\end_layout
+
+\end_deeper
 \begin_layout Itemize
 
 \family typewriter
 Archivo_vocabulario
 \family default
-: es un archivo de tipo árbol B+ con el termino completo como identificador
+: es un archivo de tipo árbol B+ con el término completo como identificador
  del registro.
  Sus registros tienen la siguiente estructura:
 \end_layout
@@ -1409,7 +1421,7 @@ Archivo_vocabulario
 \align center
 
 \family typewriter
-(término, IDtermino, refListaInvertida)
+(i(término), refListaInvertida)
 \end_layout
 
 \end_deeper
@@ -1430,6 +1442,26 @@ Archivo_listas_invertidas
 
 \family typewriter
 ((IDdocumento, posicion)+)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+Archivo_listas_posiciones
+\family default
+ : es un archivo de bloques grandes.
+ Cada bloque representa una lista invertida.
+ Sus registros son de longitud variable y tienen la siguiente estructura:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\noindent
+\align center
+
+\family typewriter
+(posicion)
 \end_layout
 
 \end_deeper
@@ -1589,7 +1621,7 @@ Para cada archivo de la carpeta, se mostrará por pantalla un mensaje que
 \end_deeper
 \begin_layout Itemize
 
-\family sans
+\family typewriter
 -consultarTitulo <carpeta de búsqueda> <titulo> 
 \end_layout
 
