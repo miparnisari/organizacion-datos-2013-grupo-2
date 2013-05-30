@@ -1421,7 +1421,7 @@ Archivo_vocabulario
 \align center
 
 \family typewriter
-(i(término), refListaInvertida)
+(i(término), IDtermino, refListaInvertida)
 \end_layout
 
 \end_deeper

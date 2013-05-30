@@ -73,7 +73,7 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
     indice.crear_indice("", NOMBRE_INDICE);
     indice.abrir_indice("", NOMBRE_INDICE);
     this->crear_reg_cancion("La casa del lago", cancion);
-    indice.agregar_cancion(cancion, 23);
+    indice.agregar_texto(cancion.get_letra(), 23);
     //Abro los archivos del indice y veo si se crearon los registros correspondientes
     //Vemos si se creo el archivo de listas invertidas
     assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);
@@ -192,7 +192,7 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_1
 	indice.crear_indice("", NOMBRE_INDICE);
 	indice.abrir_indice("", NOMBRE_INDICE);
 	this->crear_reg_cancion("La casa del lago", cancion);
-	indice.agregar_cancion(cancion, 23);
+	indice.agregar_texto(cancion.get_letra(),23);
 	//Abro los archivos del indice y veo si se crearon los registros correspondientes
 	//Vemos si se creo el archivo de listas invertidas
 	assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);
@@ -233,11 +233,11 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_1
 	indice.abrir_indice("", NOMBRE_INDICE);
 
 	this->crear_reg_cancion("La casa", cancion);
-	indice.agregar_cancion(cancion, 23);
+	indice.agregar_texto(cancion.get_letra(), 23);
 	this->crear_reg_cancion("La casa del lago", cancion);
-	indice.agregar_cancion(cancion, 24);
+	indice.agregar_texto(cancion.get_letra(), 24);
 	this->crear_reg_cancion("La granja", cancion);
-	indice.agregar_cancion(cancion, 25);
+	indice.agregar_texto(cancion.get_letra(), 25);
 
 	//Abro los archivos del indice y veo si se crearon los registros correspondientes
 	//Vemos si se creo el archivo de listas invertidas
@@ -292,7 +292,7 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_u
 	indice.crear_indice("", NOMBRE_INDICE);
 	indice.abrir_indice("", NOMBRE_INDICE);
 	this->crear_reg_cancion("La casa del lago", cancion);
-	indice.agregar_cancion(cancion, 23);
+	indice.agregar_texto(cancion.get_letra(), 23);
 	//Abro los archivos del indice y veo si se crearon los registros correspondientes
 	//Vemos si se creo el archivo de listas invertidas
 	assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);
@@ -334,13 +334,13 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_v
 	indice.abrir_indice("", NOMBRE_INDICE);
 
 	this->crear_reg_cancion("La casa", cancion);
-	indice.agregar_cancion(cancion, 23);
+	indice.agregar_texto(cancion.get_letra(), 23);
 	this->crear_reg_cancion("La casa del lago", cancion);
-	indice.agregar_cancion(cancion, 24);
+	indice.agregar_texto(cancion.get_letra(), 24);
 	this->crear_reg_cancion("La granja", cancion);
-	indice.agregar_cancion(cancion, 25);
+	indice.agregar_texto(cancion.get_letra(), 25);
 
-	indice.agregar_cancion(cancion, 23);
+	indice.agregar_texto(cancion.get_letra(), 23);
 	//Abro los archivos del indice y veo si se crearon los registros correspondientes
 	//Vemos si se creo el archivo de listas invertidas
 	assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);
@@ -396,7 +396,7 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_u
 		indice.crear_indice("", NOMBRE_INDICE);
 		indice.abrir_indice("", NOMBRE_INDICE);
 		this->crear_reg_cancion("La casa junto a la casa oscura", cancion);
-		indice.agregar_cancion(cancion, 23);
+		indice.agregar_texto(cancion.get_letra(), 23);
 		//Abro los archivos del indice y veo si se crearon los registros correspondientes
 		//Vemos si se creo el archivo de listas invertidas
 		assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);
@@ -438,13 +438,13 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_v
 	indice.abrir_indice("", NOMBRE_INDICE);
 
 	this->crear_reg_cancion("La casa junto a la casa oscura", cancion);
-	indice.agregar_cancion(cancion, 23);
+	indice.agregar_texto(cancion.get_letra(), 23);
 	this->crear_reg_cancion("La casa del lago del sur", cancion);
-	indice.agregar_cancion(cancion, 24);
+	indice.agregar_texto(cancion.get_letra(), 24);
 	this->crear_reg_cancion("La granja del lago", cancion);
-	indice.agregar_cancion(cancion, 25);
+	indice.agregar_texto(cancion.get_letra(), 25);
 
-	indice.agregar_cancion(cancion, 23);
+	indice.agregar_texto(cancion.get_letra(), 23);
 	//Abro los archivos del indice y veo si se crearon los registros correspondientes
 	//Vemos si se creo el archivo de listas invertidas
 	assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);

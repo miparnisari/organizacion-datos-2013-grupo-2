@@ -39,7 +39,7 @@ class IndiceInvertido
 
         virtual int cerrar_indice();
 
-        virtual int agregar_cancion(RegistroCancion & cancion, int IDcancion);
+        virtual int agregar_texto(std::string texto, int IDcancion);
         //Agrega los terminos de la cancion al indice junto a su posicion
 
         virtual int borrar_indice();
