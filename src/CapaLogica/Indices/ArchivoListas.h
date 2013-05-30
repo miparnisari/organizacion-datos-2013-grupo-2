@@ -27,7 +27,7 @@ class ArchivoListas
         virtual int abrir(std::string directorioSalidaa, std::string fileNamee);
         //Abre el archivo con la direccion y el nombre que se le pasan por parametro
 
-        virtual unsigned short agregar(RegistroVariable *listaDeCanciones);
+        virtual short agregar(RegistroVariable *listaDeCanciones);
         //Agrega una lista al archivo y devuelve el offset de este
 
         virtual int devolver(RegistroVariable *listaDeCanciones, unsigned short pos_lista);
@@ -42,7 +42,7 @@ class ArchivoListas
         virtual int eliminar(std::string directorioSalida, std::string fileNamee);
         //Elimina el archivo con la direccion y el nombre que se le pasan por parametro
 
-        virtual unsigned short get_cantidad_listas();
+        virtual int get_cantidad_listas();
         //Devuelve la cantidad de listas
 
 };

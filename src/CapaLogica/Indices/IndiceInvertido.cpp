@@ -15,11 +15,11 @@ IndiceInvertido::~IndiceInvertido()
 int IndiceInvertido::crear_indice(std::string directorioSalida, std::string fileNamee)
 {
 	this->fileName= directorioSalida+fileNamee;
-	this->archivo_terminos.crear_archivo(this->fileName+"Terminos.dat");
-	this->vocabulario.crear(this->fileName+"Vocabulario.dat", BLOQUE_TAM_DEFAULT);
-	this->listas_invertidas.crear(directorioSalida, "ListasInvertidas");
-	this->listas_posiciones.crear(directorioSalida, "ListasPosiciones");
-	return RES_OK;
+	int res = this->archivo_terminos.crear_archivo(this->fileName+"Terminos.dat");
+	res += this->vocabulario.crear(this->fileName+"Vocabulario.dat", BLOQUE_TAM_DEFAULT);
+	res += this->listas_invertidas.crear(directorioSalida, "ListasInvertidas");
+	res += this->listas_posiciones.crear(directorioSalida, "ListasPosiciones");
+	return res;
 }
 
 int IndiceInvertido::abrir_indice(std::string directorioSalida, std::string fileNamee)
@@ -38,29 +38,28 @@ int IndiceInvertido::abrir_indice(std::string directorioSalida, std::string file
 
 int IndiceInvertido::cerrar_indice()
 {
-	int res=0;
-	res += this->vocabulario.cerrar();
+	int res= this->vocabulario.cerrar();
 	return res;
 }
 
 int IndiceInvertido::agregar_cancion(RegistroCancion & cancion, int IDcancion)
 {
     //Guardamos los terminos y armos las listas invertidas
-	std::string letra = cancion.get_letra();
 	//Creo el archivo de coincidencias
-    if(this->archivo_coincidencias.crear_archivo(this->fileName+"Coincidencias") == RES_ERROR)
+	std::string letra = cancion.get_letra();
+    if(this->archivo_coincidencias.crear_archivo(this->fileName+"Coincidencias.dat") == RES_ERROR)
     	return RES_ERROR;
-    if(this->archivo_coincidencias.abrir_archivo(this->fileName+"Coincidencias") == RES_ERROR)
+    if(this->archivo_coincidencias.abrir_archivo(this->fileName+"Coincidencias.dat") == RES_ERROR)
     	return RES_ERROR;
 	//Verifica si se encuentra en el vocabulario y se crea el archivo de coincidencias
-    this->armar_archivo_coincidencias(letra);
-    this->armar_listas_invertidas(IDcancion);
+    this->_armar_archivo_coincidencias(letra);
+    this->_armar_listas_invertidas(IDcancion);
     //Borror el archivo de coincidencias
-    this->archivo_coincidencias.eliminar_archivo(this->fileName+"Coincidencias");
+    this->archivo_coincidencias.eliminar_archivo(this->fileName+"Coincidencias.dat");
     return RES_OK;
 }
 
-int IndiceInvertido::armar_archivo_coincidencias(std::string & letra)
+int IndiceInvertido::_armar_archivo_coincidencias(std::string & letra)
 {
 	Texto texto;
 	int pos=0;
@@ -72,18 +71,19 @@ int IndiceInvertido::armar_archivo_coincidencias(std::string & letra)
 	texto.parsear(letra);
 	while(texto.get_proxima_palabra(termino) != RES_FIN){
 		clave.set_clave(termino);
-		if(this->vocabulario.buscar(regTerminoVoc) == RES_ERROR){
+		if(this->vocabulario.buscar(regTerminoVoc) == RES_RECORD_DOESNT_EXIST){
 			//Como no existe en el vocabulario entonces creamos un nuevo registro y lo guardamos en el vocabulario
 			RegistroVariable listaInvertida;
 			//Agrego el termino al archivo de terminos
-			regTermino.agregar_campo(termino.c_str(),0);
+			regTermino.agregar_campo(termino.c_str(),termino.size());
 			IDter = this->archivo_terminos.agregar_registro(&regTermino);
-			if(IDter == RES_ERROR)	return RES_ERROR;
+			if (IDter == RES_ERROR)
+				return RES_ERROR;
 			//Le agrego al reg del vocabulario el IDter
-			regTerminoVoc.agregar_campo((char *)&IDter,1);
+			regTerminoVoc.agregar_campo((char *)&IDter,sizeof(IDter));
 			//Le agrego al reg del vocabulario una referencia a una lista nueva
 			ref_lista = this->listas_invertidas.agregar(&listaInvertida);
-			regTerminoVoc.agregar_campo((char *)&ref_lista, 2);
+			regTerminoVoc.agregar_campo((char *)&ref_lista, sizeof(ref_lista));
 			//Agrego el registro al vocabulario
 			if(this->vocabulario.agregar(regTerminoVoc) != RES_OK)
 				return RES_ERROR;
@@ -92,8 +92,8 @@ int IndiceInvertido::armar_archivo_coincidencias(std::string & letra)
 			regTerminoVoc.recuperar_campo((char *)&IDter,1);
 		}
 		//Agrego el registro de coincidencia que corresponde
-		regCoincidencia.agregar_campo((char *)&IDter,0);
-		regCoincidencia.agregar_campo((char *)&pos,1);
+		regCoincidencia.agregar_campo((char *)&IDter,sizeof(IDter));
+		regCoincidencia.agregar_campo((char *)&pos,sizeof(pos));
 		this->archivo_coincidencias.agregar_registro(&regCoincidencia);
 		pos++;
 	}
@@ -101,7 +101,7 @@ int IndiceInvertido::armar_archivo_coincidencias(std::string & letra)
 	return RES_OK;
 }
 
-int IndiceInvertido::armar_listas_invertidas(int IDcancion)
+int IndiceInvertido::_armar_listas_invertidas(int IDcancion)
 {
 	RegistroVariable regCoincidencia, regTermino, listaInvertida;
 	RegistroClave regTerminoVoc, regCancionTermino;
@@ -134,9 +134,10 @@ int IndiceInvertido::armar_listas_invertidas(int IDcancion)
 		int j=0;
 		do{//Mientras sean el mismo termino
 			//Guardo la posicion en la lista de posiciones
-			char* pos = new char[regCoincidencia.get_tamanio_campo(1)]();
+			char* pos = new char[regCoincidencia.get_tamanio_campo(1) +1]();
+			pos[regCoincidencia.get_tamanio_campo(1)] = '\0';
 			regCoincidencia.recuperar_campo(pos,1);
-			listaPos.agregar_campo(pos, j);
+			listaPos.agregar_campo(pos, strlen(pos));
 			delete[] pos;
 			//Guardo el IDter como el anterior
 			IDterAnterior = IDter;
@@ -153,11 +154,12 @@ int IndiceInvertido::armar_listas_invertidas(int IDcancion)
 		clave.set_clave(IDcancion);
 		regCancionTermino.set_clave(clave);
 		//Le agrego la referencia a la lista de canciones por termino
-		regCancionTermino.agregar_campo((char *)&ref_lista_pos, 1);
+		regCancionTermino.agregar_campo((char *)&ref_lista_pos, sizeof(ref_lista_pos));
 		//Guardo esta lista en la lista invertida de canciones
-		char* reg_cancion_termino = new char[regCancionTermino.get_tamanio_empaquetado()]();
+		char* reg_cancion_termino = new char[regCancionTermino.get_tamanio_empaquetado() + 1]();
+		reg_cancion_termino[regCancionTermino.get_tamanio_empaquetado()] = '\0';
 		regCancionTermino.empaquetar(reg_cancion_termino);
-		listaInvertida.agregar_campo(reg_cancion_termino, 0);
+		listaInvertida.agregar_campo(reg_cancion_termino, strlen(reg_cancion_termino));
 		delete[] reg_cancion_termino;
 		this->listas_invertidas.recontruir_listas(ref_lista, listaInvertida);
 	}
@@ -168,16 +170,16 @@ int IndiceInvertido::buscar_frase(std::string frase, RegistroVariable & lista)
 {
 	RegistroVariable docInterseccion, terminos_frase;
 	//Busco la interseccion de las lista de los documentos de cada termino de la frase
-	if(this->interseccion_listas_invertidas(frase, docInterseccion) != RES_OK)
+	if(this->_interseccion_listas_invertidas(frase, docInterseccion) != RES_OK)
 		return NO_EXISTE;
 	//Armo un archivo termporal para buscar las canciones que tienen la frase
-	if(this->armar_archivo_terminos_frase(frase, docInterseccion, terminos_frase) != RES_OK)
+	if(this->_armar_archivo_terminos_frase(frase, docInterseccion, terminos_frase) != RES_OK)
 		return RES_ERROR;
 	//Armo lista que contienen la frase dentro de la cancion
-	return this->buscar_cancion_con_frase(terminos_frase, lista);
+	return this->_buscar_cancion_con_frase(terminos_frase, lista);
 }
 
-int IndiceInvertido::interseccion_listas_invertidas(std::string & frase, RegistroVariable & canciones)
+int IndiceInvertido::_interseccion_listas_invertidas(std::string & frase, RegistroVariable & canciones)
 {
     /***aca buscamos la interseccion de estas listas por IDdoc y guardamos las listas en un nuevo archivo de reg variables con el nombre pasado por parametro**/
 	Texto texto;
@@ -191,22 +193,22 @@ int IndiceInvertido::interseccion_listas_invertidas(std::string & frase, Registr
 	if (texto.get_proxima_palabra(termino) == RES_FIN)
 		return NO_EXISTE;
 	//Busco las canciones que tienen este termino en la letra
-	resultado = this->obtener_canciones_termino(termino.c_str(), canciones);
+	resultado = this->_obtener_canciones_termino(termino.c_str(), canciones);
 	if(resultado != RES_OK)
 		return resultado;
 	while(texto.get_proxima_palabra(termino) != RES_FIN){
 		//Busco las canciones que tienen este termino en la letra
-		resultado = this->obtener_canciones_termino(termino.c_str(), listaCancionesAux);
+		resultado = this->_obtener_canciones_termino(termino.c_str(), listaCancionesAux);
 		if(resultado != RES_OK)
 			return resultado;
 		//Veo que canciones se encuentran en ambas listas
-		if (this->interseccion(canciones, listaCancionesAux) != RES_OK)
+		if (this->_interseccion(canciones, listaCancionesAux) != RES_OK)
 			return NO_EXISTE;
 	}
 	return RES_OK;
 }
 
-int IndiceInvertido::interseccion(RegistroVariable &canciones, RegistroVariable &listaAux)
+int IndiceInvertido::_interseccion(RegistroVariable &canciones, RegistroVariable &listaAux)
 {	//Busco la interseccion de las dos listas y la guardo en la lista canciones
 	int IDcan, IDcanAux, i=1, j=1, k=0;
 	RegistroVariable interseccion;
@@ -222,7 +224,7 @@ int IndiceInvertido::interseccion(RegistroVariable &canciones, RegistroVariable 
 				listaAux.recuperar_campo((char*)&IDcan, i);
 				j++;
 			}else{
-				interseccion.agregar_campo((char*)&IDcan, k);
+				interseccion.agregar_campo((char*)&IDcan, sizeof(IDcan));
 				k++;
 			}
 		}
@@ -231,12 +233,12 @@ int IndiceInvertido::interseccion(RegistroVariable &canciones, RegistroVariable 
 	canciones.limpiar_campos();
 	for(i=0; i<k; i++){
 		interseccion.recuperar_campo((char*)&IDcan, i);
-		canciones.agregar_campo((char*)&IDcan, i);
+		canciones.agregar_campo((char*)&IDcan, sizeof(IDcan));
 	}
 	return RES_OK;
 }
 
-int IndiceInvertido::obtener_canciones_termino(const char *termino, RegistroVariable &canciones)
+int IndiceInvertido::_obtener_canciones_termino(const char *termino, RegistroVariable &canciones)
 {//Guarda en la lista de canciones todas aquellas canciones en las que aparece el termino pasado por parametro
 	unsigned short ref_lista, i, cant_listas;
 	int IDcan;
@@ -260,13 +262,13 @@ int IndiceInvertido::obtener_canciones_termino(const char *termino, RegistroVari
 		clave_cancion = listaCan.get_clave();
 		clave_cancion.get_clave(IDcan);
 		//Guardo el IDcancion en la lista de canciones
-		canciones.agregar_campo((char*)&IDcan, i);
+		canciones.agregar_campo((char*)&IDcan, sizeof(IDcan));
 		delete[] listaEmpaquetada;
 	}
 	return RES_OK;
 }
 
-int IndiceInvertido::armar_archivo_terminos_frase(std::string & frase, RegistroVariable & canciones, RegistroVariable & terminos_frase)
+int IndiceInvertido::_armar_archivo_terminos_frase(std::string & frase, RegistroVariable & canciones, RegistroVariable & terminos_frase)
 {
 	Texto texto;
 	int i, cant_canciones, IDcan, cant_pos, t=0;
@@ -301,7 +303,7 @@ int IndiceInvertido::armar_archivo_terminos_frase(std::string & frase, RegistroV
 			//Recupero el IDcan
 			clave_cancion = listaCan.get_clave();
 			clave_cancion.get_clave(IDcan);
-			if(this->buscar_cancion_en_lista(IDcan, canciones) == RES_OK){
+			if(this->_buscar_cancion_en_lista(IDcan, canciones) == RES_OK){
 				//La cancion se encuentra entre las canciones que buscamos
 				//Buscamo la lista de posiciones
 				listaCan.recuperar_campo((char*) &ref_lista_pos, 2);
@@ -310,11 +312,12 @@ int IndiceInvertido::armar_archivo_terminos_frase(std::string & frase, RegistroV
 				for(j=0; j<cant_pos; j++){
 					//Armo el registro (IDcancion, Pos, IDtermino)
 					RegistroVariable regTem;
-					regTem.agregar_campo((char*)&IDcan,0);
-					char* pos = new char[listaPos.get_tamanio_campo(j)]();
+					regTem.agregar_campo((char*)&IDcan,sizeof(IDcan));
+					char* pos = new char[listaPos.get_tamanio_campo(j) +1]();
+					pos[listaPos.get_tamanio_campo(j)] = '\0';
 					listaPos.recuperar_campo(pos, j);
-					regTem.agregar_campo(pos, 1);
-					regTem.agregar_campo((char*)&IDter,2);
+					regTem.agregar_campo(pos, strlen(pos));
+					regTem.agregar_campo((char*)&IDter,sizeof(IDter));
 					delete[] pos;
 					//Agrego el registro al archivo
 					archivo_temp.agregar_registro(&regTem);
@@ -325,7 +328,7 @@ int IndiceInvertido::armar_archivo_terminos_frase(std::string & frase, RegistroV
 	return RES_OK;
 }
 
-int IndiceInvertido::buscar_cancion_en_lista(int IDcancion, RegistroVariable &canciones)
+int IndiceInvertido::_buscar_cancion_en_lista(int IDcancion, RegistroVariable &canciones)
 {	//Busca dentro de la la lista de canciones si se encuenta la cancion pasada por parametro
 	int i, IDaux, cant = canciones.get_cantidad_campos();
 	for(i=0; i<cant; i++){
@@ -335,7 +338,7 @@ int IndiceInvertido::buscar_cancion_en_lista(int IDcancion, RegistroVariable &ca
 	return RES_ERROR;
 }
 
-int IndiceInvertido::buscar_cancion_con_frase(RegistroVariable & terminos_frase, RegistroVariable &lista)
+int IndiceInvertido::_buscar_cancion_con_frase(RegistroVariable & terminos_frase, RegistroVariable &lista)
 {
 	ManejadorRegistrosVariables archivo_temp;
 	RegistroVariable reg;
@@ -353,9 +356,9 @@ int IndiceInvertido::buscar_cancion_con_frase(RegistroVariable & terminos_frase,
 		reg.recuperar_campo((char*)&IDcancion, 0);
 		//Obtengo su Pos
 		reg.recuperar_campo((char*)&pos, 1);
-		if(this->siguiente_termino_frase(i, 0, pos, IDcancion, terminos_frase) != NO_PERTENECE){
+		if(this->_siguiente_termino_frase(i, 0, pos, IDcancion, terminos_frase) != NO_PERTENECE){
 			//Como IDcancion contiene la frase entonces se guarda este ID en la lista
-			lista.agregar_campo((char*)&IDcancion, k);
+			lista.agregar_campo((char*)&IDcancion, sizeof(IDcancion));
 			k++;
 		}
 	}
@@ -364,7 +367,7 @@ int IndiceInvertido::buscar_cancion_con_frase(RegistroVariable & terminos_frase,
 	return RES_OK;
 }
 
-int IndiceInvertido::siguiente_termino_frase(int &pos_reg, int pos_ter_frase, int &posAnterior, int &IDcancionAnterior, RegistroVariable &terminos_frase)
+int IndiceInvertido::_siguiente_termino_frase(int &pos_reg, int pos_ter_frase, int &posAnterior, int &IDcancionAnterior, RegistroVariable &terminos_frase)
 {//Recursiva
 	ManejadorRegistrosVariables archivo_temp;
 	int IDter, IDterminoFrase, pos, IDcancion;
@@ -391,7 +394,7 @@ int IndiceInvertido::siguiente_termino_frase(int &pos_reg, int pos_ter_frase, in
 				return RES_OK;
 			}else{
 				//Todavia hay terminos por ver
-				return this->siguiente_termino_frase(pos_reg, pos_ter_frase, pos, IDcancion, terminos_frase);
+				return this->_siguiente_termino_frase(pos_reg, pos_ter_frase, pos, IDcancion, terminos_frase);
 			}
 		}else{
 			//Entonces este documento no pertenece a la solucion

@@ -106,6 +106,21 @@ int ResolvedorConsultas::get_id_cancion_titulo(std::string & titulo)
 	return idDoc;
 }
 
+std::string ResolvedorConsultas::get_letra (int id_cancion)
+{
+	std::string letra = "";
+	RegistroCancion regCancion;
+	long offset;
+	//TODO
+
+
+	archivoMaestro.get_registro_por_offset(&regCancion,offset);
+
+	letra = regCancion.get_letra();
+
+	return letra;
+}
+
 std::string ResolvedorConsultas::get_nombre_archivo (int id_cancion)
 {
 	documentos.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));

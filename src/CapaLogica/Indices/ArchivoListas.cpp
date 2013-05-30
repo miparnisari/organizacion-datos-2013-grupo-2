@@ -16,6 +16,16 @@ int ArchivoListas::crear(std::string directorioSalida, std::string fileNamee)
     return this->archivo.crear_archivo(directorioSalida+fileNamee+".dat");
 }
 
+int ArchivoListas::eliminar(std::string directorioSalida, std::string fileNamee)
+{
+    return this->archivo.eliminar_archivo(directorioSalida+fileNamee+".dat");
+}
+
+int ArchivoListas::get_cantidad_listas()
+{
+    return this->archivo.get_cantidad_registros_ocupados();
+}
+
 int ArchivoListas::abrir(std::string directorioSalidaa, std::string fileNamee)
 {
     this->fileName = directorioSalidaa+fileNamee+".dat";
@@ -23,9 +33,9 @@ int ArchivoListas::abrir(std::string directorioSalidaa, std::string fileNamee)
     return this->archivo.abrir_archivo(this->fileName);
 }
 
-unsigned short ArchivoListas::agregar(RegistroVariable *listaDeCanciones)
+short ArchivoListas::agregar(RegistroVariable *listaDeCanciones)
 {
-	unsigned short pos = this->archivo.get_cantidad_registros_ocupados();
+	short pos = this->archivo.get_cantidad_registros_ocupados();
 	if (this->archivo.agregar_registro(listaDeCanciones) >0)
 		return pos;
 	return RES_ERROR;
@@ -102,14 +112,4 @@ int ArchivoListas::recontruir_listas(unsigned short ref_lista, RegistroVariable 
 	//Cambiamos el nombre del archivo por el original
 	rename(file1.c_str(),file2.c_str());
 	return RES_OK;
-}
-
-int ArchivoListas::eliminar(std::string directorioSalida, std::string fileNamee)
-{
-    return this->archivo.eliminar_archivo(directorioSalida+fileNamee+".dat");
-}
-
-unsigned short ArchivoListas::get_cantidad_listas()
-{
-    return this->archivo.get_cantidad_registros_ocupados();
 }

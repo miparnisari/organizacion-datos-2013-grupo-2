@@ -50,31 +50,31 @@ class IndiceInvertido
 
     private:
 
-        virtual int armar_archivo_coincidencias(std::string & letra);
+        virtual int _armar_archivo_coincidencias(std::string & letra);
         //Guarda en un archivo de coincidencias el (IDter, pos) de cada termino en la letra
 
-        virtual int armar_listas_invertidas(int IDcancion);
+        virtual int _armar_listas_invertidas(int IDcancion);
         //Guarda en la lista invertida de cada termino una lista con las posiciones de esta cancion
 
-        virtual int interseccion_listas_invertidas(std::string & frase, RegistroVariable & canciones);
+        virtual int _interseccion_listas_invertidas(std::string & frase, RegistroVariable & canciones);
         //Guarda en canciones aquellas letras que contienen todos los terminos de la frase
 
-        virtual int interseccion(RegistroVariable &canciones, RegistroVariable &listaAux);
+        virtual int _interseccion(RegistroVariable &canciones, RegistroVariable &listaAux);
         //Busco la interseccion de las dos listas y la guardo en la lista canciones
 
-        virtual int obtener_canciones_termino(const char *termino, RegistroVariable &canciones);
+        virtual int _obtener_canciones_termino(const char *termino, RegistroVariable &canciones);
         //Guarda en la lista de canciones todas aquellas canciones en las que aparece el termino pasado por parametro
 
-        virtual int armar_archivo_terminos_frase(std::string & frase, RegistroVariable & canciones, RegistroVariable & terminos_frase);
+        virtual int _armar_archivo_terminos_frase(std::string & frase, RegistroVariable & canciones, RegistroVariable & terminos_frase);
         //Arma un archivo termporal con registros (IDcancion, pos, IDtermino) que va a servir para buscar las canciones que tienen la frase incluida
 
-        virtual int buscar_cancion_en_lista(int IDcancion, RegistroVariable &canciones);
+        virtual int _buscar_cancion_en_lista(int IDcancion, RegistroVariable &canciones);
         //Busca dentro de la la lista de canciones si se encuenta la cancion pasada por parametro
 
-        virtual int buscar_cancion_con_frase(RegistroVariable & terminos_frase, RegistroVariable &lista);
+        virtual int _buscar_cancion_con_frase(RegistroVariable & terminos_frase, RegistroVariable &lista);
         //Busca dentro del archivo temporal que documentos tienen los terminos en el orden de la frase
 
-        virtual int siguiente_termino_frase(int &pos_reg, int pos_ter_frase, int &posAnterior, int &IDcancionAnterior, RegistroVariable &terminos_frase);
+        virtual int _siguiente_termino_frase(int &pos_reg, int pos_ter_frase, int &posAnterior, int &IDcancionAnterior, RegistroVariable &terminos_frase);
         //Es recursiva, sirve para buscar si dentro de una cancion se encuentra los terminos en el orden de la frase, en caso que no lo este devuelve NO_PERTENECE
 
 };

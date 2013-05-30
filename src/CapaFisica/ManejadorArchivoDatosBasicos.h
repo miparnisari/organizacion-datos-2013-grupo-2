@@ -26,7 +26,7 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 		{
 		}
 
-		int truncar(long cantidadDatosDeseados)
+		int truncar(long long cantidadDatosDeseados)
 		{
 			if (file_handler == NULL)
 				return RES_ERROR;
@@ -38,7 +38,6 @@ class ManejadorArchivoDatosBasicos: public ManejadorArchivos {
 				return RES_OK;
 			}
 
-			std::cout << strerror(errno) << std::endl;
 			return RES_ERROR;
 		}/* PRECONDICION: abrir el archivo en modo "rb+". */
 

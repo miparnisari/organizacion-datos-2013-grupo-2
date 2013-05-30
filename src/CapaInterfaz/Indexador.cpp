@@ -205,8 +205,6 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 void Indexador::_agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & regCancion, std::string nombreArchivo)
 {
 	/* ------ guardamos el registro de la cancion en un archivo maestro ------ */
-
-
 	regCancion.comprimir(compresor);
 	long offsetInicialRegCancion = archivoMaestro.agregar_registro(&regCancion);
 
@@ -228,7 +226,6 @@ void Indexador::_agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & re
 	regClave.set_clave(clave);
 	regClave.agregar_campo((char*)&offsetInicialRegCancion,sizeof(offsetInicialRegCancion));
 	indicePrimario.agregar(regClave);
-
 
 	/* para cada autor de la cancion:
 	 * ----- agregamos al indice por autor: autor + ID cancion ----
@@ -268,7 +265,6 @@ void Indexador::_agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & re
 
 	/* ----- agregamos al indice por frase: frases ----*/
 	indiceSecundarioFrases.agregar_cancion(regCancion,id.get_dato());
-
 
 	std::cout << "Se indexó " << nombreArchivo << " correctamente!" << std::endl;
 }
