@@ -42,24 +42,21 @@ int IndiceInvertido::cerrar_indice()
 	return res;
 }
 
-int IndiceInvertido::agregar_cancion(RegistroCancion & cancion, int IDcancion)
+int IndiceInvertido::agregar_texto(std::string texto, int IDtexto)
 {
-    //Guardamos los terminos y armos las listas invertidas
-	//Creo el archivo de coincidencias
-	std::string letra = cancion.get_letra();
     if(this->archivo_coincidencias.crear_archivo(this->fileName+"Coincidencias.dat") == RES_ERROR)
     	return RES_ERROR;
     if(this->archivo_coincidencias.abrir_archivo(this->fileName+"Coincidencias.dat") == RES_ERROR)
     	return RES_ERROR;
 	//Verifica si se encuentra en el vocabulario y se crea el archivo de coincidencias
-    this->_armar_archivo_coincidencias(letra);
-    this->_armar_listas_invertidas(IDcancion);
+    this->_armar_archivo_coincidencias(texto);
+    this->_armar_listas_invertidas(IDtexto);
     //Borror el archivo de coincidencias
     this->archivo_coincidencias.eliminar_archivo(this->fileName+"Coincidencias.dat");
     return RES_OK;
 }
 
-int IndiceInvertido::_armar_archivo_coincidencias(std::string & letra)
+int IndiceInvertido::_armar_archivo_coincidencias(std::string & unTexto)
 {
 	Texto texto;
 	int pos=0, IDter, ref_lista;
@@ -67,7 +64,8 @@ int IndiceInvertido::_armar_archivo_coincidencias(std::string & letra)
 	RegistroVariable regTermino, regCoincidencia;
 	ClaveX clave;
 	std::string termino;
-	texto.parsear(letra);
+	texto.parsear(unTexto);
+
 	while(texto.get_proxima_palabra(termino) != RES_FIN){
 		regTerminoVoc.limpiar_campos();
 		clave.set_clave(termino);
@@ -83,24 +81,24 @@ int IndiceInvertido::_armar_archivo_coincidencias(std::string & letra)
 				return RES_ERROR;
 
 			//Le agrego al reg del vocabulario una referencia a una lista nueva
-			ref_lista = this->listas_invertidas.agregar(&listaInvertida);
+			ref_lista = this->listas_invertidas.agregar(&listaInvertida); // FIXME listaInvertida esta VACIO!
+			regTerminoVoc.agregar_campo((char *)&IDter, sizeof(ref_lista));
 			regTerminoVoc.agregar_campo((char *)&ref_lista, sizeof(ref_lista));
-			//Agrego el registro al vocabulario
+
 			if(this->vocabulario.agregar(regTerminoVoc) != RES_OK)
 				return RES_ERROR;
 		}else{
-			//Como ya existe el termino entonces solo busco el IDtermino
-			ClaveX claveIDtermino = regTerminoVoc.get_clave();
-			claveIDtermino.get_clave(IDter);
+			regTerminoVoc.recuperar_campo((char*)&IDter,1);
 		}
-		//Agrego el registro de coincidencia que corresponde
+
 		regCoincidencia.limpiar_campos();
 		regCoincidencia.agregar_campo((char *)&IDter,sizeof(IDter));
 		regCoincidencia.agregar_campo((char *)&pos,sizeof(pos));
 		this->archivo_coincidencias.agregar_registro(&regCoincidencia);
 		pos++;
 	}
-	/**Ordeno el archivo por IDter+pos************************************************************/
+	//TODO: Ordeno el archivo ¿DE COINCIDENCIAS? por IDter+pos
+
 	return RES_OK;
 }
 
@@ -110,10 +108,10 @@ int IndiceInvertido::_armar_listas_invertidas(int IDcancion)
 	RegistroClave regTerminoVoc, regCancionTermino;
 	ClaveX clave, claveTermino;
 	unsigned short i=0;
-	long IDter, IDterAnterior, ref_lista, ref_lista_pos;
+	int IDter, IDterAnterior, ref_lista, ref_lista_pos;
 
 	unsigned int q = this->archivo_coincidencias.get_cantidad_registros_ocupados();
-	while (i < q){
+	while (i <q){
 		RegistroVariable listaPos;
 		//Saco el registro de coincidencia
 		this->archivo_coincidencias.get_registro_ocupado(&regCoincidencia, i);
@@ -124,9 +122,12 @@ int IndiceInvertido::_armar_listas_invertidas(int IDcancion)
 		this->archivo_terminos.get_registro_por_offset(&regTermino, IDter);
 		char* termino = new char[regTermino.get_tamanio_campo(0)]();
 		regTermino.recuperar_campo(termino, 0);
-		//Busco la referencia de las lista lista invertida de este termino
+
 		claveTermino.set_clave(std::string(termino));
 		delete[] termino;
+
+		regTerminoVoc.limpiar_campos();
+		//Busco la referencia de la lista invertida de este termino
 		regTerminoVoc.set_clave(claveTermino);
 		if(this->vocabulario.buscar(regTerminoVoc) == RES_ERROR)
 			return RES_ERROR;

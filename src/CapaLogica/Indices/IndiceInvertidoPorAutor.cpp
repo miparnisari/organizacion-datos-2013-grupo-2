@@ -89,8 +89,9 @@ long IndiceInvertidoPorAutor::buscar_autor(std::string autor, RegistroVariable &
     reg_autor.set_clave(clave);
     //Busco las canciones del autor
     existe = this->indice.buscar(reg_autor);
-    if(existe != RES_OK)    return NO_EXISTE;
+    if(existe != RES_OK)
+    	return NO_EXISTE;
     //Recupero la referencia a la lista
-    reg_autor.recuperar_campo((char*)&(lista), 0);
+    reg_autor.recuperar_campo((char*)&lista, 0);
     return this->listas.devolver(&listaDeCanciones, lista);
 }
