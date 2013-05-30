@@ -85,12 +85,12 @@
 				if(filename.find_last_of(".") != std::string::npos)
 				{
 					if( filename.substr(filename.find_last_of(".") ) == extension ){
-						files.push_back(filename);
+						files.push_back(dir+'/'+filename);
 					}
 				}
 			}
 			else {
-				files.push_back(filename);
+				files.push_back(dir+'/'+filename);
 			}
 		}
 		closedir(dp);

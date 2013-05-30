@@ -28,6 +28,7 @@ public:
 	std::vector<int> get_id_canciones_autor(std::string & autor);
 	std::string get_nombre_archivo (int id_cancion);
 	std::vector<int> get_ids_canciones_frases(std::string & frase);
+	std::string get_letra (int id_cancion);
 	int get_id_cancion_titulo(std::string & titulo);
 
 private:

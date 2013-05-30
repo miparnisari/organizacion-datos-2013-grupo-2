@@ -43,7 +43,6 @@ int ManejadorBloques::abrir_archivo(std::string p_nombreArchivo, std::string mod
 		return RES_ERROR;
 
 	return __get_header();
-
 }
 
 int ManejadorBloques::cerrar_archivo()
@@ -173,7 +172,7 @@ bool ManejadorBloques::__num_bloque_es_valido(unsigned int numBloque)
 	return true;
 }
 
-bool ManejadorBloques::__es_tope_de_pila(unsigned int numBloque)
+bool ManejadorBloques::__es_tope_de_pila(int numBloque)
 {
 	return (header.proximoBloqueLibre == numBloque);
 }

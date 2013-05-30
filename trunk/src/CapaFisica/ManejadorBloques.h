@@ -23,7 +23,7 @@ class ManejadorBloques:public ManejadorArchivos {
 		int __set_header();
 		int __get_header();
 		bool __num_bloque_es_valido	(unsigned int numBloque);
-		bool __es_tope_de_pila		(unsigned numBloque);
+		bool __es_tope_de_pila		(int numBloque);
 		int __usar_bloque			(Bloque* bloque, unsigned int numBloque);
 		int __agregar_bloque_al_final();
 		int __escribir_bloque		(const Bloque* bloque, unsigned int offset);
