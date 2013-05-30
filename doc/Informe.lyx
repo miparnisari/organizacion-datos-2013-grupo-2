@@ -1569,17 +1569,8 @@ donde la función y sus parámetros pueden ser:
 
 \begin_deeper
 \begin_layout Itemize
-Este comando toma los archivos que hay en <carpeta de entrada>
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-Los directorios de trabajo se deben especificar de forma completa.
-\end_layout
-
-\end_inset
-
-, y los indexa, generando los archivos necesarios en la <carpeta de salida>.
+Este comando toma los archivos que hay en <carpeta de entrada>, y los indexa,
+ generando los archivos necesarios en la <carpeta de salida>.
  
 \end_layout
 

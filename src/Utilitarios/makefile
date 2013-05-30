@@ -8,6 +8,7 @@ AOBJS = $(OBJS:.o=.a)
 	ar cr $@ $^
  
 %.o: %.cpp
+	$(ECHO) $(CC) -c $(CFLAGS) $<
 	$(CC) -c $(CFLAGS) $<
 
 main: $(OBJS)

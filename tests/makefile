@@ -14,6 +14,7 @@ EXE	= tests
 all : $(EXE)
 
 %.o: %.cpp %.h
+	$(ECHO) $(CC) -c $(CFLAGS) $<
 	$(CC) -c $(CFLAGS) $<
 
 %.a :
