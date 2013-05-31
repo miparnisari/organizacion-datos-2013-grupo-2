@@ -19,6 +19,7 @@ class TestHeap : public Test{
 
 	private:
 		void test_ordenar_registros();
+		void test_comparar_reg_variables_string();
 
 
 };
