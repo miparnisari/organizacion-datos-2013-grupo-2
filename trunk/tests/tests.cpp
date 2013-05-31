@@ -313,21 +313,21 @@ int main(int argc,char** args)
 	tests.push_back(new TestBloque);
 	tests.push_back(new TestManejadorBloques);
 
-	tests.push_back(new TestHashingExtensible);
-	tests.push_back(new TestTabla);
+//	tests.push_back(new TestHashingExtensible);
+//	tests.push_back(new TestTabla);
 
 	tests.push_back(new TestNodoInterno);
 	tests.push_back(new TestNodoSecuencial);
 
-//	tests.push_back(new TestHeap);
+	tests.push_back(new TestHeap);
+//	tests.push_back(new TestOrdenamientoExterno);
+
 	tests.push_back(new TestArbol);
 
 //	tests.push_back(new TestArchivoListas);
 //	tests.push_back(new TestIndiceInvertidoPorFrase);
 //	tests.push_back(new TestIndicePorAutor);
 //	tests.push_back(new TestIndicePorTitulo);
-
-//	tests.push_back(new TestOrdenamientoExterno);
 
 	for (unsigned int i = 0; i < tests.size(); i++)
 	{

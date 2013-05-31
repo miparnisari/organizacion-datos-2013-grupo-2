@@ -38,6 +38,15 @@ void SortExterno:: _generar_runs()
 	while ((tamanioTotal < TAM_MAX_BUFFER_ORDENAMIENTO)&&(archivoAOrdenar.get_cantidad_registros_ocupados()>cantRegLeidos))
 	{
 		archivoAOrdenar.get_registro_ocupado(&regVariableLeido, cantRegLeidos);
+
+//		char* campo=new char[regVariableLeido.get_tamanio_campo(0)+1]; //todo borrar
+//		regVariableLeido.recuperar_campo(campo,0);
+//		campo[regVariableLeido.get_tamanio_campo(0)]='\0';
+//		string campoImprimir1 = campo;
+//		delete campo;
+//
+//		cout<<campoImprimir1<<endl;
+
 		cantRegLeidos++;
 		tamanioTotal += sizeof(regVariableLeido);
 
@@ -74,6 +83,17 @@ void SortExterno:: _generar_runs()
 	{
 		heap.ordenar(bufferOrdenamiento,tamanioHeapActual);
 
+//		for (int i=0;i<tamanioHeapActual;i++)
+//		{
+//			char* campo=new char[bufferOrdenamiento[i].get_tamanio_campo(0)+1]; //todo borrar
+//			bufferOrdenamiento[i].recuperar_campo(campo,0);
+//			campo[bufferOrdenamiento[i].get_tamanio_campo(0)]='\0';
+//			string campoImprimir1 = campo;
+//			delete campo;
+//
+//			cout<<campoImprimir1<<endl;
+//		}
+
 		//obtengo el numero de run
 		std::string numeroRun;
 		std::stringstream out;
@@ -96,7 +116,6 @@ void SortExterno:: _generar_runs()
 			{
 				archivoAOrdenar.get_registro_ocupado(&regVariableLeido,cantRegLeidos);
 				cantRegLeidos++;
-
 
 				if ((heap.comparar_registros_variables(regVariableLeido,bufferOrdenamiento[0])==1)||(heap.comparar_registros_variables(regVariableLeido,bufferOrdenamiento[0])==0))//es decir mayor que la raiz
 				{
@@ -127,7 +146,7 @@ void SortExterno:: _generar_runs()
 		}
 
 		string claveMax;
-		claveMax += ""+CLAVE_TOPE;
+		claveMax = ""+CLAVE_TOPE;
 
 		RegistroVariable regClaveMax;
 
@@ -144,7 +163,7 @@ void SortExterno:: _generar_runs()
 void SortExterno::_merge()
 {
 	string claveMax;
-	claveMax += ""+CLAVE_TOPE;
+	claveMax = ""+CLAVE_TOPE;
 
 	RegistroVariable regClaveMax;
 	regClaveMax.agregar_campo(claveMax.c_str(), claveMax.length());
@@ -244,7 +263,6 @@ void SortExterno::_merge()
 
 	PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
 	SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
-
 
 	while ( heap.comparar_registros_variables(regPrimero,regClaveMax)==-1 || heap.comparar_registros_variables(regSegundo,regClaveMax)==-1 )
 	{

@@ -2,6 +2,8 @@
 #define HEAP_H
 
 #include <iostream>
+#include <string.h>
+
 #include "../CapaLogica/ManejoArchivos/RegistroClave.h"
 #include "../CapaFisica/RegistroVariable.h"
 
