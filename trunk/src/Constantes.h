@@ -96,8 +96,8 @@ const char	CLAVE_TOPE								= char(255);
  *Manejo del IndiceInvertido
  */
 const unsigned int LONGITUD_MAXIMA_NUMERO_INDEXABLE = 4;
-const int NO_EXISTE_INDICE                         =-1;
+const int NO_EXISTE_INDICE                         	=-1;
 const int NO_PERTENECE								= -2;
-const int NO_EXISTE                                = 3;
-
+const int NO_EXISTE                               	 = 3;
+const int LISTA_VACIA								=-100;
 #endif /* CONSTANTES_H */
