@@ -93,7 +93,7 @@ int IndiceInvertido::_armar_archivo_coincidencias(std::string unTexto)
 
 			//Le agrego al reg del vocabulario una referencia a una lista nueva
 			ref_lista = this->listas_invertidas.agregar(&listaInvertida); // FIXME listaInvertida esta VACIO!
-			regTerminoVoc.agregar_campo((char *)&IDter, sizeof(ref_lista));
+			regTerminoVoc.agregar_campo((char *)&IDter, sizeof(IDter));
 			regTerminoVoc.agregar_campo((char *)&ref_lista, sizeof(ref_lista));
 
 			if(this->vocabulario.agregar(regTerminoVoc) != RES_OK)
@@ -170,10 +170,9 @@ int IndiceInvertido::_armar_listas_invertidas(int IDcancion)
 		//Le agrego la referencia a la lista de canciones por termino
 		regCancionTermino.agregar_campo((char *)&ref_lista_pos, sizeof(ref_lista_pos));
 		//Guardo esta lista en la lista invertida de canciones
-		char* reg_cancion_termino = new char[regCancionTermino.get_tamanio_empaquetado() + 1]();
-		reg_cancion_termino[regCancionTermino.get_tamanio_empaquetado()] = '\0';
+		char* reg_cancion_termino = new char[regCancionTermino.get_tamanio_empaquetado()]();
 		regCancionTermino.empaquetar(reg_cancion_termino);
-		listaInvertida.agregar_campo(reg_cancion_termino, strlen(reg_cancion_termino));
+		listaInvertida.agregar_campo(reg_cancion_termino, regCancionTermino.get_tamanio_empaquetado());
 		delete[] reg_cancion_termino;
 		this->listas_invertidas.recontruir_listas(ref_lista, listaInvertida);
 	}
@@ -329,10 +328,9 @@ int IndiceInvertido::_armar_archivo_terminos_frase(std::string & frase, Registro
 					//Armo el registro (IDcancion, Pos, IDtermino)
 					RegistroVariable regTem;
 					regTem.agregar_campo((char*)&IDcan,sizeof(IDcan));
-					char* pos = new char[listaPos.get_tamanio_campo(j) +1]();
-					pos[listaPos.get_tamanio_campo(j)] = '\0';
+					char* pos = new char[listaPos.get_tamanio_campo(j)]();
 					listaPos.recuperar_campo(pos, j);
-					regTem.agregar_campo(pos, strlen(pos));
+					regTem.agregar_campo(pos, listaPos.get_tamanio_campo(j));
 					regTem.agregar_campo((char*)&IDter,sizeof(IDter));
 					delete[] pos;
 					//Agrego el registro al archivo
