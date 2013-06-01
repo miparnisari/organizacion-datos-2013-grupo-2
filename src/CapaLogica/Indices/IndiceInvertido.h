@@ -50,7 +50,7 @@ class IndiceInvertido
 
     private:
 
-        virtual int _armar_archivo_coincidencias(std::string & letra);
+        virtual int _armar_archivo_coincidencias(std::string letra);
         //Guarda en un archivo de coincidencias el (IDter, pos) de cada termino en la letra
 
         virtual int _armar_listas_invertidas(int IDcancion);

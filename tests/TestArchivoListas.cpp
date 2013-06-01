@@ -167,6 +167,8 @@ void TestArchivoListas::test_archivo_listas_reconstruir_listas()
 
 	this->eliminar_archivos();
 	archivo.eliminar("", DIRECCION);
+	manejador.eliminar_archivo("ListaAuxiliar.dat");
+
 	print_test_ok("test_archivo_listas_reconstruir_listas");
 }
 

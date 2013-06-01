@@ -351,7 +351,6 @@ void ManejadorRegistrosVariables::_desvincular(){
 
 }
 
-
 void ManejadorRegistrosVariables::_cerrar_archivo(fstream* archivo){
 
 	archivo->seekg(0,ios::end);
@@ -404,7 +403,6 @@ int ManejadorRegistrosVariables::abrir_archivo(string nombreArchivo){
 	return RES_OK;
 
 }
-
 
 int ManejadorRegistrosVariables::crear_archivo(string nombreArchivo){
 
