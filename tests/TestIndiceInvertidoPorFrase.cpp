@@ -47,7 +47,7 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
     RegistroClave listaCan;
     RegistroClave reg_termino;
     ClaveX clave, clave_aux;
-    char* campo = new char[100];
+    char* campo = new char[100]();
     int ref_lista, pos;
 
 
@@ -71,24 +71,27 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
     //Veo que guarde los dos terminos de la letra
     assert(terminos.get_cantidad_registros_ocupados() == 2);
     //Veo que guarde como primer termino casa
-    assert(terminos.get_registro_ocupado(&termino, 0) == RES_OK);
+    assert(terminos.get_registro_ocupado(&termino, 0) >= 0);
+
     termino.recuperar_campo(campo, 0);
-    assert(strcmp(campo, "casa"));
+    assert(strcmp(campo, "casa") == 0);
     //Veo que guarde como segundo termino lago
-    assert(terminos.get_registro_ocupado(&termino, 0) == RES_OK);
+    assert(terminos.get_registro_ocupado(&termino, 1) >= 0);
+    memset(campo,0,100);
     termino.recuperar_campo(campo, 0);
-    assert(strcmp(campo, "lago"));
+    assert(strcmp(campo, "lago\n") == 0);
 
     //Veo listas invertidas
 
     //Veo si se guardo 2 lista invertida ya que solo tenemos 2 terminos que se guardan en el indice
     assert(listasInvertidas.get_cantidad_listas() == 2);
     //Veo que cada lista guarde solo una lista que tiene como clave el IDcancion 23
-    assert(listasInvertidas.devolver(&lista,0) == RES_OK);
+    assert(listasInvertidas.devolver(&lista,0) >= 0);
     assert(lista.get_cantidad_campos() == 1);
     //Obtengo la primera cancion
     lista.recuperar_campo(campo, 0);
     listaCan.desempaquetar(campo);
+    clave = listaCan.get_clave();
     listaCan.set_clave(clave);
     //Veo que guarde el IDcan 23
     clave_aux.set_clave(23);
@@ -98,7 +101,7 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
     assert(ref_lista == 0);
     //Hago lo mismo para la otra lista
     //Veo que cada lista guarde solo una lista que tiene como clave el IDcancion 23
-     assert(listasInvertidas.devolver(&lista,1) == RES_OK);
+     assert(listasInvertidas.devolver(&lista,1) >= 0);
      assert(lista.get_cantidad_campos() == 1);
      //Obtengo la primera cancion
      lista.recuperar_campo(campo, 0);
@@ -116,13 +119,13 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
     //Veo si se guardo bien las lista de posiciones
      assert(listasPos.get_cantidad_listas() == 2);
     //La primera lista seria del primer termino entonces debe guardar la pos 0
-    assert(listasPos.devolver(&lista,0) == RES_OK);
+    assert(listasPos.devolver(&lista,0) >= 0);
     assert(lista.get_cantidad_campos() == 1);
     //Recupero el ID que guarda la lista y este deberia ser 23
     lista.recuperar_campo((char*)&pos,0);
     assert(pos == 0);
     //La segunda lista seria del segundo termino entonces debe guardar la pos 1
-    assert(listasPos.devolver(&lista,1) == RES_OK);
+    assert(listasPos.devolver(&lista,1) >= 0);
     assert(lista.get_cantidad_campos() == 1);
     //Recupero el ID que guarda la lista y este deberia ser 23
     lista.recuperar_campo((char*)&pos,0);
@@ -507,8 +510,6 @@ void TestIndiceInvertidoPorFrase::eliminar_archivos()
 void TestIndiceInvertidoPorFrase::crear_reg_cancion(std::string letra, RegistroCancion &reg)
 {
     //Crea un reg cancion con el autor que nos pasan por parametro
-	std::string cancion = "Bersuit-2013-Un pacto para vivir-spanish\n"+letra+"\n";
+	std::string cancion = "Bersuit-2013-Un pacto para vivir-spanish\n"+letra+'\n';
     assert(reg.cargar(cancion.c_str(), cancion.length()) == RES_OK);
 }
-
-
