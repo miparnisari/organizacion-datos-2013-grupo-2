@@ -53,7 +53,7 @@ int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion cancion, int IDcanc
             //Como existe entonces buscamos la referencia a la lista de ese autor
             int lista;
             //busco la referencias a la lista del autor
-            regAutor.recuperar_campo((char*)&lista, 0);  /***ver si los campos se guardan desde el 0 o el 1**/
+            regAutor.recuperar_campo((char*)&lista, 1);  /***ver si los campos se guardan desde el 0 o el 1**/
             //Agregamos la referencia a la lista para modificar
             *(lista_autores+i)=lista;
         }else{
