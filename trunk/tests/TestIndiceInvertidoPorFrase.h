@@ -31,9 +31,6 @@ class TestIndiceInvertidoPorFrase : public Test
 
     private:
 
-        void test_indice_por_frase_crear_indice();
-        //Crea el indice y verificamos que se creen todos los archivos como corresponde
-
         void test_indice_por_frase_agregar_cancion();
         //Agregamos una cancion y verificamos que se guarde correctamente en todos los archivos
 

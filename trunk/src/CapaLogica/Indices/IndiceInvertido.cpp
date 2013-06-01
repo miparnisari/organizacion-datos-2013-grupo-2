@@ -47,16 +47,27 @@ int IndiceInvertido::agregar_texto(std::string texto, int IDtexto)
     if(this->archivo_coincidencias.crear_archivo(this->fileName+"Coincidencias.dat") == RES_ERROR)
     	return RES_ERROR;
     if(this->archivo_coincidencias.abrir_archivo(this->fileName+"Coincidencias.dat") == RES_ERROR)
+    {
+    	this->archivo_coincidencias.eliminar_archivo(this->fileName+"Coincidencias.dat");
     	return RES_ERROR;
+    }
 	//Verifica si se encuentra en el vocabulario y se crea el archivo de coincidencias
-    this->_armar_archivo_coincidencias(texto);
-    this->_armar_listas_invertidas(IDtexto);
+    if (this->_armar_archivo_coincidencias(texto) == RES_ERROR)
+    {
+    	this->archivo_coincidencias.eliminar_archivo(this->fileName+"Coincidencias.dat");
+    	return RES_ERROR;
+    }
+    if (this->_armar_listas_invertidas(IDtexto) == RES_ERROR)
+    {
+    	this->archivo_coincidencias.eliminar_archivo(this->fileName+"Coincidencias.dat");
+    	return RES_ERROR;
+    }
     //Borror el archivo de coincidencias
     this->archivo_coincidencias.eliminar_archivo(this->fileName+"Coincidencias.dat");
     return RES_OK;
 }
 
-int IndiceInvertido::_armar_archivo_coincidencias(std::string & unTexto)
+int IndiceInvertido::_armar_archivo_coincidencias(std::string unTexto)
 {
 	Texto texto;
 	int pos=0, IDter, ref_lista;

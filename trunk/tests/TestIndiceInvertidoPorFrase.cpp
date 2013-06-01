@@ -26,7 +26,6 @@ TestIndiceInvertidoPorFrase::~TestIndiceInvertidoPorFrase()
 
 void TestIndiceInvertidoPorFrase::ejecutar()
 {
-    test_indice_por_frase_crear_indice();
     test_indice_por_frase_agregar_cancion();
     test_indice_por_frase_devolver_canciones_con_1termino_1cancion();
     test_indice_por_frase_devolver_canciones_con_1termino_varias_canciones();
@@ -35,26 +34,6 @@ void TestIndiceInvertidoPorFrase::ejecutar()
     test_indice_por_frase_devolver_canciones_con_una_cancion_terminos_repetidos();
     test_indice_por_frase_devolver_canciones_con_varias_canciones_terminos_repetidos();
     test_indice_por_frase_borrar_indice();
-}
-
-void TestIndiceInvertidoPorFrase::test_indice_por_frase_crear_indice()
-{
-	IndiceInvertido indice;
-	ManejadorRegistrosVariables terminos;
-    ArchivoListas listasInvertidas, listasPos;
-    ArbolBMas vocabulario;
-    assert(indice.crear_indice("", NOMBRE_INDICE) == RES_OK);
-    //Vemos si se creo el archivo de listas invertidas
-    assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);
-    //Vemos si se creo el archivo de listas invertidas
-    assert(listasPos.abrir("",ARCHIVO_LISTAS_POS) == RES_OK);
-    //Vemos si se creo el arbol
-    assert(vocabulario.abrir(ARCHIVO_ARBOL, "rb+") == RES_OK);
-    //Vemos si se creo el archivo de terminos
-    assert(terminos.abrir_archivo(ARCHIVO_TERMINOS) == RES_OK);
-
-    this->eliminar_archivos();
-    print_test_ok("test_indice_por_frase_crear_indice");
 }
 
 void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
@@ -528,7 +507,7 @@ void TestIndiceInvertidoPorFrase::eliminar_archivos()
 void TestIndiceInvertidoPorFrase::crear_reg_cancion(std::string letra, RegistroCancion &reg)
 {
     //Crea un reg cancion con el autor que nos pasan por parametro
-	std::string cancion = "Bersuit-2013-Un pacto para vivir-Castellano-"+letra;
+	std::string cancion = "Bersuit-2013-Un pacto para vivir-sp \n"+letra;
     reg.cargar(cancion.c_str(), cancion.length());
 }
 
