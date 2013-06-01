@@ -52,7 +52,7 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
 
 
     indice.crear_indice("", NOMBRE_INDICE);
-//    indice.abrir_indice("", NOMBRE_INDICE);
+    indice.abrir_indice("", NOMBRE_INDICE);
     this->crear_reg_cancion("casa lago", cancion);
     assert (indice.agregar_texto(cancion.get_letra(), 23) == RES_OK);
     indice.cerrar_indice();
@@ -507,8 +507,8 @@ void TestIndiceInvertidoPorFrase::eliminar_archivos()
 void TestIndiceInvertidoPorFrase::crear_reg_cancion(std::string letra, RegistroCancion &reg)
 {
     //Crea un reg cancion con el autor que nos pasan por parametro
-	std::string cancion = "Bersuit-2013-Un pacto para vivir-sp \n"+letra;
-    reg.cargar(cancion.c_str(), cancion.length());
+	std::string cancion = "Bersuit-2013-Un pacto para vivir-spanish\n"+letra+"\n";
+    assert(reg.cargar(cancion.c_str(), cancion.length()) == RES_OK);
 }
 
 

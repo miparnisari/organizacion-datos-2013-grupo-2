@@ -1,8 +1,5 @@
 #include "RegistroCancion.h"
 
-#define IMP(v)\
-	cout<<#v<<" ="<<v<<endl;
-
 RegistroCancion::RegistroCancion():RegistroVariable()
 {
 	autores = NULL;
@@ -312,49 +309,48 @@ bool RegistroCancion::obtener_idioma()throw(){
 
 	string idiomaString;
 
-
-//	obtener_parametro(numeroParametroIdioma , idiomaString);
-	{
-		unsigned short numeroParametro= numeroParametroIdioma;
-		string parametro;
-		parametro= "";
-		if(numeroParametro>= cantidadParametros)
-			return false;
-
-
-		string parametros(buffer,tamanio);//fixme linea agregada
-
-
-		unsigned short offset= 0;
-		unsigned short contadorParametro= 0;
-		const char SEPARACION_PARAMETROS= '-';
-
-		while(contadorParametro< numeroParametro){
-			char c;
-			c= parametros.at(offset);
-
-			if(c== SEPARACION_PARAMETROS)
-				contadorParametro++;
-
-			offset++;
-
-		}
-
-		char c='x';
-		string parametroLeido;
-		while(offset < parametros.length() && c!= SEPARACION_PARAMETROS && c!='\n'
-				&& c!='\0'){
-
-			c= parametros.at(offset);
-			if(c!=SEPARACION_PARAMETROS && c!='\n' && c!='\0')
-				parametroLeido.push_back(c);
-			offset++;
-
-		}
-
-		parametro= parametroLeido;
-		idiomaString= parametro;
-	}
+	obtener_parametro(numeroParametroIdioma , idiomaString);
+//	{
+//		unsigned short numeroParametro= numeroParametroIdioma;
+//		string parametro;
+//		parametro= "";
+//		if(numeroParametro>= cantidadParametros)
+//			return false;
+//
+//
+//		string parametros(buffer,tamanio);//fixme linea agregada
+//
+//
+//		unsigned short offset= 0;
+//		unsigned short contadorParametro= 0;
+//		const char SEPARACION_PARAMETROS= '-';
+//
+//		while(contadorParametro< numeroParametro){
+//			char c;
+//			c= parametros.at(offset);
+//
+//			if(c== SEPARACION_PARAMETROS)
+//				contadorParametro++;
+//
+//			offset++;
+//
+//		}
+//
+//		char c='x';
+//		string parametroLeido;
+//		while(offset < parametros.length() && c!= SEPARACION_PARAMETROS && c!='\n'
+//				&& c!='\0'){
+//
+//			c= parametros.at(offset);
+//			if(c!=SEPARACION_PARAMETROS && c!='\n' && c!='\0')
+//				parametroLeido.push_back(c);
+//			offset++;
+//
+//		}
+//
+//		parametro= parametroLeido;
+//		idiomaString= parametro;
+//	}
 
 	return idioma.cargar(idiomaString);
 
