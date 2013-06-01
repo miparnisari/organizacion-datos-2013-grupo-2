@@ -84,6 +84,7 @@ int IndiceInvertido::_armar_archivo_coincidencias(std::string unTexto)
 		if(this->vocabulario.buscar(regTerminoVoc) == RES_RECORD_DOESNT_EXIST){
 			//Como no existe en el vocabulario entonces creamos un nuevo registro y lo guardamos en el vocabulario
 			RegistroVariable listaInvertida;
+			int vacio = LISTA_VACIA;
 			//Agrego el termino al archivo de terminos
 			regTermino.limpiar_campos();
 			regTermino.agregar_campo(termino.c_str(),termino.size());
@@ -92,6 +93,7 @@ int IndiceInvertido::_armar_archivo_coincidencias(std::string unTexto)
 				return RES_ERROR;
 
 			//Le agrego al reg del vocabulario una referencia a una lista nueva
+			listaInvertida.agregar_campo((char*)&vacio, sizeof(vacio));
 			ref_lista = this->listas_invertidas.agregar(&listaInvertida); // FIXME listaInvertida esta VACIO!
 			regTerminoVoc.agregar_campo((char *)&IDter, sizeof(IDter));
 			regTerminoVoc.agregar_campo((char *)&ref_lista, sizeof(ref_lista));
