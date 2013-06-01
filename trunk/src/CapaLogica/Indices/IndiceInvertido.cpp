@@ -131,7 +131,8 @@ int IndiceInvertido::_armar_listas_invertidas(int IDcancion)
 		IDterAnterior = IDter;
 		//Busco el termino con ese IDter
 		this->archivo_terminos.get_registro_por_offset(&regTermino, IDter);
-		char* termino = new char[regTermino.get_tamanio_campo(0)]();
+		char* termino = new char[regTermino.get_tamanio_campo(0) + 1]();
+		termino[regTermino.get_tamanio_campo(0)] = '\0';
 		regTermino.recuperar_campo(termino, 0);
 
 		claveTermino.set_clave(std::string(termino));
@@ -149,11 +150,9 @@ int IndiceInvertido::_armar_listas_invertidas(int IDcancion)
 		int j=0;
 		do{//Mientras sean el mismo termino
 			//Guardo la posicion en la lista de posiciones
-			char* pos = new char[regCoincidencia.get_tamanio_campo(1) +1]();
-			pos[regCoincidencia.get_tamanio_campo(1)] = '\0';
-			regCoincidencia.recuperar_campo(pos,1);
-			listaPos.agregar_campo(pos, strlen(pos));
-			delete[] pos;
+			int pos;
+			regCoincidencia.recuperar_campo((char*)&pos,1);
+			listaPos.agregar_campo((char*)&pos, sizeof(pos));
 			//Guardo el IDter como el anterior
 			IDterAnterior = IDter;
 			//Saco el proximo registro de coincidencia
