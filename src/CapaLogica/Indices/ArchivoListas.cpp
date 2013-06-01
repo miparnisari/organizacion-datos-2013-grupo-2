@@ -52,14 +52,19 @@ int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short 
 	string file2 = this->fileName;
     ManejadorRegistrosVariables listas_nuevas;
     RegistroVariable lista;
-    int resultado;
-    resultado = listas_nuevas.crear_archivo(file1);
-    if (resultado != RES_OK)
+    int resultado = listas_nuevas.crear_archivo(file1);
+    if (resultado != RES_OK){
+    	delete ref_listas;
     	return resultado;
-    listas_nuevas.abrir_archivo(file1);
+    }
+   resultado = listas_nuevas.abrir_archivo(file1);
     if (resultado != RES_OK)
+    {
+    	delete ref_listas;
     	return resultado;
-    unsigned short i, j=0, cant_listas = this->archivo.get_cantidad_registros_ocupados();
+    }
+    int i, j=0;
+    int cant_listas = this->archivo.get_cantidad_registros_ocupados();
     for(i=0; i<cant_listas; i++){
         //Obtengo la lista
         this->archivo.get_registro_ocupado(&lista, i);

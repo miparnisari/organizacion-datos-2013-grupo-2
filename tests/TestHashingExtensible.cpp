@@ -73,8 +73,8 @@ void TestHashingExtensible::test_guardar_y_recuperar_ints()
 {
 	// Guardo en el disco
 	HashingExtensible indiceSecundarioTitulo;
-	indiceSecundarioTitulo.crear_archivo("hash_autor_id");
-	indiceSecundarioTitulo.abrir_archivo("hash_autor_id");
+	assert(indiceSecundarioTitulo.crear_archivo("hash_autor_id") == RES_OK);
+	assert(indiceSecundarioTitulo.abrir_archivo("hash_autor_id") == RES_OK);
 
 	RegistroClave regClave;
 	ClaveX claveTitulo;
@@ -104,6 +104,7 @@ void TestHashingExtensible::test_guardar_y_recuperar_ints()
 	assert (regRecuperado.get_tamanio_campo(1) == 4);
 
 	indiceSecundarioTitulo.cerrar_archivo();
+	indiceSecundarioTitulo.eliminar_archivo();
 
 	print_test_ok("test_guardar_y_recuperar_ints");
 }

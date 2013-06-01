@@ -22,7 +22,7 @@ int HashingExtensible::abrir_archivo(std::string nombreArchivo)
     this->fileNameTabla=nombreArchivo+"Tabla.dat";
     this->tabla->set_ruta(this->fileNameTabla);
 
-	int resultado = this->manejador_bloques->abrir_archivo(fileName, "rb+");
+	int resultado = this->manejador_bloques->abrir_archivo(fileName+".dat", "rb+");
 	if (resultado != RES_OK)
 		return RES_ERROR;
 
@@ -43,11 +43,11 @@ int HashingExtensible::crear_archivo(std::string nombreArchivo)
     	return RES_FILE_EXISTS;
     }
 
-    int resultado = this->manejador_bloques->crear_archivo(fileName, 1024);//tamanio anterior TAM_DEFAULT
+    int resultado = this->manejador_bloques->crear_archivo(fileName+".dat", 1024);//tamanio anterior TAM_DEFAULT
     if (resultado != RES_OK)
     	return resultado;
 
-	resultado = this->manejador_bloques->abrir_archivo(fileName, "rb+");
+	resultado = this->manejador_bloques->abrir_archivo(fileName+".dat", "rb+");
 	//Creamos la tabla
 	resultado += this->tabla->crear(fileNameTabla);
 	this->tabla->cambiar_valor(0, 0); // la pos 0 de la tabla se le coloca el num de bloque 0
@@ -73,7 +73,7 @@ int HashingExtensible::crear_archivo(std::string nombreArchivo)
 
 int HashingExtensible::eliminar_archivo()
 {
-	int res1 = this->manejador_bloques->eliminar_archivo(this->fileName);
+	int res1 = this->manejador_bloques->eliminar_archivo(this->fileName+".dat");
 	int res2 = tabla->eliminar();
 	if (res1 == RES_OK && res2 == RES_OK)
 		return RES_OK;
