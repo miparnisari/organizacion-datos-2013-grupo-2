@@ -7,12 +7,12 @@
 
 #include "TestIndiceInvertidoPorFrase.h"
 
-#define NOMBRE_INDICE 			"IndicePorFrase.dat"
+#define NOMBRE_INDICE 			"IndicePorFrase"
 #define ARCHIVO_ARBOL			"IndicePorFraseVocabulario.dat"
-#define	ARCHIVO_LISTAS			"ListasInvertidas.dat"
-#define	ARCHIVO_LISTAS_POS		"ListasPosiciones.dat"
+#define	 ARCHIVO_LISTAS			"ListasInvertidas"
+#define	 ARCHIVO_LISTAS_POS		"ListasPosiciones"
 #define ARCHIVO_TERMINOS		"IndicePorFraseTerminos.dat"
-#define ARCHIVO_TEMPORAL		"archivo_terminos_canciones.dat"
+#define ARCHIVO_TEMPORAL		"archivo_terminos_canciones"
 
 TestIndiceInvertidoPorFrase::TestIndiceInvertidoPorFrase()
 {
@@ -43,7 +43,7 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_crear_indice()
 	ManejadorRegistrosVariables terminos;
     ArchivoListas listasInvertidas, listasPos;
     ArbolBMas vocabulario;
-    indice.crear_indice("", NOMBRE_INDICE);
+    assert(indice.crear_indice("", NOMBRE_INDICE) == RES_OK);
     //Vemos si se creo el archivo de listas invertidas
     assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);
     //Vemos si se creo el archivo de listas invertidas
@@ -70,10 +70,13 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
     ClaveX clave, clave_aux;
     char* campo = new char[100];
     int ref_lista, pos;
+
+
     indice.crear_indice("", NOMBRE_INDICE);
-    indice.abrir_indice("", NOMBRE_INDICE);
-    this->crear_reg_cancion("La casa del lago", cancion);
-    indice.agregar_texto(cancion.get_letra(), 23);
+//    indice.abrir_indice("", NOMBRE_INDICE);
+    this->crear_reg_cancion("casa lago", cancion);
+    assert (indice.agregar_texto(cancion.get_letra(), 23) == RES_OK);
+    indice.cerrar_indice();
     //Abro los archivos del indice y veo si se crearon los registros correspondientes
     //Vemos si se creo el archivo de listas invertidas
     assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);
