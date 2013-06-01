@@ -54,7 +54,7 @@ void TestArchivoListas::test_archivo_listas_eliminar()
 	//Lo intento abrir
 	assert(archivo.abrir("", DIRECCION) == RES_OK);
 	//Lo elimino
-	assert(archivo.eliminar("", DIRECCION2) == RES_OK);
+	assert(archivo.eliminar("", DIRECCION) == RES_OK);
 	//Lo intento abrir
 	assert(archivo.abrir("", DIRECCION) != RES_OK);
 
@@ -68,24 +68,25 @@ void TestArchivoListas::test_archivo_listas_agregar()
 	ArchivoListas archivo;
 	ManejadorRegistrosVariables manejador;
 	RegistroVariable lista;
-	int id=23;
+	int id = 23;
 	//Creo el archivo
 	assert(archivo.crear("", DIRECCION) == RES_OK);
 	//Lo intento abrir
 	assert(archivo.abrir("", DIRECCION) == RES_OK);
 	//Agrego un elemento a la lista
-	lista.agregar_campo((char*)&id,0);
+	lista.agregar_campo((char*)&id,sizeof(int));
 	//Agrego la lista al archivo
-	archivo.agregar(&lista);
+	assert(archivo.agregar(&lista) != RES_ERROR);
 	assert(archivo.get_cantidad_listas() == 1);
 
 	//Veo que se guardo en el archivo mediante el manejador
-	assert(manejador.abrir_archivo(DIRECCION) == RES_OK);
+	assert(manejador.abrir_archivo(DIRECCION2) == RES_OK);
 	assert(manejador.get_cantidad_registros_ocupados() == 1);
-	assert(manejador.get_registro_ocupado(&lista,0) == RES_OK);
+	assert(manejador.get_registro_ocupado(&lista,0) > 0);
 	assert(lista.get_cantidad_campos() == 1);
-	lista.recuperar_campo((char*)&id,0);
-	assert(id == 23);
+	int idrecuperado;
+	lista.recuperar_campo((char*)&idrecuperado,0);
+	assert(idrecuperado == 23);
 
 	this->eliminar_archivos();
 	print_test_ok("test_archivo_listas_agregar");
@@ -102,13 +103,13 @@ void TestArchivoListas::test_archivo_listas_devolver()
 	//Lo intento abrir
 	assert(archivo.abrir("", DIRECCION) == RES_OK);
 	//Agrego un elemento a la lista
-	lista.agregar_campo((char*)&id,0);
+	lista.agregar_campo((char*)&id, sizeof(int));
 	//Agrego la lista al archivo
 	archivo.agregar(&lista);
 
 	//Obtengo la lista que se guardo en el archivo
 	assert(archivo.get_cantidad_listas() == 1);
-	assert(archivo.devolver(&lista, 0) == RES_OK);
+	archivo.devolver(&lista, 0);
 	assert(lista.get_cantidad_campos() == 1);
 	lista.recuperar_campo((char*)&id,0);
 	assert(id == 23);
@@ -130,12 +131,12 @@ void TestArchivoListas::test_archivo_listas_reconstruir_listas()
 	assert(archivo.abrir("", DIRECCION) == RES_OK);
 	//Agrego 2 listas diferentes
 	//Agrego un elemento a la lista1
-	lista1.agregar_campo((char*)&id,0);
+	lista1.agregar_campo((char*)&id,sizeof(int));
 	//Agrego la lista1 al archivo
 	archivo.agregar(&lista1);
 	//Agrego un elemento a la lista2
 	id=11;
-	lista1.agregar_campo((char*)&id,0);
+	lista1.agregar_campo((char*)&id,sizeof(int));
 	//Agrego la lista2 al archivo
 	archivo.agregar(&lista1);
 
@@ -149,12 +150,12 @@ void TestArchivoListas::test_archivo_listas_reconstruir_listas()
 	//Voy a ver que las listas tengan los id correctos
 
 	//Obtengo la lista1 que se guardo en el archivo
-	assert(archivo.devolver(&lista1, 0) == RES_OK);
+	archivo.devolver(&lista1, 0);
 	assert(lista1.get_cantidad_campos() == 1);
 	lista1.recuperar_campo((char*)&id,0);
 	assert(id == 23);
 	//Obtengo la lista2 que se guardo en el archivo
-	assert(archivo.devolver(&lista2, 1) == RES_OK);
+	archivo.devolver(&lista2, 1);
 	assert(lista2.get_cantidad_campos() == 2);
 	lista2.recuperar_campo((char*)&id,0);
 	assert(id == 11);
