@@ -146,7 +146,7 @@ void SortExterno:: _generar_runs()
 		}
 
 		string claveMax;
-		claveMax = ""+CLAVE_TOPE;
+		claveMax = CLAVE_TOPE;
 
 		RegistroVariable regClaveMax;
 
@@ -163,7 +163,7 @@ void SortExterno:: _generar_runs()
 void SortExterno::_merge()
 {
 	string claveMax;
-	claveMax = ""+CLAVE_TOPE;
+	claveMax = CLAVE_TOPE;
 
 	RegistroVariable regClaveMax;
 	regClaveMax.agregar_campo(claveMax.c_str(), claveMax.length());
@@ -172,6 +172,23 @@ void SortExterno::_merge()
 
 	int tamanio = archivosTemporalesAFusionar.size();
 	int numeroDeMerge=0;
+	//agrego un run "vacio" para fsionar contra ese, poco eficiente, pero soluciona mi problema rapido
+	if (tamanio==1)
+	{
+		string nombreDelRun="run1.dat";
+
+		ManejadorRegistrosVariables archivoTemporal;
+		archivoTemporal.eliminar_archivo(nombreDelRun);//solo por si acaso hay runs anteriores las borr
+		archivoTemporal.crear_archivo(nombreDelRun);
+		archivoTemporal.abrir_archivo(nombreDelRun);
+
+		archivoTemporal.agregar_registro(&regClaveMax);
+
+		archivosTemporalesAFusionar.push_back(nombreDelRun);
+		tamanio++;
+	}
+
+
 	//cuando quedan 2 a fusionar lo hago sobre el archivo original
 	while (tamanio > 2)
 	{
@@ -180,6 +197,9 @@ void SortExterno::_merge()
 		ManejadorRegistrosVariables PrimerArchivoAUnir,SegundoArchivoAUnir;
 		PrimerArchivoAUnir.abrir_archivo(archivosTemporalesAFusionar[tamanio-1]); //empiezo de atras para delante
 		SegundoArchivoAUnir.abrir_archivo(archivosTemporalesAFusionar[tamanio-2]);
+
+		cout<<archivosTemporalesAFusionar[tamanio-1]<<endl;//todo
+		cout<<archivosTemporalesAFusionar[tamanio-2]<<endl;//todo
 
 		//genero archivo donde va la fusion
 		std::string rutaMerge;
@@ -201,7 +221,7 @@ void SortExterno::_merge()
 		unsigned int indicePrimero=0;
 		unsigned int indiceSegundo=0;
 
-		RegistroClave regPrimero,regSegundo;
+		RegistroVariable regPrimero,regSegundo;
 
 		PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
 		SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
@@ -259,7 +279,7 @@ void SortExterno::_merge()
 	unsigned int indicePrimero=0;
 	unsigned int indiceSegundo=0;
 
-	RegistroClave regPrimero,regSegundo;
+	RegistroVariable regPrimero,regSegundo;
 
 	PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
 	SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);

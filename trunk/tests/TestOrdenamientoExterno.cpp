@@ -14,7 +14,7 @@ TestOrdenamientoExterno::~TestOrdenamientoExterno() {
 }
 
 void TestOrdenamientoExterno::ejecutar(){
-	test_generar_runs();
+//	test_generar_runs();
 	test_merge_runs();
 }
 
@@ -84,6 +84,7 @@ void TestOrdenamientoExterno::test_generar_runs(){
 
 			assert(heap.comparar_registros_variables(rv1,rv2)<=0);
 		}
+		mv2.eliminar_archivo(runs[i]);
 	}
 
 	print_test_ok("test_generar_runs");
@@ -125,20 +126,12 @@ void TestOrdenamientoExterno::test_merge_runs(){
 
 	for (int i = 0; i < mv.get_cantidad_registros_ocupados()-1; i++)
 	{
-
 		RegistroVariable rv1,rv2;
 
 		mv.get_registro_ocupado(&rv1,i);
 		mv.get_registro_ocupado(&rv2,i+1);
 
-		assert(heap.comparar_registros_variables(rv1,rv2)==-1);
-
-//		cout<<"ASSERT: "<<endl; //todo
-//		clave1.imprimir_dato();
-//		std::cout<<endl;
-//		clave2.imprimir_dato();
-//		std::cout<<endl;
-
+		assert(heap.comparar_registros_variables(rv1,rv2)<=0);
 	}
 
 	print_test_ok("test_merge_runs");
