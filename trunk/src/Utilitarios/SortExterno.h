@@ -22,13 +22,13 @@ public:
 	SortExterno(std::string archAOrdenar);
 	virtual ~SortExterno();
 
-	void ordenar_archivo(string nombreArchivo);
+	void ordenar_archivo();
 	/*
 	 * Sobreescribe el archivo original
 	 * */
 
-	/*SOLO PARA TESTS*****************************************/
 
+	/*SOLO PARA TESTS*****************************************/
 	std::vector<string> _getVector()
 	{
 		return archivosTemporalesAFusionar;
@@ -49,6 +49,13 @@ private:
 	unsigned cantDeRuns;
 	std::string archAOrdenar;
 	std::vector<string> archivosTemporalesAFusionar;
+
+	void _fusionar_2_archivos(string arch1, string arch2, string archFinal, bool temporal);
+	/*el parametro temporal indica si es la ultima fusion del ordenamiento o no
+	 * TRUE: no lo es     FALSE: si lo es
+	 *
+	 * Se borran los archivos a unir y se crea el que contiene la union, si ya existe un archivo con esa ruta lo borra
+	 * */
 };
 
 #endif /* SORTEXTERNO_H_ */

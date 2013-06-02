@@ -88,7 +88,7 @@ const int RES_BALANCEO				= -5;
  * Ordenamiento Externo
  */
 
-const unsigned int TAM_MAX_BUFFER_ORDENAMIENTO	=1024; //en bytes
+const unsigned int TAM_MAX_BUFFER_ORDENAMIENTO	=8192; //en bytes
 const std::string CLAVE_TOPE								= "zzzzzzzzzz";
 
 /*
