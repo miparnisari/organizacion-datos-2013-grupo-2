@@ -61,11 +61,11 @@ void TestHeap::test_ordenar_registros()
 	vectorAOrdenar[2] = registro1;
 	vectorAOrdenar[3] = registro2;
 
-	heap.ordenar(vectorAOrdenar,4);
-
+	heap.transformar_en_heap(vectorAOrdenar,4);
+//verifico que haya quedado un heap
 	assert (heap.comparar_registros_variables(vectorAOrdenar[0],vectorAOrdenar[1])==-1);
-	assert (heap.comparar_registros_variables(vectorAOrdenar[1],vectorAOrdenar[2])==-1);
-	assert (heap.comparar_registros_variables(vectorAOrdenar[2],vectorAOrdenar[3])==-1);
+	assert (heap.comparar_registros_variables(vectorAOrdenar[0],vectorAOrdenar[2])==-1);
+	assert (heap.comparar_registros_variables(vectorAOrdenar[1],vectorAOrdenar[3])==-1);
 
 	print_test_ok("test_heap_ordenar_regs");
 }

@@ -14,23 +14,22 @@ Heap::Heap()
 
 Heap::~Heap()
 {
-
 }
 
-void Heap::ReestructurarHeap(RegistroVariable vectorAOrdenar[],int desde,int hasta)
+void Heap::reestructurar_Heap(RegistroVariable vectorAOrdenar[],int desde,int hasta)
 {
     int hijoIzq=2*desde+1;
     int hijoDer=2*desde+2;
 
     int posicionMax=desde;
     if (hijoIzq<=hasta)
-    	if(comparar_registros_variables(vectorAOrdenar[hijoIzq],vectorAOrdenar[posicionMax])==1)
+    	if(comparar_registros_variables(vectorAOrdenar[hijoIzq],vectorAOrdenar[posicionMax])==-1)
     	{
     		posicionMax=hijoIzq;
     	}
 
     if(hijoDer<=hasta)
-    	if( comparar_registros_variables(vectorAOrdenar[hijoDer],vectorAOrdenar[posicionMax])==1)
+    	if( comparar_registros_variables(vectorAOrdenar[hijoDer],vectorAOrdenar[posicionMax])==-1)
     	{
     		posicionMax=hijoDer;
     	}
@@ -41,36 +40,20 @@ void Heap::ReestructurarHeap(RegistroVariable vectorAOrdenar[],int desde,int has
         vectorAOrdenar[posicionMax]=vectorAOrdenar[desde];
         vectorAOrdenar[desde]=auxIntercambio;
 
-        ReestructurarHeap(vectorAOrdenar,posicionMax,hasta);
+        reestructurar_Heap(vectorAOrdenar,posicionMax,hasta);
     }
 }
 
-
-void Heap::CargarVectorYTransformarEnHeap(RegistroVariable vectorACargar[])
-{
-    int UltimoConHijo=(tamanio-2)/2;
-
-    for(int raiz=UltimoConHijo; raiz>=0; raiz--)
-    {
-        this->ReestructurarHeap(vectorACargar,raiz,tamanio-1);
-    }
-}
-
-void Heap::ordenar(RegistroVariable vectorAOrdenar[],int tamanio)
+void Heap::transformar_en_heap(RegistroVariable vectorAOrdenar[],int tamanio)
 {
 
     this->tamanio=tamanio;
 
-    CargarVectorYTransformarEnHeap(vectorAOrdenar);
+    int UltimoConHijo=(tamanio-2)/2;
 
-    while (tamanio>0)
+    for(int raiz=UltimoConHijo; raiz>=0; raiz--)
     {
-    	RegistroVariable auxIntercambio=vectorAOrdenar[tamanio-1];
-    	vectorAOrdenar[tamanio-1]=vectorAOrdenar[0];
-    	vectorAOrdenar[0]=auxIntercambio;
-
-    	ReestructurarHeap(vectorAOrdenar,0,tamanio-2);
-    	tamanio--;
+        this->reestructurar_Heap(vectorAOrdenar,raiz,tamanio-1);
     }
 }
 
@@ -87,54 +70,50 @@ int Heap::comparar_registros_variables(RegistroVariable reg1,RegistroVariable re
 	campo1Reg2[reg2.get_tamanio_campo(0)]='\0';
 	string campo1Reg2Str=campo1Reg2;
 
+	delete[] campo1Reg1;
+	delete[] campo1Reg2;
+
 	int resPrimerCampo= campo1Reg1Str.compare(campo1Reg2Str);
 
-	resPrimerCampo= strcmp(campo1Reg1,campo1Reg2);
-
-	if (campo1Reg1Str==campo1Reg2Str)
+	if (resPrimerCampo==0)
 	{
 		if (reg1.get_cantidad_campos()>=2)
 		{
+
 			char* campo2Reg1 = new char[reg1.get_tamanio_campo(1)];
 			reg1.recuperar_campo(campo2Reg1,1);
+			campo2Reg1[reg1.get_tamanio_campo(1)]='\0';
 			string campo2Reg1Str=campo2Reg1;
 
 			char* campo2Reg2 = new char[reg2.get_tamanio_campo(1)];
 			reg2.recuperar_campo(campo2Reg2,1);
+			campo2Reg2[reg2.get_tamanio_campo(1)]='\0';
 			string campo2Reg2Str=campo2Reg2;
 
-			if (campo2Reg1Str==campo2Reg2Str)
+			delete[] campo2Reg1;
+			delete[] campo2Reg2;
+
+			int resSegundoCampo= campo2Reg1Str.compare(campo2Reg2Str);
+
+			if (resSegundoCampo==0)
 			{
-				delete[] campo2Reg1;
-				delete[] campo2Reg2;
 				return 0;
-			}else if (campo2Reg1Str>campo2Reg2Str)
+			}else if (resSegundoCampo>0)
 			{
-				delete[] campo2Reg1;
-				delete[] campo2Reg2;
 				return 1;
 			}else{
-				delete[] campo2Reg1;
-				delete[] campo2Reg2;
 				return -1;
 			}
-
 		}else
 		{
-			delete[] campo1Reg1;
-			delete[] campo1Reg2;
 			return 0;
 		}
 	}else{
-		if (campo1Reg1Str>campo1Reg2Str)
+		if (resPrimerCampo>0)
 		{
-			delete[] campo1Reg1;
-			delete[] campo1Reg2;
 			return 1;
 		}else
 		{
-			delete[] campo1Reg1;
-			delete[] campo1Reg2;
 			return -1;
 		}
 	}

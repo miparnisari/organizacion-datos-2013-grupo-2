@@ -14,13 +14,13 @@ class Heap
 private:
     int tamanio;
     void CargarVectorYTransformarEnHeap(RegistroVariable vector[]);
-    void ReestructurarHeap(RegistroVariable vectorAOrdenar[],int desde,int hasta);
+    void reestructurar_Heap(RegistroVariable vectorAOrdenar[],int desde,int hasta);
 
 public:
     Heap();
     ~Heap();
 
-    void ordenar(RegistroVariable vectorAOrdenar[],int tamanio);
+    void transformar_en_heap(RegistroVariable vectorAOrdenar[],int tamanio);
 
     int comparar_registros_variables(RegistroVariable reg1,RegistroVariable reg2);
 };

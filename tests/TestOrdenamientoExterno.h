@@ -17,6 +17,7 @@ public:
 
 	void ejecutar();
 
+	void test_ordenar();
 	void test_generar_runs();
 	void test_merge_runs();
 };

@@ -14,22 +14,22 @@ TestOrdenamientoExterno::~TestOrdenamientoExterno() {
 }
 
 void TestOrdenamientoExterno::ejecutar(){
-//	test_generar_runs();
-	test_merge_runs();
+//	test_generar_runs(); comento porque tardan mucho en correr.
+//	test_merge_runs();
+	test_ordenar();
+
 }
 
 void TestOrdenamientoExterno::test_generar_runs(){
 
 	ManejadorRegistrosVariables mv;
+	mv.eliminar_archivo("archivoOrdenamiento.dat");
 	mv.crear_archivo("archivoOrdenamiento.dat");
-
 	mv.abrir_archivo("archivoOrdenamiento.dat");
 
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
 	{
-		//srand (time(NULL));
 		string clave="aaa";
-//		clave[0] = (char) ((rand() % 20) + 65);
 
 		stringstream conversor;
 		conversor << clave;
@@ -63,25 +63,6 @@ void TestOrdenamientoExterno::test_generar_runs(){
 			mv2.get_registro_ocupado(&rv1,j);
 			mv2.get_registro_ocupado(&rv2,j+1);
 
-//			cout<<"num del run: "<<i<<endl;
-//
-//			cout<<"claves del run: "<<endl; //todo
-//
-//			char* campo=new char[rv1.get_tamanio_campo(0)+1];
-//			rv1.recuperar_campo(campo,0);
-//			campo[rv1.get_tamanio_campo(0)]='\0';
-//			string campoImprimir1 = campo;
-//			delete campo;
-//
-//			campo=new char[rv2.get_tamanio_campo(0)+1];
-//			rv2.recuperar_campo(campo,0);
-//			campo[rv2.get_tamanio_campo(0)]='\0';
-//			string campoImprimir2 = campo;
-//			delete campo;
-//
-//			cout<<campoImprimir1<<endl;
-//			cout<<campoImprimir2<<endl;
-
 			assert(heap.comparar_registros_variables(rv1,rv2)<=0);
 		}
 		mv2.eliminar_archivo(runs[i]);
@@ -95,13 +76,12 @@ void TestOrdenamientoExterno::test_generar_runs(){
 void TestOrdenamientoExterno::test_merge_runs(){
 
 	ManejadorRegistrosVariables mv;
+	mv.eliminar_archivo("archivoOrdenamiento.dat");
 	mv.crear_archivo("archivoOrdenamiento.dat");
-
 	mv.abrir_archivo("archivoOrdenamiento.dat");
 
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
 	{
-		//srand (time(NULL));
 		string clave="aaa";
 		clave[0] = (char) ((rand() % 20) + 65);
 
@@ -135,4 +115,56 @@ void TestOrdenamientoExterno::test_merge_runs(){
 	}
 
 	print_test_ok("test_merge_runs");
+}
+
+void TestOrdenamientoExterno::test_ordenar(){
+
+	ManejadorRegistrosVariables mv;
+	mv.eliminar_archivo("archivoOrdenamiento.dat");
+	mv.crear_archivo("archivoOrdenamiento.dat");
+	mv.abrir_archivo("archivoOrdenamiento.dat");
+
+	while (mv.get_tamanio_archivo()<1024*3) //3kB
+	{
+		//agrego clave en el primer campo
+		string clave="aaa";
+		clave[0] = (char) ((rand() % 20) + 65);
+
+		stringstream conversor;
+		conversor << clave;
+		string campoClave= conversor.str();
+
+		RegistroVariable regVariable;
+
+		regVariable.agregar_campo(campoClave.c_str(),campoClave.length());
+
+		//agrego clave en el segundo campo
+		string clave2="aaa";
+		clave2[0] = (char) ((rand() % 20) + 65);
+
+		conversor << clave2;
+		string campoClave2= conversor.str();
+
+		regVariable.agregar_campo(campoClave2.c_str(),campoClave2.length());
+
+		mv.agregar_registro(& regVariable);
+	}
+
+	SortExterno ordenador("archivoOrdenamiento.dat");
+
+	ordenador.ordenar_archivo();
+
+	Heap heap;
+
+	for (int i = 0; i < mv.get_cantidad_registros_ocupados()-1; i++)
+	{
+		RegistroVariable rv1,rv2;
+
+		mv.get_registro_ocupado(&rv1,i);
+		mv.get_registro_ocupado(&rv2,i+1);
+
+		assert(heap.comparar_registros_variables(rv1,rv2)<=0);
+	}
+
+	print_test_ok("test_ordenar");
 }
