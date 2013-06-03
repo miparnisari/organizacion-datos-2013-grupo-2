@@ -266,7 +266,7 @@ int IndiceInvertido::_obtener_canciones_termino(const char *termino, RegistroVar
 	if(this->vocabulario.buscar(regTerminoVoc) == RES_ERROR)
 		return NO_EXISTE;
 	//Recupero la lista de canciones que contienen ese termino
-	regTerminoVoc.recuperar_campo((char*)&ref_lista, 1);
+	regTerminoVoc.recuperar_campo((char*)&ref_lista, 2);
 	this->listas_invertidas.devolver(&listaCanTer, ref_lista);
 	cant_listas= listaCanTer.get_cantidad_campos();
 	for(i=0; i<cant_listas; i++){
@@ -301,13 +301,12 @@ int IndiceInvertido::_armar_archivo_terminos_frase(std::string & frase, Registro
 	while(texto.get_proxima_palabra(termino) != RES_FIN){
 		//Obtengo el IDter
 		this->vocabulario.buscar(regTerminoVoc);
-		ClaveX claveIDter = regTerminoVoc.get_clave();
-		claveIDter.get_clave(IDter);
+		regTerminoVoc.recuperar_campo((char*)&IDter,1);
 		//La agrego a terminos_frase
 		terminos_frase.agregar_datos((char*)&IDter, sizeof(IDter));
 		t++;
 		//Obtengo la lista de canciones del termino
-		regTerminoVoc.recuperar_campo((char*)&ref_lista, 1);
+		regTerminoVoc.recuperar_campo((char*)&ref_lista, 2);
 		this->listas_invertidas.devolver(&listaCanTer, ref_lista);
 		cant_canciones = listaCanTer.get_cantidad_campos();
 		//Armo un archivo termporal para buscar las canciones que tienen la frase
