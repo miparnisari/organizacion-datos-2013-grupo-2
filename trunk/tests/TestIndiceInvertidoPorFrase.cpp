@@ -43,8 +43,8 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
 	ArchivoListas listasInvertidas, listasPos;
 	ArbolBMas vocabulario;
     RegistroCancion cancion;
-    RegistroVariable lista, termino;
-    RegistroClave listaCan;
+    RegistroVariable lista, lista1, lista2, termino;
+    RegistroClave listaCan1, listaCan2;
     RegistroClave reg_termino;
     ClaveX clave, clave_aux;
     char* campo = new char[100]();
@@ -81,36 +81,43 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
     termino.recuperar_campo(campo, 0);
     assert(strcmp(campo, "lago\n") == 0);
 
+
+
+    assert(listasPos.get_cantidad_listas() == 2);
+
+
+
+
     //Veo listas invertidas
 
     //Veo si se guardo 2 lista invertida ya que solo tenemos 2 terminos que se guardan en el indice
     assert(listasInvertidas.get_cantidad_listas() == 2);
     //Veo que cada lista guarde solo una lista que tiene como clave el IDcancion 23
-    assert(listasInvertidas.devolver(&lista,0) >= 0);
-    assert(lista.get_cantidad_campos() == 1);
+    assert(listasInvertidas.devolver(&lista1,0) >= 0);
+    assert(lista1.get_cantidad_campos() == 1);
     //Obtengo la primera cancion
-    lista.recuperar_campo(campo, 0);
-    listaCan.desempaquetar(campo);
-    clave = listaCan.get_clave();
+    lista1.recuperar_campo(campo, 0);
+    listaCan1.desempaquetar(campo);
+    clave = listaCan1.get_clave();
     //Veo que guarde el IDcan 23
     clave_aux.set_clave(23);
     assert(clave == clave_aux);
     //Recupero  la referencia a la lista de posiciones y esta deberia ser la pos 0 del archivo de listas
-    listaCan.recuperar_campo(((char*)&ref_lista),1);
+    listaCan1.recuperar_campo(((char*)&ref_lista),1);
     assert(ref_lista == 0);
     //Hago lo mismo para la otra lista
     //Veo que cada lista guarde solo una lista que tiene como clave el IDcancion 23
-     assert(listasInvertidas.devolver(&lista,1) >= 0);
-     assert(lista.get_cantidad_campos() == 1);
+     assert(listasInvertidas.devolver(&lista2,1) >= 0);
+     assert(lista2.get_cantidad_campos() == 1);
      //Obtengo la primera cancion
-     lista.recuperar_campo(campo, 0);
-     listaCan.desempaquetar(campo);
-     listaCan.set_clave(clave);
+     lista2.recuperar_campo(campo, 0);
+     listaCan2.desempaquetar(campo);
+     listaCan2.set_clave(clave);
      //Veo que guarde el IDcan 23
      clave_aux.set_clave(23);
      assert(clave == clave_aux);
      //Recupero  la referencia a la lista de posiciones y esta deberia ser la pos 1 del archivo de listas
-     listaCan.recuperar_campo(((char*)&ref_lista),1);
+     listaCan2.recuperar_campo(((char*)&ref_lista),1);
       assert(ref_lista == 1);
 
      //Veo listas de posiciones
