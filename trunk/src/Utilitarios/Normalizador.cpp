@@ -40,6 +40,10 @@ char Normalizador::transformar_char(wchar_t c){
             case (int) L'ñ':
                     return 'n';
 
+            case (int) L'´':
+            		return ( (char)39 );
+            /*en caso de comilla curva retorna comilla simple*/
+
             // Tambien hay palabras que tienen puntos (ejem: T.N.T.)
             case (int) L'.':
                     return '.';
