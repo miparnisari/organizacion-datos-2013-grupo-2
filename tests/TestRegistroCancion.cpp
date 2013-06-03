@@ -50,7 +50,7 @@ void TestRegistroCancion::test_parametros()
 	assert( rc4.get_cantidad_autores()== 1 );
 	assert( rc4.get_anio()== Anio::ANIO_DEFAULT );
 	assert( rc4.get_idioma().compare("spanish")== 0 );
-	assert( rc4.get_letra() == "esta es una letra de prueba\ncon varias lineas\nconcatenadas a re loco\n");
+	assert( rc4.get_letra() == "esta es una letra de prueba\ncon varias lineas\nconcatenadas a re loco");
 
 	char linea5[]= "arjona-Martin-spanish";
 	RegistroCancion rc5;

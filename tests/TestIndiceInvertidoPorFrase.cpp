@@ -79,7 +79,7 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
     assert(terminos.get_registro_ocupado(&termino, 1) >= 0);
     memset(campo,0,100);
     termino.recuperar_campo(campo, 0);
-    assert(strcmp(campo, "lago\n") == 0);
+    assert(strcmp(campo, "lago") == 0);
 
 
 
@@ -116,8 +116,10 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
      //Veo que guarde el IDcan 23
      clave_aux.set_clave(23);
      assert(clave == clave_aux);
+     ref_lista = -1;
      //Recupero  la referencia a la lista de posiciones y esta deberia ser la pos 1 del archivo de listas
      listaCan2.recuperar_campo(((char*)&ref_lista),1);
+     IMPRIMIR_VARIABLE(ref_lista);
       assert(ref_lista == 1);
 
      //Veo listas de posiciones
@@ -141,22 +143,22 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
 
     //Veo si se guardo los terminos en el arbol
     //Veo el primer termino de la letra
-    clave.set_clave("casa");
+    clave.set_clave("casa23");
     reg_termino.set_clave(clave);
     //Busco el registro en el arbol
     assert(vocabulario.buscar(reg_termino) == RES_OK);
-    clave_aux.set_clave("casa");
+    clave_aux.set_clave("casa23");
     assert(reg_termino.get_clave() == clave_aux);
     assert(reg_termino.get_cantidad_campos() == 3);
     //Recupero  la referencia a la lista y esta deberia ser la pos 0 del archivo de listas
     reg_termino.recuperar_campo(((char*)&ref_lista),0);
     assert(ref_lista == 0);
     //Veo el segundo termino de la letra
-    clave.set_clave("lago");
+    clave.set_clave("lago23");
     reg_termino.set_clave(clave);
     //Busco el registro en el arbol
     assert(vocabulario.buscar(reg_termino) == RES_OK);
-    clave_aux.set_clave("lago");
+    clave_aux.set_clave("lago23");
     assert(reg_termino.get_clave() == clave_aux);
     assert(reg_termino.get_cantidad_campos() == 3);
     //Recupero  la referencia a la lista y esta deberia ser la pos 1 del archivo de listas

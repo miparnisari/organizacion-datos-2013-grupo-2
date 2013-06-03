@@ -325,7 +325,7 @@ void Indexador::_agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & re
 
 	/* ----- agregamos al indice por frase: frases ----*/
 	std::string letra = regCancion.get_letra();
-//	indiceSecundarioFrases.agregar_texto(letra,id.get_dato()); FIXME descomentar
+	indiceSecundarioFrases.agregar_texto(letra,id.get_dato());
 
 	std::cout << "Se indexó " << nombreArchivo << " correctamente!" << std::endl;
 }

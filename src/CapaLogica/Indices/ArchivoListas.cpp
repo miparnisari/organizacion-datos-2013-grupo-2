@@ -103,7 +103,8 @@ int ArchivoListas::recontruir_listas(unsigned short ref_lista, RegistroVariable 
 	listas_nuevas.abrir_archivo(file1);
 	if (resultado != RES_OK)
 		return resultado;
-	for(i=0; i<cant_listas; i++){
+	for(i=0; i<cant_listas; i++)
+	{
 	        //Obtengo la lista
 	        this->archivo.get_registro_ocupado(&lista, i);
 	        if(ref_lista == i){
@@ -112,7 +113,7 @@ int ArchivoListas::recontruir_listas(unsigned short ref_lista, RegistroVariable 
 	        }else{
 	        	listas_nuevas.agregar_registro(&lista);
 	        }
-	    }
+	}
 	this->archivo.eliminar_archivo(this->fileName);
 	//Cambiamos el nombre del archivo por el original
 	rename(file1.c_str(),file2.c_str());

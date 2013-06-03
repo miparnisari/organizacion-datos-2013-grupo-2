@@ -36,7 +36,7 @@ int main (int argc, char* argv[])
 	{
 		std::string directorioSalida = std::string(argv[2]);
 		std::string frase = std::string(argv[3]);
-//		indexador.consultar_frase(directorioSalida,frase);
+		indexador.consultar_frase(directorioSalida,frase);
 	}
 	else if (operacion == "-borrarCancion")
 	{
