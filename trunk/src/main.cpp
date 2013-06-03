@@ -41,12 +41,8 @@ int main (int argc, char* argv[])
 	else if (operacion == "-borrarCancion")
 	{
 		std::string directorioSalida = std::string(argv[2]);
-		std::string s_idCancion = std::string(argv[3]);
-		stringstream ss;
-		int i_idCancion;
-		ss << s_idCancion;
-		ss >> i_idCancion;
-		indexador.borrar_cancion(directorioSalida,i_idCancion);
+		std::string idCancion = std::string(argv[3]);
+		indexador.borrar_cancion(directorioSalida,utilitarios::string_a_int(idCancion));
 	}
 	else
 	{

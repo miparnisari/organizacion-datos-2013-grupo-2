@@ -4,24 +4,44 @@
 
  namespace utilitarios
 {
- 	 int remover_archivos_de_directorio(std::string directorio)
+ 	 int string_a_int (std::string & s_int)
  	 {
-	  struct dirent *next_file;
-	  DIR *dir;
+ 		 stringstream ss;
+ 		 ss << s_int;
 
-	  char filepath[256];
+ 		 int i_int;
+ 		 ss >> i_int;
+ 		 return i_int;
+ 	 }
 
-	  dir = opendir(directorio.c_str());
-	  next_file = readdir(dir);
-	  while ( next_file != NULL  )
-	  {
-		  sprintf(filepath, "%s/%s", directorio.c_str(), next_file->d_name);
-		  remove(filepath);
+ 	 std::string int_a_string (int i_int)
+ 	 {
+ 		 stringstream ss;
+ 		 ss << i_int;
+
+ 		 std::string s_int;
+ 		 ss >> s_int;
+ 		 return s_int;
+ 	 }
+
+ 	 int remover_archivos_de_directorio(std::string & directorio)
+ 	 {
+		  struct dirent *next_file;
+		  DIR *dir;
+
+		  char filepath[256];
+
+		  dir = opendir(directorio.c_str());
 		  next_file = readdir(dir);
-	  }
-	  return RES_OK;
+		  while ( next_file != NULL  )
+		  {
+			  sprintf(filepath, "%s/%s", directorio.c_str(), next_file->d_name);
+			  remove(filepath);
+			  next_file = readdir(dir);
+		  }
+		  return RES_OK;
 	}
-	bool directorio_existe( std::string dir )
+	bool directorio_existe( std::string & dir )
 	{
 		DIR *pDir;
 		bool existe = false;
@@ -47,24 +67,8 @@
 			simpleString.assign(s.begin(), s.end());
 			return simpleString;
 	}
-    unsigned int copyBufferToInt(char* value)
-    {
-        unsigned int intValue;
-        std::stringstream strValue;
-        strValue << value;
-        strValue >> intValue;
-        return intValue;
-    }/* pasa un char* a un int*/
 
-    void copyIntToBuffer (char* buffer, int integer)
-	{
-		buffer[0] = (integer >> 0) & 0xff;
-		buffer[1] = (integer >> 8) & 0xff;
-		buffer[2] = (integer >> 16) & 0xff;
-		buffer[3] = (integer >> 24) & 0xff;
-	}/* copia un int a un char* */
-
-	bool validFileName (std::string fileName)
+	bool validFileName (std::string & fileName)
 	{
 		int len = fileName.length();
 		if (len < 5) return false;
@@ -72,7 +76,7 @@
 		return true;
 	}/*verifica que un string sea un nombre de archivo valido.*/
 
-	int listpath (std::string dir, std::vector<std::string> & files, std::string extension)
+	int listpath (std::string & dir, std::vector<std::string> & files, std::string extension)
 	{
 		DIR* dp = opendir(dir.c_str());
 		struct dirent* dirp;

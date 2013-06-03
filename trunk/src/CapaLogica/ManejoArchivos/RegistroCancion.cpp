@@ -80,11 +80,7 @@ int RegistroCancion::desempaquetar(const char* copia) throw(){
 	{
 		int anioI;
 		this->recuperar_campo( (char*)&anioI, campoActual);
-		stringstream ss;
-		ss<<anioI;
-		string anioS;
-		ss>>anioS;
-		this->anioGrabacion.cargar(anioS);
+		this->anioGrabacion.cargar(utilitarios::int_a_string(anioI));
 		campoActual++;
 	}//desempaqueto anio
 

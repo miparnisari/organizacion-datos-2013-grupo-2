@@ -32,7 +32,7 @@ char ParserCanciones::_estandarizar (char caracter)
 	return normalizador.transformar_char(caracter);
 }
 
-int ParserCanciones::crear (std::string dir)
+int ParserCanciones::crear (std::string & dir)
 {
 	_init();
 	return utilitarios::listpath (dir, archivos, ".txt");

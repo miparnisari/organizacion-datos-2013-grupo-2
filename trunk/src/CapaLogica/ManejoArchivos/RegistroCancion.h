@@ -6,6 +6,9 @@
 #include "../../CapaFisica/RegistroVariable.h"
 #include "Idioma.h"
 #include "Anio.h"
+#include "../../Utilitarios/Utilitarios.h"
+
+using namespace utilitarios;
 
 class RegistroCancion : public RegistroVariable{
 

@@ -40,12 +40,7 @@ void Indexador::borrar_cancion (std::string & directorioSalida, int idCancion)
 		RegistroClave regArbol;
 		for (unsigned int i = 0; i < reg->get_cantidad_autores(); i++){
 			std::string clave = reg->get_autor(i);
-
-			stringstream ss;
-			ss << idCancion;
-			std::string s_idCancion;
-			ss >> s_idCancion;
-			clave.append(s_idCancion);
+			clave.append(utilitarios::int_a_string(idCancion));
 
 			claveAutor.set_clave(clave);
 
@@ -312,9 +307,7 @@ void Indexador::_agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & re
 
 		/*** En la clave hay "autor"(string) + "id cancion"(string) ***/
 		std::string clave = regCancion.get_autor(i);
-		std::stringstream idCancion;
-		idCancion << id.get_dato();
-		clave.append(idCancion.str());
+		clave.append(utilitarios::int_a_string(id.get_dato()));
 
 		claveAutor.set_clave(clave);
 
