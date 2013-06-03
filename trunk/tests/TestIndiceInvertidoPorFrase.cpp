@@ -92,7 +92,6 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
     lista.recuperar_campo(campo, 0);
     listaCan.desempaquetar(campo);
     clave = listaCan.get_clave();
-    listaCan.set_clave(clave);
     //Veo que guarde el IDcan 23
     clave_aux.set_clave(23);
     assert(clave == clave_aux);
