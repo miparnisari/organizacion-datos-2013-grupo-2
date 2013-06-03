@@ -52,6 +52,7 @@ class Indexador
 		int _anexar(std::string & directorioEntrada, std::string & directorioSalida);
 		void _indexar();
 		int _mostrar_opciones(std::string & directorioEntrada, std::string & directorioSalida);
+		void _mostrar_contenido(int id, RegistroCancion& reg);
 };
 
 #endif /* INDEXADOR_H */ 

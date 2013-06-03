@@ -15,7 +15,6 @@ RegistroCancion::~RegistroCancion()
 		delete[] autores;
 }
 
-
 int RegistroCancion::empaquetar(char* copia) throw(){
 	if( this->esta_limpio() || copia== NULL )
 		return RES_ERROR;
