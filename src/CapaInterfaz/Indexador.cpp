@@ -28,15 +28,12 @@ void Indexador::borrar_cancion (std::string & directorioSalida, int idCancion)
 	else {
 		regClave.recuperar_campo((char*)&offsetArchivoMaestro,1);
 
-		// (i(ID) , offset)
 		indicePrimario.eliminar(claveID);
 
-		// ((autor)+, (anio)?, idioma, titulo, letra)
 		ResolvedorConsultas rc(directorioSalida);
 		RegistroCancion* reg = rc.get_reg_completo(idCancion);
 		archivoMaestro.eliminar_registro_por_offset(offsetArchivoMaestro);
 
-		// (i(autor), id)
 		RegistroClave regArbol;
 		for (unsigned int i = 0; i < reg->get_cantidad_autores(); i++){
 			std::string clave = reg->get_autor(i);
@@ -48,14 +45,12 @@ void Indexador::borrar_cancion (std::string & directorioSalida, int idCancion)
 			indiceSecundarioAutor.quitar(regArbol);
 		}
 
-		// (i(titulo), id)
 		claveTitulo.set_clave(reg->get_titulo());
 		indiceSecundarioTitulo.eliminar(claveTitulo);
 
 
 		// TODO eliminar del indiceSecundarioFrases;
 
-		// (i(iddoc), nombrearchivo)
 		documentos.eliminar(claveID);
 		delete reg;
 	}
