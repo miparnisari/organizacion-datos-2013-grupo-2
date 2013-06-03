@@ -49,6 +49,5 @@ void TestNormalizador::test_normalizar_input(){
 	string lineaLargaNormalizada;
 	lineaLargaNormalizada= n.normalizar_input(lineaLarga);
 	IMPRIMIR_VARIABLE(lineaLargaNormalizada);
-	pausa();
 
 }

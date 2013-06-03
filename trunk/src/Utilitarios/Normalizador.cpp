@@ -98,20 +98,20 @@ wstring Normalizador::a_minuscula(wstring & linea){
 }
 
 
-string Normalizador::normalizar_string(wstring & linea){
-
-	wstring lineaMinuscula=  this->a_minuscula(linea);
-
-	string s = "";
-	for (unsigned i=0; i < lineaMinuscula.length(); ++i){
-
-			// Se filtra el caracter y se lo agrega al final del string
-			char c = filtrar_char(lineaMinuscula[i]);
-			s.push_back(c);
-	}
-	return s;
-
-}
+//string Normalizador::normalizar_string(wstring & linea){
+//
+//	wstring lineaMinuscula=  this->a_minuscula(linea);
+//
+//	string s = "";
+//	for (unsigned i=0; i < lineaMinuscula.length(); ++i){
+//
+//			// Se filtra el caracter y se lo agrega al final del string
+//			char c = filtrar_char(lineaMinuscula[i]);
+//			s.push_back(c);
+//	}
+//	return s;
+//
+//}
 
 
 string Normalizador::normalizar_input( string linea ){
@@ -134,7 +134,7 @@ string Normalizador::normalizar_input( string linea ){
 //	archivoResultado.getline(bufferInput , TAMANIO_BUFFER_INPUT);
 //	unsigned short longitudLineaNormalizada= strlen(bufferInput);
 
-	string resultado;
+	string resultado="";
 	while(!archivoResultado.eof()){
 //		string temp;
 //		archivoResultado>>temp;
