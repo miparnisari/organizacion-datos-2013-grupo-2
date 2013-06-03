@@ -47,8 +47,8 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 		virtual long _append_registro(RegistroVariable* registro);
 		/*agrega un registro al final del archivo y retorna el valor del offset donde
 		 * se agrego*/
-		virtual bool _registro_fue_eliminado(unsigned short numeroRegistro);
-		virtual long _get_offset_registro(unsigned short numeroRegistro);
+		virtual bool _registro_fue_eliminado(unsigned int numeroRegistro);
+		virtual long _get_offset_registro(unsigned int numeroRegistro);
 
 
 		virtual long _buscar_registro_libre(unsigned short espacioNecesario,
@@ -60,6 +60,11 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 		virtual void _pegar_registro(RegistroVariable* registro,long offset);
 		/*esta primitiva se invoca en caso que el espacio libre de un registro libre
 		 * coincide EXACTAMENTE con el tamanio de empaquetamiento del registro a insertar.*/
+
+
+		void _reemplazar(string& nombreArchivoAuxiliar);
+
+		void _cambiar_header(Header& headerCambiar);
 
 
 
@@ -91,7 +96,7 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 
 
 		virtual long get_registro_ocupado(RegistroVariable* registro ,
-				unsigned short numeroRegistro);
+				unsigned int numeroRegistro);
 		/*recupera un registro NO ELIMINADO por su numero de registro.*/
 
 
@@ -103,7 +108,7 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 		 * invalido . */
 
 
-		virtual long eliminar_registro_ocupado(unsigned short numeroRegistro);
+		virtual long eliminar_registro_ocupado(unsigned int numeroRegistro);
 		/*se elimina un registro. Se retorna el offset del registro eliminado .
 		 * En caso de eliminar un registro se retorna el offset del registro eliminado,
 		 * en caso contrario se retorna RES_ERROR */
@@ -113,6 +118,9 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 		/*elimina un registro que comienza en el byte offset 'offset' del archivo.
 		 * Este metodo debe usarse si y solo si el archivo esta indexado por offsets de
 		 * registros . En caso de exito se retorna RES_OK*/
+
+		int refactorizar();
+		/*reconstruye el archivo descartando todos los registros eliminados .*/
 
 
 /*-----------------NO PRESTAR ATENCION -------------------------------------------------*/

@@ -62,7 +62,7 @@ long ManejadorRegistrosVariables::_buscar_registro_libre(unsigned short espacioN
 }
 
 
-long ManejadorRegistrosVariables::_get_offset_registro(unsigned short numeroRegistro){
+long ManejadorRegistrosVariables::_get_offset_registro(unsigned int numeroRegistro){
 
 	_leer_header();
 	if(numeroRegistro >= header.cantidadRegistros)
@@ -157,7 +157,7 @@ int ManejadorRegistrosVariables::get_registro_por_offset(RegistroVariable* regis
 
 
 long ManejadorRegistrosVariables::get_registro_ocupado(RegistroVariable* registro ,
-		unsigned short numeroRegistro){
+		unsigned int numeroRegistro){
 
 	if( !archivo_existe(nombreArchivo) )
 		return RES_ERROR;
@@ -167,7 +167,7 @@ long ManejadorRegistrosVariables::get_registro_ocupado(RegistroVariable* registr
 	fstream archivo( nombreArchivo.c_str() );
 	archivo.seekg(OFFSET_PRIMER_REGISTRO , ios::beg);
 	/*me paro en el primer registro*/
-	unsigned short contadorRegistros= 0;
+	unsigned int contadorRegistros= 0;
 	long contadorOffset= OFFSET_PRIMER_REGISTRO;
 	char* bufferRegistro;
 	unsigned short tamanioRegistro , tamanioEmpaquetado;
@@ -206,7 +206,102 @@ long ManejadorRegistrosVariables::get_registro_ocupado(RegistroVariable* registr
 }
 
 
-bool ManejadorRegistrosVariables::_registro_fue_eliminado(unsigned short numeroRegistro){
+int ManejadorRegistrosVariables::refactorizar(){
+
+	if( !archivo_existe(this->nombreArchivo) )
+		return RES_ERROR;
+
+	this->_leer_header();
+
+	if( this->header.cantidadRegistrosLibres== 0)
+		return RES_OK;
+	/*no es necesaria la reestructuracion*/
+
+	string nombreArchivoAuxiliar= "temp_"+nombreArchivo;
+	ManejadorRegistrosVariables manejadorArchivoAuxiliar;
+	manejadorArchivoAuxiliar.crear_archivo(nombreArchivoAuxiliar);
+
+//	fstream archivo(this->nombreArchivo);
+//
+//	while( !archivo.eof() ){
+//
+//		unsigned short tamanioRegistro= 0;
+//		archivo.read( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
+//		if(!archivo.good())
+//			break;
+//
+//		char* bufferRegistro= new char[tamanioRegistro]();
+//		archivo.read(bufferRegistro,tamanioRegistro);
+//		if(!archivo.good()){
+//			delete[] bufferRegistro;
+//			break;
+//		}
+//
+//		if(bufferRegistro[0]!=MARCA_BORRADO){
+//			stringstream bufferStream;
+//			bufferStream.write( (char*)&tamanioRegistro,sizeof(tamanioRegistro) );
+//			bufferStream.write( bufferRegistro,tamanioRegistro );
+//			bufferStream.seekg(0,ios::beg);
+//
+//			RegistroVariable registroBuffer;
+//			const unsigned short TAMANIO_BUFFER_EMPAQUETADO= tamanioRegistro+sizeof(tamanioRegistro);
+//			char* bufferEmpaquetado= new char[TAMANIO_BUFFER_EMPAQUETADO]();
+//			bufferStream.read( bufferEmpaquetado,TAMANIO_BUFFER_EMPAQUETADO );
+//			registroBuffer.desempaquetar(bufferEmpaquetado);
+//			manejadorArchivoAuxiliar.agregar_registro( &registroBuffer );
+//
+//			delete[] bufferEmpaquetado;
+//
+//		}
+//
+//
+//		delete[] bufferRegistro;
+//
+//	}
+
+	const unsigned int CANTIDAD_REGISTROS_OCUPADOS= this->get_cantidad_registros_ocupados();
+	if(CANTIDAD_REGISTROS_OCUPADOS== 0){
+		_reemplazar(nombreArchivoAuxiliar);
+		return RES_OK;
+		/*el archivo no tiene registros ocupados-> todos fueron eliminados -> solo se deben limpiar los registros
+		 * eliminados*/
+	}
+
+	for(unsigned int i=0;i<CANTIDAD_REGISTROS_OCUPADOS;i++){
+
+		RegistroVariable unRegistro;
+		this->get_registro_ocupado(&unRegistro,i);
+		manejadorArchivoAuxiliar.agregar_registro(&unRegistro);
+
+	}
+
+
+	this->_reemplazar(nombreArchivoAuxiliar);
+
+
+	return RES_OK;
+
+}
+
+
+void ManejadorRegistrosVariables::_reemplazar(string& nombreArchivoAuxiliar){
+
+	eliminar_archivo(nombreArchivo);
+	rename( nombreArchivoAuxiliar.c_str() , nombreArchivo.c_str() );
+	this->abrir_archivo(nombreArchivo);
+
+}
+
+
+void ManejadorRegistrosVariables::_cambiar_header(Header& headerCambiar){
+
+	this->header= headerCambiar;
+	this->_guardar_header();
+
+}
+
+
+bool ManejadorRegistrosVariables::_registro_fue_eliminado(unsigned int numeroRegistro){
 
 	long offset= _get_offset_registro(numeroRegistro);
 
@@ -278,7 +373,7 @@ long ManejadorRegistrosVariables::eliminar_registro(unsigned short numeroRegistr
 }
 */
 
-long ManejadorRegistrosVariables::eliminar_registro_ocupado(unsigned short numeroRegistro){
+long ManejadorRegistrosVariables::eliminar_registro_ocupado(unsigned int numeroRegistro){
 
 	if(!archivo_existe(nombreArchivo))
 		return RES_ERROR;
