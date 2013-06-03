@@ -17,6 +17,7 @@
 #include "TestIndicePorAutor.h"
 #include "TestIndicePorTitulo.h"
 #include "TestArchivoListas.h"
+#include "TestNormalizador.h"
 
 #include <cassert>
 #include <iostream>
@@ -37,7 +38,8 @@ void print_test_ok(std::string nombreTest)
 void test_leer_de_archivo()
 {
 	ParserCanciones parser;
-	assert(parser.crear("../songs/") == RES_OK);
+	string na= "../songs/";
+	assert(parser.crear(na) == RES_OK);
 	RegistroCancion regCancion;
 	std::string nombreArchivo = "";
 
@@ -292,6 +294,7 @@ void test_cancion_sabina(){
 int main(int argc,char** args)
 {
 	test_cancion_sabina();
+
 //	test_leer_de_archivo();
 	test_clave_numerica();
 	test_clave_string();
@@ -299,6 +302,8 @@ int main(int argc,char** args)
 	test_vector_clavex();
 
 	std::vector<Test*> tests;
+
+	tests.push_back(new TestNormalizador);
 
 	tests.push_back(new TestManejadorRegistrosVariables);
 
@@ -326,6 +331,7 @@ int main(int argc,char** args)
 
 	tests.push_back(new TestArchivoListas);
 	tests.push_back(new TestIndiceInvertidoPorFrase);
+
 //	tests.push_back(new TestIndicePorAutor);
 //	tests.push_back(new TestIndicePorTitulo);
 
