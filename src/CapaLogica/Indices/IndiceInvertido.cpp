@@ -161,10 +161,15 @@ int IndiceInvertido::_armar_listas_invertidas(int IDcancion)
 			//Guardo el IDter como el anterior
 			IDterAnterior = IDter;
 			//Saco el proximo registro de coincidencia
-			this->archivo_coincidencias.get_registro_ocupado(&regCoincidencia, i);
-			//Obtengo el IDter
-			regCoincidencia.recuperar_campo((char *)&IDter, 0);
 			i++;
+			if(i<q){
+				this->archivo_coincidencias.get_registro_ocupado(&regCoincidencia, i);
+				//Obtengo el IDter
+				regCoincidencia.recuperar_campo((char *)&IDter, 0);
+			}else{
+				//Salgo del do
+				IDter++;
+			}
 			j++;
 		}while(IDterAnterior == IDter);
 		//Guardo la lista de posiciones para el termino en esa cancion y obtengo su referencia
@@ -179,6 +184,7 @@ int IndiceInvertido::_armar_listas_invertidas(int IDcancion)
 		regCancionTermino.empaquetar(reg_cancion_termino);
 		listaInvertida.agregar_campo(reg_cancion_termino, regCancionTermino.get_tamanio_empaquetado());
 		delete[] reg_cancion_termino;
+		listaPos.limpiar_campos();
 		this->listas_invertidas.recontruir_listas(ref_lista, listaInvertida);
 	}
 	return RES_OK;
