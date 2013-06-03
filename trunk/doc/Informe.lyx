@@ -437,7 +437,7 @@ Las canciones a indexar estarán en inglés o en español.
 
 \begin_layout Enumerate
 No habrá dos canciones el mismo título.
- Si las hubiera, se indexarán ambas ,pero al consultar por un título solo
+ Si las hubiera, se indexarán ambas, pero al consultar por un título solo
  se devolverá la canción que se haya indexado primero.
 \end_layout
 
@@ -459,10 +459,6 @@ stemming
 stopwords
 \emph default
  para reducir el tamaño final del índice.
-\end_layout
-
-\begin_layout Enumerate
-Permitir al usuario eliminar del índice una canción.
 \end_layout
 
 \begin_layout Enumerate
@@ -872,7 +868,7 @@ El siguiente diagrama de clases ilustra el diseño del árbol B+:
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -1497,7 +1493,7 @@ El diagrama ilustra el diseño de los componentes de esta capa:
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -1541,6 +1537,276 @@ Indexador
 ResolvedorConsultas
 \family default
 .
+\end_layout
+
+\begin_layout Standard
+Las estructuras que se utilizan para mantener el índice son los siguientes:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="3">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="4cm">
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Tipo de estructura
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Nombre de la estructura
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Estructura de los registros
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+IndiceInvertido
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+indiceSecundarioFrases
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Explicada anteriormente.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+HashingExtensible
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+indicePrimario
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+(i(ID canción) , offset de canción en archivo maestro)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+ManejadorRegistrosVariables
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+archivoMaestro
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+((autor)+, (anio)?, idioma, titulo, letra)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+ArbolBMas
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+indiceSecundarioAutor
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+(i(autor canción + id canción))
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+HashingExtensible
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+indiceSecundarioTitulo
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+(i(titulo canción), id canción)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+HashingExtensible
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+documentos
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+(i(id canción), nombre archivo original)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1633,8 +1899,8 @@ Este comando recibe un <título> que se desee buscar en el índice guardado
 \end_layout
 
 \begin_layout Itemize
-Se mostrará por pantalla el nombre del archivo que contiene el <título>
- buscado.
+Se mostrará por pantalla el ID de la canción, el título y la letra de la
+ misma.
 \end_layout
 
 \end_deeper
@@ -1652,9 +1918,8 @@ Este comando recibe un <autor> que se desee buscar en el índice guardado
 \end_layout
 
 \begin_layout Itemize
-Se mostrarán por pantalla los nombres de los archivos de las canciones de
- dicho <autor>.
- 
+Se mostrarán por pantalla los IDs de las canciones de <autor>, sus títulos
+ y las letras de cada canción.
 \end_layout
 
 \end_deeper
@@ -1674,6 +1939,20 @@ Este comando recibe una <frase> que se desee buscar en el índice guardado
 \begin_layout Itemize
 Se mostrarán por pantalla los nombres de los archivos de las canciones que
  contengan dicha <frase>.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+-borrarCancion <carpeta de búsqueda> <id cancion>
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Este comando recibe un <id cancion> que se desee eliminar del índice guardado
+ dentro de <carpeta de búsqueda>.
+ 
 \end_layout
 
 \end_deeper
