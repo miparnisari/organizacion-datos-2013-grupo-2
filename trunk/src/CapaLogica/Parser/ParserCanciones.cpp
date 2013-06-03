@@ -68,7 +68,7 @@ int ParserCanciones::obtener_proxima_cancion(RegistroCancion& reg, std::string &
 	if (sizeOfBuffer == 0)
 	{
 		delete[] bufferCancion;
-		return RES_OK;
+		return RES_ERROR;
 	}
 	
 	// lo cargamos en el registro

@@ -11,13 +11,22 @@ Indexador::~Indexador()
 	
 }
 
+void Indexador::_mostrar_contenido(int id, RegistroCancion& reg)
+{
+	std::cout << "----------- ID CANCION = " << id << "---------" << std::endl;
+	std::cout << "TITULO = " << reg.get_titulo() << std::endl;
+	std::cout << reg.get_letra() << std::endl;
+}
+
 int Indexador::consultar_titulo(std::string & directorioSalida, std::string & titulo)
 {
 	ResolvedorConsultas rc(directorioSalida);
 	int id = rc.get_id_cancion_titulo(titulo);
 	if (id != RES_RECORD_DOESNT_EXIST)
 	{
-		std::cout << "Nombre archivo = " << rc.get_nombre_archivo(id) << "." << std::endl;
+		RegistroCancion* reg = rc.get_reg_completo(id);
+		_mostrar_contenido(id,*reg);
+
 	}
 	return RES_OK;
 }
@@ -28,7 +37,8 @@ int Indexador::consultar_autor(std::string & directorioSalida, std::string & aut
 	std::vector <int> ids = rc.get_id_canciones_autor(autor);
 	for (unsigned int i = 0; i < ids.size(); i ++)
 	{
-		std::cout << "Nombre archivo = " << rc.get_nombre_archivo(ids.at(i)) << "." << std::endl;
+		RegistroCancion* reg = rc.get_reg_completo(ids.at(i));
+		_mostrar_contenido(ids.at(i),*reg);
 	}
 	return RES_OK;
 }
@@ -39,7 +49,8 @@ int Indexador::consultar_frase (std::string & directorioSalida, std::string & fr
 	std::vector <int> ids = rc.get_ids_canciones_frases(frase);
 	for (unsigned int i = 0; i < ids.size(); i ++)
 	{
-		std::cout << "Nombre archivo = " << rc.get_nombre_archivo(ids.at(i)) << "." << std::endl;
+		RegistroCancion *reg = rc.get_reg_completo(ids.at(i));
+		_mostrar_contenido(ids.at(i),*reg);
 	}
 	return RES_OK;
 }
@@ -284,10 +295,11 @@ void Indexador::_indexar()
 		if (res != RES_OK)
 		{
 			std::cout << "No se indexó " << nombreArchivo << " porque no cumple el estándar especificado." << std::endl;
-			continue;
 		}
-		_agregar_a_los_indices(id, regCancion,nombreArchivo);
-		id.incrementar();
+		else {
+			_agregar_a_los_indices(id, regCancion,nombreArchivo);
+			id.incrementar();
+		}
 	}
 }
 
