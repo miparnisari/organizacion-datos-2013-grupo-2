@@ -145,7 +145,7 @@ int IndiceInvertido::_armar_listas_invertidas(int IDcancion)
 		regTerminoVoc.set_clave(claveTermino);
 		if(this->vocabulario.buscar(regTerminoVoc) == RES_ERROR)
 			return RES_ERROR;
-		regTerminoVoc.recuperar_campo((char*)&ref_lista,1);
+		regTerminoVoc.recuperar_campo((char*)&ref_lista,2);
 		//Obtengo la lista invertida del termino
 		this->listas_invertidas.devolver(&listaInvertida, ref_lista);
 		//Armo la lista de posiciones
