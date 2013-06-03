@@ -31,7 +31,15 @@ void TestOrdenamientoExterno::test_generar_runs(){
 	{
 		string clave="aaa";
 
-		string campoClave = utilitarios::string_a_int(clave);
+		int campoClaveI = utilitarios::string_a_int(clave);
+		stringstream ss;
+		ss<<campoClaveI;
+		ss.seekg(0,ios::beg);
+		string campoClave;
+		ss>>campoClave;
+		/*FIXME . asumi que esto es lo que querian hacer. Las lineas que estaban
+		 * antes eran:
+		 * string clave= utilitarios::string_a_int(clave) lo cual NO COMPILABA*/
 
 		RegistroVariable regVariable;
 

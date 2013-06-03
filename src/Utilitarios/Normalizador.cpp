@@ -7,6 +7,9 @@
 
 #include "Normalizador.h"
 
+#define IMP(v)\
+	cout<<#v<<" ="<<v<<endl;
+
 char Normalizador::transformar_char(wchar_t c){
 
     int cint = (int) c;
@@ -116,18 +119,40 @@ string Normalizador::normalizar_input( string linea ){
 	string nombreArchivoTemporal= "normalizar_input.txt";
 	string nombreArchivoTemporalNormalizado= "normalizar_input_normalizado.txt";
 	ofstream archivoTemporal(nombreArchivoTemporal.c_str());
-	archivoTemporal<<linea;
-	archivoTemporal<<'\n';
+//	archivoTemporal<<linea;
+//	archivoTemporal<<'\n';
+
+	IMP(linea);
+	archivoTemporal.write( linea.c_str(),linea.length() );
 	archivoTemporal.close();
 
 	normalizar(nombreArchivoTemporal,nombreArchivoTemporalNormalizado);
 	ifstream archivoResultado(nombreArchivoTemporalNormalizado.c_str());
-	const unsigned short TAMANIO_BUFFER_INPUT= 256;
-	char bufferInput[TAMANIO_BUFFER_INPUT];
-	archivoResultado.getline(bufferInput , TAMANIO_BUFFER_INPUT);
-	unsigned short longitudLineaNormalizada= strlen(bufferInput);
+//	const unsigned short TAMANIO_BUFFER_INPUT= 4096;
+//	char bufferInput[TAMANIO_BUFFER_INPUT];
 
-	string resultado(bufferInput,longitudLineaNormalizada);
+//	archivoResultado.getline(bufferInput , TAMANIO_BUFFER_INPUT);
+//	unsigned short longitudLineaNormalizada= strlen(bufferInput);
+
+	string resultado;
+	while(!archivoResultado.eof()){
+//		string temp;
+//		archivoResultado>>temp;
+//		if(!archivoResultado.eof())
+//			resultado+=temp+'\n';
+		const unsigned short TAMANIO_BUFFER_INPUT= 512;
+		char bufferInput[TAMANIO_BUFFER_INPUT];
+		archivoResultado.getline(bufferInput,TAMANIO_BUFFER_INPUT);
+		if(!archivoResultado.eof()){
+			string temp(bufferInput, strlen(bufferInput) );
+			resultado+= temp+'\n';
+		}
+	}
+
+	remove(nombreArchivoTemporal.c_str());
+	remove(nombreArchivoTemporalNormalizado.c_str());
+
+//	string resultado(bufferInput,longitudLineaNormalizada);
 	return resultado;
 
 }
