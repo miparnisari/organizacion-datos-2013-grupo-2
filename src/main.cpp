@@ -10,6 +10,7 @@ int main (int argc, char* argv[])
 
 	std::string operacion = std::string(argv[1]);
 	Indexador indexador;
+	Normalizador normalizadorConsulta;
 	
 	if (operacion == "-indexar")
 	{
@@ -22,21 +23,25 @@ int main (int argc, char* argv[])
 	{
 		std::string directorioSalida = std::string(argv[2]);
 		std::string titulo = std::string(argv[3]);
-		indexador.consultar_titulo(directorioSalida, titulo);
+		std::string tituloNormalizado = normalizadorConsulta.normalizar_input(titulo);
+		indexador.consultar_titulo(directorioSalida, tituloNormalizado);
 	}
 	
 	else if (operacion == "-consultarAutor")
 	{
 		std::string directorioSalida = std::string(argv[2]);
 		std::string autor = std::string(argv[3]);
-		indexador.consultar_autor(directorioSalida, autor);
+		std::string autorNormalizado = normalizadorConsulta.normalizar_input(autor);
+		indexador.consultar_autor(directorioSalida, autorNormalizado);
 	}
 
 	else if (operacion == "-consultarFrase")
 	{
 		std::string directorioSalida = std::string(argv[2]);
 		std::string frase = std::string(argv[3]);
-		indexador.consultar_frase(directorioSalida,frase);
+
+		std::string fraseNormalizada = normalizadorConsulta.normalizar_input(frase);
+		indexador.consultar_frase(directorioSalida,fraseNormalizada);
 	}
 	else if (operacion == "-borrarCancion")
 	{

@@ -149,7 +149,7 @@ string Normalizador::normalizar_input( string linea ){
 		archivoResultado.getline(bufferInput,TAMANIO_BUFFER_INPUT);
 		if(!archivoResultado.eof()){
 			string temp(bufferInput, strlen(bufferInput) );
-			resultado+= temp+'\n';
+			resultado+= temp;
 		}
 	}
 

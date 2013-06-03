@@ -96,7 +96,7 @@ int IndiceInvertido::_armar_archivo_coincidencias(std::string unTexto)
 			regTerminoVoc.agregar_campo((char *)&IDter, sizeof(IDter));
 			listaInvertida.agregar_campo((char*)&vacio, sizeof(vacio));
 			ref_lista = this->listas_invertidas.agregar(&listaInvertida);
-			cout << "ref_lista = " << ref_lista << endl;
+//			cout << "ref_lista = " << ref_lista << endl;
 			regTerminoVoc.agregar_campo((char *)&ref_lista, sizeof(ref_lista));
 
 			if(this->vocabulario.agregar(regTerminoVoc) != RES_OK)

@@ -197,11 +197,12 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 {
 	ClaveNumerica id(archivoMaestro.get_cantidad_registros());
 
-	RegistroCancion regCancion;
+	RegistroCancion regCancionNormalizado;
+	RegistroCancion regCancionNoNormalizado;
 	std::string nombreArchivo;
 	while (! parser.fin_directorio())
 	{
-		int res = parser.obtener_proxima_cancion(regCancion, nombreArchivo);
+		int res = parser.obtener_proxima_cancion(regCancionNormalizado, regCancionNoNormalizado, nombreArchivo);
 		if (res != RES_OK)
 		{
 			std::cout << "No se indexó " << nombreArchivo << " porque no cumple el estandar especificado." << std::endl;
@@ -209,12 +210,12 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 		}
 
 		std::vector<std::string> autores;
-		for (unsigned int i = 0; i < regCancion.get_cantidad_autores(); i ++)
+		for (unsigned int i = 0; i < regCancionNormalizado.get_cantidad_autores(); i ++)
 		{
-			autores.push_back(regCancion.get_autor(i));
+			autores.push_back(regCancionNormalizado.get_autor(i));
 		}
-		std::string titulo = regCancion.get_titulo();
-		std::string idioma = regCancion.get_idioma();
+		std::string titulo = regCancionNormalizado.get_titulo();
+		std::string idioma = regCancionNormalizado.get_idioma();
 		std::vector<int> idsDelAutor;
 
 		// Verifico que no haya ninguna cancion ya indexada
@@ -256,7 +257,7 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 			continue;
 		}
 
-		_agregar_a_los_indices(id, regCancion,nombreArchivo);
+		_agregar_a_los_indices(id, regCancionNormalizado, regCancionNoNormalizado, nombreArchivo);
 		id.incrementar();
 
 	}
@@ -264,11 +265,15 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 	return _finalizar();
 }
 
-void Indexador::_agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & regCancion, std::string nombreArchivo)
+void Indexador::_agregar_a_los_indices (
+		ClaveNumerica & id,
+		RegistroCancion & regCancion,
+		RegistroCancion & regCancionNoNormalizada,
+		std::string nombreArchivo)
 {
 	/* ------ guardamos el registro de la cancion en un archivo maestro ------ */
 	regCancion.comprimir(compresor);
-	long offsetInicialRegCancion = archivoMaestro.agregar_registro(&regCancion);
+	long offsetInicialRegCancion = archivoMaestro.agregar_registro(&regCancionNoNormalizada);
 
 	/* ------ guardamos el numero de documento (clave) y el documento -------- */
 
@@ -325,7 +330,7 @@ void Indexador::_agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & re
 
 	/* ----- agregamos al indice por frase: frases ----*/
 	std::string letra = regCancion.get_letra();
-	indiceSecundarioFrases.agregar_texto(letra,id.get_dato());
+	//indiceSecundarioFrases.agregar_texto(letra,id.get_dato()); FIXME descomentar
 
 	std::cout << "Se indexó " << nombreArchivo << " correctamente!" << std::endl;
 }
@@ -334,19 +339,20 @@ void Indexador::_indexar()
 {
 	ClaveNumerica id(0);
 
-	RegistroCancion regCancion;
+	RegistroCancion regCancionNormalizada;
+	RegistroCancion regCancionNoNormalizada;
 	std::string nombreArchivo;
 
 	// Para cada cancion que tengamos...
 	while (! parser.fin_directorio())
 	{
-		int res = parser.obtener_proxima_cancion(regCancion,nombreArchivo);
+		int res = parser.obtener_proxima_cancion(regCancionNormalizada,regCancionNoNormalizada,nombreArchivo);
 		if (res != RES_OK)
 		{
 			std::cout << "No se indexó " << nombreArchivo << " porque no cumple el estándar especificado." << std::endl;
 		}
 		else {
-			_agregar_a_los_indices(id, regCancion,nombreArchivo);
+			_agregar_a_los_indices(id, regCancionNormalizada, regCancionNoNormalizada, nombreArchivo);
 			id.incrementar();
 		}
 	}
