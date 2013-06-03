@@ -93,9 +93,9 @@ int IndiceInvertido::_armar_archivo_coincidencias(std::string unTexto)
 				return RES_ERROR;
 
 			//Le agrego al reg del vocabulario una referencia a una lista nueva
-			listaInvertida.agregar_campo((char*)&vacio, sizeof(vacio));
-			ref_lista = this->listas_invertidas.agregar(&listaInvertida); // FIXME listaInvertida esta VACIO!
 			regTerminoVoc.agregar_campo((char *)&IDter, sizeof(IDter));
+			listaInvertida.agregar_campo((char*)&vacio, sizeof(vacio));
+			ref_lista = this->listas_invertidas.agregar(&listaInvertida);  // FIXME listaInvertida esta VACIO!
 			regTerminoVoc.agregar_campo((char *)&ref_lista, sizeof(ref_lista));
 
 			if(this->vocabulario.agregar(regTerminoVoc) != RES_OK)
@@ -121,7 +121,7 @@ int IndiceInvertido::_armar_listas_invertidas(int IDcancion)
 	RegistroClave regTerminoVoc, regCancionTermino;
 	ClaveX clave, claveTermino;
 	unsigned short i=0;
-	int IDter, IDterAnterior, ref_lista, ref_lista_pos;
+	int IDter, IDterAnterior, ref_lista, ref_lista_pos, vacia;
 
 	unsigned int q = this->archivo_coincidencias.get_cantidad_registros_ocupados();
 	while (i <q){
@@ -148,6 +148,9 @@ int IndiceInvertido::_armar_listas_invertidas(int IDcancion)
 		regTerminoVoc.recuperar_campo((char*)&ref_lista,2);
 		//Obtengo la lista invertida del termino
 		this->listas_invertidas.devolver(&listaInvertida, ref_lista);
+		//Vemos si esta vacia la lista invertida
+		listaInvertida.recuperar_campo((char*)&vacia, 0);
+		if(vacia == LISTA_VACIA)	listaInvertida.limpiar_campos();
 		//Armo la lista de posiciones
 		int j=0;
 		do{//Mientras sean el mismo termino
