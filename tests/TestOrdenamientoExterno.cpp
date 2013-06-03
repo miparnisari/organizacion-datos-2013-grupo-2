@@ -31,9 +31,7 @@ void TestOrdenamientoExterno::test_generar_runs(){
 	{
 		string clave="aaa";
 
-		stringstream conversor;
-		conversor << clave;
-		string campoClave= conversor.str();
+		string campoClave = utilitarios::string_a_int(clave);
 
 		RegistroVariable regVariable;
 
