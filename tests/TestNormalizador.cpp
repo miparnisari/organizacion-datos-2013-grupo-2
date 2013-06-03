@@ -43,7 +43,7 @@ void TestNormalizador::test_normalizar_input(){
 
 	Normalizador n;
 
-	string lineaLarga= "holá cómo\nestas todo\nbien tranquilo";
+	string lineaLarga= "ésta-línea-se-ásemeja-múcho-A\nUNA CANCION\n";
 	IMPRIMIR_VARIABLE(lineaLarga);
 	IMPRIMIR_VARIABLE(lineaLarga.length());
 	string lineaLargaNormalizada;
