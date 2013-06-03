@@ -24,7 +24,158 @@ void TestManejadorRegistrosVariables::ejecutar()
 	test_masivo();
 	test_contar_registros();
 	test_recuperar_por_offset();
+	test_registro_clave();
+	test_refactorizar();
 }
+
+
+void TestManejadorRegistrosVariables::test_refactorizar(){
+
+	{
+		string nombreArchivo= "test_refactorizar.dat";
+		ManejadorRegistrosVariables mrv;
+		mrv.eliminar_archivo(nombreArchivo);
+		mrv.crear_archivo(nombreArchivo);
+
+		const unsigned short CANTIDAD_REGISTROS_INICIAL= 20;
+		for(unsigned short i=0;i<CANTIDAD_REGISTROS_INICIAL;i++){
+
+			string claveAcumulada= "clavea";
+			claveAcumulada[claveAcumulada.length()-1]= (char)(65+i);
+			ClaveX clave;
+			clave.set_clave(claveAcumulada);
+			RegistroClave registro;
+			registro.set_clave(clave);
+
+			mrv.agregar_registro(&registro);
+
+		}//registros agregados
+		assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
+
+		for(unsigned short i=0;i< (short)(CANTIDAD_REGISTROS_INICIAL/2);i++ ){
+
+			mrv.eliminar_registro_ocupado(0);
+			assert( mrv.get_cantidad_registros_ocupados() == (CANTIDAD_REGISTROS_INICIAL-i-1) );
+			assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
+
+		}
+
+		assert( mrv.refactorizar()== RES_OK );
+		IMPRIMIR_VARIABLE(mrv.get_cantidad_registros_ocupados());
+
+
+		for(unsigned short i=0;i< mrv.get_cantidad_registros_ocupados();i++ ){
+
+			RegistroClave unRegistro;
+			mrv.get_registro_ocupado(&unRegistro,i);
+			ClaveX clave;
+			clave= unRegistro.get_clave();
+			clave.imprimir_dato();
+			cout<<endl;
+
+		}
+
+
+
+
+	}
+
+	{
+		string nombreArchivo= "test_refactorizar.dat";
+		ManejadorRegistrosVariables mrv;
+		mrv.eliminar_archivo(nombreArchivo);
+		mrv.crear_archivo(nombreArchivo);
+
+		const unsigned short CANTIDAD_REGISTROS_INICIAL= 20;
+		for(unsigned short i=0;i<CANTIDAD_REGISTROS_INICIAL;i++){
+
+			string claveAcumulada= "clavea";
+			claveAcumulada[claveAcumulada.length()-1]= (char)(65+i);
+			ClaveX clave;
+			clave.set_clave(claveAcumulada);
+			RegistroClave registro;
+			registro.set_clave(clave);
+
+			mrv.agregar_registro(&registro);
+
+		}//registros agregados
+		assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
+
+		for(unsigned short i=0;i< (short)(CANTIDAD_REGISTROS_INICIAL/2);i++ ){
+
+			mrv.eliminar_registro_ocupado(i);
+			assert( mrv.get_cantidad_registros_ocupados() == (CANTIDAD_REGISTROS_INICIAL-i-1) );
+			assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
+
+		}
+
+		assert( mrv.refactorizar()== RES_OK );
+		IMPRIMIR_VARIABLE(mrv.get_cantidad_registros_ocupados());
+
+		for(unsigned short i=0;i< mrv.get_cantidad_registros_ocupados();i++ ){
+
+			RegistroClave unRegistro;
+			mrv.get_registro_ocupado(&unRegistro,i);
+			ClaveX clave;
+			clave= unRegistro.get_clave();
+			clave.imprimir_dato();
+			cout<<endl;
+
+		}
+
+
+
+	}
+
+	{
+			string nombreArchivo= "test_refactorizar.dat";
+			ManejadorRegistrosVariables mrv;
+			mrv.eliminar_archivo(nombreArchivo);
+			mrv.crear_archivo(nombreArchivo);
+
+			const unsigned short CANTIDAD_REGISTROS_INICIAL= 20;
+			for(unsigned short i=0;i<CANTIDAD_REGISTROS_INICIAL;i++){
+
+				string claveAcumulada= "clavea";
+				claveAcumulada[claveAcumulada.length()-1]= (char)(65+i);
+				ClaveX clave;
+				clave.set_clave(claveAcumulada);
+				RegistroClave registro;
+				registro.set_clave(clave);
+
+				mrv.agregar_registro(&registro);
+
+			}//registros agregados
+			assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
+
+			for(unsigned short i=0;i< (short)(CANTIDAD_REGISTROS_INICIAL/2);i++ ){
+
+				mrv.eliminar_registro_ocupado( mrv.get_cantidad_registros_ocupados()-1 );
+				assert( mrv.get_cantidad_registros_ocupados() == (CANTIDAD_REGISTROS_INICIAL-i-1) );
+				assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
+
+			}
+
+			assert( mrv.refactorizar()== RES_OK );
+			IMPRIMIR_VARIABLE(mrv.get_cantidad_registros_ocupados());
+
+			for(unsigned short i=0;i< mrv.get_cantidad_registros_ocupados();i++ ){
+
+				RegistroClave unRegistro;
+				mrv.get_registro_ocupado(&unRegistro,i);
+				ClaveX clave;
+				clave= unRegistro.get_clave();
+				clave.imprimir_dato();
+				cout<<endl;
+
+			}
+
+
+
+		}
+
+}
+
 
 
 void TestManejadorRegistrosVariables::test_recuperar_por_offset(){
@@ -355,5 +506,36 @@ void TestManejadorRegistrosVariables::test_chequear_registros_ocupados(){
 	}
 
 	print_test_ok("test_manejador_registros_variables_chequear_registros_ocupados");
+
+}
+
+
+void TestManejadorRegistrosVariables::test_registro_clave(){
+
+	string nombreArchivo= "test_registro_clave.dat";
+	ManejadorRegistrosVariables mrv;
+	mrv.eliminar_archivo(nombreArchivo);
+	mrv.crear_archivo(nombreArchivo);
+
+
+	{
+		const unsigned short CANTIDAD_REGISTROS_ORIGINAL= 10;
+		for(unsigned short i=0;i<CANTIDAD_REGISTROS_ORIGINAL;i++){
+			string claveS= "clave";
+			claveS[claveS.length()-1]= (char)(65+i);
+			ClaveX clave;
+			clave.set_clave(claveS);
+			RegistroClave registro;
+			registro.set_clave(clave);
+			assert( mrv.agregar_registro(&registro)!= RES_ERROR );
+		}
+
+		RegistroClave primerRegistro;
+		assert( mrv.get_registro_ocupado(&primerRegistro,0)!= RES_ERROR );
+		primerRegistro.get_clave().imprimir_dato();
+
+
+
+	}
 
 }

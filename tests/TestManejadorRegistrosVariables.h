@@ -24,6 +24,8 @@ class TestManejadorRegistrosVariables: public Test {
 		void test_masivo();
 		void test_contar_registros();
 		void test_recuperar_por_offset();
+		void test_registro_clave();
+		void test_refactorizar();
 };
 
 #endif /* TESTMANEJADORREGISTROSVARIABLES_H_ */
