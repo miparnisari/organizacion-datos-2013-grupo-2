@@ -124,6 +124,11 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
 	reg.recuperar_campo((char*)&offset,1);
 
 	archivoMaestro.get_registro_por_offset(regCancion,offset);
+	if (regCancion->fue_eliminado())
+	{
+		std::cout << "REG FUE ELIMINADO" << std::endl;
+		return NULL;
+	}
 
 	return regCancion;
 }

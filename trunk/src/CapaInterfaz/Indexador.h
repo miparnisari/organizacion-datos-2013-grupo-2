@@ -31,6 +31,7 @@ class Indexador
 		int consultar_autor(std::string & directorioSalida, std::string & unAutor);
 		int consultar_titulo(std::string & directorioSalida, std::string & titulo);
 		int consultar_frase (std::string & directorioSalida, std::string & frase);
+		void borrar_cancion (std::string & directorioSalida, int idCancion);
 
 	private:
 		static const int OPCION_INDEXAR = 1;
@@ -46,13 +47,13 @@ class Indexador
 		CompresorPPMC compresor;
 
 		int _crear_archivos_indices(std::string & directorioSalida);
-		int _abrir_archivos_indices(std::string & directorioEntrada, std::string & directorioSalida);
+		int _abrir_archivos_indices (std::string & directorioSalida);
 		int _finalizar();
 		void _agregar_a_los_indices (ClaveNumerica & id, RegistroCancion & regCancion, std::string nombreArchivo);
 		int _anexar(std::string & directorioEntrada, std::string & directorioSalida);
 		void _indexar();
 		int _mostrar_opciones(std::string & directorioEntrada, std::string & directorioSalida);
-		void _mostrar_contenido(int id, RegistroCancion& reg);
+		void _mostrar_contenido(int id, RegistroCancion* reg);
 };
 
 #endif /* INDEXADOR_H */ 
