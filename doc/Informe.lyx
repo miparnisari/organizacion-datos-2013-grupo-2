@@ -432,11 +432,55 @@ txt
 \end_layout
 
 \begin_layout Enumerate
-Las canciones a indexar estarán en inglés o en español.
+Las canciones a indexar tendrán el siguiente formato:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<autor1>(;<autor2><autor3>...)(-<año>)-<titulo>-<idioma>
+\end_layout
+
+\begin_layout Plain Layout
+
+<letras>
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
-No habrá dos canciones el mismo título.
+Los parámetros dentro de paréntesis son opcionales.
+\end_layout
+
+\begin_layout Enumerate
+El campo 
+\family typewriter
+<idioma>
+\family default
+ debe ser alguno de los siguientes: 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+en, english, inglés
+\end_layout
+
+\begin_layout Enumerate
+sp, spanish, español, espaniol, espanol
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+No habrá dos canciones con el mismo título.
  Si las hubiera, se indexarán ambas, pero al consultar por un título solo
  se devolverá la canción que se haya indexado primero.
 \end_layout
@@ -710,6 +754,26 @@ RegistrosVariables
 \end_layout
 
 \begin_layout Itemize
+Los 
+\family typewriter
+RegistrosVariables
+\family default
+ se los puede recuperar de dos formas:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Especificando el número de registro que se desea, empezando desde el 0.
+ La búsqueda se realiza en forma secuencial.
+\end_layout
+
+\begin_layout Itemize
+Especificando el offset inicial del registro que se desea.
+ El acceso es directo.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
 Se utiliza una política de first-fit para la administración del espacio
  libre.
  Se utiliza una pila de registros libres o borrados cuyo primer elemento
@@ -758,9 +822,9 @@ Si se dan numerosas bajas, el archivo inevitablemente comenzará a fragmentarse
 \end_layout
 
 \begin_layout Standard
-
+La clase
 \family typewriter
-Bloque
+ Bloque
 \family default
  guarda objetos del tipo 
 \family typewriter
@@ -771,17 +835,11 @@ RegistroVariable
 \family typewriter
 Bloque
 \family default
-s son de tamaño fijo con un valor por defecto de hasta 4 KB de almacenamiento.
- Los 
+s son de tamaño fijo; este tamaño se guarda dentro del archivo 
 \family typewriter
-Bloque
+Constantes.h
 \family default
-s pueden empaquetarse y desempaquetarse como arreglos de bytes con el siguiente
- formato: 
-\family typewriter
-( datos … uInt espacioLibre )
-\family default
- .
+, y fue prefijado en 4 KB.
 \end_layout
 
 \begin_layout Standard
@@ -799,14 +857,51 @@ Bloques
 
 \begin_layout Itemize
 La política de recuperación de espacio libre es de pila de bloques libres.
- Los 
+ Se decidió a favor de esta técnica y en contra del uso de un mapa de bits
+ de bloques libres ya que nos pareció que era más sencillo implementarlo
+ de esta manera.
+ 
+\end_layout
+
+\begin_layout Itemize
+Para escribir un nuevo 
 \family typewriter
-Bloques
+Bloque
 \family default
- se escriben completos.
- Es decir que para actualizar un bloque, el mismo debe ser leído del archivo,
- modificado y luego sobrescribirlo en el offset original usando la primitiva
- adecuada.
+ en el archivo se utiliza la primitiva 
+\family typewriter
+escribir
+\family default
+.
+\end_layout
+
+\begin_layout Itemize
+Para actualizar un 
+\family typewriter
+Bloque
+\family default
+, el mismo debe ser leído del archivo, modificado y luego sobrescribirlo
+ en el offset original usando la primitiva 
+\family typewriter
+sobreescribir
+\family default
+.
+\end_layout
+
+\begin_layout Itemize
+Para eliminar un 
+\family typewriter
+Bloque
+\family default
+, se debe utilizar la primitiva 
+\family typewriter
+sobreescribir
+\family default
+, pasándole como parámetro un 
+\family typewriter
+Bloque 
+\family default
+vacío.
 \end_layout
 
 \begin_layout Itemize
@@ -1084,6 +1179,7 @@ La
 Tabla
 \family default
  es un archivo de control.
+ Los dos archivos fueron separados para facilitar la implementación.
 \end_layout
 
 \end_inset
@@ -1903,6 +1999,19 @@ Se mostrará por pantalla el ID de la canción, el título y la letra de la
  misma.
 \end_layout
 
+\begin_layout Itemize
+Si el campo <titulo> tiene espacios en blancos, se debe escribir el título
+ entre comillas dobles (
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+).
+\end_layout
+
 \end_deeper
 \begin_layout Itemize
 
@@ -1920,6 +2029,19 @@ Este comando recibe un <autor> que se desee buscar en el índice guardado
 \begin_layout Itemize
 Se mostrarán por pantalla los IDs de las canciones de <autor>, sus títulos
  y las letras de cada canción.
+\end_layout
+
+\begin_layout Itemize
+Si el campo <autor> tiene espacios en blancos, se debe escribir el autor
+ entre comillas dobles (
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+).
 \end_layout
 
 \end_deeper
@@ -1941,6 +2063,19 @@ Se mostrarán por pantalla los nombres de los archivos de las canciones que
  contengan dicha <frase>.
 \end_layout
 
+\begin_layout Itemize
+Si el campo <frase> tiene espacios en blancos, se debe escribir la frase
+ entre comillas dobles (
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+).
+\end_layout
+
 \end_deeper
 \begin_layout Itemize
 
@@ -1953,6 +2088,177 @@ Se mostrarán por pantalla los nombres de los archivos de las canciones que
 Este comando recibe un <id cancion> que se desee eliminar del índice guardado
  dentro de <carpeta de búsqueda>.
  
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Ejemplos
+\end_layout
+
+\begin_layout Itemize
+Para indexar la carpeta 
+\family typewriter
+songs
+\family default
+ dentro de 
+\family typewriter
+organizacion-datos-2013-grupo 2
+\family default
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+
+\family typewriter
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+user@notebook:~$ cd Desktop/organizacion-datos-2013-grupo-2/ 
+\end_layout
+
+\begin_layout Plain Layout
+
+user@notebook:~/Desktop/organizacion-datos-2013-grupo-2$ ls 
+\end_layout
+
+\begin_layout Plain Layout
+
+doc  lib  songs  src  tests 
+\end_layout
+
+\begin_layout Plain Layout
+
+user@notebook:~/Desktop/organizacion-datos-2013-grupo-2$ cd src 
+\end_layout
+
+\begin_layout Plain Layout
+
+user@notebook:~/Desktop/organizacion-datos-2013-grupo-2/src$ make
+\end_layout
+
+\begin_layout Plain Layout
+
+user@notebook:~/Desktop/organizacion-datos-2013-grupo-2/src$ ./main -indexar
+ ../songs ../output 
+\end_layout
+
+\begin_layout Plain Layout
+
+AVISO: El directorio de salida no existe.
+  
+\end_layout
+
+\begin_layout Plain Layout
+
+Se creó el directorio de salida.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+Se indexó ../songs/joaquin sabina - y nos dieron las diez.txt correctamente!
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+No se indexó ../songs/at the drive in -invalid.txt porque no cumple el estándar
+ especificado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+No se indexó ../songs/daft punk - the game of love.txt porque no cumple el
+ estándar especificado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+Se indexó ../songs/madonna - girl gone wild.txt correctamente! 
+\end_layout
+
+\begin_layout Plain Layout
+
+No se indexó ../songs/aerosmith-helter skelter.txt porque no cumple el estándar
+ especificado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+Se indexó ../songs/keane - somewhere only we know.txt correctamente! 
+\end_layout
+
+\begin_layout Plain Layout
+
+Se indexó ../songs/oasis-helter skelter.txt correctamente! 
+\end_layout
+
+\begin_layout Plain Layout
+
+Se indexó ../songs/queens of the stone age - Walkin' On The Sidewalks.txt correctam
+ente!
+\end_layout
+
+\begin_layout Plain Layout
+
+o se indexó ../songs/daft punk - give life back to music.txt porque no cumple
+ el estándar especificado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+Se indexó ../songs/joaquin sabina - nos sobran los motivos.txt correctamente!
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+No se indexó ../songs/madonna - i'm addicted.txt porque no cumple el estándar
+ especificado.
+\end_layout
+
+\begin_layout Plain Layout
+
+Se indexó ../songs/u2-pride.txt correctamente! 
+\end_layout
+
+\begin_layout Plain Layout
+
+Se indexó ../songs/madonna - gang bang.txt correctamente! 
+\end_layout
+
+\begin_layout Plain Layout
+
+No se indexó ../songs/archivo vacio.txt porque no cumple el estándar especificado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+Se indexó ../songs/the summer set - cross your fingers.txt correctamente! 
+\end_layout
+
+\begin_layout Plain Layout
+
+Se indexó ../songs/one republic - say all i need.txt correctamente! 
+\end_layout
+
+\begin_layout Plain Layout
+
+Se indexó ../songs/nicki minaj - starships.txt correctamente! 
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_deeper
