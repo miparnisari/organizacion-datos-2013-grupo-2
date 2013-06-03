@@ -381,6 +381,9 @@ bool RegistroCancion::obtener_letra()throw(){
 	if(letra.length()== 0)
 		return false;
 
+	// saco el ultimo fin de linea
+	letra.erase(letra.length()-1,1);
+
 	return true;
 
 
