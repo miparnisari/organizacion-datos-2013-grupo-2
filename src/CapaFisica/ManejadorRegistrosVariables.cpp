@@ -72,7 +72,7 @@ long ManejadorRegistrosVariables::_get_offset_registro(unsigned int numeroRegist
 	fstream archivo(nombreArchivo.c_str());
 	archivo.seekg(OFFSET_PRIMER_REGISTRO,ios::beg);
 
-	for(int i=0;i<numeroRegistro;i++){
+	for(unsigned int i=0;i<numeroRegistro;i++){
 
 		unsigned short tamanioRegistro;
 		archivo.read( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
@@ -161,7 +161,7 @@ long ManejadorRegistrosVariables::get_registro_ocupado(RegistroVariable* registr
 
 	if( !archivo_existe(nombreArchivo) )
 		return RES_ERROR;
-	if( numeroRegistro >= this->get_cantidad_registros_ocupados() )
+	if( numeroRegistro >= (unsigned int)this->get_cantidad_registros_ocupados() )
 		return RES_ERROR;
 
 	fstream archivo( nombreArchivo.c_str() );
@@ -527,6 +527,11 @@ int ManejadorRegistrosVariables::get_cantidad_registros(){
 
 
 int ManejadorRegistrosVariables::get_cantidad_registros_ocupados(){
+
+	if(!this->archivo_existe(nombreArchivo))
+		return RES_ERROR;
+
+	_leer_header();
 
 	return (header.cantidadRegistros - header.cantidadRegistrosLibres);
 
