@@ -122,8 +122,6 @@ bool RegistroCancion::obtener_parametro(unsigned short numeroParametro,string& p
 	stringstream stream;
 	stream.write(buffer,tamanio);
 	stream.seekg(0,ios::beg);
-//	string parametros(buffer,tamanio);//fixme linea agregada
-
 	string parametros;
 
 	const unsigned short TAMANIO_BUFFER_PARAMETROS= 2048;
@@ -171,8 +169,6 @@ unsigned short RegistroCancion::contar_parametros()throw()
 	stream.write(buffer,tamanio); //Inserts the first n characters of the array pointed by s into the stream.
 	stream.seekg(0,ios::beg);
 		
-//	string stringCancion(buffer,tamanio);//fixme agregado
-
 	string stringCancion;
 
 	const unsigned short TAMANIO_BUFFER_PARAMETROS= 2048;
@@ -305,47 +301,6 @@ bool RegistroCancion::obtener_idioma()throw(){
 	string idiomaString;
 
 	obtener_parametro(numeroParametroIdioma , idiomaString);
-//	{
-//		unsigned short numeroParametro= numeroParametroIdioma;
-//		string parametro;
-//		parametro= "";
-//		if(numeroParametro>= cantidadParametros)
-//			return false;
-//
-//
-//		string parametros(buffer,tamanio);//fixme linea agregada
-//
-//
-//		unsigned short offset= 0;
-//		unsigned short contadorParametro= 0;
-//		const char SEPARACION_PARAMETROS= '-';
-//
-//		while(contadorParametro< numeroParametro){
-//			char c;
-//			c= parametros.at(offset);
-//
-//			if(c== SEPARACION_PARAMETROS)
-//				contadorParametro++;
-//
-//			offset++;
-//
-//		}
-//
-//		char c='x';
-//		string parametroLeido;
-//		while(offset < parametros.length() && c!= SEPARACION_PARAMETROS && c!='\n'
-//				&& c!='\0'){
-//
-//			c= parametros.at(offset);
-//			if(c!=SEPARACION_PARAMETROS && c!='\n' && c!='\0')
-//				parametroLeido.push_back(c);
-//			offset++;
-//
-//		}
-//
-//		parametro= parametroLeido;
-//		idiomaString= parametro;
-//	}
 
 	return idioma.cargar(idiomaString);
 
@@ -436,11 +391,6 @@ string RegistroCancion::get_titulo()throw(){
 
 int RegistroCancion::cargar(const char* dato,unsigned short tamanioDato)throw(){
  	int resCarga = RegistroVariable::agregar_datos(dato,tamanioDato);
-// 	char finLinea= '\n';
-// 	resCarga = RegistroVariable::agregar_datos( (char*)&finLinea,1 );
-
-// 	string cancionCargar(buffer,tamanio);
-
 	if (resCarga != RES_OK)
 		return resCarga;
 	

@@ -96,7 +96,6 @@ int IndiceInvertido::_armar_archivo_coincidencias(std::string unTexto)
 			regTerminoVoc.agregar_campo((char *)&IDter, sizeof(IDter));
 			listaInvertida.agregar_campo((char*)&vacio, sizeof(vacio));
 			ref_lista = this->listas_invertidas.agregar(&listaInvertida);
-//			cout << "ref_lista = " << ref_lista << endl;
 			regTerminoVoc.agregar_campo((char *)&ref_lista, sizeof(ref_lista));
 
 			if(this->vocabulario.agregar(regTerminoVoc) != RES_OK)
@@ -346,7 +345,7 @@ int IndiceInvertido::_armar_archivo_terminos_frase(std::string & frase, Registro
 			if(this->_buscar_cancion_en_lista(IDcan, canciones) == RES_OK){
 				//La cancion se encuentra entre las canciones que buscamos
 				//Buscamo la lista de posiciones
-				listaCan.recuperar_campo((char*) &ref_lista_pos, 1); // FIXME 2 o 1?
+				listaCan.recuperar_campo((char*) &ref_lista_pos, 1);
 				this->listas_posiciones.devolver(&listaPos, ref_lista_pos);
 				cant_pos = listaPos.get_cantidad_campos();
 				for(j=0; j<cant_pos; j++){
@@ -354,7 +353,6 @@ int IndiceInvertido::_armar_archivo_terminos_frase(std::string & frase, Registro
 					RegistroVariable regTem;
 					int i_pos;
 					regTem.agregar_campo((char*)&IDcan,sizeof(IDcan));
-//					char* pos = new char[listaPos.get_tamanio_campo(j)]();
 					listaPos.recuperar_campo((char*)&i_pos, j);
 					regTem.agregar_campo((char*)&i_pos, sizeof(i_pos));
 					regTem.agregar_campo((char*)&IDter,sizeof(IDter));
@@ -454,9 +452,9 @@ int IndiceInvertido::_siguiente_termino_frase(int &pos_reg, int pos_ter_frase, i
 
 int IndiceInvertido::borrar_indice()
 {
-	this->archivo_terminos.eliminar_archivo(this->fileName+"Terminos.dat");
-	this->vocabulario.eliminar(this->fileName+"Vocabulario.dat");
-	this->listas_invertidas.eliminar(this->ruta, "ListasInvertidas");
-	this->listas_posiciones.eliminar(this->ruta, "ListasPosiciones");
-	return RES_OK;
+	int res =this->archivo_terminos.eliminar_archivo(this->fileName+"Terminos.dat");
+	res += this->vocabulario.eliminar(this->fileName+"Vocabulario.dat");
+	res +=this->listas_invertidas.eliminar(this->ruta, "ListasInvertidas");
+	res +=this->listas_posiciones.eliminar(this->ruta, "ListasPosiciones");
+	return res;
 }
