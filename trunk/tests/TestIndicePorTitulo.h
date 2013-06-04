@@ -52,9 +52,6 @@ class TestIndicePorTitulo : public Test
         // y a otro con pocas canciones asociadas a el
 
     private:
-
-        virtual void eliminar_archivos();
-
         virtual void crear_reg_cancion(std::string titulo, RegistroCancion &reg);
 };
 

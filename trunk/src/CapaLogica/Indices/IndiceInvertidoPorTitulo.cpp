@@ -68,9 +68,7 @@ long IndiceInvertidoPorTitulo::buscar_titulo(std::string titulo, RegistroVariabl
 
 int IndiceInvertidoPorTitulo::borrar_indice()
 {
-    int resultado1= this->indice.eliminar_archivo();
-    int resultado2 = this->listas.eliminar(this->ruta,"ListasPorTitulo");
-    if (resultado1 == RES_OK && resultado2 == RES_OK)
-    	return RES_OK;
-    return RES_ERROR;
+    int res = this->indice.eliminar_archivo();
+    res += this->listas.eliminar(this->ruta,"ListasPorTitulo");
+    return res;
 }

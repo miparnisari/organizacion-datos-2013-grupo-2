@@ -69,9 +69,6 @@ class TestIndiceInvertidoPorFrase : public Test
 
 
     private:
-
-        virtual void eliminar_archivos();
-
         virtual void crear_reg_cancion(std::string letra, RegistroCancion &reg);
 };
 

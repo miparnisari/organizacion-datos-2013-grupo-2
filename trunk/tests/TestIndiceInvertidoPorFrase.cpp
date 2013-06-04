@@ -26,14 +26,38 @@ TestIndiceInvertidoPorFrase::~TestIndiceInvertidoPorFrase()
 
 void TestIndiceInvertidoPorFrase::ejecutar()
 {
-//    test_indice_por_frase_agregar_cancion();
-//    test_indice_por_frase_devolver_canciones_con_1termino_1cancion();
+	test_indice_por_frase_borrar_indice();
+    test_indice_por_frase_agregar_cancion();
+    test_indice_por_frase_devolver_canciones_con_1termino_1cancion();
     test_indice_por_frase_devolver_canciones_con_1termino_varias_canciones();
-//    test_indice_por_frase_devolver_canciones_con_una_cancion();
-//    test_indice_por_frase_devolver_canciones_con_varias_canciones();
-//    test_indice_por_frase_devolver_canciones_con_una_cancion_terminos_repetidos();
-//    test_indice_por_frase_devolver_canciones_con_varias_canciones_terminos_repetidos();
-//    test_indice_por_frase_borrar_indice();
+    test_indice_por_frase_devolver_canciones_con_una_cancion();
+    test_indice_por_frase_devolver_canciones_con_varias_canciones();
+    test_indice_por_frase_devolver_canciones_con_una_cancion_terminos_repetidos();
+    test_indice_por_frase_devolver_canciones_con_varias_canciones_terminos_repetidos();
+}
+
+void TestIndiceInvertidoPorFrase::test_indice_por_frase_borrar_indice()
+{
+	IndiceInvertido indice;
+	ManejadorRegistrosVariables terminos;
+	ArchivoListas listasInvertidas, listasPos;
+    ArbolBMas vocabulario;
+    assert(indice.crear_indice("", NOMBRE_INDICE) == RES_OK);
+    assert(indice.abrir_indice("", NOMBRE_INDICE) == RES_OK);
+    assert(indice.cerrar_indice() == RES_OK);
+
+    assert(indice.borrar_indice() == RES_OK);
+
+    //Vemos si se haya eliminado el archivo de listas invertidas
+    assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) != RES_OK);
+    //Vemos si se haya eliminado el archivo de listas invertidas
+    assert(listasPos.abrir("",ARCHIVO_LISTAS_POS) != RES_OK);
+    //Vemos si se haya eliminado el arbol
+    assert(vocabulario.abrir(ARCHIVO_ARBOL, "rb+") != RES_OK);
+    //Vemos si se haya eliminado el archivo de terminos
+    assert(terminos.abrir_archivo(ARCHIVO_TERMINOS) != RES_OK);
+
+    print_test_ok("test_indice_por_frase_borrar_indice");
 }
 
 void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
@@ -50,9 +74,8 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
     char* campo = new char[100]();
     int ref_lista, pos;
 
-
-    indice.crear_indice("", NOMBRE_INDICE);
-    indice.abrir_indice("", NOMBRE_INDICE);
+    assert(indice.crear_indice("", NOMBRE_INDICE) == RES_OK);
+    assert(indice.abrir_indice("", NOMBRE_INDICE) == RES_OK);
     this->crear_reg_cancion("casa lago", cancion);
     assert (indice.agregar_texto(cancion.get_letra(), 23) == RES_OK);
     indice.cerrar_indice();
@@ -165,8 +188,7 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_agregar_cancion()
     reg_termino.recuperar_campo(((char*)&ref_lista),2);
     assert(ref_lista == 1);
 
-    indice.borrar_indice();
-    this->eliminar_archivos();
+    assert(indice.borrar_indice() == RES_OK);
     delete[] campo;
     print_test_ok("test_indice_por_frase_agregar_cancion");
 }
@@ -183,8 +205,8 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_1
 	RegistroClave reg_termino;
 	ClaveX clave, clave_aux;
 	int id;
-	indice.crear_indice("", NOMBRE_INDICE);
-	indice.abrir_indice("", NOMBRE_INDICE);
+    assert(indice.crear_indice("", NOMBRE_INDICE) == RES_OK);
+    assert(indice.abrir_indice("", NOMBRE_INDICE) == RES_OK);
 	this->crear_reg_cancion("la casa del lago", cancion);
 	indice.agregar_texto(cancion.get_letra(),23);
 	//Abro los archivos del indice y veo si se crearon los registros correspondientes
@@ -208,7 +230,7 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_1
 	int res = indice.buscar_frase("vaca", lista);
 	assert(indice.buscar_frase("vaca", lista) == RES_RECORD_DOESNT_EXIST);
 
-    this->eliminar_archivos();
+	 assert(indice.borrar_indice() == RES_OK);
     print_test_ok("test_indice_por_frase_devolver_canciones_con_1termino_1cancion");
 }
 
@@ -224,8 +246,8 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_1
 	RegistroClave reg_termino;
 	ClaveX clave, clave_aux;
 	int id;
-	indice.crear_indice("", NOMBRE_INDICE);
-	indice.abrir_indice("", NOMBRE_INDICE);
+    assert(indice.crear_indice("", NOMBRE_INDICE) == RES_OK);
+    assert(indice.abrir_indice("", NOMBRE_INDICE) == RES_OK);
 
 	this->crear_reg_cancion("la casa del tipo grande", cancion);
 	indice.agregar_texto(cancion.get_letra(), 23);
@@ -277,7 +299,8 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_1
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "vaca" y deberia tirar NO_EXISTE
 	assert(indice.buscar_frase("vaca", lista) == RES_RECORD_DOESNT_EXIST);
 
-    this->eliminar_archivos();
+	assert(indice.cerrar_indice() == RES_OK);
+	assert(indice.borrar_indice() == RES_OK);
     print_test_ok("test_indice_por_frase_devolver_canciones_con_1termino_varias_canciones");
 }
 
@@ -293,8 +316,8 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_u
 	RegistroClave reg_termino;
 	ClaveX clave, clave_aux;
 	int id;
-	indice.crear_indice("", NOMBRE_INDICE);
-	indice.abrir_indice("", NOMBRE_INDICE);
+    assert(indice.crear_indice("", NOMBRE_INDICE) == RES_OK);
+    assert(indice.abrir_indice("", NOMBRE_INDICE) == RES_OK);
 	this->crear_reg_cancion("La casa del lago", cancion);
 	indice.agregar_texto(cancion.get_letra(), 23);
 	//Abro los archivos del indice y veo si se crearon los registros correspondientes
@@ -318,7 +341,8 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_u
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "vaca" y deberia tirar NO_EXISTE
 	assert(indice.buscar_frase("vaca loca", lista) == RES_RECORD_DOESNT_EXIST);
 
-    this->eliminar_archivos();
+	assert(indice.cerrar_indice() == RES_OK);
+	assert(indice.borrar_indice() == RES_OK);
     print_test_ok("test_indice_por_frase_devolver_canciones_con_una_cancion");
 }
 
@@ -334,8 +358,8 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_v
 	RegistroClave reg_termino;
 	ClaveX clave, clave_aux;
 	int id;
-	indice.crear_indice("", NOMBRE_INDICE);
-	indice.abrir_indice("", NOMBRE_INDICE);
+    assert(indice.crear_indice("", NOMBRE_INDICE) == RES_OK);
+    assert(indice.abrir_indice("", NOMBRE_INDICE) == RES_OK);
 
 	this->crear_reg_cancion("La casa", cancion);
 	indice.agregar_texto(cancion.get_letra(), 23);
@@ -379,7 +403,8 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_v
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "vaca" y deberia tirar NO_EXISTE
 	assert(indice.buscar_frase("vaca loca", lista) == RES_RECORD_DOESNT_EXIST);
 
-    this->eliminar_archivos();
+	assert(indice.cerrar_indice() == RES_OK);
+	assert(indice.borrar_indice() == RES_OK);
     print_test_ok("test_indice_por_frase_devolver_canciones_con_varias_canciones");
 }
 
@@ -397,8 +422,8 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_u
 		RegistroClave reg_termino;
 		ClaveX clave, clave_aux;
 		int id;
-		indice.crear_indice("", NOMBRE_INDICE);
-		indice.abrir_indice("", NOMBRE_INDICE);
+	    assert(indice.crear_indice("", NOMBRE_INDICE) == RES_OK);
+	    assert(indice.abrir_indice("", NOMBRE_INDICE) == RES_OK);
 		this->crear_reg_cancion("La casa junto a la casa oscura", cancion);
 		indice.agregar_texto(cancion.get_letra(), 23);
 		//Abro los archivos del indice y veo si se crearon los registros correspondientes
@@ -422,7 +447,8 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_u
 		//Le pido al indice que me devuelva la lista de canciones que guarda la frase "vaca" y deberia tirar NO_EXISTE
 		assert(indice.buscar_frase("vaca loca", lista) == RES_RECORD_DOESNT_EXIST);
 
-	    this->eliminar_archivos();
+		assert(indice.cerrar_indice() == RES_OK);
+		assert(indice.borrar_indice() == RES_OK);
 	    print_test_ok("test_indice_por_frase_devolver_canciones_con_una_cancion_terminos_repetidos");
 }
 
@@ -438,8 +464,8 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_v
 	RegistroClave reg_termino;
 	ClaveX clave, clave_aux;
 	int id;
-	indice.crear_indice("", NOMBRE_INDICE);
-	indice.abrir_indice("", NOMBRE_INDICE);
+    assert(indice.crear_indice("", NOMBRE_INDICE) == RES_OK);
+    assert(indice.abrir_indice("", NOMBRE_INDICE) == RES_OK);
 
 	this->crear_reg_cancion("La casa junto a la casa oscura", cancion);
 	indice.agregar_texto(cancion.get_letra(), 23);
@@ -483,47 +509,9 @@ void TestIndiceInvertidoPorFrase::test_indice_por_frase_devolver_canciones_con_v
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "vaca" y deberia tirar NO_EXISTE
 	assert(indice.buscar_frase("vaca loca", lista) == RES_RECORD_DOESNT_EXIST);
 
-    this->eliminar_archivos();
+	assert(indice.cerrar_indice() == RES_OK);
+	assert(indice.borrar_indice() == RES_OK);
     print_test_ok("test_indice_por_frase_devolver_canciones_con_varias_canciones_terminos_repetidos");
-}
-
-void TestIndiceInvertidoPorFrase::test_indice_por_frase_borrar_indice()
-{
-	IndiceInvertido indice;
-	ManejadorRegistrosVariables terminos;
-	ArchivoListas listasInvertidas, listasPos;
-    ArbolBMas vocabulario;
-    indice.crear_indice("", NOMBRE_INDICE);
-    //Vemos si se creo el archivo de listas invertidas
-    assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);
-    //Vemos si se creo el archivo de listas invertidas
-    assert(listasPos.abrir("",ARCHIVO_LISTAS_POS) == RES_OK);
-    //Vemos si se creo el arbol
-    assert(vocabulario.abrir(ARCHIVO_ARBOL, "rb+") == RES_OK);
-    //Vemos si se creo el archivo de terminos
-    assert(terminos.abrir_archivo(ARCHIVO_TERMINOS) == RES_OK);
-
-    indice.borrar_indice();
-    //Vemos si se haya eliminado el archivo de listas invertidas
-    assert(listasInvertidas.abrir("",ARCHIVO_LISTAS) != RES_OK);
-    //Vemos si se haya eliminado el archivo de listas invertidas
-    assert(listasPos.abrir("",ARCHIVO_LISTAS_POS) != RES_OK);
-    //Vemos si se haya eliminado el arbol
-    assert(vocabulario.abrir(ARCHIVO_ARBOL, "rb+") != RES_OK);
-    //Vemos si se haya eliminado el archivo de terminos
-    assert(terminos.abrir_archivo(ARCHIVO_TERMINOS) != RES_OK);
-
-    this->eliminar_archivos();
-    print_test_ok("test_indice_por_frase_borrar_indice");
-}
-
-void TestIndiceInvertidoPorFrase::eliminar_archivos()
-{
-    //Elimina los archivos que se usan en cada archivo
-    ManejadorArchivos manejador;
-    ArbolBMas arbol;
-    manejador.eliminar_archivo(ARCHIVO_LISTAS);
-    arbol.eliminar(ARCHIVO_ARBOL);
 }
 
 void TestIndiceInvertidoPorFrase::crear_reg_cancion(std::string letra, RegistroCancion &reg)
