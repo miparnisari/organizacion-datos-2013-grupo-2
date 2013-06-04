@@ -34,13 +34,14 @@ void TestIndicePorTitulo::test_indice_titulo_crear_indice()
     IndiceInvertidoPorTitulo indice;
     ArchivoListas listas;
     HashingExtensible hash;
-    indice.crear_indice("");
+    assert(indice.crear_indice("") == RES_OK);
     //Vemos si se creo el archivo de listas
     assert(listas.abrir("",ARCHIVO_LISTAS) == RES_OK);
     //Vemos si se creo el hash
     assert(hash.abrir_archivo(ARCHIVO_HASH) == RES_OK);
 
-    this->eliminar_archivos();
+
+    assert(indice.borrar_indice() == RES_OK);
     print_test_ok("test_indice_titulo_crear_indice");
 }
 
@@ -80,7 +81,7 @@ void TestIndicePorTitulo::test_indice_titulo_agregar_cancion()
     reg_titulo.recuperar_campo(((char*)&ref_lista),0);
     assert(ref_lista == 0);
 
-    this->eliminar_archivos();
+    assert(indice.borrar_indice() == RES_OK);
     print_test_ok("test_indice_titulo_agregar_cancion");
 }
 
@@ -109,7 +110,8 @@ void TestIndicePorTitulo::test_indice_titulo_devolver_canciones_por_titulo()
 	lista.recuperar_campo((char*)&id, 0);
 	//Veo que sea el id correcto
 	assert(id == 23);
-    this->eliminar_archivos();
+
+	assert(indice.borrar_indice() == RES_OK);
     print_test_ok("test_devolver_canciones_por_titulo");
 }
 
@@ -128,7 +130,7 @@ void TestIndicePorTitulo::test_indice_titulo_borrar_indice()
 	assert(listas.abrir("",ARCHIVO_LISTAS) != RES_OK);
 	assert(hash.abrir_archivo(ARCHIVO_HASH)  != RES_OK);
 
-    this->eliminar_archivos();
+	assert(indice.borrar_indice() == RES_OK);
     print_test_ok("test_indice_titulo_borrar_indice");
 }
 
@@ -191,7 +193,7 @@ void TestIndicePorTitulo::test_indice_titulo_agregar_muchas_canciones()
     assert(listas.devolver(&lista2,ref_lista) == RES_OK);
     assert(lista2.get_cantidad_campos() == 1);
 
-    this->eliminar_archivos();
+    assert(indice.borrar_indice() == RES_OK);
     print_test_ok("test_indice_titulo_agregar_muchas_canciones");
 }
 
@@ -237,24 +239,13 @@ void TestIndicePorTitulo::test_indice_titulo_devolver_muchas_canciones_por_titul
     lista2.recuperar_campo((char*)&id, 0);
     assert(id == 25);
 
-    this->eliminar_archivos();
+    assert(indice.borrar_indice() == RES_OK);
     print_test_ok("test_indice_titulo_devolver_muchas_canciones_por_titulo");
-}
-
-void TestIndicePorTitulo::eliminar_archivos()
-{
-    //Elimina los archivos que se usan en cada archivo
-    ManejadorArchivos manejador;
-    HashingExtensible hash;
-    manejador.eliminar_archivo(ARCHIVO_LISTAS);
-    hash.eliminar_archivo();
 }
 
 void TestIndicePorTitulo::crear_reg_cancion(std::string titulo, RegistroCancion &reg)
 {
     //Crea un reg cancion con el autor que nos pasan por parametro
-	std::string cancion = "Pink Floyd-2013-"+titulo+"-Ingles-Pink Floyd";
+	std::string cancion = "Pink Floyd-2013-"+titulo+"-en-Pink Floyd";
     reg.cargar(cancion.c_str(), cancion.length());
 }
-
-
