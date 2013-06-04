@@ -59,41 +59,33 @@ void Heap::transformar_en_heap(RegistroVariable vectorAOrdenar[],int tamanio)
 
 int Heap::comparar_registros_variables(RegistroVariable reg1,RegistroVariable reg2)
 {
-	char* campo1Reg1 = new char[reg1.get_tamanio_campo(0)+1];
-	reg1.recuperar_campo(campo1Reg1,0);
-	campo1Reg1[reg1.get_tamanio_campo(0)]='\0';
-	string campo1Reg1Str=campo1Reg1;
+	int campo1Int;
+	reg1.recuperar_campo((char*)&campo1Int,0);
 
+	int campo2Int;
+	reg2.recuperar_campo((char*)&campo2Int,0);
 
-	char* campo1Reg2 = new char[reg2.get_tamanio_campo(0)+1];
-	reg2.recuperar_campo(campo1Reg2,0);
-	campo1Reg2[reg2.get_tamanio_campo(0)]='\0';
-	string campo1Reg2Str=campo1Reg2;
-
-	delete[] campo1Reg1;
-	delete[] campo1Reg2;
-
-	int resPrimerCampo= campo1Reg1Str.compare(campo1Reg2Str);
+	int resPrimerCampo= campo1Int - campo2Int;
 
 	if (resPrimerCampo==0)
 	{
 		if (reg1.get_cantidad_campos()>=2)
 		{
 
-			char* campo2Reg1 = new char[reg1.get_tamanio_campo(1)];
-			reg1.recuperar_campo(campo2Reg1,1);
-			campo2Reg1[reg1.get_tamanio_campo(1)]='\0';
-			string campo2Reg1Str=campo2Reg1;
+			int campo3Int;
+			reg1.recuperar_campo((char*)&campo3Int,1);
+//			campo2Reg1[reg1.get_tamanio_campo(1)]='\0';
+//			string campo2Reg1Str=campo2Reg1;
 
-			char* campo2Reg2 = new char[reg2.get_tamanio_campo(1)];
-			reg2.recuperar_campo(campo2Reg2,1);
-			campo2Reg2[reg2.get_tamanio_campo(1)]='\0';
-			string campo2Reg2Str=campo2Reg2;
+			int campo4Int;
+			reg2.recuperar_campo((char*)&campo4Int,1);
+//			char* campo2Reg2 = new char[reg2.get_tamanio_campo(1)];
+//			reg2.recuperar_campo(campo2Reg2,1);
+//			int campo4Int=campo2Reg2;
+//			campo2Reg2[reg2.get_tamanio_campo(1)]='\0';
+//			string campo2Reg2Str=campo2Reg2;
 
-			delete[] campo2Reg1;
-			delete[] campo2Reg2;
-
-			int resSegundoCampo= campo2Reg1Str.compare(campo2Reg2Str);
+			int resSegundoCampo= campo3Int - campo4Int;
 
 			if (resSegundoCampo==0)
 			{

@@ -40,13 +40,13 @@ void test_leer_de_archivo()
 	ParserCanciones parser;
 	string na= "../songs/";
 	assert(parser.crear(na) == RES_OK);
-	RegistroCancion regCancion;
+	RegistroCancion regCancion, regCancionNormalizada;
 	std::string nombreArchivo = "";
 
 	// Para cada cancion que tengamos...
 	while (parser.fin_directorio() == false)
 	{
-		if (parser.obtener_proxima_cancion(regCancion, nombreArchivo) == RES_OK)
+		if (parser.obtener_proxima_cancion(regCancion, regCancionNormalizada, nombreArchivo) == RES_OK)
 		{
 			// Autores
 			for (unsigned short j=0; j < regCancion.get_cantidad_autores(); j++)

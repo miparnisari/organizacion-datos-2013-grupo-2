@@ -23,9 +23,9 @@ Heap heap; // por ahora lo necesito para comparar reg variables FixMe
 
 RegistroVariable regClaveMax;
 
-string claveMax;//extraer a funcion cargar_clave_max todo
+int claveMax;//extraer a funcion cargar_clave_max todo
 claveMax = CLAVE_TOPE;
-regClaveMax.agregar_campo(claveMax.c_str(), claveMax.length());
+regClaveMax.agregar_campo((char*)&claveMax,sizeof(int));
 
 ManejadorRegistrosVariables PrimerArchivoAUnir,SegundoArchivoAUnir;
 PrimerArchivoAUnir.abrir_archivo(ruta1);
@@ -185,12 +185,12 @@ void SortExterno:: _generar_runs()
 			}
 		}
 
-		string claveMax;
+		int claveMax;
 		claveMax = CLAVE_TOPE;
 
 		RegistroVariable regClaveMax;
 
-		regClaveMax.agregar_campo(claveMax.c_str(), claveMax.length());
+		regClaveMax.agregar_campo((char*)&claveMax,sizeof(int));
 		archivoTemporal.agregar_registro(& regClaveMax);
 
 		tamanioHeapActual=tamanioHeapInicial;
@@ -212,9 +212,9 @@ void SortExterno::_merge()
 
 		RegistroVariable regClaveMax;
 
-		string claveMax;//extraer a funcion cargar_clave_max todo
+		int claveMax;//extraer a funcion cargar_clave_max todo
 		claveMax = CLAVE_TOPE;
-		regClaveMax.agregar_campo(claveMax.c_str(), claveMax.length());
+		regClaveMax.agregar_campo((char*)&claveMax,sizeof(int));
 
 		string nombreDelRun="run1.dat";
 

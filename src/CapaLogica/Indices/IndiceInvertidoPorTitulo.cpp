@@ -26,7 +26,7 @@ int IndiceInvertidoPorTitulo::abrir_indice(std::string directorioSalida)
     int resultado = this->indice.abrir_archivo(this->ruta+"IndicePorTitulo.dat");
     resultado += this->listas.abrir(this->ruta,"ListasPorTitulo");
     if (resultado != RES_OK)
-    	return NO_EXISTE;
+    	return RES_RECORD_DOESNT_EXIST;
     return RES_OK;
 }
 
@@ -38,7 +38,7 @@ int IndiceInvertidoPorTitulo::agregar_cancion(RegistroCancion cancion, int IDcan
     ClaveX clave;
     clave.set_clave(cancion.get_titulo());
     //Veo si el titulo se encuentra en el indice
-    if(this->indice.devolver(clave, &reg_cancion) == NO_EXISTE){
+    if(this->indice.devolver(clave, &reg_cancion) == RES_RECORD_DOESNT_EXIST){
         //Creo un registro con el titulo en el indice y la referencia a una nueva lista
         reg_cancion.set_clave(clave);
         reg_cancion.agregar_campo((char*)&ref_lista,sizeof(ref_lista));
@@ -58,8 +58,8 @@ long IndiceInvertidoPorTitulo::buscar_titulo(std::string titulo, RegistroVariabl
     ClaveX clave;
     clave.set_clave(titulo);
     //Veo si el titulo se encuentra en el indice
-    if(this->indice.devolver(clave, &reg_cancion) == NO_EXISTE)
-    	return NO_EXISTE;
+    if(this->indice.devolver(clave, &reg_cancion) == RES_RECORD_DOESNT_EXIST)
+    	return RES_RECORD_DOESNT_EXIST;
     //Busco la posicion relativa de la lista en el archivo de listas
     reg_cancion.recuperar_campo((char*)&ref_lista, 0);  /***ver si los campos se guardan desde el 0 o el 1**/
     //Le pido la lista al archivo de listas

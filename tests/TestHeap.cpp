@@ -76,28 +76,32 @@ void TestHeap::test_comparar_reg_variables_string()
 
 
 	RegistroVariable rv1,rv2;
-	string campo1,campo2;
-	campo1="aaa";
-	campo2="bbb";
-	rv1.agregar_campo(campo1.c_str(),campo1.length());
-	rv2.agregar_campo(campo2.c_str(),campo2.length());
+	int* campo1;
+	int* campo2;
+	campo1 = new int;
+	campo2 = new int;
+	(*campo1) = 1;
+	(*campo2) = 2;
+	rv1.agregar_campo((char*)campo1,sizeof(int));
+	rv2.agregar_campo((char*)campo2,sizeof(int));
 
 	assert (heap.comparar_registros_variables(rv1,rv2)==-1);
 
-
 	RegistroVariable rv3,rv4;
-	campo1="aaa";
-	rv3.agregar_campo(campo1.c_str(),campo1.length());
-	rv4.agregar_campo(campo1.c_str(),campo1.length());
+	rv3.agregar_campo((char*)campo1,sizeof(int));
+	rv4.agregar_campo((char*)campo1,sizeof(int));
 
 	assert (heap.comparar_registros_variables(rv3,rv4)==0);
 
 
 	RegistroVariable rv5,rv6;
-	campo1="ccc";
-	campo2="aaa";
-	rv5.agregar_campo(campo1.c_str(),campo1.length());
-	rv6.agregar_campo(campo2.c_str(),campo2.length());
+	(*campo1) =3;
+	(*campo2) =1;
+	rv5.agregar_campo((char*)campo1,sizeof(int));
+	rv6.agregar_campo((char*)campo2,sizeof(int));
+
+	delete campo1;
+	delete campo2;
 
 	assert (heap.comparar_registros_variables(rv5,rv6)==1);
 

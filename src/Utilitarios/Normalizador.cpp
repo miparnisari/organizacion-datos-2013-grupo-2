@@ -7,9 +7,6 @@
 
 #include "Normalizador.h"
 
-#define IMP(v)\
-	cout<<#v<<" ="<<v<<endl;
-
 char Normalizador::transformar_char(wchar_t c){
 
     int cint = (int) c;
@@ -126,7 +123,6 @@ string Normalizador::normalizar_input( string linea ){
 //	archivoTemporal<<linea;
 //	archivoTemporal<<'\n';
 
-	IMP(linea);
 	archivoTemporal.write( linea.c_str(),linea.length() );
 	archivoTemporal.close();
 

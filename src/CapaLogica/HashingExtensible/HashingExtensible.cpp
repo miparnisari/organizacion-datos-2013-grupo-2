@@ -205,7 +205,7 @@ int HashingExtensible::modificar(RegistroClave & elemN)
     int posReg = this->_obtener_posicion_reg_bloque(clave_reg, *bloque);
     if (posReg == RES_ERROR){
     	delete bloque;
-    	return NO_EXISTE;
+    	return RES_RECORD_DOESNT_EXIST;
     }
     bloque->eliminar_registro(posReg); //Borro el viejo registro
     bloque->agregar_registro(&elemN);    //Guardo el nuevo registro
