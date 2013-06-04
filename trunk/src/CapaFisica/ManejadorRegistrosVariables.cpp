@@ -88,39 +88,6 @@ long ManejadorRegistrosVariables::_get_offset_registro(unsigned int numeroRegist
 
 }
 
-/*
-long ManejadorRegistrosVariables::get_registro(RegistroVariable* registro,
-		unsigned short numeroRegistro){
-
-	if(_registro_fue_eliminado(numeroRegistro))
-		return RES_ERROR;//TODO verificar que funque!!!
-
-
-	long contadorOffset= _get_offset_registro(numeroRegistro);
-	fstream archivo(nombreArchivo.c_str());
-	archivo.seekg( contadorOffset,ios::beg );
-
-
-	unsigned short tamanioRegistro;
-	archivo.read( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
-	char* bufferRegistro= new char[tamanioRegistro + sizeof(tamanioRegistro)]();
-	archivo.read( bufferRegistro , tamanioRegistro );
-
-	stringstream empaquetador;
-	empaquetador.write( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
-	empaquetador.write( bufferRegistro , tamanioRegistro );
-	empaquetador.seekg(0,ios::beg);
-	empaquetador.read( bufferRegistro , tamanioRegistro + sizeof(tamanioRegistro) );
-	registro->desempaquetar(bufferRegistro);
-
-	delete[] bufferRegistro;
-	_cerrar_archivo(&archivo);
-
-	return contadorOffset;
-
-}
-*/
-
 int ManejadorRegistrosVariables::get_registro_por_offset(RegistroVariable* registro ,
 		unsigned long offset){
 
@@ -221,44 +188,6 @@ int ManejadorRegistrosVariables::refactorizar(){
 	ManejadorRegistrosVariables manejadorArchivoAuxiliar;
 	manejadorArchivoAuxiliar.crear_archivo(nombreArchivoAuxiliar);
 
-//	fstream archivo(this->nombreArchivo);
-//
-//	while( !archivo.eof() ){
-//
-//		unsigned short tamanioRegistro= 0;
-//		archivo.read( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
-//		if(!archivo.good())
-//			break;
-//
-//		char* bufferRegistro= new char[tamanioRegistro]();
-//		archivo.read(bufferRegistro,tamanioRegistro);
-//		if(!archivo.good()){
-//			delete[] bufferRegistro;
-//			break;
-//		}
-//
-//		if(bufferRegistro[0]!=MARCA_BORRADO){
-//			stringstream bufferStream;
-//			bufferStream.write( (char*)&tamanioRegistro,sizeof(tamanioRegistro) );
-//			bufferStream.write( bufferRegistro,tamanioRegistro );
-//			bufferStream.seekg(0,ios::beg);
-//
-//			RegistroVariable registroBuffer;
-//			const unsigned short TAMANIO_BUFFER_EMPAQUETADO= tamanioRegistro+sizeof(tamanioRegistro);
-//			char* bufferEmpaquetado= new char[TAMANIO_BUFFER_EMPAQUETADO]();
-//			bufferStream.read( bufferEmpaquetado,TAMANIO_BUFFER_EMPAQUETADO );
-//			registroBuffer.desempaquetar(bufferEmpaquetado);
-//			manejadorArchivoAuxiliar.agregar_registro( &registroBuffer );
-//
-//			delete[] bufferEmpaquetado;
-//
-//		}
-//
-//
-//		delete[] bufferRegistro;
-//
-//	}
-
 	const unsigned int CANTIDAD_REGISTROS_OCUPADOS= this->get_cantidad_registros_ocupados();
 	if(CANTIDAD_REGISTROS_OCUPADOS== 0){
 		_reemplazar(nombreArchivoAuxiliar);
@@ -275,12 +204,9 @@ int ManejadorRegistrosVariables::refactorizar(){
 
 	}
 
-
 	this->_reemplazar(nombreArchivoAuxiliar);
 
-
 	return RES_OK;
-
 }
 
 
@@ -329,49 +255,6 @@ bool ManejadorRegistrosVariables::_registro_fue_eliminado(unsigned int numeroReg
 	return true;
 
 }
-
-/*
-long ManejadorRegistrosVariables::eliminar_registro(unsigned short numeroRegistro){
-
-	if(this->_registro_fue_eliminado(numeroRegistro))
-		return RES_ERROR;
-	//verifico que el registro a buscar no haya sido eliminado
-
-	RegistroVariable registroEliminar;
-	long offset=  this->get_registro(&registroEliminar , numeroRegistro);
-
-	const unsigned short ESPACIO_LIBERADO= registroEliminar.get_tamanio_empaquetado();
-	const unsigned short TAMANIO_REGISTRO_ELIMINAR= registroEliminar.get_tamanio();
-	char* bufferEliminacion= new char[ESPACIO_LIBERADO]();
-
-	HeaderRegistroLibre hre;
-	memset(&hre,0,sizeof(hre));
-	hre.espacioLibre= TAMANIO_REGISTRO_ELIMINAR;
-	hre.marcaBorrado= MARCA_BORRADO;
-	hre.offsetProximoRegistroLibre= header.offsetPrimerRegistroLibre;
-
-	stringstream streamEliminacion;
-	streamEliminacion.write( (char*)&hre , sizeof(hre) );
-	header.offsetPrimerRegistroLibre= offset;
-	header.cantidadRegistrosLibres++;
-	//escribo en el stream:  tamanioRegistroLibre| * | offsetSigRegLibre.
-	 // Apilo los registrosLibres.
-
-	streamEliminacion.seekg(0,ios::beg);
-	streamEliminacion.read( bufferEliminacion,ESPACIO_LIBERADO );
-	//escribo en el bufferEliminacion aquello que guarde en el stream
-
-	fstream archivo(nombreArchivo.c_str());
-	archivo.seekg(offset , ios::beg);
-	archivo.write(bufferEliminacion,ESPACIO_LIBERADO);
-
-	delete[] bufferEliminacion;
-	_cerrar_archivo(&archivo);
-	_guardar_header();
-	return offset;
-
-}
-*/
 
 long ManejadorRegistrosVariables::eliminar_registro_ocupado(unsigned int numeroRegistro){
 
@@ -562,13 +445,6 @@ long ManejadorRegistrosVariables::agregar_registro(RegistroVariable* registro){
 	long offsetLibreAnterior,offsetLibreSiguiente;
 	const long OFFSET_REGISTRO_LIBRE= _buscar_registro_libre(TAMANIO_EMPAQUETAMIENTO,
 			offsetLibreAnterior,offsetLibreSiguiente);
-
-/*
-	if(header.offsetPrimerRegistroLibre== -1){
-		this->_append_registro(registro);
-		return RES_OK;
-	}
-	TODO si no anda eliminar comentarios*/
 
 	if(OFFSET_REGISTRO_LIBRE== RES_ERROR){
 		return this->_append_registro(registro);

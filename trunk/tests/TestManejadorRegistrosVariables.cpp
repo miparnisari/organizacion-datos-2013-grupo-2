@@ -410,10 +410,7 @@ void TestManejadorRegistrosVariables::test_recuperar_espacio_libre()
 	}
 
 
-}/*funcionaaaaa
-TODO mas tests que verifiquen que el espacio libre es recuperado sin afectar la
-integridad del archivo*/
-
+}
 
 void TestManejadorRegistrosVariables::test_eliminar_por_offset()
 {
