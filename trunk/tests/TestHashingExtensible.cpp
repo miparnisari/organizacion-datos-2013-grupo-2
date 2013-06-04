@@ -174,7 +174,7 @@ void TestHashingExtensible::test_hash_modificar_un_valor(){
 	regClave.set_clave(clave);
 	regClave.agregar_campo(campo.c_str(), campo.size());
 
-	assert(hash1.modificar(regClave) == NO_EXISTE);
+	assert(hash1.modificar(regClave) == RES_RECORD_DOESNT_EXIST);
 
 	assert(hash1.devolver(clave, &regClave) == RES_RECORD_DOESNT_EXIST);
 

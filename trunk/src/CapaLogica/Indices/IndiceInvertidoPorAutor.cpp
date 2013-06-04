@@ -28,7 +28,7 @@ int IndiceInvertidoPorAutor::abrir_indice(std::string directorioSalida)
     this->ruta = directorioSalida;
     resultado= this->indice.abrir(this->ruta+"IndicePorAutor.dat", "rb+");
     resultado= resultado+this->listas.abrir(this->ruta, "ListasPorAutor");
-    if (resultado !=RES_OK) return NO_EXISTE;
+    if (resultado !=RES_OK) return RES_RECORD_DOESNT_EXIST;
     return resultado;
 }
 
@@ -90,7 +90,7 @@ long IndiceInvertidoPorAutor::buscar_autor(std::string autor, RegistroVariable &
     //Busco las canciones del autor
     existe = this->indice.buscar(reg_autor);
     if(existe != RES_OK)
-    	return NO_EXISTE;
+    	return RES_RECORD_DOESNT_EXIST;
     //Recupero la referencia a la lista
     reg_autor.recuperar_campo((char*)&lista, 0);
     return this->listas.devolver(&listaDeCanciones, lista);

@@ -29,13 +29,13 @@ void TestOrdenamientoExterno::test_generar_runs(){
 
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
 	{
-		string clave="aaa";
+		int clave=1;
 
-		string campoClave = clave;
+		int campoClave = clave;
 
 		RegistroVariable regVariable;
 
-		regVariable.agregar_campo(campoClave.c_str(),campoClave.length());
+		regVariable.agregar_campo((char*)campoClave,sizeof(int));
 
 		mv.agregar_registro(& regVariable);
 	}
@@ -80,16 +80,16 @@ void TestOrdenamientoExterno::test_merge_runs(){
 
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
 	{
-		string clave="aaa";
-		clave[0] = (char) ((rand() % 20) + 65);
-
-		stringstream conversor;
-		conversor << clave;
-		string campoClave= conversor.str();
+		int clave=1;
+		clave = (rand() % 20);
+//
+//		stringstream conversor;
+//		conversor << clave;
+//		string campoClave= conversor.str();
 
 		RegistroVariable regVariable;
 
-		regVariable.agregar_campo(campoClave.c_str(),campoClave.length());
+		regVariable.agregar_campo((char*)clave,sizeof(int));
 
 		mv.agregar_registro(& regVariable);
 	}
@@ -125,25 +125,25 @@ void TestOrdenamientoExterno::test_ordenar(){
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
 	{
 		//agrego clave en el primer campo
-		string clave="aaa";
-		clave[0] = (char) ((rand() % 20) + 65);
-
-		stringstream conversor;
-		conversor << clave;
-		string campoClave= conversor.str();
+		int clave=0;
+		clave = (rand() % 20) + 65;
+//
+//		stringstream conversor;
+//		conversor << clave;
+//		string campoClave= conversor.str();
 
 		RegistroVariable regVariable;
 
-		regVariable.agregar_campo(campoClave.c_str(),campoClave.length());
+		regVariable.agregar_campo((char*)&clave,sizeof(int));
 
 		//agrego clave en el segundo campo
-		string clave2="aaa";
-		clave2[0] = (char) ((rand() % 20) + 65);
+		int clave2=0;
+		clave2 = (rand() % 20) + 65;
 
-		conversor << clave2;
-		string campoClave2= conversor.str();
+//		conversor << clave2;
+//		string campoClave2= conversor.str();
 
-		regVariable.agregar_campo(campoClave2.c_str(),campoClave2.length());
+		regVariable.agregar_campo((char*)&clave2,sizeof(int));
 
 		mv.agregar_registro(& regVariable);
 	}
