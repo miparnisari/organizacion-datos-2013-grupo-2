@@ -36,7 +36,8 @@ char Normalizador::transformar_char(wchar_t c){
 
             case (int) L'ñ':
                     return 'n';
-
+            case (int) L'’':
+            		return ( (char)39 );
             case (int) L'´':
             		return ( (char)39 );
             /*en caso de comilla curva retorna comilla simple*/
@@ -134,7 +135,7 @@ string Normalizador::normalizar_input( string linea ){
 //	archivoResultado.getline(bufferInput , TAMANIO_BUFFER_INPUT);
 //	unsigned short longitudLineaNormalizada= strlen(bufferInput);
 
-	string resultado="";
+	std::string resultado="";
 	while(!archivoResultado.eof()){
 //		string temp;
 //		archivoResultado>>temp;
@@ -148,6 +149,8 @@ string Normalizador::normalizar_input( string linea ){
 			resultado+= temp+'\n';
 		}
 	}
+
+	resultado.erase (resultado.size()-1,1);
 
 	remove(nombreArchivoTemporal.c_str());
 	remove(nombreArchivoTemporalNormalizado.c_str());
