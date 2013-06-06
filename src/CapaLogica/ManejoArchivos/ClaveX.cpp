@@ -14,6 +14,15 @@ ClaveX::ClaveX()
 	this->claves[CLAVE_STRING]= new ClaveString;
 }
 
+ClaveX::~ClaveX()
+{
+	for (unsigned int i = 0; i < CANTIDAD_TIPOS_CLAVE; i++)
+	{
+		delete(claves[i]);
+		claves[i] = NULL;
+	}
+}
+
 
 ClaveX::ClaveX(const ClaveX& otro)
 {
@@ -46,16 +55,6 @@ ClaveX& ClaveX::operator =(const ClaveX& otro)
 	}
 	return (*this);
 
-}
-
-
-ClaveX::~ClaveX()
-{
-	for (unsigned int i = 0; i < CANTIDAD_TIPOS_CLAVE; i++)
-	{
-		delete(claves[i]);
-		claves[i] = NULL;
-	}
 }
 
 void ClaveX::imprimir_dato()const

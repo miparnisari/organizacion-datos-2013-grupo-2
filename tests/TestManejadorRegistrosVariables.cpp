@@ -108,7 +108,7 @@ TEST_F(TestManejadorRegistrosVariables,Refactorizar)
 
 		}
 
-
+		mrv.eliminar_archivo("test_refactorizar.dat");
 
 	}
 

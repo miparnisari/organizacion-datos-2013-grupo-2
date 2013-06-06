@@ -135,6 +135,7 @@ TEST_F(TestNodoSecuencial,Empaquetar_desempaquetar)
 	delete(registroLeido);
 
 	manejador.cerrar_archivo();
+	manejador.eliminar_archivo("bloques_nodos_secuenciales");
 }
 
 TEST_F(TestNodoSecuencial,Insertar_eliminar)
