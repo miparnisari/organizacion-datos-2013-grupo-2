@@ -31,7 +31,7 @@ class IndiceInvertidoPorAutor
         virtual int abrir_indice(std::string directorioSalida);
         //Abre el indice en la direccion que se le pasan por parametro
 
-        virtual int agregar_cancion(RegistroCancion cancion, int IDcancion);
+        virtual int agregar_cancion(RegistroCancion & cancion, int IDcancion);
         //Agrega la cancion a la lista de canciones de cada autor
 
         virtual long buscar_autor(std::string autor, RegistroVariable &listaDeCanciones);
