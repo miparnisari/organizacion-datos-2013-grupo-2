@@ -1,33 +1,28 @@
-/*
- * TestNodoSecuencial.cpp
- *
- *  Created on: May 6, 2013
- *      Author: maine
- */
+#include "../src/CapaLogica/ArbolBMas/NodoSecuencial.h"
+#include "../src/CapaLogica/ArbolBMas/IterNodoSecuencial.h"
+#include "../src/CapaFisica/ManejadorBloques.h"
+#include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
-#include "TestNodoSecuencial.h"
+// To use a test fixture, derive a class from testing::Test.
+class TestNodoSecuencial : public testing::Test {
+ protected:
+	// Declares the variables your tests want to use.
 
-TestNodoSecuencial::TestNodoSecuencial()
-{
-}
+  // virtual void SetUp() will be called before each test is run.  You
+  // should define it if you need to initialize the varaibles.
+  // Otherwise, this can be skipped.
+  virtual void SetUp() {
+  }
 
-TestNodoSecuencial::~TestNodoSecuencial()
-{
-}
+  // TearDown() is invoked immediately after a test finishes.
+  virtual void TearDown() {
+  }
 
-void TestNodoSecuencial::ejecutar()
-{
-	test_nodo_sec_crear();
-	test_nodo_sec_insertar_simple();
-	test_nodo_sec_insertar_eliminar();
-//	test_nodo_sec_overflow_masivo();
-	test_nodo_sec_overflow_impar();
-	test_nodo_sec_overflow_par();
-	test_nodo_sec_empaquetar_desempaquetar();
-	test_guardar_y_comparar();
-}
+  // A helper function that some test uses.
 
-void TestNodoSecuencial::test_nodo_sec_crear()
+};
+
+TEST_F(TestNodoSecuencial,Crear)
 {
 	NodoSecuencial* nodo = new NodoSecuencial(100,1000);
 	assert(nodo->get_bytes_ocupados() == sizeof(int) + sizeof(char));
@@ -35,11 +30,9 @@ void TestNodoSecuencial::test_nodo_sec_crear()
 	assert(nodo->get_cantidad_registros() == 0);
 	assert(nodo->esta_vacio() == true);
 	delete(nodo);
-
-	print_test_ok("test_nodo_secuencial_crear");
 }
 
-void TestNodoSecuencial::test_nodo_sec_insertar_simple()
+TEST_F(TestNodoSecuencial,Insertar_simple)
 {
 	NodoSecuencial* nodo = new NodoSecuencial(5,100);
 	std::vector <RegistroClave> regsOverflow;
@@ -73,11 +66,10 @@ void TestNodoSecuencial::test_nodo_sec_insertar_simple()
 	delete[] buffer;
 	delete(nodo);
 	delete(registroCopia);
-
-	print_test_ok("test_nodo_secuencial_insertar_simple");
 }
 
-void TestNodoSecuencial::test_nodo_sec_empaquetar_desempaquetar()
+
+TEST_F(TestNodoSecuencial,Empaquetar_desempaquetar)
 {
 	// SET UP
 	ManejadorBloques manejador;
@@ -143,11 +135,9 @@ void TestNodoSecuencial::test_nodo_sec_empaquetar_desempaquetar()
 	delete(registroLeido);
 
 	manejador.cerrar_archivo();
-
-	print_test_ok("test_nodo_sec_empaquetar_desempaquetar");
 }
 
-void TestNodoSecuencial::test_nodo_sec_insertar_eliminar()
+TEST_F(TestNodoSecuencial,Insertar_eliminar)
 {
 	// Set up
 	NodoSecuencial* nodo = new NodoSecuencial(11,100);
@@ -226,12 +216,10 @@ void TestNodoSecuencial::test_nodo_sec_insertar_eliminar()
 	delete(nodo);
 	delete(regleido1);
 	delete(regleido2);
-
-	print_test_ok("test_nodo_sec_insertar_eliminar");
-
 }
 
-void TestNodoSecuencial::test_nodo_sec_overflow_masivo()
+
+TEST_F(TestNodoSecuencial,Overflow_masivo)
 {
 	std::vector<RegistroClave> regsOverflow;
 	std::vector<RegistroClave> registros;
@@ -279,12 +267,9 @@ void TestNodoSecuencial::test_nodo_sec_overflow_masivo()
 	assert(nodo->get_cantidad_registros()==501);
 
 	delete(nodo);
-
-	print_test_ok("test_nodo_sec_overflow_masivo");
-
 }
 
-void TestNodoSecuencial::test_nodo_sec_overflow_impar()
+TEST_F(TestNodoSecuencial,Overflow_impar)
 {
 	ClaveX clave1, clave2, clave3;
 	clave1.set_clave("a");
@@ -319,11 +304,9 @@ void TestNodoSecuencial::test_nodo_sec_overflow_impar()
 
 
 	delete(nodo);
-
-	print_test_ok("test_nodo_sec_overflow_impar");
 }
 
-void TestNodoSecuencial::test_nodo_sec_overflow_par()
+TEST_F(TestNodoSecuencial,Overflow_par)
 {
 	ClaveX clave1, clave2;
 	clave1.set_clave("a");
@@ -352,13 +335,10 @@ void TestNodoSecuencial::test_nodo_sec_overflow_par()
 	assert (regsOverflow[0] == reg2);
 
 	delete(nodo);
-
-	print_test_ok("test_nodo_sec_overflow_par");
 }
 
-
-void TestNodoSecuencial::test_guardar_y_comparar(){
-
+TEST_F(TestNodoSecuencial,Guardar_comparar)
+{
 	NodoSecuencial ns(0,4096);
 	RegistroClave rc1,rc2;
 	ClaveX c1,c2;
@@ -382,10 +362,4 @@ void TestNodoSecuencial::test_guardar_y_comparar(){
 
 	delete rc3;
 	delete rc4;
-
-	print_test_ok("test_guardar_y_comparar");
-
-
 }
-
-

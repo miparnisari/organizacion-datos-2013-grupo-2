@@ -1,38 +1,33 @@
-/*
- * TestArbol.cpp
- *
- *  Created on: May 16, 2013
- *      Author: martin
- */
+#include "../src/CapaLogica/ArbolBMas/ArbolBMas.h"
+#include "../src/CapaLogica/ArbolBMas/IterArbolBMas.h"
+#include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
-#include "TestArbol.h"
-
-typedef NodoInterno::TipoHijo TipoHijo;
-
-void TestArbol::ejecutar(){
-	test_arbol_abrir_no_existente();
-	test_arbol_abrir_cerrar();
-	test_insertar_pocos_registros();
-	test_arbol_insertar_un_registro();
-	test_split_raiz();
-
-	test_arbol_buscar();
-	test_arbol_buscar_secuencial();
-	test_eliminar_sin_underflow();
-	test_eliminar_con_merge_secuenciales();
-	test_eliminar_con_balanceo_secuenciales();
-	test_eliminar_con_merge_interno();
-	test_eliminar_con_merge_interno_en_ultimo();
-	test_eliminar_con_balanceo_interno();
-	test_eliminar_con_balanceo_interno_con_ultimo_nodo();
-	test_eliminar_completamente_arbol();
-}
-
-void TestArbol::test_arbol_insertar_un_registro()
-{
+// To use a test fixture, derive a class from testing::Test.
+class TestArbol : public testing::Test {
+ protected:
+	// Declares the variables your tests want to use.
 	ArbolBMas arbol;
-	assert (arbol.crear("arbol.dat",BLOQUE_TAM_DEFAULT) == RES_OK);
-	assert (arbol.abrir("arbol.dat","rb+") == RES_OK);
+	typedef NodoInterno::TipoHijo TipoHijo;
+
+  // virtual void SetUp() will be called before each test is run.  You
+  // should define it if you need to initialize the varaibles.
+  // Otherwise, this can be skipped.
+  virtual void SetUp() {
+  }
+
+  virtual void TearDown() {
+	  ASSERT_TRUE(arbol.cerrar() == RES_OK);
+	  ASSERT_TRUE(arbol.eliminar("arbol.dat") == RES_OK);
+  }
+
+  // A helper function that some test uses.
+
+};
+
+TEST_F(TestArbol,Insertar_registro)
+{
+	ASSERT_TRUE (arbol.crear("arbol.dat",BLOQUE_TAM_DEFAULT) == RES_OK);
+	ASSERT_TRUE (arbol.abrir("arbol.dat","rb+") == RES_OK);
 
 	RegistroClave reg;
 	ClaveX clave;
@@ -42,75 +37,44 @@ void TestArbol::test_arbol_insertar_un_registro()
 	std::string campo = "ID CANCION = 3";
 	reg.agregar_campo(campo.c_str(),campo.size());
 
-	assert (arbol.agregar(reg) == RES_OK);
-	assert (arbol.cerrar() == RES_OK);
-
-	assert (arbol.abrir("arbol.dat","rb+") == RES_OK);
+	ASSERT_TRUE (arbol.agregar(reg) == RES_OK);
 
 	RegistroClave regLeido;
 	regLeido.set_clave(clave);
 
 	// Buscamos "u2 123" en el arbol
 	unsigned int numBloque = -1;
-	assert (arbol._buscar(regLeido, numBloque) != RES_RECORD_DOESNT_EXIST);
-	assert (numBloque == 1);
-	assert (regLeido.get_clave() == clave);
+	ASSERT_TRUE (arbol._buscar(regLeido, numBloque) != RES_RECORD_DOESNT_EXIST);
+	ASSERT_TRUE (numBloque == 1);
+	ASSERT_TRUE (regLeido.get_clave() == clave);
 
 	char* buffer = new char[regLeido.get_tamanio_campo(1) + 1]();
 	buffer[regLeido.get_tamanio_campo(1)] = '\0';
 	regLeido.recuperar_campo(buffer,1);
 
-	assert (strcmp(buffer,campo.c_str()) == 0);
+	ASSERT_TRUE (strcmp(buffer,campo.c_str()) == 0);
 
 	delete[] buffer;
-
-	assert(arbol.cerrar() == RES_OK);
-
-	print_test_ok("test_arbol_insertar_un_registro");
 }
 
-void TestArbol::test_arbol_abrir_no_existente()
+
+TEST_F(TestArbol,Abrir_cerrar)
 {
-	ArbolBMas arbol;
-	assert ( arbol.abrir("nombreinvalido","rb+") == RES_INVALID_FILENAME);
-	assert ( arbol.abrir("estearbolnoexiste.dat","rb+") == RES_ERROR);
 
-
-	print_test_ok("test_arbol_abrir_no_existente");
-}
-
-void TestArbol::test_arbol_abrir_cerrar()
-{
-	ArbolBMas arbol;
-	assert (arbol.crear("unArbol.dat",BLOQUE_TAM_DEFAULT) == RES_OK);
-	assert (arbol.abrir("unArbol.dat","rb+") == RES_OK);
-	//assert (arbol.get_cant_minima_nodo() == sizeof(TipoHijo));
-	assert (arbol.get_cant_minima_nodo() == 1);
+	ASSERT_TRUE (arbol.crear("arbol.dat",BLOQUE_TAM_DEFAULT) == RES_OK);
+	ASSERT_TRUE (arbol.abrir("arbol.dat","rb+") == RES_OK);
+	//ASSERT_TRUE (arbol.get_cant_minima_nodo() == sizeof(TipoHijo));
+	ASSERT_TRUE (arbol.get_cant_minima_nodo() == 1);
 	//FIXME cambiado 25/5/13
 
-
-	assert (arbol.get_cant_maxima_nodo() == (int)(BLOQUE_TAM_DEFAULT * ArbolBMas::FACTOR_CARGA/100));
-	assert (arbol.cerrar() == RES_OK);
-
-	FILE* handler = fopen("unArbol.dat","rb+");
-	fseek(handler,0,SEEK_END);
-	int tamanio = ftell(handler);
-	assert (tamanio == 3*sizeof(int)+2*BLOQUE_TAM_DEFAULT);
-
-	assert (arbol.eliminar("unArbol.dat") == RES_OK);
-
-	fclose(handler);
-
-	print_test_ok("test_arbol_abrir_cerrar");
+	ASSERT_TRUE (arbol.get_cant_maxima_nodo() == (int)(BLOQUE_TAM_DEFAULT * ArbolBMas::FACTOR_CARGA/100));
 }
 
 
-void TestArbol::test_insertar_pocos_registros(){
-
-	ArbolBMas abm;
-	string nombreArchivoArbol= "testArbol.dat";
-	assert( abm.crear(nombreArchivoArbol,BLOQUE_TAM_DEFAULT)==RES_OK );
-	assert(abm.abrir("testArbol.dat","rb+") == RES_OK);
+TEST_F(TestArbol,Insertar_pocos_registros)
+{
+	ASSERT_TRUE( arbol.crear("arbol.dat",BLOQUE_TAM_DEFAULT)==RES_OK );
+	ASSERT_TRUE(arbol.abrir("arbol.dat","rb+") == RES_OK);
 
 	const unsigned int MAXIMA_CANTIDAD_BYTES_NODO_INTERNO= 45;
 	NodoInterno ni(0,MAXIMA_CANTIDAD_BYTES_NODO_INTERNO);
@@ -127,7 +91,7 @@ void TestArbol::test_insertar_pocos_registros(){
 		ni.insertar_clave(unaClave,ocurrenciaInsercion);
 		ni.insertar_hijo( (TipoHijo)(i+1) );
 	}
-	assert(ni.hay_overflow());
+	ASSERT_TRUE(ni.hay_overflow());
 	/*cargue a ni con claves del 0 al 5 y con hijos del 0 al 5*/
 
 	{
@@ -138,8 +102,8 @@ void TestArbol::test_insertar_pocos_registros(){
 		registroBuscar.set_clave(claveBuscar);
 		TipoHijo hijoBuscar;
 
-		abm._hallar_hijo_correspondiente(&registroBuscar,&ni,hijoBuscar);
-		assert( hijoBuscar== 0 );
+		arbol._hallar_hijo_correspondiente(&registroBuscar,&ni,hijoBuscar);
+		ASSERT_TRUE( hijoBuscar== 0 );
 		//el hijo devuelto es el mas a la izquierda del nodo interno
 
 		for(unsigned short i=0;i<CANTIDAD_HIJOS;i++){
@@ -150,38 +114,27 @@ void TestArbol::test_insertar_pocos_registros(){
 			registroBuscar.set_clave(claveBuscar);
 			TipoHijo hijoBuscar;
 
-			abm._hallar_hijo_correspondiente(&registroBuscar,&ni,hijoBuscar);
-			assert( hijoBuscar >= (int)i );
+			arbol._hallar_hijo_correspondiente(&registroBuscar,&ni,hijoBuscar);
+			ASSERT_TRUE( hijoBuscar >= (int)i );
 
 		}
 
 	}
 
 
-
 	ClaveX clavePromocionada;
 	TipoHijo bloquePromocionado;
-	abm._split_interno(&ni,&clavePromocionada,bloquePromocionado);
+	arbol._split_interno(&ni,&clavePromocionada,bloquePromocionado);
 //	cout<<"clave promocionada: ";clavePromocionada.imprimir_dato();cout<<endl;
 //	cout<<"bloque promocionado: "<<bloquePromocionado<<endl;
-
-
-	assert(abm.cerrar() == RES_OK);
-
-	assert(abm.eliminar(nombreArchivoArbol)== RES_OK);
-
-	print_test_ok("test_insertar_pocos_registros");
-
 }
 
 
-void TestArbol::test_split_raiz(){
-
-	ArbolBMas arbol;
-	string nombreArchivo= "arbolSplit.dat";
+TEST_F(TestArbol,Split_raiz)
+{
 	unsigned int tamanioBloque= 64;
-	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
-	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
+	ASSERT_TRUE( arbol.abrir("arbol.dat","rb+")== RES_OK );
 
 	RegistroClave rc;
 	ClaveX c;
@@ -191,7 +144,7 @@ void TestArbol::test_split_raiz(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<2;i++){
@@ -199,7 +152,7 @@ void TestArbol::test_split_raiz(){
 		clave[3]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<3;i++){
@@ -208,7 +161,7 @@ void TestArbol::test_split_raiz(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<10;i++){
@@ -217,26 +170,19 @@ void TestArbol::test_split_raiz(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 
 	}
 
 	cout<<"ARBOL RESULTANTE: "<<endl;
 	arbol.imprimir();
-
-	assert(arbol.cerrar() == RES_OK);
-
-	print_test_ok("test_split_raiz");
-
 }
 
-void TestArbol::test_arbol_buscar()
+TEST_F(TestArbol,Buscar)
 {
-	ArbolBMas arbol;
-	string nombreArchivo= "arbolSplit_buscar.dat";
 	unsigned int tamanioBloque= 100;
-	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
-	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
+	ASSERT_TRUE( arbol.abrir("arbol.dat","rb+")== RES_OK );
 
 
 	for(int i=0;i<100;i++){
@@ -251,11 +197,8 @@ void TestArbol::test_arbol_buscar()
 		std::string campo = "campo  ";
 		campo[6] = 65+i;
 		reg.agregar_campo(campo.c_str(),campo.size());
-		assert( arbol.agregar(reg)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(reg)== RES_OK );
 	}
-
-	arbol.cerrar();
-	arbol.abrir(nombreArchivo,"rb+");
 
 	for (int i = 0; i < 100; i++)
 	{
@@ -267,8 +210,8 @@ void TestArbol::test_arbol_buscar()
 		c.set_clave(clave);
 		reg.set_clave(c);
 
-		assert(arbol.buscar(reg) != RES_RECORD_DOESNT_EXIST);
-		assert(arbol.buscar(reg) >= 0);
+		ASSERT_TRUE(arbol.buscar(reg) != RES_RECORD_DOESNT_EXIST);
+		ASSERT_TRUE(arbol.buscar(reg) >= 0);
 		char* buffer = new char[reg.get_tamanio_campo(1) + 1]();
 		buffer[reg.get_tamanio_campo(1)] = '\0';
 
@@ -278,20 +221,17 @@ void TestArbol::test_arbol_buscar()
 		campo[6] = 65+i;
 
 
-		assert(strcmp(buffer,campo.c_str()) == 0);
+		ASSERT_TRUE(strcmp(buffer,campo.c_str()) == 0);
 		delete[] buffer;
 	}
 
-	arbol.cerrar();
 }
 
-void TestArbol::test_arbol_buscar_secuencial()
+TEST_F(TestArbol,Buscar_secuencial)
 {
-	ArbolBMas arbol;
-	string nombreArchivo = "arbolSplit_buscar.dat";
 	unsigned int tamanioBloque= 100;
-	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
-	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
+	ASSERT_TRUE( arbol.abrir("arbol.dat","rb+")== RES_OK );
 
 	// Agregamos desde "arjona0" hasta "arjona9"
 	for(int i=0;i<10;i++){
@@ -301,7 +241,7 @@ void TestArbol::test_arbol_buscar_secuencial()
 		clave[6]= 48+i;
 		c.set_clave(clave);
 		reg.set_clave(c);
-		assert( arbol.agregar(reg)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(reg)== RES_OK );
 	}
 
 	// Agregamos desde "abba" hasta "abba9"
@@ -314,7 +254,7 @@ void TestArbol::test_arbol_buscar_secuencial()
 		c.set_clave(clave);
 		reg.set_clave(c);
 
-		assert( arbol.agregar(reg)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(reg)== RES_OK );
 	}
 
 	// Agregamos desde "alan johnson0" hasta "alan johnson9"
@@ -327,7 +267,7 @@ void TestArbol::test_arbol_buscar_secuencial()
 		c.set_clave(clave);
 		reg.set_clave(c);
 
-		assert( arbol.agregar(reg)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(reg)== RES_OK );
 	}
 
 	RegistroClave reg;
@@ -338,19 +278,15 @@ void TestArbol::test_arbol_buscar_secuencial()
 	c.set_clave(clave);
 	reg.set_clave(c);
 
-	assert( arbol.agregar(reg)== RES_OK );
+	ASSERT_TRUE( arbol.agregar(reg)== RES_OK );
 
 
 
 	arbol.imprimir();
 
-	arbol.cerrar();
-	arbol.abrir(nombreArchivo,"rb+");
-
-	// ASSERT: Buscamos las claves por rango
+	// ASSERT_TRUE: Buscamos las claves por rango
 	RegistroClave actual;
 	IterArbolBMas unIterador(arbol);
-
 
 	ClaveX claveA, claveABBA, claveArjona, claveAlan, claveB;
 	claveA.set_clave("a");
@@ -412,62 +348,45 @@ void TestArbol::test_arbol_buscar_secuencial()
 
 	std::cout << std::endl;
 
-
-	arbol.cerrar();
-	arbol.abrir(nombreArchivo,"rb+");
 	arbol.imprimir();
-	arbol.cerrar();
-
-	print_test_ok("test_arbol_buscar_secuencial");
 }
 
+TEST_F(TestArbol,Eliminar_raiz)
+{
+	unsigned int tamanioBloque= 64;
+	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
+	ASSERT_TRUE( arbol.abrir("arbol.dat","rb+")== RES_OK );
 
-void TestArbol::test_eliminar_sin_underflow(){
+	RegistroClave rc;
+		ClaveX c;
 
-	cout<<"inicio test_eliminar_sin_underflow -------------------------"<<endl;
-
-	{
-		ArbolBMas arbol;
-		string nombreArchivo= "arbolSoloRaizEliminar.dat";
-		unsigned int tamanioBloque= 64;
-		assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
-		assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
-
-		RegistroClave rc;
-			ClaveX c;
-
-			for(int i=0;i<3;i++){
-				string clave= "aaa";
-				clave[2]= 65+i;
-				c.set_clave(clave);
-				rc.set_clave(c);
-				assert( arbol.agregar(rc)== RES_OK );
-			}
-
-		for(unsigned short i= 0;i<3;i++){
+		for(int i=0;i<3;i++){
 			string clave= "aaa";
 			clave[2]= 65+i;
-			ClaveX claveEliminar;
-			claveEliminar.set_clave(clave);
-			RegistroClave registroEliminar;
-			registroEliminar.set_clave(claveEliminar);
-			arbol.quitar(registroEliminar);
+			c.set_clave(clave);
+			rc.set_clave(c);
+			ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 		}
 
-		cout<<"imprimiendo arbol con registros solo en raiz eliminados : "<<endl;
-		arbol.imprimir();
-		arbol.cerrar();
-
-
+	for(unsigned short i= 0;i<3;i++){
+		string clave= "aaa";
+		clave[2]= 65+i;
+		ClaveX claveEliminar;
+		claveEliminar.set_clave(clave);
+		RegistroClave registroEliminar;
+		registroEliminar.set_clave(claveEliminar);
+		arbol.quitar(registroEliminar);
 	}
 
+	cout<<"imprimiendo arbol con registros solo en raiz eliminados : "<<endl;
+	arbol.imprimir();
+}
 
-	{
-	ArbolBMas arbol;
-	string nombreArchivo= "arbolSinUnderflow.dat";
+TEST_F(TestArbol,Eliminar_raiz_sin_underflow)
+{
 	unsigned int tamanioBloque= 64;
-	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
-	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
+	ASSERT_TRUE( arbol.abrir("arbol.dat","rb+")== RES_OK );
 
 	RegistroClave rc;
 	ClaveX c;
@@ -477,7 +396,7 @@ void TestArbol::test_eliminar_sin_underflow(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<2;i++){
@@ -485,7 +404,7 @@ void TestArbol::test_eliminar_sin_underflow(){
 		clave[3]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<3;i++){
@@ -494,7 +413,7 @@ void TestArbol::test_eliminar_sin_underflow(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<10;i++){
@@ -503,7 +422,7 @@ void TestArbol::test_eliminar_sin_underflow(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 
 	}
 
@@ -513,127 +432,16 @@ void TestArbol::test_eliminar_sin_underflow(){
 	ClaveX claveEliminar;
 	claveEliminar.set_clave("aaD");
 	registroEliminar.set_clave(claveEliminar);
-	assert( arbol.quitar(registroEliminar)== RES_OK );
+	ASSERT_TRUE( arbol.quitar(registroEliminar)== RES_OK );
 
 	arbol.imprimir();
-	assert(arbol.cerrar() == RES_OK);
-	}
-
-
-
-	print_test_ok("test_eliminar_sin_underflow");
-
 }
 
-
-void TestArbol::test_eliminar_con_merge_secuenciales(){
-
-	{
-		ArbolBMas arbol;
-		string nombreArchivo= "arbolConUnderflowMergeSecuenciales.dat";
-		unsigned int tamanioBloque= 64;
-		assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
-		assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
-
-		RegistroClave rc;
-		ClaveX c;
-
-		for(int i=0;i<8;i++){
-			string clave= "aaa";
-			clave[2]= 65+i;
-			c.set_clave(clave);
-			rc.set_clave(c);
-			assert( arbol.agregar(rc)== RES_OK );
-		}
-
-		for(int i=0;i<2;i++){
-			string clave= "aaCa";
-			clave[3]= 65+i;
-			c.set_clave(clave);
-			rc.set_clave(c);
-			assert( arbol.agregar(rc)== RES_OK );
-		}
-
-		for(int i=0;i<3;i++){
-
-			string clave= "baa";
-			clave[2]= 65+i;
-			c.set_clave(clave);
-			rc.set_clave(c);
-			assert( arbol.agregar(rc)== RES_OK );
-		}
-
-		for(int i=0;i<10;i++){
-
-			string clave= "caa";
-			clave[2]= 65+i;
-			c.set_clave(clave);
-			rc.set_clave(c);
-			assert( arbol.agregar(rc)== RES_OK );
-
-		}
-
-		cout<<"ARBOL RESULTANTE: "<<endl;
-
-
-		{
-			ClaveX ce;
-			RegistroClave re;
-			ce.set_clave("aaC");
-			re.set_clave(ce);
-			arbol.quitar(re);
-			ce.set_clave("aaCA");
-			re.set_clave(ce);
-			arbol.quitar(re);
-			ce.set_clave("aaA");
-			re.set_clave(ce);
-			arbol.quitar(re);
-			ce.set_clave("aaB");
-			re.set_clave(ce);
-			arbol.quitar(re);
-			/*merge de secuencial no ultimo hijo*/
-
-			cout<<"imprimiendo arbol con merge sin ultimo hijo: ----------------------"<<endl;
-			arbol.imprimir();
-
-
-			/*funciona hasta aqui*/
-
-			ce.set_clave("baB");
-			re.set_clave(ce);
-			arbol.quitar(re);
-			ce.set_clave("baC");
-			re.set_clave(ce);
-			arbol.quitar(re);
-			ce.set_clave("caB");
-			re.set_clave(ce);
-			arbol.quitar(re);
-			ce.set_clave("caC");
-			re.set_clave(ce);
-			arbol.quitar(re);
-			ce.set_clave("caD");
-			re.set_clave(ce);
-			arbol.quitar(re);
-
-			cout<<"imprimiendo arbol con merge con ultimo hijo: ----------------------"<<endl;
-			arbol.imprimir();
-
-		}
-
-
-		assert(arbol.cerrar() == RES_OK);
-	}
-		print_test_ok("test_eliminar_con_merge_secuenciales");
-
-}
-
-void TestArbol::test_eliminar_con_balanceo_secuenciales(){
-
-	ArbolBMas arbol;
-	string nombreArchivo= "arbolConUnderflowBalanceoSecuenciales.dat";
+TEST_F(TestArbol,Eliminar_con_merge_secuenciales)
+{
 	unsigned int tamanioBloque= 64;
-	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
-	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
+	ASSERT_TRUE( arbol.abrir("arbol.dat","rb+")== RES_OK );
 
 	RegistroClave rc;
 	ClaveX c;
@@ -643,7 +451,7 @@ void TestArbol::test_eliminar_con_balanceo_secuenciales(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<2;i++){
@@ -651,7 +459,7 @@ void TestArbol::test_eliminar_con_balanceo_secuenciales(){
 		clave[3]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<3;i++){
@@ -660,7 +468,7 @@ void TestArbol::test_eliminar_con_balanceo_secuenciales(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<10;i++){
@@ -669,7 +477,100 @@ void TestArbol::test_eliminar_con_balanceo_secuenciales(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
+
+	}
+
+	cout<<"ARBOL RESULTANTE: "<<endl;
+
+
+	{
+		ClaveX ce;
+		RegistroClave re;
+		ce.set_clave("aaC");
+		re.set_clave(ce);
+		arbol.quitar(re);
+		ce.set_clave("aaCA");
+		re.set_clave(ce);
+		arbol.quitar(re);
+		ce.set_clave("aaA");
+		re.set_clave(ce);
+		arbol.quitar(re);
+		ce.set_clave("aaB");
+		re.set_clave(ce);
+		arbol.quitar(re);
+		/*merge de secuencial no ultimo hijo*/
+
+		cout<<"imprimiendo arbol con merge sin ultimo hijo: ----------------------"<<endl;
+		arbol.imprimir();
+
+
+		/*funciona hasta aqui*/
+
+		ce.set_clave("baB");
+		re.set_clave(ce);
+		arbol.quitar(re);
+		ce.set_clave("baC");
+		re.set_clave(ce);
+		arbol.quitar(re);
+		ce.set_clave("caB");
+		re.set_clave(ce);
+		arbol.quitar(re);
+		ce.set_clave("caC");
+		re.set_clave(ce);
+		arbol.quitar(re);
+		ce.set_clave("caD");
+		re.set_clave(ce);
+		arbol.quitar(re);
+
+		cout<<"imprimiendo arbol con merge con ultimo hijo: ----------------------"<<endl;
+		arbol.imprimir();
+
+	}
+
+}
+
+TEST_F(TestArbol,Eliminar_con_balanceo_secuenciales)
+{
+	unsigned int tamanioBloque= 64;
+	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
+	ASSERT_TRUE( arbol.abrir("arbol.dat","rb+")== RES_OK );
+
+	RegistroClave rc;
+	ClaveX c;
+
+	for(int i=0;i<8;i++){
+		string clave= "aaa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<2;i++){
+		string clave= "aaCa";
+		clave[3]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<3;i++){
+
+		string clave= "baa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
+	}
+
+	for(int i=0;i<10;i++){
+
+		string clave= "caa";
+		clave[2]= 65+i;
+		c.set_clave(clave);
+		rc.set_clave(c);
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 
 	}
 
@@ -714,19 +615,13 @@ void TestArbol::test_eliminar_con_balanceo_secuenciales(){
 
 	cout<<"imprimiendo arbol con balanceo con ultimo hijo: ----------------------"<<endl;
 	arbol.imprimir();
-
-
-	assert(arbol.cerrar() == RES_OK);
-	print_test_ok("test_eliminar_con_balancear_secuenciales");
 }
 
-void TestArbol::test_eliminar_con_merge_interno(){
-
-	ArbolBMas arbol;
-	string nombreArchivo= "arbolConUnderflowMergeInternos.dat";
+TEST_F(TestArbol,Eliminar_con_merge_internos)
+{
 	unsigned int tamanioBloque= 64;
-	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
-	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
+	ASSERT_TRUE( arbol.abrir("arbol.dat","rb+")== RES_OK );
 
 	RegistroClave rc;
 	ClaveX c;
@@ -736,7 +631,7 @@ void TestArbol::test_eliminar_con_merge_interno(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<2;i++){
@@ -744,7 +639,7 @@ void TestArbol::test_eliminar_con_merge_interno(){
 		clave[3]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<3;i++){
@@ -753,7 +648,7 @@ void TestArbol::test_eliminar_con_merge_interno(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<10;i++){
@@ -762,7 +657,7 @@ void TestArbol::test_eliminar_con_merge_interno(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 
 	}
 
@@ -806,19 +701,13 @@ void TestArbol::test_eliminar_con_merge_interno(){
 
 	cout<<"imprimiendo arbol con merge interno sin ultimo hijo: ----------------------"<<endl;
 	arbol.imprimir();
-
-	assert(arbol.cerrar() == RES_OK);
-	print_test_ok("test_eliminar_con_merge_internos");
 }
 
-
-void TestArbol::test_eliminar_con_merge_interno_en_ultimo(){
-
-	ArbolBMas arbol;
-	string nombreArchivo= "arbolConUnderflowMergeInternosEnUltimo.dat";
+TEST_F(TestArbol,Eliminar_con_merge_interno_en_ultimo)
+{
 	unsigned int tamanioBloque= 64;
-	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
-	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
+	ASSERT_TRUE( arbol.abrir("arbol.dat","rb+")== RES_OK );
 
 	RegistroClave rc;
 	ClaveX c;
@@ -828,7 +717,7 @@ void TestArbol::test_eliminar_con_merge_interno_en_ultimo(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<2;i++){
@@ -836,7 +725,7 @@ void TestArbol::test_eliminar_con_merge_interno_en_ultimo(){
 		clave[3]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<3;i++){
@@ -845,7 +734,7 @@ void TestArbol::test_eliminar_con_merge_interno_en_ultimo(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<10;i++){
@@ -854,7 +743,7 @@ void TestArbol::test_eliminar_con_merge_interno_en_ultimo(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 
 	}
 
@@ -911,19 +800,13 @@ void TestArbol::test_eliminar_con_merge_interno_en_ultimo(){
 
 	cout<<"imprimiendo arbol con merge interno en el ultimo: ----------------------"<<endl;
 	arbol.imprimir();
-
-	assert(arbol.cerrar() == RES_OK);
-	print_test_ok("test_eliminar_con_merge_internos");
 }
 
-
-void TestArbol::test_eliminar_con_balanceo_interno(){
-
-	ArbolBMas arbol;
-	string nombreArchivo= "arbolConUnderflowMergeInternosEnUltimo.dat";
+TEST_F(TestArbol,Eliminar_con_balanceo_interno_en_ultimo)
+{
 	unsigned int tamanioBloque= 64;
-	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
-	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
+	ASSERT_TRUE( arbol.abrir("arbol.dat","rb+")== RES_OK );
 
 	RegistroClave rc;
 	ClaveX c;
@@ -933,7 +816,7 @@ void TestArbol::test_eliminar_con_balanceo_interno(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<2;i++){
@@ -941,7 +824,7 @@ void TestArbol::test_eliminar_con_balanceo_interno(){
 		clave[3]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<3;i++){
@@ -950,7 +833,7 @@ void TestArbol::test_eliminar_con_balanceo_interno(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<10;i++){
@@ -959,7 +842,7 @@ void TestArbol::test_eliminar_con_balanceo_interno(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 
 	}
 
@@ -997,18 +880,13 @@ void TestArbol::test_eliminar_con_balanceo_interno(){
 
 	cout<<"imprimiendo arbol despues de balancear: ----------------------"<<endl;
 	arbol.imprimir();
-
-	arbol.cerrar();
 }
 
-
-void TestArbol::test_eliminar_con_balanceo_interno_con_ultimo_nodo(){
-
-	ArbolBMas arbol;
-	string nombreArchivo= "arbolConUnderflowMergeInternosEnUltimo.dat";
+TEST_F(TestArbol,Eliminar_con_balanceo_interno_en_ultimo_nodo)
+{
 	unsigned int tamanioBloque= 64;
-	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
-	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
+	ASSERT_TRUE( arbol.abrir("arbol.dat","rb+")== RES_OK );
 
 	RegistroClave rc;
 	ClaveX c;
@@ -1018,7 +896,7 @@ void TestArbol::test_eliminar_con_balanceo_interno_con_ultimo_nodo(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<2;i++){
@@ -1026,7 +904,7 @@ void TestArbol::test_eliminar_con_balanceo_interno_con_ultimo_nodo(){
 		clave[3]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<3;i++){
@@ -1035,7 +913,7 @@ void TestArbol::test_eliminar_con_balanceo_interno_con_ultimo_nodo(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<10;i++){
@@ -1044,7 +922,7 @@ void TestArbol::test_eliminar_con_balanceo_interno_con_ultimo_nodo(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 
 	}
 
@@ -1077,16 +955,13 @@ void TestArbol::test_eliminar_con_balanceo_interno_con_ultimo_nodo(){
 
 	cout<<"imprimiendo arbol despues de balancear: ----------------------"<<endl;
 	arbol.imprimir();
-	arbol.cerrar();
 }
 
-void TestArbol::test_eliminar_completamente_arbol(){
-
-	ArbolBMas arbol;
-	string nombreArchivo= "arbolConUnderflowMergeInternosEnUltimo.dat";
+TEST_F(TestArbol,Eliminar_arbol_completamente)
+{
 	unsigned int tamanioBloque= 64;
-	assert( arbol.crear(nombreArchivo,tamanioBloque)== RES_OK );
-	assert( arbol.abrir(nombreArchivo,"rb+")== RES_OK );
+	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
+	ASSERT_TRUE( arbol.abrir("arbol.dat","rb+")== RES_OK );
 
 	RegistroClave rc;
 	ClaveX c;
@@ -1096,7 +971,7 @@ void TestArbol::test_eliminar_completamente_arbol(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<2;i++){
@@ -1104,7 +979,7 @@ void TestArbol::test_eliminar_completamente_arbol(){
 		clave[3]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<3;i++){
@@ -1113,7 +988,7 @@ void TestArbol::test_eliminar_completamente_arbol(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 	}
 
 	for(int i=0;i<10;i++){
@@ -1122,7 +997,7 @@ void TestArbol::test_eliminar_completamente_arbol(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.agregar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.agregar(rc)== RES_OK );
 
 	}
 
@@ -1134,7 +1009,7 @@ void TestArbol::test_eliminar_completamente_arbol(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.quitar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.quitar(rc)== RES_OK );
 	}
 
 	cout<<"imprimiendo arbol etapa 1: ----------------------"<<endl;
@@ -1145,7 +1020,7 @@ void TestArbol::test_eliminar_completamente_arbol(){
 		clave[3]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.quitar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.quitar(rc)== RES_OK );
 	}
 
 	cout<<"imprimiendo arbol etapa 2: ----------------------"<<endl;
@@ -1157,7 +1032,7 @@ void TestArbol::test_eliminar_completamente_arbol(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.quitar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.quitar(rc)== RES_OK );
 	}
 
 	cout<<"imprimiendo arbol etapa 3: ----------------------"<<endl;
@@ -1169,11 +1044,10 @@ void TestArbol::test_eliminar_completamente_arbol(){
 		clave[2]= 65+i;
 		c.set_clave(clave);
 		rc.set_clave(c);
-		assert( arbol.quitar(rc)== RES_OK );
+		ASSERT_TRUE( arbol.quitar(rc)== RES_OK );
 
 	}
 
 	cout<<"imprimiendo arbol borrado: ----------------------"<<endl;
 	arbol.imprimir();
-	arbol.cerrar();
 }

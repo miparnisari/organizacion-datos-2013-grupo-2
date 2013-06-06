@@ -1,37 +1,29 @@
-/*
- * TestNodoInterno.cpp
- *
- *  Created on: May 4, 2013
- *      Author: maine
- */
+#include "../src/CapaLogica/ArbolBMas/NodoInterno.h"
+#include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
-#include "TestNodoInterno.h"
-
-TestNodoInterno::TestNodoInterno()
-	:Test()
-{
-}
-
-TestNodoInterno::~TestNodoInterno()
-{
-}
-
-void TestNodoInterno::ejecutar()
-{
-	crear_nodo_con_demasiadas_claves_falla();
-	insertar_hijos();
-	todo_tipo_empaquetado();
-
-	cout<<"OK: test_nodo_interno"<<endl;
-
-}
-
-
-void TestNodoInterno::insertar_hijos(){
-
+// To use a test fixture, derive a class from testing::Test.
+class TestNodoInterno : public testing::Test {
+ protected:
+	// Declares the variables your tests want to use.
 	typedef NodoInterno::TipoHijo TipoHijo;
-	srand(time(NULL));
 
+  // virtual void SetUp() will be called before each test is run.  You
+  // should define it if you need to initialize the varaibles.
+  // Otherwise, this can be skipped.
+  virtual void SetUp() {
+  }
+
+  // TearDown() is invoked immediately after a test finishes.
+  virtual void TearDown() {
+  }
+
+  // A helper function that some test uses.
+
+};
+
+TEST_F(TestNodoInterno,Insertar_hijos)
+{
+	srand(time(NULL));
 
 	{
 		const unsigned short LIMITE_RANDOM= 32;
@@ -45,13 +37,13 @@ void TestNodoInterno::insertar_hijos(){
 			hijos[i]= rand()%LIMITE_RANDOM;
 
 		const unsigned int TAMANIO_INICIAL= ni.get_tamanio_ocupado();
-		assert( ni.insertar_hijo(99,2)== RES_ERROR );
-		assert( ni.get_tamanio_ocupado()== (signed)TAMANIO_INICIAL);
+		ASSERT_TRUE( ni.insertar_hijo(99,2)== RES_ERROR );
+		ASSERT_TRUE( ni.get_tamanio_ocupado()== (signed)TAMANIO_INICIAL);
 		for(unsigned short i=0;i<2;i++)
-			assert( ni.insertar_hijo(hijos[i],i+1)==RES_UNDERFLOW );
-		assert( ni.insertar_hijo(hijos[2],3)== RES_UNDERFLOW );
+			ASSERT_TRUE( ni.insertar_hijo(hijos[i],i+1)==RES_UNDERFLOW );
+		ASSERT_TRUE( ni.insertar_hijo(hijos[2],3)== RES_UNDERFLOW );
 
-		assert( ni.insertar_hijo(hijos[3],0)== RES_OK );
+		ASSERT_TRUE( ni.insertar_hijo(hijos[3],0)== RES_OK );
 
 		NodoInterno ni2;
 		for(unsigned short i=0;i<CANTIDAD_HIJOS;i++)
@@ -62,7 +54,7 @@ void TestNodoInterno::insertar_hijos(){
 			unsigned short elHijo= CANTIDAD_HIJOS-1-i;
 			TipoHijo unHijo;
 			ni2.get_hijo(unHijo,i);
-			assert( unHijo== hijos[elHijo] );
+			ASSERT_TRUE( unHijo== hijos[elHijo] );
 
 		}
 
@@ -86,30 +78,30 @@ void TestNodoInterno::insertar_hijos(){
 		const unsigned short CANTIDAD_HIJOS= CANTIDAD_DATOS+1;
 
 		TipoHijo unHijo;
-		assert( ni.get_hijo(unHijo,0) == RES_OK && unHijo== HIJO_INVALIDO );
-		assert( ni.get_hijo(unHijo,1)== RES_ERROR );
-		assert( ni.insertar_hijo_derecho(claves[0], hijos[0])== RES_ERROR );
-		assert( ni.get_cantidad_claves()== CANTIDAD_CLAVES_INICIAL );
-		assert( ni.get_cantidad_hijos()== CANTIDAD_HIJOS_INICIAL );
-		assert( ni.modificar_hijo(hijos[0],0) == RES_OK );
-		assert( ni.modificar_hijo(hijos[0],1) == RES_ERROR );
+		ASSERT_TRUE( ni.get_hijo(unHijo,0) == RES_OK && unHijo== HIJO_INVALIDO );
+		ASSERT_TRUE( ni.get_hijo(unHijo,1)== RES_ERROR );
+		ASSERT_TRUE( ni.insertar_hijo_derecho(claves[0], hijos[0])== RES_ERROR );
+		ASSERT_TRUE( ni.get_cantidad_claves()== CANTIDAD_CLAVES_INICIAL );
+		ASSERT_TRUE( ni.get_cantidad_hijos()== CANTIDAD_HIJOS_INICIAL );
+		ASSERT_TRUE( ni.modificar_hijo(hijos[0],0) == RES_OK );
+		ASSERT_TRUE( ni.modificar_hijo(hijos[0],1) == RES_ERROR );
 
 
 		for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
 			unsigned short us;
-			assert( ni.insertar_clave(claves[i],us)==RES_OK );
-			assert( ni.insertar_hijo(HIJO_INVALIDO)== RES_OK );
+			ASSERT_TRUE( ni.insertar_clave(claves[i],us)==RES_OK );
+			ASSERT_TRUE( ni.insertar_hijo(HIJO_INVALIDO)== RES_OK );
 
 		}
 
 		for(unsigned short i=0;i<CANTIDAD_DATOS;i++)
-			assert( ni.modificar_hijo_derecho(claves[i],hijos[i+1])== RES_OK );
+			ASSERT_TRUE( ni.modificar_hijo_derecho(claves[i],hijos[i+1])== RES_OK );
 		for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
 			TipoHijo unHijo;
-			assert( ni.get_hijo_derecho(unHijo , claves[i])== RES_OK );
-			assert( unHijo== hijos[i+1] );
+			ASSERT_TRUE( ni.get_hijo_derecho(unHijo , claves[i])== RES_OK );
+			ASSERT_TRUE( unHijo== hijos[i+1] );
 		}
-		assert( ni.get_cantidad_claves()== CANTIDAD_DATOS &&
+		ASSERT_TRUE( ni.get_cantidad_claves()== CANTIDAD_DATOS &&
 				ni.get_cantidad_hijos()== CANTIDAD_HIJOS );
 
 		for(unsigned int i=0;i<CANTIDAD_DATOS;i++){
@@ -120,19 +112,19 @@ void TestNodoInterno::insertar_hijos(){
 
 		for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
 			unsigned short us;
-			assert( ni.insertar_clave(claves[i],us)==RES_OK );
-			assert( ni.insertar_hijo_derecho(claves[i]) == RES_OK );
+			ASSERT_TRUE( ni.insertar_clave(claves[i],us)==RES_OK );
+			ASSERT_TRUE( ni.insertar_hijo_derecho(claves[i]) == RES_OK );
 
 		}
 
 		for(unsigned short i=0;i<CANTIDAD_DATOS;i++)
-			assert( ni.modificar_hijo_derecho(claves[i],hijos[i+1])== RES_OK );
+			ASSERT_TRUE( ni.modificar_hijo_derecho(claves[i],hijos[i+1])== RES_OK );
 		for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
 			TipoHijo unHijo;
-			assert( ni.get_hijo_derecho(unHijo , claves[i])== RES_OK );
-			assert( unHijo== hijos[i+1] );
+			ASSERT_TRUE( ni.get_hijo_derecho(unHijo , claves[i])== RES_OK );
+			ASSERT_TRUE( unHijo== hijos[i+1] );
 		}
-		assert( ni.get_cantidad_claves()== CANTIDAD_DATOS &&
+		ASSERT_TRUE( ni.get_cantidad_claves()== CANTIDAD_DATOS &&
 				ni.get_cantidad_hijos()== CANTIDAD_HIJOS );
 
 		NodoInterno ni2;
@@ -146,7 +138,7 @@ void TestNodoInterno::insertar_hijos(){
 			ni2.modificar_hijo_izquierdo(claves[i],hijos[i]);
 			TipoHijo unHijo;
 			ni2.get_hijo_izquierdo(unHijo,claves[i]);
-			assert( unHijo== hijos[i] );
+			ASSERT_TRUE( unHijo== hijos[i] );
 		}
 
 
@@ -154,8 +146,7 @@ void TestNodoInterno::insertar_hijos(){
 
 }
 
-
-void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
+TEST_F(TestNodoInterno,Crear_nodo_con_demasiadas_claves_falla)
 {
 	NodoInterno nodoI(0,16);
 	ClaveX clave1, clave2, clave3, clave4;
@@ -165,13 +156,13 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 	clave4.set_clave("clave que no entra");
 
 	unsigned short pos= 0;
-	assert(nodoI.insertar_clave(clave1,pos)== RES_OK && pos==0);
-	assert(nodoI.insertar_clave(clave2,pos)== RES_OK && pos==1);
-	assert(nodoI.insertar_clave(clave3,pos)== RES_OVERFLOW && pos== 0);
-	assert(nodoI.insertar_clave(clave4,pos)== RES_OVERFLOW && pos==3);
-	assert(nodoI.get_cantidad_claves() == 4);
+	ASSERT_TRUE(nodoI.insertar_clave(clave1,pos)== RES_OK && pos==0);
+	ASSERT_TRUE(nodoI.insertar_clave(clave2,pos)== RES_OK && pos==1);
+	ASSERT_TRUE(nodoI.insertar_clave(clave3,pos)== RES_OVERFLOW && pos== 0);
+	ASSERT_TRUE(nodoI.insertar_clave(clave4,pos)== RES_OVERFLOW && pos==3);
+	ASSERT_TRUE(nodoI.get_cantidad_claves() == 4);
 
-	assert(nodoI.remover_clave(clave1,pos)== RES_OVERFLOW);
+	ASSERT_TRUE(nodoI.remover_clave(clave1,pos)== RES_OVERFLOW);
 	//al remover la clave mas pequenia, el nodo sigue en estado overflow
 
 	{
@@ -186,22 +177,22 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 
 		for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
 			unsigned short ocurrenciaInsercion= 0;
-			assert( ni.insertar_clave(claves[i],ocurrenciaInsercion)== RES_OK );
-			assert( ocurrenciaInsercion== i );
-			assert( ni.insertar_clave(claves[i],ocurrenciaInsercion)== RES_ERROR );
-			assert( ni.get_tamanio_ocupado()== (signed)TAMANIO_INICIAL +
+			ASSERT_TRUE( ni.insertar_clave(claves[i],ocurrenciaInsercion)== RES_OK );
+			ASSERT_TRUE( ocurrenciaInsercion== i );
+			ASSERT_TRUE( ni.insertar_clave(claves[i],ocurrenciaInsercion)== RES_ERROR );
+			ASSERT_TRUE( ni.get_tamanio_ocupado()== (signed)TAMANIO_INICIAL +
 					claves[i].get_tamanio_empaquetado() * (i+1) );
 		}
 
 		unsigned short ocurrenciaInsercion= 0;
 		ClaveX cx;
 		cx.set_clave(1);
-		assert( ni.insertar_clave(cx,ocurrenciaInsercion)== RES_OK );
-		assert( ocurrenciaInsercion== 1 );
+		ASSERT_TRUE( ni.insertar_clave(cx,ocurrenciaInsercion)== RES_OK );
+		ASSERT_TRUE( ocurrenciaInsercion== 1 );
 
 		cx.set_clave(3);
-		assert( ni.insertar_clave(cx,ocurrenciaInsercion)== RES_OK );
-		assert( ocurrenciaInsercion== 3 );
+		ASSERT_TRUE( ni.insertar_clave(cx,ocurrenciaInsercion)== RES_OK );
+		ASSERT_TRUE( ocurrenciaInsercion== 3 );
 
 	}//las claves se insertan en el orden apropiado
 
@@ -227,7 +218,7 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 		unsigned short ocurrenciaInsercion= 0;
 		ni.insertar_clave(claves[0],ocurrenciaInsercion);
 		ni.insertar_clave(claves[1],ocurrenciaInsercion);
-		assert( ni.get_tamanio_ocupado()== TAMANIO_INICIAL +
+		ASSERT_TRUE( ni.get_tamanio_ocupado()== TAMANIO_INICIAL +
 				TAMANIO_EMPAQUETADO_CLAVE*2 );
 		ni.insertar_hijo(hijos[0],1);
 
@@ -249,11 +240,11 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 			unsigned short ocurrenciaInsercion;
 			ClaveX unaClave;
 			unaClave.set_clave(claveAcumulada);
-			assert( ni.insertar_clave(unaClave,ocurrenciaInsercion)== RES_OK );
+			ASSERT_TRUE( ni.insertar_clave(unaClave,ocurrenciaInsercion)== RES_OK );
 			claveAcumulada+= (char)(67+i);
-			assert( ni.insertar_hijo(i+1,i+1)== RES_OK );
+			ASSERT_TRUE( ni.insertar_hijo(i+1,i+1)== RES_OK );
 
-		}assert(ni.get_cantidad_claves()== CANTIDAD_DATOS && ni.get_cantidad_hijos()== CANTIDAD_HIJOS);
+		}ASSERT_TRUE(ni.get_cantidad_claves()== CANTIDAD_DATOS && ni.get_cantidad_hijos()== CANTIDAD_HIJOS);
 
 		//ni.imprimir();
 
@@ -262,7 +253,7 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 		claveMitad.set_clave(datoClaveMitad);
 		ClaveX claveMitadNodo;
 		ni.get_clave_mitad(claveMitadNodo);
-		assert( claveMitad== claveMitadNodo );
+		ASSERT_TRUE( claveMitad== claveMitadNodo );
 
 		unsigned short numeroClaveMitad;
 		ni.buscar_clave(claveMitad,numeroClaveMitad);
@@ -271,12 +262,12 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 		for(unsigned short i=numeroClaveMitad;i<CANTIDAD_DATOS;i++){
 
 			ClaveX unaClave;
-			assert( ni.remover_clave(numeroClaveMitad,unaClave)== RES_OK );
+			ASSERT_TRUE( ni.remover_clave(numeroClaveMitad,unaClave)== RES_OK );
 			clavesMover.push_back(unaClave);
 			TipoHijo unHijo;
 			ni.get_hijo(unHijo,numeroClaveMitad+1);
 			hijosMover.push_back(unHijo);
-			assert( ni.remover_hijo(numeroClaveMitad+1)== RES_OK );
+			ASSERT_TRUE( ni.remover_hijo(numeroClaveMitad+1)== RES_OK );
 
 
 		}/*pruebo remover la clave de la mitad y los hijos de la misma*/
@@ -298,10 +289,8 @@ void TestNodoInterno::crear_nodo_con_demasiadas_claves_falla()
 
 }
 
-
-void TestNodoInterno::todo_tipo_empaquetado(){
-
-	typedef NodoInterno::TipoHijo TipoHijo;
+TEST_F(TestNodoInterno,Empaquetar)
+{
 	srand(time(NULL));
 /*
 	{
@@ -319,17 +308,17 @@ void TestNodoInterno::todo_tipo_empaquetado(){
 		const unsigned short CANTIDAD_HIJOS= CANTIDAD_CLAVES+1;
 		TipoHijo hijos[CANTIDAD_HIJOS];
 		for(unsigned short i=0;i<CANTIDAD_HIJOS;i++ , hijos[i]=rand()%32);
-		assert( ni.modificar_hijo(hijos[0],0)== RES_OK ) ;
+		ASSERT_TRUE( ni.modificar_hijo(hijos[0],0)== RES_OK ) ;
 
 
 		for(unsigned short i=0;i<CANTIDAD_CLAVES;i++){
 			unsigned short posicionOcurrencia= 0;
 			ni.insertar_clave(claves[i],posicionOcurrencia);
-			assert(ni.get_cantidad_claves()== i+1);
-			assert( ni.insertar_hijo_derecho(claves[i],hijos[i+1])== RES_OK );
+			ASSERT_TRUE(ni.get_cantidad_claves()== i+1);
+			ASSERT_TRUE( ni.insertar_hijo_derecho(claves[i],hijos[i+1])== RES_OK );
 		}
 
-		assert( ni.empaquetar(b)==RES_OK );
+		ASSERT_TRUE( ni.empaquetar(b)==RES_OK );
 		delete b;
 
 
@@ -350,38 +339,33 @@ void TestNodoInterno::todo_tipo_empaquetado(){
 		clave.set_clave(dato);
 		unsigned short ocurrencia;
 		ni.insertar_clave(clave,ocurrencia);
-		assert( ni.insertar_hijo_derecho(clave,(TipoHijo)ocurrencia) == RES_OK);
+		ASSERT_TRUE( ni.insertar_hijo_derecho(clave,(TipoHijo)ocurrencia) == RES_OK);
 
 	}
 
 	Bloque b;
-	assert( ni.empaquetar(&b)== RES_OK );
-	assert( ni2.desempaquetar(&b)== RES_OK );
+	ASSERT_TRUE( ni.empaquetar(&b)== RES_OK );
+	ASSERT_TRUE( ni2.desempaquetar(&b)== RES_OK );
 
-	assert( ni2.get_cantidad_claves() == ni.get_cantidad_claves() );
-	assert( ni2.get_cantidad_hijos()== ni.get_cantidad_hijos() );
+	ASSERT_TRUE( ni2.get_cantidad_claves() == ni.get_cantidad_claves() );
+	ASSERT_TRUE( ni2.get_cantidad_hijos()== ni.get_cantidad_hijos() );
 
 	for(unsigned short i=0;i<CANTIDAD_DATOS;i++){
 		ClaveX c1,c2;
 		ni.get_clave(i,c1);
 		ni2.get_clave(i,c2);
-		assert( c1==c2 );
+		ASSERT_TRUE( c1==c2 );
 
 		TipoHijo h1,h2;
 		ni.get_hijo_derecho(h1,c1);
 		ni2.get_hijo_derecho(h2,c2);
-		assert( h1==h2 );
+		ASSERT_TRUE( h1==h2 );
 		ni.get_hijo(h1,i+1);
 		ni2.get_hijo(h2,i+1);
-		assert(h1==h2);
+		ASSERT_TRUE(h1==h2);
 	}
 
 	NodoArbol na(TIPO_HOJA);
-	assert( na.desempaquetar(&b)== RES_OK );
-	assert( na.es_interno() );
-
-
+	ASSERT_TRUE( na.desempaquetar(&b)== RES_OK );
+	ASSERT_TRUE( na.es_interno() );
 }
-
-
-

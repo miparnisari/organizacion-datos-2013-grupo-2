@@ -1,45 +1,44 @@
-/*
- * TestRegistroClave.cpp
- *
- *  Created on: May 12, 2013
- *      Author: maine
- */
+#include "../src/CapaLogica/ManejoArchivos/RegistroClave.h"
+#include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
-#include "TestRegistroClave.h"
+// To use a test fixture, derive a class from testing::Test.
+class TestRegistroClave : public testing::Test {
+ protected:
+	// Declares the variables your tests want to use.
+	RegistroClave registroClave;
 
-TestRegistroClave::TestRegistroClave() {
+  // virtual void SetUp() will be called before each test is run.  You
+  // should define it if you need to initialize the varaibles.
+  // Otherwise, this can be skipped.
+  virtual void SetUp() {
+  }
 
-}
+  virtual void TearDown() {
+  }
 
-TestRegistroClave::~TestRegistroClave() {
-}
+  // A helper function that some test uses.
 
-void TestRegistroClave::ejecutar()
+};
+
+TEST_F(TestRegistroClave,Guardar_leer)
 {
-	test_registro_clave_guardar_y_leer();
-	test_registro_clave_empaquetar_desempaquetar();
-}
-
-void TestRegistroClave::test_registro_clave_guardar_y_leer()
-{
-	RegistroClave registro;
 	ClaveX claveescrita;
 	claveescrita.set_clave("una artista");
 	std::string campo = "madonna";
 
-	registro.set_clave(claveescrita);
-	registro.agregar_campo(campo.c_str(), campo.size());
+	registroClave.set_clave(claveescrita);
+	registroClave.agregar_campo(campo.c_str(), campo.size());
 
-	assert(registro.get_cantidad_campos() == 2);
-	assert(registro.get_clave() == claveescrita);
-	assert(registro.get_tamanio_campo(1) != RES_ERROR);
-	assert((unsigned)registro.get_tamanio_campo(1) == campo.size());
+	assert(registroClave.get_cantidad_campos() == 2);
+	assert(registroClave.get_clave() == claveescrita);
+	assert(registroClave.get_tamanio_campo(1) != RES_ERROR);
+	assert((unsigned)registroClave.get_tamanio_campo(1) == campo.size());
 
-	for (unsigned int i = 1; i < registro.get_cantidad_campos(); i++)
+	for (unsigned int i = 1; i < registroClave.get_cantidad_campos(); i++)
 	{
-		char* buffer = new char[registro.get_tamanio_campo(i)+1]();
-		buffer[registro.get_tamanio_campo(i)] = '\0';
-		registro.recuperar_campo(buffer,i);
+		char* buffer = new char[registroClave.get_tamanio_campo(i)+1]();
+		buffer[registroClave.get_tamanio_campo(i)] = '\0';
+		registroClave.recuperar_campo(buffer,i);
 
 		if (i == 0)
 			assert(strcmp(buffer,"una artista") == 0);
@@ -49,23 +48,21 @@ void TestRegistroClave::test_registro_clave_guardar_y_leer()
 		delete[] buffer;
 	}
 
-	print_test_ok("test_registro_clave_guardar_y_leer");
 }
 
-void TestRegistroClave::test_registro_clave_empaquetar_desempaquetar()
+TEST_F(TestRegistroClave,Empaquetar_desempaquetar)
 {
 	ClaveX clave;
 	clave.set_clave("una clave 123");
 	std::string campo = "un campo 456";
 
-	RegistroClave registro;
-	registro.set_clave(clave);
-	registro.agregar_campo(campo.c_str(), campo.size());
+	registroClave.set_clave(clave);
+	registroClave.agregar_campo(campo.c_str(), campo.size());
 
-	char* buffer = new char[registro.get_tamanio_empaquetado() +1]();
-	buffer[registro.get_tamanio_empaquetado()] = '\0';
+	char* buffer = new char[registroClave.get_tamanio_empaquetado() +1]();
+	buffer[registroClave.get_tamanio_empaquetado()] = '\0';
 
-	assert(registro.empaquetar(buffer) == RES_OK);
+	assert(registroClave.empaquetar(buffer) == RES_OK);
 
 	RegistroClave registroDesempaquetado;
 	registroDesempaquetado.desempaquetar(buffer);
@@ -83,7 +80,4 @@ void TestRegistroClave::test_registro_clave_empaquetar_desempaquetar()
 
 	delete[] buffer;
 	delete[] campoRecuperado;
-
-	print_test_ok("test_registro_clave_empaquetar_desempaquetar");
-
 }

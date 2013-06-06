@@ -1,31 +1,34 @@
-/*
- * TestOrdenamientoExterno.cpp
- *
- *  Created on: May 16, 2013
- *      Author: juan
- */
+#include "../src/CapaFisica/ManejadorRegistrosVariables.h"
+#include "../src/Utilitarios/SortExterno.h"
+#include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
-#include "TestOrdenamientoExterno.h"
+// To use a test fixture, derive a class from testing::Test.
+class TestOrdenamientoExterno : public testing::Test {
+ protected:
+		// Declares the variables your tests want to use.
+		ManejadorRegistrosVariables mv;
+		std::string filename;
 
-TestOrdenamientoExterno::TestOrdenamientoExterno() {
-}
+  // virtual void SetUp() will be called before each test is run.  You
+  // should define it if you need to initialize the varaibles.
+  // Otherwise, this can be skipped.
+  virtual void SetUp() {
+	  filename = "archivoOrdenamiento.dat";
+	  mv.crear_archivo(filename);
+	  mv.abrir_archivo(filename);
+  }
 
-TestOrdenamientoExterno::~TestOrdenamientoExterno() {
-}
+  // TearDown() is invoked immediately after a test finishes.
+  virtual void TearDown() {
+	  mv.eliminar_archivo(filename);
+  }
 
-void TestOrdenamientoExterno::ejecutar(){
-//	test_generar_runs(); comento porque tardan mucho en correr.
-//	test_merge_runs();
-	test_ordenar();
+  // A helper function that some test uses.
 
-}
+};
 
-void TestOrdenamientoExterno::test_generar_runs(){
-
-	ManejadorRegistrosVariables mv;
-	mv.eliminar_archivo("archivoOrdenamiento.dat");
-	mv.crear_archivo("archivoOrdenamiento.dat");
-	mv.abrir_archivo("archivoOrdenamiento.dat");
+TEST_F(TestOrdenamientoExterno,Generar_runs)
+{
 
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
 	{
@@ -35,12 +38,12 @@ void TestOrdenamientoExterno::test_generar_runs(){
 
 		RegistroVariable regVariable;
 
-		regVariable.agregar_campo((char*)campoClave,sizeof(int));
+		regVariable.agregar_campo((char*)&campoClave,sizeof(int));
 
 		mv.agregar_registro(& regVariable);
 	}
 
-	SortExterno ordenador("archivoOrdenamiento.dat");
+	SortExterno ordenador(filename);
 
 	ordenador._generar_runs();
 
@@ -66,18 +69,10 @@ void TestOrdenamientoExterno::test_generar_runs(){
 		mv2.eliminar_archivo(runs[i]);
 	}
 
-	print_test_ok("test_generar_runs");
-	mv.eliminar_archivo("archivoOrdenamiento.dat");
-
 }
 
-void TestOrdenamientoExterno::test_merge_runs(){
-
-	ManejadorRegistrosVariables mv;
-	mv.eliminar_archivo("archivoOrdenamiento.dat");
-	mv.crear_archivo("archivoOrdenamiento.dat");
-	mv.abrir_archivo("archivoOrdenamiento.dat");
-
+TEST_F(TestOrdenamientoExterno,Merge_runs)
+{
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
 	{
 		int clave=1;
@@ -89,12 +84,12 @@ void TestOrdenamientoExterno::test_merge_runs(){
 
 		RegistroVariable regVariable;
 
-		regVariable.agregar_campo((char*)clave,sizeof(int));
+		regVariable.agregar_campo((char*)&clave,sizeof(int));
 
 		mv.agregar_registro(& regVariable);
 	}
 
-	SortExterno ordenador("archivoOrdenamiento.dat");
+	SortExterno ordenador(filename);
 
 	ordenador._generar_runs();
 
@@ -112,16 +107,10 @@ void TestOrdenamientoExterno::test_merge_runs(){
 		assert(heap.comparar_registros_variables(rv1,rv2)<=0);
 	}
 
-	print_test_ok("test_merge_runs");
 }
 
-void TestOrdenamientoExterno::test_ordenar(){
-
-	ManejadorRegistrosVariables mv;
-	mv.eliminar_archivo("archivoOrdenamiento.dat");
-	mv.crear_archivo("archivoOrdenamiento.dat");
-	mv.abrir_archivo("archivoOrdenamiento.dat");
-
+TEST_F(TestOrdenamientoExterno,Ordenar)
+{
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
 	{
 		//agrego clave en el primer campo
@@ -148,7 +137,7 @@ void TestOrdenamientoExterno::test_ordenar(){
 		mv.agregar_registro(& regVariable);
 	}
 
-	SortExterno ordenador("archivoOrdenamiento.dat");
+	SortExterno ordenador(filename);
 
 	ordenador.ordenar_archivo();
 
@@ -164,5 +153,4 @@ void TestOrdenamientoExterno::test_ordenar(){
 		assert(heap.comparar_registros_variables(rv1,rv2)<=0);
 	}
 
-	print_test_ok("test_ordenar");
 }

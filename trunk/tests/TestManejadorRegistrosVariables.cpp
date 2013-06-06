@@ -1,42 +1,30 @@
-/*
- * TestManejadorRegistrosVariables.cpp
- *
- *  Created on: May 5, 2013
- *      Author: maine
- */
+#include "../src/CapaFisica/ManejadorRegistrosVariables.h"
+#include "../src/CapaLogica/ManejoArchivos/RegistroClave.h"
+#include "../src/CapaLogica/ManejoArchivos/ClaveX.h"
+#include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
-#include "TestManejadorRegistrosVariables.h"
+// To use a test fixture, derive a class from testing::Test.
+class TestManejadorRegistrosVariables : public testing::Test {
+ protected:
+	// Declares the variables your tests want to use.
+	ManejadorRegistrosVariables mrv;
 
-TestManejadorRegistrosVariables::TestManejadorRegistrosVariables()
-	: Test()
+  // virtual void SetUp() will be called before each test is run.  You
+  // should define it if you need to initialize the varaibles.
+  // Otherwise, this can be skipped.
+  virtual void SetUp() {
+	  ASSERT_TRUE(mrv.crear_archivo("mrv.dat") == RES_OK);
+  }
+
+  virtual void TearDown() {
+	  ASSERT_TRUE(mrv.eliminar_archivo("mrv.dat") == RES_OK);
+  }
+
+};
+
+TEST_F(TestManejadorRegistrosVariables,Refactorizar)
 {
-}
-
-TestManejadorRegistrosVariables::~TestManejadorRegistrosVariables()
-{
-}
-
-void TestManejadorRegistrosVariables::ejecutar()
-{
-	test_chequear_registros_ocupados();
-	test_eliminar_por_offset();
-	test_recuperar_espacio_libre();
-	test_masivo();
-	test_contar_registros();
-	test_recuperar_por_offset();
-	test_registro_clave();
-	test_refactorizar();
-}
-
-
-void TestManejadorRegistrosVariables::test_refactorizar(){
-
 	{
-		string nombreArchivo= "test_refactorizar.dat";
-		ManejadorRegistrosVariables mrv;
-		mrv.eliminar_archivo(nombreArchivo);
-		mrv.crear_archivo(nombreArchivo);
-
 		const unsigned short CANTIDAD_REGISTROS_INICIAL= 20;
 		for(unsigned short i=0;i<CANTIDAD_REGISTROS_INICIAL;i++){
 
@@ -50,19 +38,17 @@ void TestManejadorRegistrosVariables::test_refactorizar(){
 			mrv.agregar_registro(&registro);
 
 		}//registros agregados
-		assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
+		ASSERT_TRUE( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
 
 		for(unsigned short i=0;i< (short)(CANTIDAD_REGISTROS_INICIAL/2);i++ ){
 
 			mrv.eliminar_registro_ocupado(0);
-			assert( mrv.get_cantidad_registros_ocupados() == (CANTIDAD_REGISTROS_INICIAL-i-1) );
-			assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
+			ASSERT_TRUE( mrv.get_cantidad_registros_ocupados() == (CANTIDAD_REGISTROS_INICIAL-i-1) );
+			ASSERT_TRUE( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
 
 		}
 
-		assert( mrv.refactorizar()== RES_OK );
-		IMPRIMIR_VARIABLE(mrv.get_cantidad_registros_ocupados());
-
+		ASSERT_TRUE( mrv.refactorizar()== RES_OK );
 
 		for(unsigned short i=0;i< mrv.get_cantidad_registros_ocupados();i++ ){
 
@@ -99,18 +85,17 @@ void TestManejadorRegistrosVariables::test_refactorizar(){
 			mrv.agregar_registro(&registro);
 
 		}//registros agregados
-		assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
+		ASSERT_TRUE( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
 
 		for(unsigned short i=0;i< (short)(CANTIDAD_REGISTROS_INICIAL/2);i++ ){
 
 			mrv.eliminar_registro_ocupado(i);
-			assert( mrv.get_cantidad_registros_ocupados() == (CANTIDAD_REGISTROS_INICIAL-i-1) );
-			assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
+			ASSERT_TRUE( mrv.get_cantidad_registros_ocupados() == (CANTIDAD_REGISTROS_INICIAL-i-1) );
+			ASSERT_TRUE( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
 
 		}
 
-		assert( mrv.refactorizar()== RES_OK );
-		IMPRIMIR_VARIABLE(mrv.get_cantidad_registros_ocupados());
+		ASSERT_TRUE( mrv.refactorizar()== RES_OK );
 
 		for(unsigned short i=0;i< mrv.get_cantidad_registros_ocupados();i++ ){
 
@@ -146,18 +131,17 @@ void TestManejadorRegistrosVariables::test_refactorizar(){
 				mrv.agregar_registro(&registro);
 
 			}//registros agregados
-			assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
+			ASSERT_TRUE( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
 
 			for(unsigned short i=0;i< (short)(CANTIDAD_REGISTROS_INICIAL/2);i++ ){
 
 				mrv.eliminar_registro_ocupado( mrv.get_cantidad_registros_ocupados()-1 );
-				assert( mrv.get_cantidad_registros_ocupados() == (CANTIDAD_REGISTROS_INICIAL-i-1) );
-				assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
+				ASSERT_TRUE( mrv.get_cantidad_registros_ocupados() == (CANTIDAD_REGISTROS_INICIAL-i-1) );
+				ASSERT_TRUE( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL );
 
 			}
 
-			assert( mrv.refactorizar()== RES_OK );
-			IMPRIMIR_VARIABLE(mrv.get_cantidad_registros_ocupados());
+			ASSERT_TRUE( mrv.refactorizar()== RES_OK );
 
 			for(unsigned short i=0;i< mrv.get_cantidad_registros_ocupados();i++ ){
 
@@ -169,72 +153,49 @@ void TestManejadorRegistrosVariables::test_refactorizar(){
 				cout<<endl;
 
 			}
-
-
-
 		}
-
 }
 
 
+TEST_F(TestManejadorRegistrosVariables,Recuperar_por_offset)
+{
+	const unsigned short CANTIDAD_REGISTROS= 3;
+	long* offsets= new long[CANTIDAD_REGISTROS];
+	for(unsigned short i=0;i<CANTIDAD_REGISTROS;i++){
+		ClaveX clave;
+		string claveS= "clavea";
+		claveS[ claveS.length()-1 ]= (char)(65+i);
+		clave.set_clave(claveS);
+		RegistroClave registro;
+		registro.set_clave(clave);
+		offsets[i]= mrv.agregar_registro( &registro );
+	}
 
-void TestManejadorRegistrosVariables::test_recuperar_por_offset(){
+	for(unsigned short i=0;i<CANTIDAD_REGISTROS;i++){
 
-	{
-		ManejadorRegistrosVariables mrv;
-		string nombreArchivo= "test_recuperar_por_offset.dat";
-		mrv.eliminar_archivo(nombreArchivo);
-		mrv.crear_archivo(nombreArchivo);
-
-
-		const unsigned short CANTIDAD_REGISTROS= 3;
-		long* offsets= new long[CANTIDAD_REGISTROS];
-		for(unsigned short i=0;i<CANTIDAD_REGISTROS;i++){
-			ClaveX clave;
-			string claveS= "clavea";
-			claveS[ claveS.length()-1 ]= (char)(65+i);
-			clave.set_clave(claveS);
-			RegistroClave registro;
-			registro.set_clave(clave);
-			offsets[i]= mrv.agregar_registro( &registro );
-		}
-
-		for(unsigned short i=0;i<CANTIDAD_REGISTROS;i++){
-
-			RegistroClave registro;
-			mrv.get_registro_por_offset( &registro,offsets[i] );
-			int unCampo= 99;
-			registro.agregar_campo( (char*)&unCampo,sizeof(unCampo) );
-
-		}
-
-		mrv.eliminar_registro_ocupado(1);
-		for(unsigned short i=0;i<CANTIDAD_REGISTROS;i++){
-
-			if(i== 1)
-				continue;
-			RegistroClave registro;
-			mrv.get_registro_por_offset( &registro,offsets[i] );
-
-		}
-
-
-		delete[] offsets;
+		RegistroClave registro;
+		mrv.get_registro_por_offset( &registro,offsets[i] );
+		int unCampo= 99;
+		registro.agregar_campo( (char*)&unCampo,sizeof(unCampo) );
 
 	}
-	print_test_ok("test_recuperar_por_offset");
 
+	mrv.eliminar_registro_ocupado(1);
+	for(unsigned short i=0;i<CANTIDAD_REGISTROS;i++){
+
+		if(i== 1)
+			continue;
+		RegistroClave registro;
+		mrv.get_registro_por_offset( &registro,offsets[i] );
+
+	}
+
+
+	delete[] offsets;
 }
 
-
-
-void TestManejadorRegistrosVariables::test_contar_registros(){
-
-	ManejadorRegistrosVariables mrv;
-	string nombreArchivo= "test_contar_registros_mrv.dat";
-	mrv.eliminar_archivo(nombreArchivo);
-	assert(mrv.crear_archivo(nombreArchivo)== RES_OK);
-
+TEST_F(TestManejadorRegistrosVariables,Contar_registros)
+{
 	const unsigned short CANTIDAD_REGISTROS_INICIAL= 10;
 	const unsigned short CANTIDAD_REGISTROS_ELIMINAR= 3;
 
@@ -248,7 +209,7 @@ void TestManejadorRegistrosVariables::test_contar_registros(){
 			registro.agregar_campo( dato.c_str() , dato.length() );
 			mrv.agregar_registro(&registro);
 		}
-		assert( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL && mrv.get_cantidad_registros_ocupados()== CANTIDAD_REGISTROS_INICIAL );
+		ASSERT_TRUE( mrv.get_cantidad_registros()== CANTIDAD_REGISTROS_INICIAL && mrv.get_cantidad_registros_ocupados()== CANTIDAD_REGISTROS_INICIAL );
 
 	}
 
@@ -266,15 +227,15 @@ void TestManejadorRegistrosVariables::test_contar_registros(){
 			registro.agregar_campo( dato.c_str() , dato.length() );
 			mrv.agregar_registro(&registro);
 		}
-		assert( mrv.get_cantidad_registros()== (CANTIDAD_REGISTROS_ELIMINAR+CANTIDAD_REGISTROS_INICIAL) );
-		assert( mrv.get_cantidad_registros_ocupados()== CANTIDAD_REGISTROS_INICIAL );
+		ASSERT_TRUE( mrv.get_cantidad_registros()== (CANTIDAD_REGISTROS_ELIMINAR+CANTIDAD_REGISTROS_INICIAL) );
+		ASSERT_TRUE( mrv.get_cantidad_registros_ocupados()== CANTIDAD_REGISTROS_INICIAL );
 
 	}
 
 }
 
-void TestManejadorRegistrosVariables::test_masivo(){
-
+TEST_F(TestManejadorRegistrosVariables,Insertar_masivo)
+{
 	string datoLargo= "este es un dato de longitud muy muy larga . Como para que ocupe mucho espacio en el archivo";
 	string datoCorto= "corto";
 
@@ -283,48 +244,37 @@ void TestManejadorRegistrosVariables::test_masivo(){
 	registroCorto.agregar_campo( datoCorto.c_str() , datoCorto.length() );
 
 	int const CANTIDAD_REGISTROS= 100;
-	ManejadorRegistrosVariables mrv;
-	string nombreArchivo= "tmrvm.dat";
-	mrv.eliminar_archivo(nombreArchivo);
-	mrv.crear_archivo(nombreArchivo);
 	long tamanioInicial;
 
 
 	{
 		for(int i=0;i<CANTIDAD_REGISTROS;i++){
-			assert( mrv.agregar_registro(&registroLargo)!= RES_ERROR );
+			ASSERT_TRUE( mrv.agregar_registro(&registroLargo)!= RES_ERROR );
 		}
 		tamanioInicial= mrv.get_tamanio_archivo();
 	}//carga de registros largos
 
 	{
 		for(int i=0;i<CANTIDAD_REGISTROS;i++)
-			assert( mrv.eliminar_registro_ocupado(0)!= RES_ERROR );
-		assert( mrv.get_tamanio_archivo()== tamanioInicial );
+			ASSERT_TRUE( mrv.eliminar_registro_ocupado(0)!= RES_ERROR );
+		ASSERT_TRUE( mrv.get_tamanio_archivo()== tamanioInicial );
 
 		for(int i=0;i<CANTIDAD_REGISTROS;i++)
-			assert( mrv.agregar_registro(&registroCorto) < tamanioInicial );
-		assert( mrv.get_cantidad_registros_ocupados()== CANTIDAD_REGISTROS );
+			ASSERT_TRUE( mrv.agregar_registro(&registroCorto) < tamanioInicial );
+		ASSERT_TRUE( mrv.get_cantidad_registros_ocupados()== CANTIDAD_REGISTROS );
 	}
-
-	print_test_ok("test_manejador_registros_variables_masivo");
-
-
 }
 
-void TestManejadorRegistrosVariables::test_recuperar_espacio_libre()
+TEST_F(TestManejadorRegistrosVariables,Recuperar_espacio_libre)
 {
 	const int CANT_DATOS= 6;
 	string datos[] = {"aaaaaa","bbbbbbbbbbbb",
 			"cccccccccccccccccc","dddddddddddddddddddddddd",
 			"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
 			"ffffffffffffffffffffffffffffffffffffffffff"};
-	ManejadorRegistrosVariables mrv;
-	string nombreArchivo= "tmrv3.dat";
-	mrv.eliminar_archivo(nombreArchivo);
-	mrv.crear_archivo(nombreArchivo);
+
 	int offsetsRegistros[CANT_DATOS];
-	assert( mrv.get_cantidad_registros_ocupados()== 0 );
+	ASSERT_TRUE( mrv.get_cantidad_registros_ocupados()== 0 );
 	RegistroVariable registros[CANT_DATOS];
 	int tamanioInicial;
 
@@ -335,18 +285,18 @@ void TestManejadorRegistrosVariables::test_recuperar_espacio_libre()
 			registros[i].agregar_campo( datos[i].c_str() , datos[i].length() );
 			mrv.agregar_registro( &registros[i] );
 		}
-		assert( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
+		ASSERT_TRUE( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
 		tamanioInicial= mrv.get_tamanio_archivo();
 
 	}
 
 	{
 
-		assert( mrv.eliminar_registro_ocupado(5)== offsetsRegistros[5] );
-		assert( mrv.agregar_registro( &registros[0] )>= offsetsRegistros[5] );
-		assert( mrv.get_tamanio_archivo() == tamanioInicial );
-		assert( mrv.agregar_registro( &registros[0] )== tamanioInicial );
-		assert( mrv.get_tamanio_archivo() > tamanioInicial );
+		ASSERT_TRUE( mrv.eliminar_registro_ocupado(5)== offsetsRegistros[5] );
+		ASSERT_TRUE( mrv.agregar_registro( &registros[0] )>= offsetsRegistros[5] );
+		ASSERT_TRUE( mrv.get_tamanio_archivo() == tamanioInicial );
+		ASSERT_TRUE( mrv.agregar_registro( &registros[0] )== tamanioInicial );
+		ASSERT_TRUE( mrv.get_tamanio_archivo() > tamanioInicial );
 		/*el archivo se fragmenta a medida que se agregan registros y se busca
 		 * recuperar el espacio libre*/
 
@@ -354,22 +304,22 @@ void TestManejadorRegistrosVariables::test_recuperar_espacio_libre()
 
 	{
 
-		assert( mrv.eliminar_registro_ocupado( 1 )== offsetsRegistros[1] );
+		ASSERT_TRUE( mrv.eliminar_registro_ocupado( 1 )== offsetsRegistros[1] );
 		RegistroVariable rv;
-		assert( mrv.get_registro_ocupado( &rv,1 )== offsetsRegistros[2] );
+		ASSERT_TRUE( mrv.get_registro_ocupado( &rv,1 )== offsetsRegistros[2] );
 		char campo[64];
 		int tamanioCampo= rv.recuperar_campo(campo,0);
 		string s(campo,tamanioCampo);
-		assert( s== datos[2] );
+		ASSERT_TRUE( s== datos[2] );
 
 	}
 
 	{
 		for(int i=0;i<3;i++){
-			assert( mrv.eliminar_registro_ocupado(1)== offsetsRegistros[2+i] );
+			ASSERT_TRUE( mrv.eliminar_registro_ocupado(1)== offsetsRegistros[2+i] );
 		}
 		for(int i=4;i<=2;i--){
-			assert( mrv.agregar_registro( &registros[0] ) >= offsetsRegistros[i] );
+			ASSERT_TRUE( mrv.agregar_registro( &registros[0] ) >= offsetsRegistros[i] );
 		}
 
 
@@ -377,10 +327,10 @@ void TestManejadorRegistrosVariables::test_recuperar_espacio_libre()
 	}
 
 	ManejadorRegistrosVariables mrv2;
-	nombreArchivo= "tmrv4.dat";
+	std::string nombreArchivo= "tmrv4.dat";
 	mrv2.eliminar_archivo(nombreArchivo);
 	mrv2.crear_archivo(nombreArchivo);
-	assert( mrv2.get_cantidad_registros_ocupados()== 0 );
+	ASSERT_TRUE( mrv2.get_cantidad_registros_ocupados()== 0 );
 	RegistroVariable registros2[CANT_DATOS];
 	int tamanioInicial2;
 
@@ -390,7 +340,7 @@ void TestManejadorRegistrosVariables::test_recuperar_espacio_libre()
 			registros2[i].agregar_campo( datos[i].c_str() , datos[i].length() );
 			mrv2.agregar_registro( &registros2[i] );
 		}
-		assert( mrv2.get_cantidad_registros_ocupados()== CANT_DATOS );
+		ASSERT_TRUE( mrv2.get_cantidad_registros_ocupados()== CANT_DATOS );
 		tamanioInicial2= mrv2.get_tamanio_archivo();
 
 	}
@@ -398,31 +348,26 @@ void TestManejadorRegistrosVariables::test_recuperar_espacio_libre()
 	{
 
 		for(int i=0;i<CANT_DATOS;i++){
-			assert( mrv2.eliminar_registro_ocupado(0)== offsetsRegistros[i] );
+			ASSERT_TRUE( mrv2.eliminar_registro_ocupado(0)== offsetsRegistros[i] );
 		}
 		RegistroVariable rv;
 		rv.agregar_campo("x",1);
 		for(int i=0;i<CANT_DATOS-1;i++){
-			assert( mrv2.agregar_registro(&rv)< tamanioInicial2 );
+			ASSERT_TRUE( mrv2.agregar_registro(&rv)< tamanioInicial2 );
 		}
 		/*el archivo se fragmenta de forma considerable*/
 
 	}
 
-
+	mrv2.eliminar_archivo(nombreArchivo);
 }
 
-void TestManejadorRegistrosVariables::test_eliminar_por_offset()
+TEST_F(TestManejadorRegistrosVariables,Eliminar_por_offset)
 {
-
 	const int CANT_DATOS= 4;
 	string datos[] = {"aaaa","bbbbbbbb","cccccccccccc","dddddddddddddddd"};
-	ManejadorRegistrosVariables mrv;
-	string nombreArchivo= "tmrv3.dat";
-	mrv.eliminar_archivo(nombreArchivo);
-	mrv.crear_archivo(nombreArchivo);
 	int offsetsRegistros[CANT_DATOS];
-	assert( mrv.get_cantidad_registros_ocupados()== 0 );
+	ASSERT_TRUE( mrv.get_cantidad_registros_ocupados()== 0 );
 	RegistroVariable registros[CANT_DATOS];
 
 
@@ -431,30 +376,22 @@ void TestManejadorRegistrosVariables::test_eliminar_por_offset()
 		registros[i].agregar_campo( datos[i].c_str() , datos[i].length() );
 		mrv.agregar_registro( &registros[i] );
 	}
-	assert( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
+	ASSERT_TRUE( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
 
-	assert( mrv.eliminar_registro_por_offset( offsetsRegistros[3] )== RES_OK );
-	assert( mrv.get_cantidad_registros_ocupados()== (CANT_DATOS - 1) );
-	assert( mrv.agregar_registro( &registros[0] ) > offsetsRegistros[3] );
-	assert( mrv.get_cantidad_registros_ocupados() == CANT_DATOS );
-	assert( mrv.get_cantidad_registros()== CANT_DATOS + 1 );
-
-	print_test_ok("test_manejador_registros_variables_eliminar_por_offset");
-
-
+	ASSERT_TRUE( mrv.eliminar_registro_por_offset( offsetsRegistros[3] )== RES_OK );
+	ASSERT_TRUE( mrv.get_cantidad_registros_ocupados()== (CANT_DATOS - 1) );
+	ASSERT_TRUE( mrv.agregar_registro( &registros[0] ) > offsetsRegistros[3] );
+	ASSERT_TRUE( mrv.get_cantidad_registros_ocupados() == CANT_DATOS );
+	ASSERT_TRUE( mrv.get_cantidad_registros()== CANT_DATOS + 1 );
 }
 
-
-void TestManejadorRegistrosVariables::test_chequear_registros_ocupados(){
-
+TEST_F(TestManejadorRegistrosVariables,Chequear_registros_ocupados)
+{
 	const int CANT_DATOS= 4;
 	string datos[] = {"aaaa","bbbbbbbb","cccccccccccc","dddddddddddddddd"};
-	ManejadorRegistrosVariables mrv;
-	string nombreArchivo= "tmrv3.dat";
-	mrv.eliminar_archivo(nombreArchivo);
-	mrv.crear_archivo(nombreArchivo);
+
 	int offsetsRegistros[CANT_DATOS];
-	assert( mrv.get_cantidad_registros_ocupados()== 0 );
+	ASSERT_TRUE( mrv.get_cantidad_registros_ocupados()== 0 );
 	RegistroVariable registros[CANT_DATOS];
 
 
@@ -465,74 +402,59 @@ void TestManejadorRegistrosVariables::test_chequear_registros_ocupados(){
 			registros[i].agregar_campo( datos[i].c_str() , datos[i].length() );
 			mrv.agregar_registro( &registros[i] );
 		}
-		assert( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
+		ASSERT_TRUE( mrv.get_cantidad_registros_ocupados()== CANT_DATOS );
 
-		assert( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[0] );
+		ASSERT_TRUE( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[0] );
 		RegistroVariable rv;
 		char campo[32];
-		assert( mrv.get_registro_ocupado(&rv,0)== offsetsRegistros[1] );
+		ASSERT_TRUE( mrv.get_registro_ocupado(&rv,0)== offsetsRegistros[1] );
 		int tamanioCampo= rv.recuperar_campo(campo,0);
 		string s(campo,tamanioCampo);
-		assert(s==datos[1]);
+		ASSERT_TRUE(s==datos[1]);
 
 	}
 
 	{
 
-		assert( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[1] );
+		ASSERT_TRUE( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[1] );
 		RegistroVariable rv;
 		char campo[32];
-		assert( mrv.get_registro_ocupado(&rv,0)== offsetsRegistros[2] );
+		ASSERT_TRUE( mrv.get_registro_ocupado(&rv,0)== offsetsRegistros[2] );
 		int tamanioCampo= rv.recuperar_campo(campo,0);
 		string s(campo,tamanioCampo);
-		assert(s==datos[2]);
+		ASSERT_TRUE(s==datos[2]);
 
 	}
 
 	{
 
-		assert( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[2] );
-		assert( mrv.get_cantidad_registros_ocupados()== 1 );
-		assert( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[3] );
-		assert( mrv.get_cantidad_registros_ocupados()== 0 );
-		assert( mrv.agregar_registro(&registros[0])>= offsetsRegistros[3] );
+		ASSERT_TRUE( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[2] );
+		ASSERT_TRUE( mrv.get_cantidad_registros_ocupados()== 1 );
+		ASSERT_TRUE( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[3] );
+		ASSERT_TRUE( mrv.get_cantidad_registros_ocupados()== 0 );
+		ASSERT_TRUE( mrv.agregar_registro(&registros[0])>= offsetsRegistros[3] );
 		long offsetAgregarRegistro= mrv.agregar_registro(&registros[0]);
-		assert( offsetAgregarRegistro>= offsetsRegistros[2] &&
+		ASSERT_TRUE( offsetAgregarRegistro>= offsetsRegistros[2] &&
 				offsetAgregarRegistro < offsetsRegistros[3]);
 
 	}
 
-	print_test_ok("test_manejador_registros_variables_chequear_registros_ocupados");
-
 }
 
-
-void TestManejadorRegistrosVariables::test_registro_clave(){
-
-	string nombreArchivo= "test_registro_clave.dat";
-	ManejadorRegistrosVariables mrv;
-	mrv.eliminar_archivo(nombreArchivo);
-	mrv.crear_archivo(nombreArchivo);
-
-
-	{
-		const unsigned short CANTIDAD_REGISTROS_ORIGINAL= 10;
-		for(unsigned short i=0;i<CANTIDAD_REGISTROS_ORIGINAL;i++){
-			string claveS= "clave";
-			claveS[claveS.length()-1]= (char)(65+i);
-			ClaveX clave;
-			clave.set_clave(claveS);
-			RegistroClave registro;
-			registro.set_clave(clave);
-			assert( mrv.agregar_registro(&registro)!= RES_ERROR );
-		}
-
-		RegistroClave primerRegistro;
-		assert( mrv.get_registro_ocupado(&primerRegistro,0)!= RES_ERROR );
-		primerRegistro.get_clave().imprimir_dato();
-
-
-
+TEST_F(TestManejadorRegistrosVariables,Registro_clave)
+{
+	const unsigned short CANTIDAD_REGISTROS_ORIGINAL= 10;
+	for(unsigned short i=0;i<CANTIDAD_REGISTROS_ORIGINAL;i++){
+		string claveS= "clave";
+		claveS[claveS.length()-1]= (char)(65+i);
+		ClaveX clave;
+		clave.set_clave(claveS);
+		RegistroClave registro;
+		registro.set_clave(clave);
+		ASSERT_TRUE( mrv.agregar_registro(&registro)!= RES_ERROR );
 	}
 
+	RegistroClave primerRegistro;
+	ASSERT_TRUE( mrv.get_registro_ocupado(&primerRegistro,0)!= RES_ERROR );
+	primerRegistro.get_clave().imprimir_dato();
 }
