@@ -39,6 +39,7 @@
 			  remove(filepath);
 			  next_file = readdir(dir);
 		  }
+		  closedir(dir);
 		  return RES_OK;
 	}
 	bool directorio_existe( std::string & dir )

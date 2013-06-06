@@ -29,7 +29,7 @@ class ClaveX {
 
 		ClaveX& operator =(const ClaveX& otro);
 
-		virtual ~ClaveX();
+		~ClaveX();
 
 		virtual int empaquetar(char* buffer);
 		/*empaqueta la clave como un buffer de caracteres con el siguiente formato:

@@ -279,19 +279,18 @@ void Indexador::_agregar_a_los_indices (
 	/* ------ guardamos el numero de documento (clave) y el documento -------- */
 
 	RegistroClave regDoc;
-	ClaveX IDdoc;
-	IDdoc.set_clave(id.get_dato());
+	ClaveX* IDdoc = new ClaveX();
+	IDdoc->set_clave(id.get_dato());
+	regDoc.set_clave(*IDdoc);
 
-	regDoc.set_clave(IDdoc);
 	regDoc.agregar_campo(nombreArchivo.c_str(),nombreArchivo.size());
 	this->documentos.agregar(regDoc);
 
 	/* ----- agregamos al indice primario: ID cancion + offset de la cancion ----*/
 
 	RegistroClave regClave;
-	ClaveX clave;
-	clave.set_clave(id.get_dato());
-	regClave.set_clave(clave);
+	regClave.set_clave(*IDdoc);
+	delete IDdoc;
 	regClave.agregar_campo((char*)&offsetInicialRegCancion,sizeof(offsetInicialRegCancion));
 	indicePrimario.agregar(regClave);
 

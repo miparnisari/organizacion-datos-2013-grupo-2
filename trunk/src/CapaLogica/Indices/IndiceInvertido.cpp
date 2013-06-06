@@ -72,7 +72,7 @@ int IndiceInvertido::_armar_archivo_coincidencias(std::string unTexto)
 	Texto texto;
 	int pos=0, IDter, ref_lista;
 	RegistroClave regTerminoVoc;
-	RegistroVariable regTermino, regCoincidencia;
+	RegistroVariable regCoincidencia;
 	ClaveX clave;
 	std::string termino;
 	texto.parsear(unTexto);
@@ -86,7 +86,7 @@ int IndiceInvertido::_armar_archivo_coincidencias(std::string unTexto)
 			RegistroVariable listaInvertida;
 			int vacio = LISTA_VACIA;
 			//Agrego el termino al archivo de terminos
-			regTermino.limpiar_campos();
+			RegistroVariable regTermino;
 			regTermino.agregar_campo(termino.c_str(),termino.size());
 			IDter = this->archivo_terminos.agregar_registro(&regTermino);
 			if (IDter == RES_ERROR)
@@ -112,7 +112,7 @@ int IndiceInvertido::_armar_archivo_coincidencias(std::string unTexto)
 	}
 
 	SortExterno sort (this->fileName+"Coincidencias.dat");
-		sort.ordenar_archivo();
+	sort.ordenar_archivo();
 
 	return RES_OK;
 }

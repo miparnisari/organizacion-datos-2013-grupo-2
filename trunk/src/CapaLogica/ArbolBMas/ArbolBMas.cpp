@@ -790,7 +790,10 @@ int ArbolBMas::_buscar(RegistroClave & reg, unsigned int  & p_numBloque)
 	RegistroClave* regCopia = NULL;
 	int res = nodoSecuencial.buscar(reg.get_clave(),&regCopia);
 	if (res == RES_RECORD_DOESNT_EXIST)
+	{
+		delete regCopia;
 		return RES_RECORD_DOESNT_EXIST;
+	}
 
 	reg = *regCopia;
 
