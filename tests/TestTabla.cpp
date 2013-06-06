@@ -1,141 +1,93 @@
-/*
- * TestTabla.cpp
- *
- *  Created on: May 12, 2013
- *      Author: nico
- */
-
-#include "TestTabla.h"
-#define DIRECCION "TablaDePrueba.dat"
-#define DIRECCION2 "TablaDePrueba"
+#include "../src/CapaLogica/HashingExtensible/Tabla.h"
+#include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 using namespace std;
 using namespace utilitarios;
 
-TestTabla::TestTabla() {
+// To use a test fixture, derive a class from testing::Test.
+class TestTabla : public testing::Test {
+ protected:
+	// Declares the variables your tests want to use.
+	Tabla tabla;
 
-}
+  // virtual void SetUp() will be called before each test is run.  You
+  // should define it if you need to initialize the varaibles.
+  // Otherwise, this can be skipped.
+  virtual void SetUp() {
+	ASSERT_TRUE(tabla.crear("TablaDePrueba.dat") == RES_OK);
+  }
 
-TestTabla::~TestTabla() {
-}
+  virtual void TearDown() {
+	  ASSERT_TRUE(tabla.eliminar() == RES_OK);
+  }
 
-void TestTabla::ejecutar(){
-	test_tabla_hash_crear();
-	test_tabla_hash_modificar_valor();
-	test_tabla_hash_dividir();
-	test_tabla_hash_duplicacion();
-	test_tabla_hash_posiciones_correctas_al_duplicar();
-	test_tabla_hash_posiciones_correctas_al_dividir();
-	test_tabla_hash_eliminar_tabla();
-}
+  // A helper function that some test uses.
 
-void TestTabla::test_tabla_hash_crear(){
-	Tabla unaTabla;
-	assert(unaTabla.crear(DIRECCION) == RES_OK);
+};
+
+
+TEST_F(TestTabla,Crear)
+{
 	ManejadorArchivoDatosBasicos<int> archivo;
 
-	assert(unaTabla.crear(DIRECCION) == RES_OK);
-	assert(archivo.abrir_archivo(DIRECCION, "rb") == RES_OK);
-	assert(archivo.cerrar_archivo() == RES_OK);
-	assert(unaTabla.eliminar() == RES_OK);
-
-    print_test_ok("test_tabla_hash_crear");
+	ASSERT_TRUE(archivo.abrir_archivo("TablaDePrueba.dat", "rb") == RES_OK);
+	ASSERT_TRUE(archivo.cerrar_archivo() == RES_OK);
 }
 
-void TestTabla::test_tabla_hash_modificar_valor(){
-	Tabla unaTabla;
-	assert(unaTabla.crear(DIRECCION) == RES_OK);
-	assert(unaTabla.cambiar_valor(0,2) == RES_OK);
-	assert(unaTabla.obtener_valor(0) == 2);
-	assert(unaTabla.eliminar() == RES_OK);
-
-	print_test_ok("test_tabla_hash_modificar_valor");
+TEST_F(TestTabla,Modificar_valor)
+{
+	ASSERT_TRUE(tabla.cambiar_valor(0,2) == RES_OK);
+	ASSERT_TRUE(tabla.obtener_valor(0) == 2);
 }
 
-void TestTabla::test_tabla_hash_dividir(){
-	Tabla unaTabla;
-	assert(unaTabla.crear(DIRECCION) == RES_OK);
-
-	assert(unaTabla.obtener_valor(0) == -1);
-	assert(unaTabla.cambiar_valor(0,2) == RES_OK);
-	assert(unaTabla.duplicar() == RES_OK);
-	assert(unaTabla.dividir() == RES_OK);
-	assert(unaTabla.eliminar() == RES_OK);
-
-	print_test_ok("test_tabla_hash_dividir");
+TEST_F(TestTabla,Dividir)
+{
+	ASSERT_TRUE(tabla.obtener_valor(0) == -1);
+	ASSERT_TRUE(tabla.cambiar_valor(0,2) == RES_OK);
+	ASSERT_TRUE(tabla.duplicar() == RES_OK);
+	ASSERT_TRUE(tabla.dividir() == RES_OK);
 }
 
-void TestTabla::test_tabla_hash_duplicacion(){
-	Tabla unaTabla;
-	assert(unaTabla.crear(DIRECCION) == RES_OK);
+TEST_F(TestTabla,Duplicar)
+{
+	ASSERT_TRUE(tabla.get_tamanio() == 1);
+	ASSERT_TRUE(tabla.cambiar_valor(1,2) == RES_OK);
+	ASSERT_TRUE(tabla.get_tamanio() == 2);
+	ASSERT_TRUE(tabla.duplicar() == RES_OK);
+	ASSERT_TRUE(tabla.get_tamanio() == 4);
 
-	assert(unaTabla.get_tamanio() == 1);
-	assert(unaTabla.cambiar_valor(1,2) == RES_OK);
-	assert(unaTabla.get_tamanio() == 2);
-	assert(unaTabla.duplicar() == RES_OK);
-	assert(unaTabla.get_tamanio() == 4);
-
-	assert(unaTabla.obtener_valor(1) == 2);
-	assert(unaTabla.eliminar() == RES_OK);
-
-	print_test_ok("test_tabla_hash_duplicacion");
+	ASSERT_TRUE(tabla.obtener_valor(1) == 2);
 }
 
-void TestTabla::test_tabla_hash_eliminar_tabla(){
-	Tabla unaTabla;
+TEST_F(TestTabla,Posiciones_correctas_al_duplicar)
+{
+	ASSERT_TRUE(tabla.duplicar() == RES_OK);
+	ASSERT_TRUE(tabla.duplicar() == RES_OK);
 
-	assert(unaTabla.crear(DIRECCION) == RES_OK);
-	assert(unaTabla.crear(DIRECCION) == RES_OK);
+	ASSERT_TRUE(tabla.cambiar_valor(0,6) == RES_OK);
+	ASSERT_TRUE(tabla.cambiar_valor(1,9) == RES_OK);
+	ASSERT_TRUE(tabla.cambiar_valor(2,65) == RES_OK);
+	ASSERT_TRUE(tabla.cambiar_valor(3,34) == RES_OK);
 
-	assert(unaTabla.eliminar() == RES_OK);
-	print_test_ok("test_tabla_hash_eliminar_tabla");
+	ASSERT_TRUE(tabla.duplicar() == RES_OK);
+
+	ASSERT_TRUE(tabla.obtener_valor(4) == 6);
+	ASSERT_TRUE(tabla.obtener_valor(5) == 9);
+	ASSERT_TRUE(tabla.obtener_valor(6) == 65);
+	ASSERT_TRUE(tabla.obtener_valor(7) == 34);
 }
 
+TEST_F(TestTabla,Posiciones_correctas_al_dividir)
+{
+	ASSERT_TRUE(tabla.duplicar() == RES_OK);
+	ASSERT_TRUE(tabla.duplicar() == RES_OK);
 
-void TestTabla::test_tabla_hash_posiciones_correctas_al_duplicar(){
-	Tabla unaTabla;
+	ASSERT_TRUE(tabla.cambiar_valor(0,4) == RES_OK);
+	ASSERT_TRUE(tabla.cambiar_valor(1,2) == RES_OK);
+	ASSERT_TRUE(tabla.cambiar_valor(2,97) == RES_OK);
+	ASSERT_TRUE(tabla.cambiar_valor(3,22) == RES_OK);
 
-	assert(unaTabla.crear(DIRECCION) == RES_OK);
+	ASSERT_TRUE(tabla.dividir() == RES_OK);
 
-	assert(unaTabla.duplicar() == RES_OK);
-	assert(unaTabla.duplicar() == RES_OK);
-
-	assert(unaTabla.cambiar_valor(0,6) == RES_OK);
-	assert(unaTabla.cambiar_valor(1,9) == RES_OK);
-	assert(unaTabla.cambiar_valor(2,65) == RES_OK);
-	assert(unaTabla.cambiar_valor(3,34) == RES_OK);
-
-	assert(unaTabla.duplicar() == RES_OK);
-
-	assert(unaTabla.obtener_valor(4) == 6);
-	assert(unaTabla.obtener_valor(5) == 9);
-	assert(unaTabla.obtener_valor(6) == 65);
-	assert(unaTabla.obtener_valor(7) == 34);
-
-	print_test_ok("test_tabla_hash_posiciones_correctas_al_duplicar");
+	ASSERT_TRUE(tabla.obtener_valor(0) == 4);
+	ASSERT_TRUE(tabla.obtener_valor(1) == 2);
 }
-
-/*Cabe destacar que aca se prueba que la tabla divida los valores y salve los
- *  adecuados, osea, los de la primera mitad, pero el hash se encarga de
- *  chequear las condiciones de si se puede divirdir sin perder informacion
- *  o no*/
-void TestTabla::test_tabla_hash_posiciones_correctas_al_dividir(){
-	Tabla unaTabla;
-
-	assert(unaTabla.crear(DIRECCION) == RES_OK);
-
-	assert(unaTabla.duplicar() == RES_OK);
-	assert(unaTabla.duplicar() == RES_OK);
-
-	assert(unaTabla.cambiar_valor(0,4) == RES_OK);
-	assert(unaTabla.cambiar_valor(1,2) == RES_OK);
-	assert(unaTabla.cambiar_valor(2,97) == RES_OK);
-	assert(unaTabla.cambiar_valor(3,22) == RES_OK);
-
-	assert(unaTabla.dividir() == RES_OK);
-
-	assert(unaTabla.obtener_valor(0) == 4);
-	assert(unaTabla.obtener_valor(1) == 2);
-
-	print_test_ok("test_tabla_hash_posiciones_correctas_al_dividir");
-}
-

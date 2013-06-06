@@ -1,53 +1,29 @@
-/*
- * TestNormalizador.cpp
- *
- *  Created on: Jun 3, 2013
- *      Author: martin
- */
+#include "../src/Utilitarios/Normalizador.h"
+#include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
-#include "TestNormalizador.h"
-
-TestNormalizador::TestNormalizador(){
-
-}
-
-TestNormalizador::~TestNormalizador(){
-
-}
-
-void TestNormalizador::ejecutar(){
-
-	this->test_normalizar_input();
-
-}
-
-void TestNormalizador::ingresar_linea(string& linea){
-
-	cout<<">ingrese linea: ";
-	cin>>linea;
-	cout<<"endl";
-
-}
-
-
-void TestNormalizador::pausa(){
-
-	int pausa;
-	cout<<">ingrese tecla seguido de ENTER para continuar ..."<<endl;
-	cin>>pausa;
-
-}
-
-
-void TestNormalizador::test_normalizar_input(){
-
+// To use a test fixture, derive a class from testing::Test.
+class TestNormalizador : public testing::Test {
+ protected:
+	// Declares the variables your tests want to use.
 	Normalizador n;
 
-	string lineaLarga= "ésta-línea-se-ásemeja-múcho-A\nUNA CANCION\n";
-	IMPRIMIR_VARIABLE(lineaLarga);
-	IMPRIMIR_VARIABLE(lineaLarga.length());
-	string lineaLargaNormalizada;
-	lineaLargaNormalizada= n.normalizar_input(lineaLarga);
-	IMPRIMIR_VARIABLE(lineaLargaNormalizada);
+  // virtual void SetUp() will be called before each test is run.  You
+  // should define it if you need to initialize the varaibles.
+  // Otherwise, this can be skipped.
+  virtual void SetUp() {
+  }
 
+  // TearDown() is invoked immediately after a test finishes.
+  virtual void TearDown() {
+  }
+
+  // A helper function that some test uses.
+
+};
+
+TEST_F(TestNormalizador,Normalizar_string)
+{
+	string lineaLarga= "ésta-línea-se-ásemeja-múcho-A\nUNA CANCION\n";
+	string lineaLargaNormalizada = n.normalizar_input(lineaLarga);
+	ASSERT_TRUE(lineaLargaNormalizada == "esta-linea-se-asemeja-mucho-a\nuna cancion\n");
 }

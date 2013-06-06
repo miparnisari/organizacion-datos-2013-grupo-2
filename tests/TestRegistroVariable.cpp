@@ -1,36 +1,30 @@
-/*
- * TestRegistroVariable.cpp
- *
- *  Created on: May 6, 2013
- *      Author: maine
- */
+#include "../src/CapaFisica/RegistroVariable.h"
+#include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
-#include "TestRegistroVariable.h"
+// To use a test fixture, derive a class from testing::Test.
+class TestRegistroVariable : public testing::Test {
+ protected:
+	// Declares the variables your tests want to use.
+	RegistroVariable rv;
 
-TestRegistroVariable::TestRegistroVariable()
-	: Test()
-{
-}
+  // virtual void SetUp() will be called before each test is run.  You
+  // should define it if you need to initialize the varaibles.
+  // Otherwise, this can be skipped.
+  virtual void SetUp() {
+  }
 
-TestRegistroVariable::~TestRegistroVariable()
-{
-}
+  virtual void TearDown() {
+  }
 
-void TestRegistroVariable::ejecutar()
-{
-	test_agregar_campos();
-	test_eliminar();
-	test_empaquetar_desempaquetar();
-	test_recuperar_campos();
-}
+  // A helper function that some test uses.
 
-void TestRegistroVariable::test_agregar_campos()
+};
+
+TEST_F(TestRegistroVariable,Agregar_campos)
 {
 	std::string campos[3]= {"martin", "mateo", "hector"};
 	int tamanioCampos = 6+5+6;
 	int cantidadCampos = 3;
-
-	RegistroVariable rv;
 
 	for (int i = 0; i < cantidadCampos; i++)
 	{
@@ -63,17 +57,13 @@ void TestRegistroVariable::test_agregar_campos()
 
 
 	}
-
-
-	print_test_ok("test_agregar_campos_registro_variable");
 }
 
-void TestRegistroVariable::test_eliminar()
+TEST_F(TestRegistroVariable,Eliminar)
 {
 	std::string unicoCampo = "unico campo";
 	int tamanioCampo = unicoCampo.size();
 
-	RegistroVariable rv;
 	rv.agregar_campo(unicoCampo.c_str(),strlen(unicoCampo.c_str()));
 	assert(rv.get_cantidad_campos() == 1);
 	assert(rv.get_tamanio() == tamanioCampo + sizeof(unsigned short));
@@ -85,17 +75,13 @@ void TestRegistroVariable::test_eliminar()
 	assert(rv.get_cantidad_campos() == 0);
 	assert(rv.get_tamanio() == tamanioAntesDeBorrar);
 	assert(rv.get_tamanio_campo(0) == RES_ERROR);
-
-	print_test_ok("test_eliminar_registro_variable");
 }
 
-void TestRegistroVariable::test_empaquetar_desempaquetar()
+TEST_F(TestRegistroVariable,Empaquetar_desempaquetar)
 {
 	std::string campos[]= {"martin", "mateo", "hector"};
 	unsigned short int cantidadCampos = 3;
 	std::string mostrar = "martin|mateo|hector|";
-
-	RegistroVariable rv;
 
 	for (int i = 0; i < cantidadCampos; i++)
 	{
@@ -113,30 +99,24 @@ void TestRegistroVariable::test_empaquetar_desempaquetar()
 	assert(rv2.get_tamanio() == rv.get_tamanio() );
 	assert(rv2.mostrar() == mostrar);
 	assert(rv.fue_eliminado()== false );
-
-	print_test_ok("test_empaquetar_desempaquetar_registro_variable");
 }
 
-
-void TestRegistroVariable::test_recuperar_campos()
+TEST_F(TestRegistroVariable,Recuperar_campos)
 {
 	std::string campos[]= {"martin", "mateo", "hector"};
 
-	RegistroVariable rv3;
-	rv3.agregar_campo(campos[0].c_str(),strlen(campos[0].c_str()));
-	rv3.agregar_campo(campos[1].c_str(),strlen(campos[1].c_str()));
-	rv3.agregar_campo(campos[2].c_str(),strlen(campos[2].c_str()));
+	rv.agregar_campo(campos[0].c_str(),strlen(campos[0].c_str()));
+	rv.agregar_campo(campos[1].c_str(),strlen(campos[1].c_str()));
+	rv.agregar_campo(campos[2].c_str(),strlen(campos[2].c_str()));
 
 	char* campoRecuperado;
-	for (unsigned short int i = 0; i < rv3.get_cantidad_campos(); i ++)
+	for (unsigned short int i = 0; i < rv.get_cantidad_campos(); i ++)
 	{
-		campoRecuperado = new char[rv3.get_tamanio_campo(i) +1]();
-		rv3.recuperar_campo(campoRecuperado,i);
+		campoRecuperado = new char[rv.get_tamanio_campo(i) +1]();
+		rv.recuperar_campo(campoRecuperado,i);
 		const char* copia = campoRecuperado;
 		const char* campo = campos[i].c_str();
 		assert (strcmp(copia,campo) == 0);
 		delete[] campoRecuperado;
 	}
-
-	print_test_ok("test_recuperar_campos_registro_variable");
 }

@@ -2,9 +2,9 @@ include ../src/makefile.inc
 
 DIRS	= ../src/Utilitarios ../src/CapaFisica ../src/CapaLogica ../src/CapaInterfaz 
 SUBDIRS = ../src/CapaLogica/ManejoArchivos ../src/CapaLogica/ArbolBMas ../src/CapaLogica/Compresor ../src/CapaLogica/HashingExtensible ../src/CapaLogica/Indexador  ../src/CapaLogica/Indices ../src/CapaLogica/Parser
-OBJS = Test.o TestParserCanciones.o TestClave.o TestArchivoListas.o TestIndicePorTitulo.o TestTabla.o TestArbol.o TestManejadorArchivoDatosBasicos.o TestRegistroCancion.o TestOrdenamientoExterno.o TestHeap.o  TestRegistroClave.o TestNodoInterno.o TestNodoSecuencial.o TestBloque.o TestHashingExtensible.o TestManejadorBloques.o TestManejadorRegistrosVariables.o TestRegistroVariable.o TestIndiceInvertidoPorFrase.o TestIndicePorAutor.o TestNormalizador.o
+OBJS = TestParserCanciones.o TestClave.o TestArchivoListas.o TestIndicePorTitulo.o TestTabla.o TestArbol.o TestManejadorArchivoDatosBasicos.o TestRegistroCancion.o TestOrdenamientoExterno.o TestHeap.o  TestRegistroClave.o TestNodoInterno.o TestNodoSecuencial.o TestBloque.o TestHashingExtensible.o TestManejadorBloques.o TestManejadorRegistrosVariables.o TestRegistroVariable.o TestIndiceInvertidoPorFrase.o TestIndicePorAutor.o TestNormalizador.o
 OBJLIBS	= Utilitarios.a CapaFisica.a CapaLogica.a CapaInterfaz.a 
-
+GTEST_LIB = ../lib/gtest-1.6.0/make/gtest.a
 EXTERNOBJ =  $(foreach path, $(DIRS), $(wildcard $(path)/*.o))
 EXTERNOBJ-CAPALOGICA = $(foreach path, $(SUBDIRS), $(wildcard $(path)/*.o))
 
@@ -13,17 +13,17 @@ EXE	= tests
 
 all : $(EXE)
 
-%.o: %.cpp %.h
-	$(ECHO) $(CC) -c $(CFLAGS) $<
-	$(CC) -c $(CFLAGS) $<
+%.o: %.cpp
+	$(ECHO) $(CC) $(CFLAGS) -c $(GTEST_LIB) -lpthread -o  $@ $<
+	$(CC) $(CFLAGS) -c $(GTEST_LIB) -lpthread -o  $@ $<
 
 %.a :
 	-for d in $(DIRS); do (cd $$d; $(MAKE)); done
 	ar cr $@ $^
 
 tests:  $(OBJLIBS) $(OBJS)
-	$(ECHO) $(CC) $(CFLAGS) $(EXTERNOBJ) $(OBJS) $(EXTERNOBJ-CAPALOGICA) -o $@ $(TARGETS)
-	$(CC) $(CFLAGS) $(EXTERNOBJ) $(OBJS) $(EXTERNOBJ-CAPALOGICA) -o $@ $(TARGETS)
+	$(ECHO) $(CC) $(CFLAGS) $(EXTERNOBJ) $(OBJS) $(EXTERNOBJ-CAPALOGICA) $(GTEST_LIB) -lpthread -o $@ $(TARGETS)
+	$(CC) $(CFLAGS) $(EXTERNOBJ) $(OBJS) $(EXTERNOBJ-CAPALOGICA) $(GTEST_LIB) -lpthread -o $@ $(TARGETS)
 
 clean :
 	-$(RM) -f ./tests
