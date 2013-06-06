@@ -25,6 +25,5 @@ TEST_F(TestNormalizador,Normalizar_string)
 {
 	string lineaLarga= "ésta-línea-se-ásemeja-múcho-A\nUNA CANCION\n";
 	string lineaLargaNormalizada = n.normalizar_input(lineaLarga);
-	cout << lineaLargaNormalizada << endl;
 	ASSERT_TRUE(lineaLargaNormalizada == "esta-linea-se-asemeja-mucho-a\nuna cancion\n");
 }

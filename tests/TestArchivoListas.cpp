@@ -78,7 +78,7 @@ TEST_F(TestArchivoListas,Reconstruir_listas)
 	ASSERT_TRUE (lista1.get_cantidad_campos() == 2);
 	ASSERT_TRUE (archivo.agregar(&lista1) > 0);
 
-	// El archivo ahora tiene 2 listas, una con 1 elem y otra con 2
+	// El archivo ahora tiene 2 listas, una con 1 elem (23) y otra con 2 (23,11)
 
 	//Agrego a las ref_listas el valor 1, que seria la posicion de la segunda lista en el archivo
 	ref_listas[0]=1;
@@ -97,12 +97,14 @@ TEST_F(TestArchivoListas,Reconstruir_listas)
 	ASSERT_TRUE(idrecuperado == 23);
 	//Obtengo la lista2 que se guardo en el archivo
 	archivo.devolver(&lista4, 1);
-	ASSERT_TRUE(lista4.get_cantidad_campos() == 2);
+	ASSERT_TRUE(lista4.get_cantidad_campos() == 3);
 	idrecuperado = -1;
 	lista4.recuperar_campo((char*)&idrecuperado,0);
 	ASSERT_TRUE(idrecuperado == 23);
 	lista4.recuperar_campo((char*)&idrecuperado,1);
 	ASSERT_TRUE(idrecuperado == 11);
+	lista4.recuperar_campo((char*)&idrecuperado,2);
+	ASSERT_TRUE(idrecuperado == 9);
 }
 
 TEST_F(TestArchivoListas,Reconstruir_listas_por_frase)

@@ -3,8 +3,8 @@
 #include "../src/CapaLogica/HashingExtensible/HashingExtensible.h"
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
-const std::string ARCHIVO_HASH = "IndicePorTitulo";
-const std::string ARCHIVO_LISTAS = "ListasPorTitulo.dat";
+const std::string ARCHIVO_HASH = "IndicePorTitulo.dat";
+const std::string ARCHIVO_LISTAS = "ListasPorTitulo";
 
 // To use a test fixture, derive a class from testing::Test.
 class TestIndicePorTitulo : public testing::Test {
@@ -32,6 +32,8 @@ class TestIndicePorTitulo : public testing::Test {
   void crear_reg_cancion(std::string titulo, RegistroCancion &reg)
   {
       //Crea un reg cancion con el autor que nos pasan por parametro
+	reg.limpiar_campos();
+	reg.limpiar_buffer();
   	std::string cancion = "Pink Floyd-2013-"+titulo+"-en-Pink Floyd";
   	reg.cargar(cancion.c_str(), cancion.length());
   }
@@ -47,7 +49,7 @@ TEST_F(TestIndicePorTitulo,Agregar_cancion)
     int id, ref_lista;
 
     this->crear_reg_cancion("Pink Floyd", cancion);
-    indice.agregar_cancion(cancion, 23);
+    ASSERT_TRUE(indice.agregar_cancion(cancion, 23) == RES_OK);
 
     //Veo si se guardo una lista con el IDcancion 23
     ASSERT_TRUE(listas.get_cantidad_listas() == 1);
@@ -79,7 +81,7 @@ TEST_F(TestIndicePorTitulo,Devolver_canciones_por_titulo)
     int id;
 
     this->crear_reg_cancion("The final cut", cancion);
-	indice.agregar_cancion(cancion, 23);
+    ASSERT_TRUE(indice.agregar_cancion(cancion, 23) == RES_OK);
 	//Veo si se crearon los archivos del indice
 	ASSERT_TRUE(listas.abrir("",ARCHIVO_LISTAS) == RES_OK);
 	ASSERT_TRUE(hash.abrir_archivo(ARCHIVO_HASH)  == RES_OK);
@@ -103,13 +105,13 @@ TEST_F(TestIndicePorTitulo,Agregar_muchas_canciones)
 
     //Agrego tres canciones con el mismo titulo y uno distinto
     this->crear_reg_cancion("The final cut", cancion);
-    indice.agregar_cancion(cancion, 23);
+    ASSERT_TRUE(indice.agregar_cancion(cancion, 23) == RES_OK);
     this->crear_reg_cancion("The final cut", cancion);
-	indice.agregar_cancion(cancion, 24);
+    ASSERT_TRUE(indice.agregar_cancion(cancion, 24) == RES_OK);
     this->crear_reg_cancion("The Trial", cancion);
-    indice.agregar_cancion(cancion, 25);
+    ASSERT_TRUE(indice.agregar_cancion(cancion, 25) == RES_OK);
     this->crear_reg_cancion("The final cut", cancion);
-    indice.agregar_cancion(cancion, 26);
+    ASSERT_TRUE(indice.agregar_cancion(cancion, 26) == RES_OK);
 
     //Veo si se guardaron 2 listas, ya que solo tenemos 2 titulos
     ASSERT_TRUE(listas.get_cantidad_listas() == 2);
