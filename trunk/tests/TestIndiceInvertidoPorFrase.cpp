@@ -23,10 +23,10 @@ class TestIndiceInvertidoPorFrase : public testing::Test {
   virtual void SetUp() {
 	ASSERT_TRUE(indice.crear_indice("", NOMBRE_INDICE) == RES_OK);
 	ASSERT_TRUE(indice.abrir_indice("", NOMBRE_INDICE) == RES_OK);
-	ASSERT_TRUE(listasInvertidas.abrir("",ARCHIVO_LISTAS) != RES_OK);
-	ASSERT_TRUE(listasPos.abrir("",ARCHIVO_LISTAS_POS) != RES_OK);
-	ASSERT_TRUE(vocabulario.abrir(ARCHIVO_ARBOL, "rb+") != RES_OK);
-	ASSERT_TRUE(terminos.abrir_archivo(ARCHIVO_TERMINOS) != RES_OK);
+	ASSERT_TRUE(listasInvertidas.abrir("",ARCHIVO_LISTAS) == RES_OK);
+	ASSERT_TRUE(listasPos.abrir("",ARCHIVO_LISTAS_POS) == RES_OK);
+	ASSERT_TRUE(vocabulario.abrir(ARCHIVO_ARBOL, "rb+") == RES_OK);
+	ASSERT_TRUE(terminos.abrir_archivo(ARCHIVO_TERMINOS) == RES_OK);
   }
 
   virtual void TearDown() {

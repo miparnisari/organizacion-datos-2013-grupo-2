@@ -59,10 +59,10 @@ void Heap::transformar_en_heap(RegistroVariable vectorAOrdenar[],int tamanio)
 
 int Heap::comparar_registros_variables(RegistroVariable reg1,RegistroVariable reg2)
 {
-	int campo1Int;
+	int campo1Int = -10;
 	reg1.recuperar_campo((char*)&campo1Int,0);
 
-	int campo2Int;
+	int campo2Int = -10;
 	reg2.recuperar_campo((char*)&campo2Int,0);
 
 	int resPrimerCampo= campo1Int - campo2Int;

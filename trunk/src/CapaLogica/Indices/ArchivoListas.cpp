@@ -75,12 +75,12 @@ int ArchivoListas::recontruir_listas(unsigned short* ref_listas, unsigned short 
         }
         listas_nuevas.agregar_registro(&lista);
     }
-    while(j<cant_ref){
-        //Creo una lista vacia y le agrego el IDcancion
-        RegistroVariable lista;
-        lista.agregar_campo((char*)&ID,sizeof(ID));
-        listas_nuevas.agregar_registro(&lista);
-    }
+//    while(j<cant_ref){
+//        //Creo una lista vacia y le agrego el IDcancion
+//        RegistroVariable lista;
+//        lista.agregar_campo((char*)&ID,sizeof(ID));
+//        listas_nuevas.agregar_registro(&lista);
+//    } // FIXME(nadia) Loop infinito!!
     this->archivo.eliminar_archivo(this->fileName);
     delete ref_listas;
     //Cambiamos el nombre del archivo por el original
