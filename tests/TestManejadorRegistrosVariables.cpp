@@ -441,7 +441,7 @@ TEST_F(TestManejadorRegistrosVariables,Chequear_registros_ocupados)
 
 }
 
-TEST_F(TestManejadorRegistrosVariables,Registro_clave)
+TEST_F(TestManejadorRegistrosVariables,Agregar_registro_clave)
 {
 	const unsigned short CANTIDAD_REGISTROS_ORIGINAL= 10;
 	for(unsigned short i=0;i<CANTIDAD_REGISTROS_ORIGINAL;i++){
