@@ -31,7 +31,7 @@ class IndiceInvertidoPorTitulo
         virtual int abrir_indice(std::string directorioSalida);
         //Abre el indice en la direccion que se le pasan por parametro
 
-        virtual int agregar_cancion(RegistroCancion cancion, int IDcancion);
+        virtual int agregar_cancion(RegistroCancion & cancion, int IDcancion);
         //Agrega el IDcancion a la lista de canciones que tienen el mismo titulo
 
         virtual long buscar_titulo(std::string titulo, RegistroVariable &listaDeCanciones);

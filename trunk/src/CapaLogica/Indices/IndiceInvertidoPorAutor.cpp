@@ -32,7 +32,7 @@ int IndiceInvertidoPorAutor::abrir_indice(std::string directorioSalida)
     return resultado;
 }
 
-int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion cancion, int IDcancion)
+int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion & cancion, int IDcancion)
 {
     std::string autor;
     ClaveX clave;

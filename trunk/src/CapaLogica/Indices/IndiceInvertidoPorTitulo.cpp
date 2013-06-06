@@ -30,7 +30,7 @@ int IndiceInvertidoPorTitulo::abrir_indice(std::string directorioSalida)
     return RES_OK;
 }
 
-int IndiceInvertidoPorTitulo::agregar_cancion(RegistroCancion cancion, int IDcancion)
+int IndiceInvertidoPorTitulo::agregar_cancion(RegistroCancion & cancion, int IDcancion)
 {
     unsigned short ref_lista = this->listas.get_cantidad_listas();
     unsigned short ref_listas[1];
