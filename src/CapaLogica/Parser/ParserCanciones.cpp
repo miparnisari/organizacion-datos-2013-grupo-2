@@ -106,7 +106,8 @@ int ParserCanciones::obtener_proxima_cancion(RegistroCancion& regNormalizado,
 	char * bufferNoNormalizado = new char[s_contenidoArchivo.size() + 1];
 	bufferNoNormalizado[s_contenidoArchivo.size()] = '\0';
 	std::copy(s_contenidoArchivo.begin(), s_contenidoArchivo.end(), bufferNoNormalizado);
-
+	cout << "buffer no normalizado = " << bufferNoNormalizado << endl;
+	cout << "buffer normalizado = " << bufferNormalizado << endl;
 
 	regNoNormalizado.limpiar_buffer();
 	regNoNormalizado.cargar(bufferNoNormalizado, sizeOfBuffer);
@@ -114,6 +115,7 @@ int ParserCanciones::obtener_proxima_cancion(RegistroCancion& regNormalizado,
 	regNormalizado.limpiar_buffer();
 	int resultado = regNormalizado.cargar(bufferNormalizado, sizeOfBuffer);
 	
+	delete[] bufferNoNormalizado;
 	delete[] bufferNormalizado;
 	return resultado;
 }
