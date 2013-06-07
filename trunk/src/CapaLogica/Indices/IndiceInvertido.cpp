@@ -239,31 +239,32 @@ int IndiceInvertido::_interseccion_listas_invertidas(std::string & frase, Regist
 	return RES_OK;
 }
 
-int IndiceInvertido::_interseccion(RegistroVariable &canciones, RegistroVariable &listaAux)
+int IndiceInvertido::_interseccion(RegistroVariable &listaUno, RegistroVariable &listaDos)
 {	//Busco la interseccion de las dos listas y la guardo en la lista canciones
 	int IDcan, IDcanAux, i=0, j=0;
 	//Obtenemos los primeros IDcanciones
-	canciones.recuperar_campo((char*)&IDcan, 0);
-	listaAux.recuperar_campo((char*)&IDcanAux, 0);
-
+	listaUno.recuperar_campo((char*)&IDcan, 0);
+	listaDos.recuperar_campo((char*)&IDcanAux, 0);
 	RegistroVariable interseccion;
-	while((i<canciones.get_cantidad_campos())&&(j<listaAux.get_cantidad_campos())){
+	while((i<listaUno.get_cantidad_campos())&&(j<listaDos.get_cantidad_campos()))
+	{
 		if(IDcan<IDcanAux){
-			canciones.recuperar_campo((char*)&IDcan, i++);
+			listaUno.recuperar_campo((char*)&IDcan, i++);
 		}else{
 			if(IDcan>IDcanAux){
-				listaAux.recuperar_campo((char*)&IDcanAux, j++);
+				listaDos.recuperar_campo((char*)&IDcanAux, j++);
 			}else{
 				interseccion.agregar_campo((char*)&IDcan, sizeof(IDcan));
-				listaAux.recuperar_campo((char*)&IDcanAux, j++);
-				canciones.recuperar_campo((char*)&IDcan, i++);
+				listaUno.recuperar_campo((char*)&IDcan, i++);
+				listaDos.recuperar_campo((char*)&IDcanAux, j++);
+
 			}
 		}
-
-
 	}
+//	listaUno.limpiar_campos();
+	listaUno = interseccion;
+//	listaUno.recuperar_campo((char*)&IDcan, 0);
 
-	canciones = interseccion;
 	if (interseccion.get_cantidad_campos() == 0)
 		return RES_ERROR;
 
@@ -380,7 +381,7 @@ int IndiceInvertido::_buscar_cancion_con_frase(RegistroVariable & terminos_frase
 {
 	ManejadorRegistrosVariables archivo_temp;
 	RegistroVariable reg;
-	int IDcancion= -1, i=0, cant_reg, pos=-1;
+	int i = 0;
 	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones.dat") != RES_OK)
 		return RES_ERROR;
 	SortExterno sort (this->ruta+"archivo_terminos_canciones.dat");
@@ -388,13 +389,15 @@ int IndiceInvertido::_buscar_cancion_con_frase(RegistroVariable & terminos_frase
 
 	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones.dat") != RES_OK)
 		return RES_ERROR;
-	cant_reg = archivo_temp.get_cantidad_registros_ocupados();
+	int cant_reg = archivo_temp.get_cantidad_registros_ocupados();
 	while(i<cant_reg){
 		//Recorremos todos los reg del archivo temporal
 		archivo_temp.get_registro_ocupado(&reg, i);
 		//Obtengo su IDcancion
+		int IDcancion = -1;
 		reg.recuperar_campo((char*)&IDcancion, 0);
 		//Obtengo su Pos
+		int pos = -1;
 		reg.recuperar_campo((char*)&pos, 1);
 		if(this->_siguiente_termino_frase(i, 0, pos, IDcancion, terminos_frase) != NO_PERTENECE){
 			//Como IDcancion contiene la frase entonces se guarda este ID en la lista

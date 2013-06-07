@@ -19,7 +19,6 @@ Texto::~Texto() {
 bool Texto::_es_delimitador(char c)
 {
 	const char delimit[31] = {'=','`','\'',' ','\n','\t','\b','#','&','.',';',':',',','_','~','(',')', '[', ']','{','}','?','!','<','>','"','@','/','$','%','*'};
-
 	unsigned int i;
 	for (i = 0; i < 31; i++) {
 		if (c == delimit[i]) {
@@ -45,10 +44,11 @@ int Texto::parsear(std::string unTexto)
     unsigned int numberChars = 0; // Contador de digitos leidos en una palabra
     unsigned int i = 0;
     unsigned int tam = unTexto.size();
-    char caracterActual = unTexto.at(i);
+    char caracterActual;
 
-    while (i  < tam-1 )
+    while (i  < tam )
     {
+    	caracterActual = unTexto.at(i);
     	// Convierto a minusculas lo que sea que vino
 		caracterActual = _to_lowercase(caracterActual);
 
@@ -79,10 +79,11 @@ int Texto::parsear(std::string unTexto)
 	    	palabraActual.push_back(caracterActual);
     	}
 		i ++;
-		caracterActual = unTexto.at(i);
+
     }
-    palabraActual.push_back(caracterActual);
-    this->elTexto.push_back(palabraActual);
+    if (! _es_delimitador(caracterActual))
+    	this->elTexto.push_back(palabraActual);
+
     return this->elTexto.size();
 }
 

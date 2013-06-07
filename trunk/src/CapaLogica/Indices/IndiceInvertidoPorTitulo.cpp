@@ -13,21 +13,17 @@ IndiceInvertidoPorTitulo::~IndiceInvertidoPorTitulo()
 int IndiceInvertidoPorTitulo::crear_indice(std::string directorioSalida)
 {
     this->ruta = directorioSalida;
-    int resultado1 = this->indice.crear_archivo(this->ruta+"IndicePorTitulo.dat");
-    int resultado2 = this->listas.crear(this->ruta, "ListasPorTitulo");
-    if (resultado1 == RES_OK && resultado2 == RES_OK)
-    	return RES_OK;
-    return RES_ERROR;
+    int res = this->indice.crear_archivo(this->ruta+"IndicePorTitulo");
+    res += this->listas.crear(this->ruta, "ListasPorTitulo");
+    return res;
 }
 
 int IndiceInvertidoPorTitulo::abrir_indice(std::string directorioSalida)
 {
     this->ruta = directorioSalida;
-    int resultado = this->indice.abrir_archivo(this->ruta+"IndicePorTitulo.dat");
+    int resultado = this->indice.abrir_archivo(this->ruta+"IndicePorTitulo");
     resultado += this->listas.abrir(this->ruta,"ListasPorTitulo");
-    if (resultado != RES_OK)
-    	return RES_RECORD_DOESNT_EXIST;
-    return RES_OK;
+    return resultado;
 }
 
 int IndiceInvertidoPorTitulo::agregar_cancion(RegistroCancion & cancion, int IDcancion)
@@ -44,7 +40,7 @@ int IndiceInvertidoPorTitulo::agregar_cancion(RegistroCancion & cancion, int IDc
         reg_cancion.agregar_campo((char*)&ref_lista,sizeof(ref_lista));
         this->indice.agregar(reg_cancion);
     }else{
-        reg_cancion.recuperar_campo((char*)&ref_lista, 0);  /***ver si los campos se guardan desde el 0 o el 1**/
+        reg_cancion.recuperar_campo((char*)&ref_lista, 1);
     }
     //Actualizamos la lista del titulo agregandole el IDcancion
     ref_listas[0]= ref_lista;
@@ -61,7 +57,7 @@ long IndiceInvertidoPorTitulo::buscar_titulo(std::string titulo, RegistroVariabl
     if(this->indice.devolver(clave, &reg_cancion) == RES_RECORD_DOESNT_EXIST)
     	return RES_RECORD_DOESNT_EXIST;
     //Busco la posicion relativa de la lista en el archivo de listas
-    reg_cancion.recuperar_campo((char*)&ref_lista, 0);  /***ver si los campos se guardan desde el 0 o el 1**/
+    reg_cancion.recuperar_campo((char*)&ref_lista, 1);
     //Le pido la lista al archivo de listas
     return this->listas.devolver(&listaDeCanciones, ref_lista);
 }
