@@ -19,7 +19,7 @@ RegistroVariable& RegistroVariable::operator = (const RegistroVariable& otro)
 	{
 		delete[] buffer;
 		this->tamanio = otro.tamanio;
-		this->buffer = new char[otro.tamanio];
+		this->buffer = new char[tamanio];
 		memcpy(buffer,otro.buffer,tamanio);
 	}
 	return (*this);

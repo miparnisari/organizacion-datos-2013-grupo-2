@@ -18,7 +18,7 @@ HashingExtensible::~HashingExtensible()
 
 int HashingExtensible::abrir_archivo(std::string nombreArchivo)
 {
-	this->fileName=nombreArchivo+".dat";
+	this->fileName=nombreArchivo;
     this->fileNameTabla=nombreArchivo+"Tabla.dat";
     this->tabla->set_ruta(this->fileNameTabla);
 

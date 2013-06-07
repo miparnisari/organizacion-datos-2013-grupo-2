@@ -2,7 +2,7 @@
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
 const std::string ARCHIVO_ARBOL=	"IndicePorAutor.dat";
-const std::string ARCHIVO_LISTAS=	"ListasPorAutor.dat";
+const std::string ARCHIVO_LISTAS=	"ListasPorAutor";
 
 // To use a test fixture, derive a class from testing::Test.
 class TestIndicePorAutor : public testing::Test {
@@ -23,11 +23,8 @@ class TestIndicePorAutor : public testing::Test {
   }
 
   virtual void TearDown() {
-	  ASSERT_TRUE(indice.crear_indice("") == RES_OK);
-	  ASSERT_TRUE(indice.borrar_indice() == RES_OK);
-	  ASSERT_TRUE(listas.eliminar("",ARCHIVO_LISTAS) == RES_OK);
 	  ASSERT_TRUE(arbol.cerrar() == RES_OK);
-	  ASSERT_TRUE(arbol.eliminar(ARCHIVO_ARBOL) == RES_OK);
+	  ASSERT_TRUE(indice.borrar_indice() == RES_OK);
   }
 
   // A helper function

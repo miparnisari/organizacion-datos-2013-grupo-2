@@ -15,10 +15,9 @@ IndiceInvertidoPorAutor::~IndiceInvertidoPorAutor()
 
 int IndiceInvertidoPorAutor::crear_indice(std::string directorioSalida)
 {
-    int resultado;
-    this->ruta = directorioSalida;
-    resultado= this->indice.crear(this->ruta+"IndicePorAutor.dat", BLOQUE_TAM_DEFAULT);
-    resultado= resultado+this->listas.crear(this->ruta,"ListasPorAutor");
+   this->ruta = directorioSalida;
+    int resultado = this->indice.crear(this->ruta+"IndicePorAutor.dat", BLOQUE_TAM_DEFAULT);
+    resultado += resultado+this->listas.crear(this->ruta,"ListasPorAutor");
     return resultado;
 }
 
@@ -71,12 +70,9 @@ int IndiceInvertidoPorAutor::agregar_cancion(RegistroCancion & cancion, int IDca
 
 int IndiceInvertidoPorAutor::borrar_indice()
 {
-    int resultado;
-    resultado = this->indice.eliminar(this->ruta+"Indice.dat");
-    if (resultado!=RES_OK)  return resultado;
-    resultado = this->listas.eliminar(this->ruta,"ListasPorAutor");
-    if (resultado!=RES_OK)  return resultado;
-    return RES_OK;
+    int resultado = this->indice.eliminar(this->ruta+"IndicePorAutor.dat");
+    resultado += this->listas.eliminar(this->ruta,"ListasPorAutor");
+    return resultado;
 }
 
 long IndiceInvertidoPorAutor::buscar_autor(std::string autor, RegistroVariable &listaDeCanciones)

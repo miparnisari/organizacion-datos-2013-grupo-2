@@ -39,6 +39,7 @@ class TestIndiceInvertidoPorFrase : public testing::Test {
   // Crea un reg cancion con la letra que nos pasan por parametro
   void crear_reg_cancion(std::string letra, RegistroCancion &reg)
   {
+	reg.limpiar_buffer();
   	std::string cancion = "Bersuit-2013-Un pacto para vivir-spanish\n"+letra+'\n';
   	ASSERT_TRUE(reg.cargar(cancion.c_str(), cancion.length()) == RES_OK);
   }
@@ -157,7 +158,6 @@ TEST_F(TestIndiceInvertidoPorFrase,Agregar_cancion)
     reg_termino.recuperar_campo(((char*)&ref_lista),2);
     ASSERT_TRUE(ref_lista == 1);
 
-    ASSERT_TRUE(indice.borrar_indice() == RES_OK);
     delete[] campo;
 }
 
@@ -171,7 +171,7 @@ TEST_F(TestIndiceInvertidoPorFrase,Devolver_canciones_con_1termino_1cancion)
 	int id;
 
 	this->crear_reg_cancion("la casa del lago", cancion);
-	indice.agregar_texto(cancion.get_letra(),23);
+	ASSERT_TRUE(indice.agregar_texto(cancion.get_letra(),23) == RES_OK);
 	//Abro los archivos del indice y veo si se crearon los registros correspondientes
 
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "lago"
@@ -182,7 +182,6 @@ TEST_F(TestIndiceInvertidoPorFrase,Devolver_canciones_con_1termino_1cancion)
 	//Veo que sea el id correcto
 	ASSERT_TRUE(id == 23);
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "vaca" y deberia tirar NO_EXISTE
-	int res = indice.buscar_frase("vaca", lista);
 	ASSERT_TRUE(indice.buscar_frase("vaca", lista) == RES_RECORD_DOESNT_EXIST);
 }
 
@@ -196,15 +195,14 @@ TEST_F(TestIndiceInvertidoPorFrase,Devolver_canciones_con_1termino_varias_cancio
 	int id;
 
 	this->crear_reg_cancion("la casa del tipo grande", cancion);
-	indice.agregar_texto(cancion.get_letra(), 23);
+	ASSERT_TRUE(indice.agregar_texto(cancion.get_letra(),23) == RES_OK);
 	cancion.limpiar_campos();
 	this->crear_reg_cancion("casa del lago", cancion);
-	indice.agregar_texto(cancion.get_letra(), 24);
+	ASSERT_TRUE(indice.agregar_texto(cancion.get_letra(),24) == RES_OK);
 	cancion.limpiar_campos();
 	this->crear_reg_cancion("una casa del", cancion);
-	indice.agregar_texto(cancion.get_letra(), 25);
+	ASSERT_TRUE(indice.agregar_texto(cancion.get_letra(),25) == RES_OK);
 
-	//Abro los archivos del indice y veo si se crearon los registros correspondientes
 
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "lago"
 	ASSERT_TRUE(indice.buscar_frase("lago", lista) == RES_OK);
@@ -216,21 +214,28 @@ TEST_F(TestIndiceInvertidoPorFrase,Devolver_canciones_con_1termino_varias_cancio
 
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "casa"
 	lista.limpiar_campos();
-	ASSERT_TRUE(indice.buscar_frase("casa del", lista) == RES_OK);
+	ASSERT_TRUE(indice.buscar_frase("casa", lista) == RES_OK);
 	//Veo que solo tenga un campo
-	int res = lista.get_cantidad_campos();
-	lista.recuperar_campo((char*)&id, 0);
 	ASSERT_TRUE(lista.get_cantidad_campos() == 3);
-	//recupero la primera cancion
+	unsigned int numCampo = 0;
+	for (unsigned int i = 23; i < 26; i++)
+	{
+		lista.recuperar_campo((char*)&id, numCampo);
+		ASSERT_EQ(id,i);
+		numCampo++;
+	}
+
+	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "casa"
+	lista.limpiar_campos();
+	ASSERT_TRUE(indice.buscar_frase("casa del", lista) == RES_OK);
+
+	ASSERT_TRUE(lista.get_cantidad_campos() == 3);
+
 	lista.recuperar_campo((char*)&id, 0);
-	//Veo que sea el id correcto
 	ASSERT_TRUE(id == 23);
-//	//recupero la segunda cancion
 	lista.recuperar_campo((char*)&id, 1);
-//	//Veo que sea el id correcto
 	ASSERT_TRUE(id == 24);
 	lista.recuperar_campo((char*)&id, 2);
-//	//Veo que sea el id correcto
 	ASSERT_TRUE(id == 25);
 
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "vaca" y deberia tirar NO_EXISTE
@@ -248,7 +253,7 @@ TEST_F(TestIndiceInvertidoPorFrase,Devolver_canciones_con_una_cancion)
 	int id;
 
 	this->crear_reg_cancion("La casa del lago", cancion);
-	indice.agregar_texto(cancion.get_letra(), 23);
+	ASSERT_TRUE(indice.agregar_texto(cancion.get_letra(), 23) == RES_OK);
 
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "la casa del lago"
 	ASSERT_TRUE(indice.buscar_frase("la casa del lago", lista) == RES_OK);
@@ -272,14 +277,13 @@ TEST_F(TestIndiceInvertidoPorFrase,Devolver_canciones_con_varias_canciones)
 	ClaveX clave, clave_aux;
 	int id;
 
-	this->crear_reg_cancion("La casa", cancion);
-	indice.agregar_texto(cancion.get_letra(), 23);
-	this->crear_reg_cancion("La casa del lago", cancion);
-	indice.agregar_texto(cancion.get_letra(), 24);
-	this->crear_reg_cancion("La granja", cancion);
-	indice.agregar_texto(cancion.get_letra(), 25);
+	this->crear_reg_cancion("la casa", cancion);
+	ASSERT_TRUE(indice.agregar_texto(cancion.get_letra(), 23) == RES_OK);
+	this->crear_reg_cancion("la casa del lago", cancion);
+	ASSERT_TRUE(indice.agregar_texto(cancion.get_letra(), 24) == RES_OK);
+	this->crear_reg_cancion("la granja", cancion);
+	ASSERT_TRUE(indice.agregar_texto(cancion.get_letra(), 25) == RES_OK);
 
-	indice.agregar_texto(cancion.get_letra(), 23);
 
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "la casa del lago"
 	ASSERT_TRUE(indice.buscar_frase("la casa del lago", lista) == RES_OK);
@@ -287,9 +291,9 @@ TEST_F(TestIndiceInvertidoPorFrase,Devolver_canciones_con_varias_canciones)
 	ASSERT_TRUE(lista.get_cantidad_campos() == 1);
 	lista.recuperar_campo((char*)&id, 0);
 	//Veo que sea el id correcto
-	ASSERT_TRUE(id == 24);
+	ASSERT_EQ(id,24);
 
-	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "la casa del lago"
+	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "la casa"
 	ASSERT_TRUE(indice.buscar_frase("la casa", lista) == RES_OK);
 	//Veo que solo tenga dos campo
 	ASSERT_TRUE(lista.get_cantidad_campos() == 2);
@@ -317,15 +321,15 @@ TEST_F(TestIndiceInvertidoPorFrase,Devolver_canciones_con_una_cancion_terminos_r
 	int id;
 
 	this->crear_reg_cancion("La casa junto a la casa oscura", cancion);
-	indice.agregar_texto(cancion.get_letra(), 23);
+	ASSERT_TRUE(indice.agregar_texto(cancion.get_letra(), 23) == RES_OK);
 
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "la casa del lago"
 	ASSERT_TRUE(indice.buscar_frase("la casa oscura", lista) == RES_OK);
 	//Veo que solo tenga un campo
-	ASSERT_TRUE(lista.get_cantidad_campos() == 1);
+	ASSERT_EQ(lista.get_cantidad_campos(),1);
 	lista.recuperar_campo((char*)&id, 0);
 	//Veo que sea el id correcto
-	ASSERT_TRUE(id == 23);
+	ASSERT_EQ(id,23);
 
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "vaca" y deberia tirar NO_EXISTE
 	ASSERT_TRUE(indice.buscar_frase("vaca loca", lista) == RES_RECORD_DOESNT_EXIST);
@@ -341,15 +345,13 @@ TEST_F(TestIndiceInvertidoPorFrase,Devolver_canciones_con_varias_canciones_termi
 	ClaveX clave, clave_aux;
 	int id;
 
-
 	this->crear_reg_cancion("La casa junto a la casa oscura", cancion);
-	indice.agregar_texto(cancion.get_letra(), 23);
+	ASSERT_TRUE(indice.agregar_texto(cancion.get_letra(), 23) == RES_OK);
 	this->crear_reg_cancion("La casa del lago del sur", cancion);
-	indice.agregar_texto(cancion.get_letra(), 24);
+	ASSERT_TRUE(indice.agregar_texto(cancion.get_letra(), 24) == RES_OK);
 	this->crear_reg_cancion("La granja del lago", cancion);
-	indice.agregar_texto(cancion.get_letra(), 25);
+	ASSERT_TRUE(indice.agregar_texto(cancion.get_letra(), 25) == RES_OK);
 
-	indice.agregar_texto(cancion.get_letra(), 23);
 
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "la casa del lago"
 	ASSERT_TRUE(indice.buscar_frase("la casa del lago", lista) == RES_OK);
@@ -357,7 +359,7 @@ TEST_F(TestIndiceInvertidoPorFrase,Devolver_canciones_con_varias_canciones_termi
 	ASSERT_TRUE(lista.get_cantidad_campos() == 1);
 	lista.recuperar_campo((char*)&id, 0);
 	//Veo que sea el id correcto
-	ASSERT_TRUE(id == 24);
+	ASSERT_EQ(id,24);
 
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "la casa del lago"
 	ASSERT_TRUE(indice.buscar_frase("la casa", lista) == RES_OK);
@@ -366,11 +368,11 @@ TEST_F(TestIndiceInvertidoPorFrase,Devolver_canciones_con_varias_canciones_termi
 	//Veo la primera cancion
 	lista.recuperar_campo((char*)&id, 0);
 	//Veo que sea el id correcto
-	ASSERT_TRUE(id == 23);
+	ASSERT_EQ(id,23);
 	//Veo la segunda cancion
 	lista.recuperar_campo((char*)&id, 0);
 	//Veo que sea el id correcto
-	ASSERT_TRUE(id == 24);
+	ASSERT_EQ(id,24);
 
 	//Le pido al indice que me devuelva la lista de canciones que guarda la frase "vaca" y deberia tirar NO_EXISTE
 	ASSERT_TRUE(indice.buscar_frase("vaca loca", lista) == RES_RECORD_DOESNT_EXIST);
