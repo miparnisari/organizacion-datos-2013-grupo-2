@@ -23,7 +23,7 @@ std::vector<int> ResolvedorConsultas::get_ids_canciones_frases(std::string & fra
 	indiceSecundarioFrases.abrir_indice(directorioSalida+'/',std::string(FILENAME_IDX_SECUN_FRASES));
 
 	int res = indiceSecundarioFrases.buscar_frase(frase,listaInvertida);
-	if (res != RES_OK)
+	if (res != RES_OK || listaInvertida.get_cantidad_campos() == 0)
 	{
 		std::cout << "La frase " << frase << " no fue encontrada." << std::endl;
 	}
