@@ -2,7 +2,7 @@ include ../src/makefile.inc
 
 DIRS	= ../src/Utilitarios ../src/CapaFisica ../src/CapaLogica ../src/CapaInterfaz 
 SUBDIRS = ../src/CapaLogica/ManejoArchivos ../src/CapaLogica/ArbolBMas ../src/CapaLogica/Compresor ../src/CapaLogica/HashingExtensible ../src/CapaLogica/Indexador  ../src/CapaLogica/Indices ../src/CapaLogica/Parser
-OBJS = TestParserCanciones.o TestClave.o TestArchivoListas.o TestIndicePorTitulo.o TestTabla.o TestArbol.o TestManejadorArchivoDatosBasicos.o TestRegistroCancion.o TestOrdenamientoExterno.o TestHeap.o  TestRegistroClave.o TestNodoInterno.o TestNodoSecuencial.o TestBloque.o TestHashingExtensible.o TestManejadorBloques.o TestManejadorRegistrosVariables.o TestRegistroVariable.o TestIndiceInvertidoPorFrase.o TestIndicePorAutor.o TestNormalizador.o
+OBJS = TestParserCanciones.o TestClave.o TestArchivoListas.o TestIndicePorTitulo.o TestTabla.o TestArbol.o TestManejadorArchivoDatosBasicos.o TestRegistroCancion.o TestOrdenamientoExterno.o TestHeap.o  TestRegistroClave.o TestNodoInterno.o TestNodoSecuencial.o TestBloque.o TestHashingExtensible.o TestManejadorBloques.o TestManejadorRegistrosVariables.o TestRegistroVariable.o TestIndiceInvertidoPorFrase.o TestIndicePorAutor.o TestNormalizador.o TestCompresorAritmetico.o
 OBJLIBS	= Utilitarios.a CapaFisica.a CapaLogica.a CapaInterfaz.a 
 GTEST_LIB = ../lib/gtest-1.6.0/make/gtest.a
 EXTERNOBJ =  $(foreach path, $(DIRS), $(wildcard $(path)/*.o))
