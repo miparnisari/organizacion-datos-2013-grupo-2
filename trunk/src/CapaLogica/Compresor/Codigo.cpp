@@ -14,8 +14,9 @@ const char* Codigo::OverflowException::what()const throw(){
 }
 
 
-Codigo::Codigo(int identificador){
+Codigo::Codigo(TipoIdentificador identificador){
 	this->identificador= identificador;
+	this->frecuencia= 0;
 }
 
 
@@ -23,6 +24,14 @@ Codigo::Codigo(const Codigo& otro){
 
 	this->identificador= otro.identificador;
 	this->frecuencia= otro.frecuencia;
+
+}
+
+
+Codigo::Codigo(char identificador){
+
+	this->identificador= (TipoIdentificador)identificador;
+	this->frecuencia= 0;
 
 }
 
@@ -48,7 +57,7 @@ unsigned long Codigo::incrementar_frecuencia(unsigned long aumento=1)
 }
 
 
-int Codigo::get_identificador()const{
+Codigo::TipoIdentificador Codigo::get_identificador()const{
 	return identificador;
 }
 
@@ -73,11 +82,44 @@ unsigned long Codigo::get_proporcion(unsigned long frecuenciaTotal,unsigned long
 }
 
 
+bool Codigo::operator ==(const TipoIdentificador& otroIdentificador)const{
+
+	return ( this->identificador == otroIdentificador );
+
+}
+
+
+bool Codigo::operator >(const TipoIdentificador& otroIdentificador)const{
+
+	return ( this->identificador > otroIdentificador );
+
+}
+
+bool Codigo::operator <(const TipoIdentificador& otroIdentificador)const{
+
+	return ( this->identificador < otroIdentificador );
+
+}
+
+bool Codigo::operator >=(const TipoIdentificador& otroIdentificador)const{
+
+	return ( this->identificador >= otroIdentificador );
+
+}
+
+bool Codigo::operator <=(const TipoIdentificador& otroIdentificador)const{
+
+	return ( this->identificador <= otroIdentificador );
+
+}
+
+
 bool Codigo::operator ==(const Codigo& otro)const{
 
 	return ( this->identificador == otro.identificador );
 
 }
+
 
 bool Codigo::operator >(const Codigo& otro)const{
 
