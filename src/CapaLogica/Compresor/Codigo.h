@@ -19,9 +19,12 @@ using std::string;
 
 class Codigo {
 
+	public:
+		typedef int TipoIdentificador;
+
 	private:
 		unsigned long frecuencia;
-		int identificador;
+		TipoIdentificador identificador;
 		/*valor de identificacion de un codigo. La asociacion del codigo con un mensaje
 		 * debe realizarse por el programa a partir de este valor de identificador.*/
 
@@ -30,11 +33,13 @@ class Codigo {
 			virtual const char* what()const throw();
 		};
 
-		Codigo(int identificador);
+		Codigo(TipoIdentificador identificador);
 		Codigo(const Codigo& otro);
+		Codigo(char identificador);
+		/*este constructor asigna como identificador el valor ASCII de un char.*/
 		~Codigo();
 
-		int get_identificador()const;
+		TipoIdentificador get_identificador()const;
 		unsigned long get_frecuencia()const;
 		unsigned long incrementar_frecuencia(unsigned long aumento)throw(OverflowException);
 		/*aumenta la frecuencia y retorna el valor incrementado*/
@@ -50,6 +55,13 @@ class Codigo {
 		bool operator <(const Codigo& otro)const;
 		bool operator >=(const Codigo& otro)const;
 		bool operator <=(const Codigo& otro)const;
+
+
+		bool operator ==(const TipoIdentificador& otroIdentificador)const;
+		bool operator >(const TipoIdentificador& otroIdentificador)const;
+		bool operator <(const TipoIdentificador& otroIdentificador)const;
+		bool operator >=(const TipoIdentificador& otroIdentificador)const;
+		bool operator <=(const TipoIdentificador& otroIdentificador)const;
 
 		Codigo& operator =(const Codigo& otro);
 
