@@ -98,4 +98,11 @@ const unsigned int LONGITUD_MAXIMA_NUMERO_INDEXABLE = 4;
 const int NO_EXISTE_INDICE                         	=-1;
 const int NO_PERTENECE								= -2;
 const int LISTA_VACIA								=-100;
+
+/*
+ * Compresion
+ */
+const unsigned int PRECISION = 24;
+
+
 #endif /* CONSTANTES_H */
