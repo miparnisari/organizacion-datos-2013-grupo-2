@@ -37,6 +37,9 @@ std::vector<bool> CompresorAritmetico::comprimir(const char simbolo)
 	 * Modifica piso y techo.
 	 */
 	std::vector<bool> bits_a_emitir = intervalo.normalizar();
+
+	modelo.incrementar_frecuencia(simbolo);
+
 	return bits_a_emitir;
 }
 

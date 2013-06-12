@@ -20,7 +20,7 @@ void ModeloProbabilistico::inicializar_dinamico()
 		frecuenciasSimbolos[i] = 1;
 }
 
-void ModeloProbabilistico::incrementar_frecuencia (char simbolo)
+void ModeloProbabilistico::incrementar_frecuencia (const char simbolo)
 {
 	Uint posicionSimbolo = simbolo;
 	frecuenciasSimbolos[posicionSimbolo] += 1;

@@ -71,7 +71,7 @@ bool Intervalo::hay_overflow()const
 }
 
 //Verificacion de Underflow:
-//	Si primer bit de techo es 1 y primer bit de piso es 0:
+//	Si primer bit de techo es 1 y primer bit de piso es 0 Y
 //		si el segundo bit de techo es 0 y el segundo bit de piso es 1
 bool Intervalo::hay_underflow()const
 {
@@ -98,28 +98,67 @@ void Intervalo::actualizar_piso_techo(Uint low_count, Uint high_count, Uint tota
 
 std::vector<bool> Intervalo::normalizar()
 {
-	// TODO: dentro de esta funcion hay que modificar el piso y el techo
 	std::vector<bool> bits_a_emitir;
 	while (hay_overflow())
 	{
-		bits_a_emitir.push_back(normalizar_overflow());
+		// Emito el primer bit del techo
+		bits_a_emitir.push_back(piso->test(PRECISION-1));
+		resolver_overflow();
+
+		//TODO: emitir tantos digitos negados como contadorUnderflow
+
+
+
+		contadorUnderflow = 0;
+
 		if (hay_underflow())
 		{
-			normalizar_underflow();
+			contadorUnderflow ++;
+			resolver_underflow();
 		}
 	}
 
 	return bits_a_emitir;
 }
 
-void Intervalo::normalizar_underflow()
+
+/*
+ * eliminar los segundos dígitos de piso y techo,
+ * correr los demás dígitos a la derecha.
+ *
+ */
+void Intervalo::resolver_underflow()
 {
-	//TODO
+	// quitar 2do bit techo, y agregarle un 1 al final
+
+	std::bitset<PRECISION -1> techo_aux;
+	techo_aux.set(PRECISION-2,techo->test(PRECISION-2));
+	for (Uint i = PRECISION -3; i > 1; i--)
+		techo_aux.set(i,techo->test(i-1));
+
+	techo_aux.set(0,1);
+	delete techo;
+	techo = new std::bitset<PRECISION -1> (techo_aux);
+
+	// quitar 2do bit piso y agregarle un 0 al final
+
+	std::bitset<PRECISION> piso_aux;
+	piso_aux.set(PRECISION-1,piso->test(PRECISION-1));
+	for (Uint i = PRECISION -2; i > 1; i--)
+		piso_aux.set(i,piso->test(i-1));
+
+	piso_aux.set(0,0);
+	delete piso;
+	piso = new std::bitset<PRECISION> (piso_aux);
+
 }
 
-bool Intervalo::normalizar_overflow()
+void Intervalo::resolver_overflow()
 {
-	bool bit_a_emitir = 0;
-	//TODO
-	return bit_a_emitir;
+	// Agregar 1 al techo en la posicion 0 (la mas derecha)
+	*techo <<= 1;
+	techo->set(0,1);
+	// Agregar 1 al piso en la posicion 0 (la mas derecha)
+	*piso <<= 1;
+	piso->set(0,0);
 }

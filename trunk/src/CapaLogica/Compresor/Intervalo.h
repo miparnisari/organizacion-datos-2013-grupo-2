@@ -32,8 +32,8 @@ class Intervalo {
 		Uint get_techo();
 
 		std::vector<bool> normalizar();
-		void normalizar_underflow();
-		bool normalizar_overflow();
+		void resolver_underflow();
+		void resolver_overflow();
 
 		bool hay_overflow() const;
 		bool hay_underflow() const;

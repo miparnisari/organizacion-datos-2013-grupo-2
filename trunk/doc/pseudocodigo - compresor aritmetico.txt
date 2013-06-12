@@ -23,7 +23,7 @@
 	Ejemplo1: - Techo: "1000 1001" (89) , Piso: "0111 1010" (7A) ; cont_underflow: 3
 	Ejemplo2: - Techo: "1000 0001" (81) , Piso: "0111 1010" (7A) ; cont_underflow: 4
 
-	Si hubo undeflow, dejar el primer bit intacto y a continuacion eliminar la cantidad de bits que produjeron el underflow 
+	Si hubo underflow, dejar el primer bit intacto y a continuacion eliminar la cantidad de bits que produjeron el underflow 
 	tanto en el techo como en el piso, y completar a byte con 1 a la derecha en techo, y 0 a la derecha en piso.
 
 	Ejemplo1: - El techo queda: "1100 1111" (CF) ; El piso queda: "0101 0000" (50)
