@@ -9,10 +9,12 @@
 #define INTERVALO_H_
 #include <bitset>
 #include <string>
+#include <vector>
 #include "../../Constantes.h"
 
 typedef unsigned int Uint;
-typedef std::bitset<PRECISION> BitsPiso, BitsTecho;
+typedef std::bitset<PRECISION> BitsPiso;
+typedef std::bitset<PRECISION-1> BitsTecho;
 
 class Intervalo {
 
@@ -26,16 +28,20 @@ class Intervalo {
 		Intervalo();
 		virtual ~Intervalo();
 
+		Uint get_piso();
+		Uint get_techo();
 
+		std::vector<bool> normalizar();
 		void normalizar_underflow();
-		void normalizar_overflow();
+		bool normalizar_overflow();
+
 		bool hay_overflow() const;
 		bool hay_underflow() const;
-		Uint calcular_rango(BitsPiso & piso, BitsTecho & techo);
-		// TODO hacerlas private
 
+		char calcular_valor(char byteActual);
 
-		std::bitset<PRECISION> normalizar();
+		void actualizar_rango();
+		void actualizar_piso_techo(Uint low_count, Uint high_count, Uint total);
 };
 
 #endif /* INTERVALO_H_ */

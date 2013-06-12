@@ -102,6 +102,7 @@ const int LISTA_VACIA								=-100;
 /*
  * Compresion
  */
+const unsigned int TAMANIO_ALFABETO = 256 + 1; // + EOF
 const unsigned int PRECISION = 24;
 
 

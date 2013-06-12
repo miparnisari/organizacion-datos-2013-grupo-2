@@ -14,8 +14,8 @@ EXE	= tests
 all : $(EXE)
 
 %.o: %.cpp
-	$(ECHO) $(CC) $(CFLAGS) -c $(GTEST_LIB) -lpthread -o  $@ $<
-	$(CC) $(CFLAGS) -c $(GTEST_LIB) -lpthread -o  $@ $<
+	$(ECHO) $(CC) $(CFLAGS) -c -o  $@ $<
+	$(CC) $(CFLAGS) -c -o  $@ $<
 
 %.a :
 	-for d in $(DIRS); do (cd $$d; $(MAKE)); done
