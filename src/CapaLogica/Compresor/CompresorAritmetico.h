@@ -10,18 +10,24 @@
 
 #include "../../Constantes.h"
 #include "Codigo.h"
+#include "Compresor.h"
 #include <vector>
+#include "Intervalo.h"
+#include "ModeloProbabilistico.h"
 
-using std::vector;
-
-class CompresorAritmetico {
+class CompresorAritmetico : public Compresor {
 
 	private:
-		vector<Codigo> vectorCodigos;
+		std::vector<Codigo> vectorCodigos;
+		Intervalo intervalo;
+		ModeloProbabilistico modelo;
+		char byteActual;
 
 	public:
+		CompresorAritmetico();
+		virtual ~ CompresorAritmetico ();
 
-
+		std::vector<bool> comprimir(const char simbolo);
 
 };/*Este compresor aplicara las tecnicas de compresion usando objetos del tipo
 Codigo.
