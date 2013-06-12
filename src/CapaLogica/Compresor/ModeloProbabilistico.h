@@ -23,7 +23,7 @@ class ModeloProbabilistico {
 		virtual ~ModeloProbabilistico();
 
 
-		void incrementar_frecuencia (char simbolo);
+		void incrementar_frecuencia (const char simbolo);
 		Uint calcular_low_count (const char simbolo);
 		Uint calcular_high_count (const char simbolo);
 		Uint calcular_total_frecuencias();
