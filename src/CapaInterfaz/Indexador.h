@@ -20,6 +20,7 @@
 #include "../CapaLogica/Compresor/CompresorPPMC.h"
 
 #include "ResolvedorConsultas.h"
+#include "GeneradorEstadisticasConsultas.h"
 
 class Indexador
 {
@@ -27,11 +28,8 @@ class Indexador
 		Indexador();
 		virtual ~Indexador();
 	
-		int indexar(std::string & directorioEntrada, std::string & directorioSalida);
-		int consultar_autor(std::string & directorioSalida, std::string & unAutor);
-		int consultar_titulo(std::string & directorioSalida, std::string & titulo);
-		int consultar_frase (std::string & directorioSalida, std::string & frase);
-		void borrar_cancion (std::string & directorioSalida, int idCancion);
+		int indexar (std::string & directorioEntrada, std::string & directorioSalida, ResolvedorConsultas& rc);
+		int borrar_cancion (std::string & directorioSalida, int idCancion, RegistroCancion & reg);
 
 	private:
 		static const int OPCION_INDEXAR = 1;
@@ -54,10 +52,9 @@ class Indexador
 				RegistroCancion & regCancion,
 				RegistroCancion & regCancionNoNormalizada,
 				std::string nombreArchivo);
-		int _anexar(std::string & directorioEntrada, std::string & directorioSalida);
+		int _anexar(std::string & directorioEntrada, std::string & directorioSalida, ResolvedorConsultas & rc);
 		void _indexar();
 		int _mostrar_opciones(std::string & directorioEntrada, std::string & directorioSalida);
-		void _mostrar_contenido(int id, RegistroCancion* reg);
 };
 
 #endif /* INDEXADOR_H */ 

@@ -11,12 +11,11 @@ Indexador::~Indexador()
 	
 }
 
-void Indexador::borrar_cancion (std::string & directorioSalida, int idCancion)
+int Indexador::borrar_cancion (std::string & directorioSalida, int idCancion, RegistroCancion & reg)
 {
 	_abrir_archivos_indices(directorioSalida);
 
 	ClaveX claveID, claveAutor, claveTitulo;
-
 
 	int offsetArchivoMaestro;
 	RegistroClave regClave;
@@ -24,19 +23,19 @@ void Indexador::borrar_cancion (std::string & directorioSalida, int idCancion)
 	if (indicePrimario.devolver(claveID,&regClave) == RES_RECORD_DOESNT_EXIST)
 	{
 		std::cout << "No se pudo eliminar la canción con ID " << idCancion << "." << std::endl;
+		return RES_ERROR;
 	}
 	else {
 		regClave.recuperar_campo((char*)&offsetArchivoMaestro,1);
 
 		indicePrimario.eliminar(claveID);
 
-		ResolvedorConsultas rc(directorioSalida);
-		RegistroCancion* reg = rc.get_reg_completo(idCancion);
+
 		archivoMaestro.eliminar_registro_por_offset(offsetArchivoMaestro);
 
 		RegistroClave regArbol;
-		for (unsigned int i = 0; i < reg->get_cantidad_autores(); i++){
-			std::string clave = reg->get_autor(i);
+		for (unsigned int i = 0; i < reg.get_cantidad_autores(); i++){
+			std::string clave = reg.get_autor(i);
 			clave.append(utilitarios::int_a_string(idCancion));
 
 			claveAutor.set_clave(clave);
@@ -45,67 +44,16 @@ void Indexador::borrar_cancion (std::string & directorioSalida, int idCancion)
 			indiceSecundarioAutor.quitar(regArbol);
 		}
 
-		claveTitulo.set_clave(reg->get_titulo());
+		claveTitulo.set_clave(reg.get_titulo());
 		indiceSecundarioTitulo.eliminar(claveTitulo);
 
 
 		// TODO eliminar del indiceSecundarioFrases;
 
 		documentos.eliminar(claveID);
-		delete reg;
 	}
 
-	_finalizar();
-}
-
-void Indexador::_mostrar_contenido(int id, RegistroCancion* reg)
-{
-	if (reg == NULL)
-		return;
-	std::cout << "----------- ID CANCION = " << id << " ---------" << std::endl;
-	std::cout << "TITULO = " << reg->get_titulo() << std::endl;
-	std::cout << reg->get_letra() << std::endl;
-
-}
-
-int Indexador::consultar_titulo(std::string & directorioSalida, std::string & titulo)
-{
-	ResolvedorConsultas rc(directorioSalida);
-	int id = rc.get_id_cancion_titulo(titulo);
-	if (id != RES_RECORD_DOESNT_EXIST)
-	{
-		RegistroCancion* reg = rc.get_reg_completo(id);
-		_mostrar_contenido(id,reg);
-		delete reg;
-
-	}
-	return RES_OK;
-}
-
-int Indexador::consultar_autor(std::string & directorioSalida, std::string & autor)
-{
-	ResolvedorConsultas rc(directorioSalida);
-	std::vector <int> ids = rc.get_id_canciones_autor(autor);
-	for (unsigned int i = 0; i < ids.size(); i ++)
-	{
-		RegistroCancion* reg = rc.get_reg_completo(ids.at(i));
-		_mostrar_contenido(ids.at(i),reg);
-		delete reg;
-	}
-	return RES_OK;
-}
-
-int Indexador::consultar_frase (std::string & directorioSalida, std::string & frase)
-{
-	ResolvedorConsultas rc(directorioSalida);
-	std::vector <int> ids = rc.get_ids_canciones_frases(frase);
-	for (unsigned int i = 0; i < ids.size(); i ++)
-	{
-		RegistroCancion *reg = rc.get_reg_completo(ids.at(i));
-		_mostrar_contenido(ids.at(i),reg);
-		delete reg;
-	}
-	return RES_OK;
+	return _finalizar();
 }
 
 int Indexador::_mostrar_opciones(std::string & directorioEntrada, std::string & directorioSalida)
@@ -194,7 +142,7 @@ int Indexador::_finalizar()
 	return res;
 }
 
-int Indexador::_anexar(std::string & directorioEntrada, std::string & directorioSalida)
+int Indexador::_anexar(std::string & directorioEntrada, std::string & directorioSalida, ResolvedorConsultas & rc)
 {
 	ClaveNumerica id(archivoMaestro.get_cantidad_registros());
 
@@ -225,7 +173,6 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 		bool cancionEstaRepetida = false;
 		while (i < autores.size() && cancionEstaRepetida == false)
 		{
-			ResolvedorConsultas rc(directorioSalida);
 			idsDelAutor = rc.get_id_canciones_autor(autores[i]);
 
 			unsigned int j = 0;
@@ -358,7 +305,7 @@ void Indexador::_indexar()
 	}
 }
 
-int Indexador::indexar (std::string & directorioEntrada, std::string & directorioSalida)
+int Indexador::indexar (std::string & directorioEntrada, std::string & directorioSalida, ResolvedorConsultas& rc)
 {
 	int opcion = _mostrar_opciones(directorioEntrada,directorioSalida);
 	if (opcion == RES_ERROR || opcion == RES_DIRECTORY_DOESNT_EXIST)
@@ -374,7 +321,7 @@ int Indexador::indexar (std::string & directorioEntrada, std::string & directori
 				cout << "ERROR: No se pudieron abrir los archivos necesarios." << endl;
 			}
 			else {
-				_anexar(directorioEntrada,directorioSalida);
+				_anexar(directorioEntrada,directorioSalida, rc);
 			}
 		}
 
