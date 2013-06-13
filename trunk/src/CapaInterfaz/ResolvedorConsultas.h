@@ -22,14 +22,17 @@
 
 class ResolvedorConsultas {
 public:
-	ResolvedorConsultas(std::string & directorioSalida);
+	ResolvedorConsultas();
 	virtual ~ResolvedorConsultas();
+
+	void set_directorio_indice(std::string & dirSalida);
 
 	std::vector<int> get_id_canciones_autor(std::string & autor);
 	std::string get_nombre_archivo (int id_cancion);
 	std::vector<int> get_ids_canciones_frases(std::string & frase);
 	RegistroCancion* get_reg_completo (int id_cancion);
 	int get_id_cancion_titulo(std::string & titulo);
+
 
 private:
 	HashingExtensible indicePrimario;

@@ -7,13 +7,18 @@
 
 #include "ResolvedorConsultas.h"
 
-ResolvedorConsultas::ResolvedorConsultas(std::string & dirSalida)
+ResolvedorConsultas::ResolvedorConsultas()
 {
-	this->directorioSalida = dirSalida;
+
 }
 ResolvedorConsultas::~ResolvedorConsultas()
 {
 
+}
+
+void ResolvedorConsultas::set_directorio_indice(std::string & dirSalida)
+{
+	this->directorioSalida = dirSalida;
 }
 
 std::vector<int> ResolvedorConsultas::get_ids_canciones_frases(std::string & frase)

@@ -15,11 +15,11 @@ typedef unsigned int Uint;
 class ModeloProbabilistico {
 
 	private:
-		Uint frecuenciasSimbolos[TAMANIO_ALFABETO];
+		Uint* frecuenciasSimbolos;
 		void inicializar_dinamico();
 
 	public:
-		ModeloProbabilistico();
+		ModeloProbabilistico(short tamanio_alfabeto = TAMANIO_ALFABETO);
 		virtual ~ModeloProbabilistico();
 
 
