@@ -21,6 +21,20 @@ class BufferBits{
 		bitset<tamanioBuffer>* buffer;
 		TamanioBitset bitActual;
 
+		static string _invertir_string(string s){
+
+			string retornar= "";
+			const unsigned short TAMANIO_STRING= s.length();
+
+			for(unsigned short i=(TAMANIO_STRING-1);i>=0;i-- ){
+				char c= s.at(i);
+				retornar.push_back(c);
+			}
+
+			return retornar;
+
+		}
+
 	public:
 		BufferBits()throw(exception){
 			if(tamanioBuffer== 0){
@@ -53,6 +67,10 @@ class BufferBits{
 			resultado= (unsigned short)(bitActual/8);
 			return resultado;
 		}/*retorna la cantidad de bytes completos en buffer*/
+
+
+
+
 
 };
 
