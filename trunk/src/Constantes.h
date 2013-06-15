@@ -2,6 +2,14 @@
 #define CONSTANTES_H
 
 #include<string>
+#include<iostream>
+
+using std::cout;
+using std::endl;
+
+#define IMPRIMIR_MY_VARIABLE(v)\
+	cout<<#v<<" ="<<v<<endl;
+
 
 /*
  * Retorno de funciones
