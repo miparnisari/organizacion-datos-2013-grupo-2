@@ -74,7 +74,6 @@ void Intervalo::calcular_rango()
 {
 	unsigned int u_piso = piso->to_ulong();
 	unsigned int u_techo = techo->to_ulong();
-	int sizeofrango = sizeof(rango)*8;
 	std::cout << rango << std::endl;
 	rango = u_techo - u_piso;
 	rango += 1;

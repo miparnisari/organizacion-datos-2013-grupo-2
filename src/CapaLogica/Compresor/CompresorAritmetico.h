@@ -30,9 +30,9 @@ class CompresorAritmetico : public Compresor {
 		std::vector<bool> comprimir(const char simbolo);
 		virtual int comprimir_todo
 			(const char* buffer_a_comprimir,
-			const int tamanio,
+			const unsigned int tamanio,
 			char* bufferCompresion,
-			int tamanioBuffer);
+			unsigned int tamanioBuffer);
 
 };/*Este compresor aplicara las tecnicas de compresion usando objetos del tipo
 Codigo.
