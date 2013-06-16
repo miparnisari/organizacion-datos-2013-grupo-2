@@ -15,10 +15,19 @@
 #include "Intervalo.h"
 #include "ModeloProbabilistico.h"
 #include "BufferBits.h"
+#include <sstream>
+#include <iostream>
+
+using std::stringstream;
+
+
+const TamanioBitset TAMANIO_BUFFER_FINAL= 4096;
+const TamanioBitset TAMANIO_BUFFER_BITS_BYTES= 1024;
+const TamanioBitset TAMANIO_BUFFER_BITS_BITS= TAMANIO_BUFFER_BITS_BYTES*8;
+
+
 
 class CompresorAritmetico : public Compresor {
-
-
 
 
 	private:
@@ -26,7 +35,6 @@ class CompresorAritmetico : public Compresor {
 		Intervalo intervalo;
 		ModeloProbabilistico modelo;
 		char byteActual;
-
 
 
 

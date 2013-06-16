@@ -50,38 +50,67 @@ int CompresorAritmetico::comprimir_todo
 	unsigned int tamanioBuffer)
 {
 
+	BufferBits<TAMANIO_BUFFER_BITS_BITS> bufferBits;
+	stringstream stream;
+
+
 	int tamanioComprimido = 0;
 	std::vector<bool> bitsAemitir;
 	char byte_a_emitir = '0';
 
-	// Ciclo que recorre el buffer de salida
-	for (unsigned int k = 0; k < tamanioBuffer; k++)
-	{
+
+
+
 		// Ciclo que recorre el buffer de entrada
 		for (unsigned int i = 0; i < tamanio; i++)
 		{
 			std::vector<bool> bits_caracter_actual = comprimir(*(buffer_a_comprimir+i));
 
-			// Ciclo que recorre los bits que tengo que emitir
-			for (unsigned int j = 0; j < bits_caracter_actual.size(); j++)
-			{
-				bitsAemitir.push_back(bits_caracter_actual[j]);
-				if (bitsAemitir.size() == 8)
-				{
-					// byte_a_emitir = bits_a_emitir
-					// comprimido += byte_a_emitir
-					tamanioComprimido ++;
-					bitsAemitir.clear();
+//			// Ciclo que recorre los bits que tengo que emitir
+//			for (unsigned int j = 0; j < bits_caracter_actual.size(); j++)
+//			{
+//				bitsAemitir.push_back(bits_caracter_actual[j]);
+//				if (bitsAemitir.size() == 8)
+//				{
+//					// byte_a_emitir = bits_a_emitir
+//					// comprimido += byte_a_emitir
+//					tamanioComprimido ++;
+//					bitsAemitir.clear();
+//				}
+//			}
+
+
+			const TamanioBitset TAMANIO_BITS_CARACTER_ACTUAL= bits_caracter_actual.size();
+			for( TamanioBitset j=0;i<TAMANIO_BITS_CARACTER_ACTUAL;j++ ){
+
+				bool bit= bits_caracter_actual.at(j);
+
+				if( bufferBits.agregar_bit(bit)== RES_ERROR ){
+					char bufferTemporal[TAMANIO_BUFFER_BITS_BYTES];
+					bufferBits.dump( bufferTemporal );
+					stream.write( bufferTemporal,TAMANIO_BUFFER_BITS_BYTES );
+					bufferBits.agregar_bit(bit);
+
+					tamanioComprimido+= TAMANIO_BUFFER_BITS_BYTES;
 				}
-			}
+
+
+			}//for
 
 
 		}
-	}
 
-	// byte_a_emitir = bitsAemitir.completar()
-	// comprimido += byte_a_emitir
-	tamanioComprimido ++;
+		if(bufferBits.get_indice_buffer()== 0)
+			return tamanioComprimido;
+
+		char bufferAuxiliar[TAMANIO_BUFFER_BITS_BYTES];
+		TamanioBitset tamanioUltimaEscritura= bufferBits.dump_y_completar(bufferAuxiliar);
+		stream.write( bufferAuxiliar,tamanioUltimaEscritura );
+
+		stream.seekg(0,ios::beg);
+		stream.read( bufferCompresion,tamanioComprimido );
+
+
 	return tamanioComprimido;
 
 }
