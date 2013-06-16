@@ -21,7 +21,7 @@ all : $(EXE)
 	ar cr $@ $^
 	
 main: $(OBJLIBS)
-	$(ECHO) $(CC) $(CFLAGS) $(EXTERNOBJ) $(EXTERNOBJ-CAPALOGICA) -o $@ $(TARGETS)
+	$(ECHO) Linkeando...
 	$(CC) $(CFLAGS) $(EXTERNOBJ) $(EXTERNOBJ-CAPALOGICA) -o $@ $(TARGETS)
 
 clean :

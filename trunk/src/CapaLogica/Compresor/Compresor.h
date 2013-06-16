@@ -8,6 +8,8 @@ class Compresor
 	public:
 		Compresor();
 		virtual ~Compresor();
+
+		virtual int comprimir_todo(const char* buffer, const int tamanioBuffer , char* resultado);
 	
 	private:
 		/* add your private declarations */

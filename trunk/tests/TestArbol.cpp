@@ -175,7 +175,7 @@ TEST_F(TestArbol,Split_raiz)
 	}
 
 	cout<<"ARBOL RESULTANTE: "<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 }
 
 TEST_F(TestArbol,Buscar)
@@ -282,7 +282,7 @@ TEST_F(TestArbol,Buscar_secuencial)
 
 
 
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	// ASSERT_TRUE: Buscamos las claves por rango
 	RegistroClave actual;
@@ -348,7 +348,7 @@ TEST_F(TestArbol,Buscar_secuencial)
 
 	std::cout << std::endl;
 
-	arbol.imprimir();
+//	arbol.imprimir();
 }
 
 TEST_F(TestArbol,Eliminar_raiz)
@@ -379,7 +379,7 @@ TEST_F(TestArbol,Eliminar_raiz)
 	}
 
 	cout<<"imprimiendo arbol con registros solo en raiz eliminados : "<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 }
 
 TEST_F(TestArbol,Eliminar_raiz_sin_underflow)
@@ -434,7 +434,7 @@ TEST_F(TestArbol,Eliminar_raiz_sin_underflow)
 	registroEliminar.set_clave(claveEliminar);
 	ASSERT_TRUE( arbol.quitar(registroEliminar)== RES_OK );
 
-	arbol.imprimir();
+//	arbol.imprimir();
 }
 
 TEST_F(TestArbol,Eliminar_con_merge_secuenciales)
@@ -502,7 +502,7 @@ TEST_F(TestArbol,Eliminar_con_merge_secuenciales)
 		/*merge de secuencial no ultimo hijo*/
 
 		cout<<"imprimiendo arbol con merge sin ultimo hijo: ----------------------"<<endl;
-		arbol.imprimir();
+//		arbol.imprimir();
 
 
 		/*funciona hasta aqui*/
@@ -524,7 +524,7 @@ TEST_F(TestArbol,Eliminar_con_merge_secuenciales)
 		arbol.quitar(re);
 
 		cout<<"imprimiendo arbol con merge con ultimo hijo: ----------------------"<<endl;
-		arbol.imprimir();
+//		arbol.imprimir();
 
 	}
 
@@ -575,7 +575,7 @@ TEST_F(TestArbol,Eliminar_con_balanceo_secuenciales)
 	}
 
 	cout<<"imprimiendo arbol original: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	ClaveX ce;
 	RegistroClave re;
@@ -588,7 +588,7 @@ TEST_F(TestArbol,Eliminar_con_balanceo_secuenciales)
 
 
 	cout<<"imprimiendo arbol con balanceo sin ultimo hijo: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	/*funciona hasta aqui*/
 
@@ -614,7 +614,7 @@ TEST_F(TestArbol,Eliminar_con_balanceo_secuenciales)
 	arbol.quitar(re);
 
 	cout<<"imprimiendo arbol con balanceo con ultimo hijo: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 }
 
 TEST_F(TestArbol,Eliminar_con_merge_internos)
@@ -662,7 +662,7 @@ TEST_F(TestArbol,Eliminar_con_merge_internos)
 	}
 
 	cout<<"imprimiendo arbol original: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	ClaveX ce;
 	RegistroClave re;
@@ -692,7 +692,7 @@ TEST_F(TestArbol,Eliminar_con_merge_internos)
 
 
 	cout<<"imprimiendo arbol justo antes de merge de internos: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	ce.set_clave("baA");
 	re.set_clave(ce);
@@ -700,7 +700,7 @@ TEST_F(TestArbol,Eliminar_con_merge_internos)
 
 
 	cout<<"imprimiendo arbol con merge interno sin ultimo hijo: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 }
 
 TEST_F(TestArbol,Eliminar_con_merge_interno_en_ultimo)
@@ -748,7 +748,7 @@ TEST_F(TestArbol,Eliminar_con_merge_interno_en_ultimo)
 	}
 
 	cout<<"imprimiendo arbol original: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	ClaveX ce;
 	RegistroClave re;
@@ -791,7 +791,7 @@ TEST_F(TestArbol,Eliminar_con_merge_interno_en_ultimo)
 	arbol.quitar(re);
 
 	cout<<"imprimiendo arbol justo antes de merge de internos: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	ce.set_clave("caG");
 	re.set_clave(ce);
@@ -799,7 +799,7 @@ TEST_F(TestArbol,Eliminar_con_merge_interno_en_ultimo)
 
 
 	cout<<"imprimiendo arbol con merge interno en el ultimo: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 }
 
 TEST_F(TestArbol,Eliminar_con_balanceo_interno_en_ultimo)
@@ -847,7 +847,7 @@ TEST_F(TestArbol,Eliminar_con_balanceo_interno_en_ultimo)
 	}
 
 	cout<<"imprimiendo arbol original: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	ClaveX ce;
 	RegistroClave re;
@@ -872,14 +872,14 @@ TEST_F(TestArbol,Eliminar_con_balanceo_interno_en_ultimo)
 
 
 	cout<<"imprimiendo arbol justo antes de balancear: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	ce.set_clave("aaCB");
 	re.set_clave(ce);
 	arbol.quitar(re);
 
 	cout<<"imprimiendo arbol despues de balancear: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 }
 
 TEST_F(TestArbol,Eliminar_con_balanceo_interno_en_ultimo_nodo)
@@ -927,7 +927,7 @@ TEST_F(TestArbol,Eliminar_con_balanceo_interno_en_ultimo_nodo)
 	}
 
 	cout<<"imprimiendo arbol original: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	ClaveX ce;
 	RegistroClave re;
@@ -946,7 +946,7 @@ TEST_F(TestArbol,Eliminar_con_balanceo_interno_en_ultimo_nodo)
 
 
 	cout<<"imprimiendo arbol justo antes de balancear: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	ce.set_clave("caJ");
 	re.set_clave(ce);
@@ -954,7 +954,7 @@ TEST_F(TestArbol,Eliminar_con_balanceo_interno_en_ultimo_nodo)
 
 
 	cout<<"imprimiendo arbol despues de balancear: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 }
 
 TEST_F(TestArbol,Eliminar_arbol_completamente)
@@ -1002,7 +1002,7 @@ TEST_F(TestArbol,Eliminar_arbol_completamente)
 	}
 
 	cout<<"imprimiendo arbol original: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	for(int i=0;i<8;i++){
 		string clave= "aaa";
@@ -1013,7 +1013,7 @@ TEST_F(TestArbol,Eliminar_arbol_completamente)
 	}
 
 	cout<<"imprimiendo arbol etapa 1: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	for(int i=0;i<2;i++){
 		string clave= "aaCa";
@@ -1024,7 +1024,7 @@ TEST_F(TestArbol,Eliminar_arbol_completamente)
 	}
 
 	cout<<"imprimiendo arbol etapa 2: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	for(int i=0;i<3;i++){
 
@@ -1036,7 +1036,7 @@ TEST_F(TestArbol,Eliminar_arbol_completamente)
 	}
 
 	cout<<"imprimiendo arbol etapa 3: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 
 	for(int i=0;i<10;i++){
 
@@ -1049,5 +1049,5 @@ TEST_F(TestArbol,Eliminar_arbol_completamente)
 	}
 
 	cout<<"imprimiendo arbol borrado: ----------------------"<<endl;
-	arbol.imprimir();
+//	arbol.imprimir();
 }

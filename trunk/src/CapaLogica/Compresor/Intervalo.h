@@ -11,16 +11,19 @@
 #include <string>
 #include <vector>
 #include "../../Constantes.h"
+#include <cmath>
+#include <iostream>
 
 typedef unsigned int Uint;
+typedef unsigned long long Ulonglong;
 typedef std::bitset<PRECISION> BitsPiso;
-typedef std::bitset<PRECISION-1> BitsTecho;
+typedef std::bitset<PRECISION> BitsTecho;
 
 class Intervalo {
 
 	private:
 		Uint contadorUnderflow;
-		Uint rango;
+		Ulonglong rango;
 		BitsPiso* piso;
 		BitsTecho* techo;
 
@@ -28,8 +31,12 @@ class Intervalo {
 		Intervalo();
 		virtual ~Intervalo();
 
-		Uint get_piso();
-		Uint get_techo();
+		void set_piso(std::string unPiso);
+		void set_techo(std::string unTecho);
+
+		BitsPiso& get_piso();
+		BitsTecho& get_techo();
+		Ulonglong get_rango();
 
 		std::vector<bool> normalizar();
 		void resolver_underflow();
@@ -40,8 +47,8 @@ class Intervalo {
 
 		char calcular_valor(char byteActual);
 
-		void actualizar_rango();
-		void actualizar_piso_techo(Uint low_count, Uint high_count, Uint total);
+		void calcular_rango();
+		void actualizar_piso_techo(double low_count, double high_count);
 };
 
 #endif /* INTERVALO_H_ */

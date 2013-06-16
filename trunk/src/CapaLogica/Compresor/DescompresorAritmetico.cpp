@@ -17,22 +17,21 @@ DescompresorAritmetico::~DescompresorAritmetico() {
 
 char DescompresorAritmetico::decodificar_objetivo ()
 {
-	intervalo.actualizar_rango();
+	intervalo.calcular_rango();
 	char valor =  intervalo.calcular_valor(byteActual);
 	return valor;
 }
 
-void DescompresorAritmetico::decodificar(Uint low_count, Uint high_count, Uint total)
+void DescompresorAritmetico::decodificar(double low_count, double high_count)
 {
-	intervalo.actualizar_piso_techo(low_count,high_count,total);
+	intervalo.actualizar_piso_techo(low_count,high_count);
 }/* Actualiza los valores de piso y techo */
 
 void DescompresorAritmetico::descomprimir(const char byte)
 {
 	byteActual = byte;
 	char valor = decodificar_objetivo();
-	Uint low_count = modelo.calcular_low_count(valor);
-	Uint high_count = modelo.calcular_high_count(valor);
-	Uint total = modelo.calcular_total_frecuencias();
-	decodificar(low_count, high_count, total);
+	double low_count = modelo.calcular_low_count(valor);
+	double high_count = modelo.calcular_high_count(valor);
+	decodificar(low_count, high_count);
 }

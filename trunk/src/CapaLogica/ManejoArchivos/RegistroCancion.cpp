@@ -448,8 +448,3 @@ string RegistroCancion::generar_clave()const throw()
 {
 	return "***";
 }
-
-int RegistroCancion::comprimir (Compresor & compresor)
-{
-	return RES_OK;
-}

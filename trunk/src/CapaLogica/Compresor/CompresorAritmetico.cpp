@@ -9,6 +9,7 @@
 
 CompresorAritmetico::CompresorAritmetico()
 {
+	modelo.inicializar_frecuencias_en_1();
 	byteActual = '0';
 }
 
@@ -19,17 +20,16 @@ CompresorAritmetico::~CompresorAritmetico()
 
 std::vector<bool> CompresorAritmetico::comprimir(const char simbolo)
 {
-	intervalo.actualizar_rango();
+	intervalo.calcular_rango();
 
-	Uint low_count_simbolo = modelo.calcular_low_count(simbolo);
-	Uint high_count_simbolo = modelo.calcular_high_count(simbolo);
-	Uint total_frecuencias = modelo.calcular_total_frecuencias();
+	double low_count_simbolo = modelo.calcular_low_count(simbolo);
+	double high_count_simbolo = modelo.calcular_high_count(simbolo);
 
 	/*
 	 * Nuevo Piso = 0 + 256 * 3 / 6 = 128
 	 * Nuevo Techo = 0 + 256 * 5 / 6 - 1 = 212
 	 */
-	intervalo.actualizar_piso_techo(low_count_simbolo, high_count_simbolo, total_frecuencias);
+	intervalo.actualizar_piso_techo(low_count_simbolo, high_count_simbolo);
 
 	/*
 	 * Emision: 1
@@ -43,3 +43,44 @@ std::vector<bool> CompresorAritmetico::comprimir(const char simbolo)
 	return bits_a_emitir;
 }
 
+int CompresorAritmetico::comprimir_todo
+	(const char* buffer_a_comprimir,
+	const int tamanio,
+	char* bufferCompresion,
+	int tamanioBuffer)
+{
+
+	int tamanioComprimido = 0;
+	int contadorBits = 0;
+	std::vector<bool> bitsAemitir;
+	char byte_a_emitir = '0';
+
+	// Ciclo que recorre el buffer de salida
+	for (unsigned int k = 0; k < tamanioBuffer; k++)
+	{
+		// Ciclo que recorre el buffer de entrada
+		for (unsigned int i = 0; i < tamanio; i++)
+		{
+			std::vector<bool> bits_caracter_actual = comprimir(*(buffer_a_comprimir+i));
+
+			// Ciclo que recorre los bits que tengo que emitir
+			for (unsigned int j = 0; j < bits_caracter_actual.size(); j++)
+			{
+				bitsAemitir.push_back(bits_caracter_actual[j]);
+				if (bitsAemitir.size() == 8)
+				{
+					// byte_a_emitir = bits_a_emitir
+					// comprimido += byte_a_emitir
+					tamanioComprimido ++;
+					bitsAemitir.clear();
+				}
+			}
+		}
+	}
+
+	// byte_a_emitir = bitsAemitir.completar()
+	// comprimido += byte_a_emitir
+	tamanioComprimido ++;
+	return tamanioComprimido;
+
+}

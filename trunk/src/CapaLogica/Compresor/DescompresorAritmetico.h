@@ -20,7 +20,7 @@ private:
 	/* Determina el intervalo que contiene el simbolo.
 	 * Esto se logra calculando el codigo del simbolo. */
 
-	void decodificar(Uint low_count, Uint high_count, Uint total);
+	void decodificar(double low_count, double high_count);
 
 public:
 	DescompresorAritmetico();
