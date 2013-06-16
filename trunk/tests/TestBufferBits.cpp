@@ -42,27 +42,60 @@ TEST_F(TestBufferBits,Get_bit){
 	const unsigned short TBS= 8;
 	BufferBits<TBS> bb;
 
-	for(unsigned short i=0;i<TBS;i++){
+//	for(unsigned short i=0;i<TBS;i++){
+//
+//		if(i%2)
+//			bb.agregar_bit(true);
+//		else
+//			bb.agregar_bit(false);
+//
+//	}
+//	IMPRIMIR_MY_VARIABLE(bb.to_string());
+//	ASSERT_TRUE(bb.get_indice_buffer()== TBS);
+//
+//	for(unsigned short i=0;i<TBS;i++){
+//
+//		bool bit;
+//		bb.get_bit(i,bit);
+//		IMPRIMIR_MY_VARIABLE(bit);
+//		if(i%2)
+//			ASSERT_TRUE(bit);
+//		else
+//			ASSERT_TRUE(!bit);
+//
+//	}
+
+	bitset<8> bs;
+	bs.reset();
+	bs.set(0);
+
+	for(int i=0;i<TBS;i++){
 
 		if(i%2)
 			bb.agregar_bit(true);
 		else
 			bb.agregar_bit(false);
-
-	}
-	IMPRIMIR_MY_VARIABLE(bb.to_string());
-	ASSERT_TRUE(bb.get_indice_buffer()== TBS);
-
-	for(unsigned short i=0;i<TBS;i++){
-
+		IMPRIMIR_MY_VARIABLE(bb.to_string_bitset());
 		bool bit;
-		bb.get_bit(i,bit);
-		if(i%2)
-			ASSERT_TRUE(bit);
-		else
-			ASSERT_TRUE(!bit);
+		ASSERT_TRUE( bb.get_bit(i,bit)!= RES_ERROR);
+		IMPRIMIR_MY_VARIABLE(bit);
 
 	}
+
+	bb.flush();
+	bb.agregar_bit(1);
+	bb.agregar_bit(0);
+	bb.agregar_bit(0);
+	bb.agregar_bit(0);
+	bb.agregar_bit(0);
+	bb.agregar_bit(0);
+	bb.agregar_bit(0);
+	bb.agregar_bit(0);
+
+	bool bit;
+	bb.get_bit(0,bit);
+	ASSERT_TRUE(bit);
+
 
 }
 
@@ -300,6 +333,36 @@ TEST_F(TestBufferBits,Test_dump_y_completar){
 
 }
 
+
+
+TEST_F(TestBufferBits,Test_stress){
+
+	imprimir_test_buffer_bits("Test_stress");
+
+	const TamanioBitset TBS= 4096*8;
+	BufferBits<TBS> bb;
+
+	for(TamanioBitset i=0;i<TBS;i++){
+		if(i%2)
+			bb.agregar_bit(true);
+		else
+			bb.agregar_bit(false);
+	}
+
+	string s= bb.to_string();
+	IMPRIMIR_MY_VARIABLE(s);
+	ASSERT_TRUE( s.length()== TBS );
+
+	for(TamanioBitset i=0;i<TBS;i++){
+		bool bit;
+		bb.get_bit(i,bit);
+		if(i%2)
+			ASSERT_TRUE(bit);
+		else
+			ASSERT_TRUE(!bit);
+	}
+
+}
 
 
 TEST_F(TestBufferBits,Buffer_bits)
