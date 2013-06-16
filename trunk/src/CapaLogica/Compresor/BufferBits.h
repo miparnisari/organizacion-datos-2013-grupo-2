@@ -417,6 +417,8 @@ class BufferBits{
 			this->pop_byte(c);
 			escritura[res]= c;
 
+			this->flush();
+
 			return res+1;
 
 		}/*almacena en el buffer escritura los bytes almacenados en el buffer y en caso de tener una cantidad de bits en el buffer tal que el mismo no
