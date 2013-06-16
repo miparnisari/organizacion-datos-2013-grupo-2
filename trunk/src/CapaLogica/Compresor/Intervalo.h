@@ -23,7 +23,7 @@ class Intervalo {
 
 	private:
 		Uint contadorUnderflow;
-		Ulonglong rango;
+		Ulonglong rango; // 8 bytes
 		BitsPiso* piso;
 		BitsTecho* techo;
 
