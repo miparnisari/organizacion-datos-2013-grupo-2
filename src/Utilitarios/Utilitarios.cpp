@@ -4,6 +4,25 @@
 
  namespace utilitarios
 {
+ 	 std::vector <bool> interpretar_byte (char byte)
+	{
+ 		std::vector<bool> vector_bools;
+ 		unsigned char mask;
+ 		for (unsigned short bitNumber = 0; bitNumber < 8; bitNumber++)
+ 		{
+			if (bitNumber == 0)
+				mask = 0x80; // 1000 0000
+			else
+				mask = mask / 2;
+
+			if( mask == ( mask & byte ) )
+				vector_bools.push_back(1);
+			else
+				vector_bools.push_back(0);
+ 		}
+ 		return vector_bools;
+	}
+
  	 int string_a_int (std::string & s_int)
  	 {
  		 stringstream ss;

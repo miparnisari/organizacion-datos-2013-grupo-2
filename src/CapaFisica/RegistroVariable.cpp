@@ -352,7 +352,7 @@ unsigned short RegistroVariable::get_tamanio()throw()
 
 RegistroVariable* RegistroVariable::comprimir (Compresor & compresor)
 {
-	int cantidad_caracteres = tamanio;
+	int cantidad_caracteres = tamanio + sizeof(tamanio);
 
 	char* bufferComprimido = new char[tamanio]();
 	int tamanioCompresion = compresor.comprimir_todo(buffer,tamanio,bufferComprimido);
