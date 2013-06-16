@@ -350,8 +350,18 @@ unsigned short RegistroVariable::get_tamanio()throw()
 	return tamanio;
 }
 
-int RegistroVariable::comprimir (Compresor & compresor)
+RegistroVariable* RegistroVariable::comprimir (Compresor & compresor)
 {
-	//TODO
-	return RES_OK;
+	int cantidad_caracteres = tamanio;
+
+	char* bufferComprimido = new char[tamanio]();
+	int tamanioCompresion = compresor.comprimir_todo(buffer,tamanio,bufferComprimido);
+
+	RegistroVariable* reg_comprimido = new RegistroVariable();
+	reg_comprimido->agregar_campo((char*)&cantidad_caracteres, sizeof(cantidad_caracteres));
+	reg_comprimido->agregar_campo(bufferComprimido,tamanioCompresion);
+
+	delete bufferComprimido;
+
+	return reg_comprimido;
 }

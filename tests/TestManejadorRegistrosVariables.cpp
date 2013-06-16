@@ -56,7 +56,7 @@ TEST_F(TestManejadorRegistrosVariables,Refactorizar)
 			mrv.get_registro_ocupado(&unRegistro,i);
 			ClaveX clave;
 			clave= unRegistro.get_clave();
-			clave.imprimir_dato();
+//			clave.imprimir_dato();
 			cout<<endl;
 
 		}

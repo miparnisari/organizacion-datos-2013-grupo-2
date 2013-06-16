@@ -10,20 +10,19 @@
 Intervalo::Intervalo() {
 
 	std::string stringCeros, stringUnos;
-	for (unsigned int i=0; i < PRECISION-1; i++)
+	for (unsigned int i=0; i < PRECISION; i++)
 	{
 		stringCeros.push_back('0');
 		stringUnos.push_back('1');
 	}
 
-	stringCeros.push_back('0');
 	contadorUnderflow = 0;
 	// El piso tendra 32 bits en cero
 	piso = new std::bitset<PRECISION>(stringCeros);
-	// El techo tendra 31 bits en uno (para evitar overflow al sumar piso y techo)
-	techo = new std::bitset<PRECISION-1>(stringUnos);
+	// El techo tendra 32 bits en uno
+	techo = new std::bitset<PRECISION>(stringUnos);
 	rango = 0;
-	actualizar_rango();
+	calcular_rango();
 }
 
 Intervalo::~Intervalo() {
@@ -31,21 +30,55 @@ Intervalo::~Intervalo() {
 	delete techo;
 }
 
-Uint Intervalo::get_piso()
+
+void Intervalo::set_piso(std::string unPiso)
 {
-	return (piso->to_ulong());
+	if (unPiso.length() != PRECISION)
+	{
+		std::cout << "Error de longitud." << std::endl;
+		return;
+	}
+
+	delete(piso);
+	piso = new std::bitset<PRECISION>(unPiso);
+
+}
+void Intervalo::set_techo(std::string unTecho)
+{
+	if (unTecho.length() != PRECISION)
+	{
+		std::cout << "Error de longitud." << std::endl;
+		return;
+	}
+
+	delete(techo);
+	techo = new std::bitset<PRECISION>(unTecho);
 }
 
-Uint Intervalo::get_techo()
+BitsPiso& Intervalo::get_piso()
 {
-	return (techo->to_ulong());
+	return (*piso);
 }
 
-void Intervalo::actualizar_rango()
+BitsTecho& Intervalo::get_techo()
+{
+	return (*techo);
+}
+
+Ulonglong Intervalo::get_rango()
+{
+	return (rango);
+}
+
+void Intervalo::calcular_rango()
 {
 	unsigned int u_piso = piso->to_ulong();
 	unsigned int u_techo = techo->to_ulong();
-	rango = (u_techo - u_piso + 1);
+	int sizeofrango = sizeof(rango)*8;
+	std::cout << rango << std::endl;
+	rango = u_techo - u_piso;
+	rango += 1;
+	std::cout << rango << std::endl;
 }
 
 char Intervalo::calcular_valor(char byteActual)
@@ -66,7 +99,7 @@ bool Intervalo::hay_overflow()const
 {
 	//WARNING Order positions are counted from the rightmost bit, which is order position 0.
 	bool primerBitPiso = piso->test(PRECISION-1);
-	bool primerBitTecho = techo->test(PRECISION-2);
+	bool primerBitTecho = techo->test(PRECISION-1);
 	return (primerBitPiso == primerBitTecho);
 }
 
@@ -76,24 +109,24 @@ bool Intervalo::hay_overflow()const
 bool Intervalo::hay_underflow()const
 {
 	//WARNING Order positions are counted from the rightmost bit, which is order position 0.
-	if (piso->test(PRECISION-1) == 0 && techo->test(PRECISION-2) == 1)
+	if (piso->test(PRECISION-1) == 0 && techo->test(PRECISION-1) == 1)
 	{
-		if (piso->test(PRECISION-2) == 1 && techo->test(PRECISION-3) == 0)
+		if (piso->test(PRECISION-2) == 1 && techo->test(PRECISION-2) == 0)
 			return true;
 	}
 	return false;
 }
 
-void Intervalo::actualizar_piso_techo(Uint low_count, Uint high_count, Uint total)
+void Intervalo::actualizar_piso_techo(double low_count, double high_count)
 {
-	Uint uint_piso = piso->to_ulong() + rango * (low_count / total);
-	Uint uint_techo =  piso->to_ulong() + rango * (high_count / total) - 1;
+	Ulonglong uint_piso = floor(piso->to_ulong() + rango * low_count);
+	Ulonglong uint_techo = floor(piso->to_ulong() + rango * high_count) - 1;
 
 	delete (piso);
 	piso = new std::bitset<PRECISION>(uint_piso);
 
 	delete (techo);
-	techo = new std::bitset<PRECISION-1>(uint_techo);
+	techo = new std::bitset<PRECISION>(uint_techo);
 }
 
 std::vector<bool> Intervalo::normalizar()
@@ -102,25 +135,27 @@ std::vector<bool> Intervalo::normalizar()
 	while (hay_overflow())
 	{
 		// Emito el primer bit del techo
-		bits_a_emitir.push_back(piso->test(PRECISION-1));
+		bool bitAemitir = piso->test(PRECISION-1);
+		bits_a_emitir.push_back(bitAemitir);
 		resolver_overflow();
 
-		//TODO: emitir tantos digitos negados como contadorUnderflow
-
-
+		//emitir tantos digitos negados como contadorUnderflow
+		for (Uint i = 0; i < contadorUnderflow; i++)
+		{
+			bits_a_emitir.push_back(! bitAemitir);
+		}
 
 		contadorUnderflow = 0;
+	}
 
-		if (hay_underflow())
-		{
-			contadorUnderflow ++;
-			resolver_underflow();
-		}
+	while (hay_underflow())
+	{
+		contadorUnderflow ++;
+		resolver_underflow();
 	}
 
 	return bits_a_emitir;
 }
-
 
 /*
  * eliminar los segundos dígitos de piso y techo,
@@ -131,20 +166,20 @@ void Intervalo::resolver_underflow()
 {
 	// quitar 2do bit techo, y agregarle un 1 al final
 
-	std::bitset<PRECISION -1> techo_aux;
-	techo_aux.set(PRECISION-2,techo->test(PRECISION-2));
-	for (Uint i = PRECISION -3; i > 1; i--)
+	std::bitset<PRECISION> techo_aux;
+	techo_aux.set(PRECISION-1,techo->test(PRECISION-1));
+	for (Uint i = PRECISION -2; i > 0; i--)
 		techo_aux.set(i,techo->test(i-1));
 
 	techo_aux.set(0,1);
 	delete techo;
-	techo = new std::bitset<PRECISION -1> (techo_aux);
+	techo = new std::bitset<PRECISION> (techo_aux);
 
 	// quitar 2do bit piso y agregarle un 0 al final
 
 	std::bitset<PRECISION> piso_aux;
 	piso_aux.set(PRECISION-1,piso->test(PRECISION-1));
-	for (Uint i = PRECISION -2; i > 1; i--)
+	for (Uint i = PRECISION -2; i > 0; i--)
 		piso_aux.set(i,piso->test(i-1));
 
 	piso_aux.set(0,0);
@@ -158,7 +193,7 @@ void Intervalo::resolver_overflow()
 	// Agregar 1 al techo en la posicion 0 (la mas derecha)
 	*techo <<= 1;
 	techo->set(0,1);
-	// Agregar 1 al piso en la posicion 0 (la mas derecha)
+	// Agregar 0 al piso en la posicion 0 (la mas derecha)
 	*piso <<= 1;
 	piso->set(0,0);
 }

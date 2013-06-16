@@ -66,15 +66,9 @@ class RegistroCancion : public RegistroVariable{
 		/*limpia el buffer y restaura el valor de las variables a sus respectivos DEFAULTS*/
 		unsigned short get_cantidad_parametros();
 		
-		/*METODOS DE ACCESO PUBLICO --------------------------------------------------------*/
-
-
 		int empaquetar(char* copia) throw();
 		int desempaquetar(const char* copia) throw();
 
-
-		int comprimir (Compresor & compresor);
-		/*cuenta la cantidad de parametros en la linea.*/
 };
 
 #endif /* REGISTROCANCION_H_ */
