@@ -13,7 +13,8 @@
 
 using namespace std;
 
-typedef unsigned short TamanioBitset;
+typedef unsigned long long TamanioBitset;
+//antes: typedef unsigned short TamanioBitset
 
 
 
@@ -31,12 +32,12 @@ class BufferBits{
 			if(s.length()== 0)
 				return "";
 
-			const unsigned short TAMANIO_STRING= s.length();
+			const TamanioBitset TAMANIO_STRING= s.length();
 			string retornar(TAMANIO_STRING,'-');
 
-			for(unsigned short i=0;i<TAMANIO_STRING;i++){
+			for(TamanioBitset i=0;i<TAMANIO_STRING;i++){
 				char c= s.at(i);
-				unsigned short indice= TAMANIO_STRING-1-i;
+				TamanioBitset indice= TAMANIO_STRING-1-i;
 				retornar[indice]= c;
 			}
 
@@ -131,7 +132,7 @@ class BufferBits{
 		}/*limpia el buffer*/
 
 		void reset(){
-			flush();
+			buffer->reset();
 		}/*setea todos los bits en 0*/
 		void set(){
 			buffer->set();
@@ -160,11 +161,11 @@ class BufferBits{
 		}
 		int agregar_bits(string s){
 
-			const unsigned short TAMANIO_STRING= s.length();
+			const TamanioBitset TAMANIO_STRING= s.length();
 			if(TAMANIO_STRING + bitActual > tamanioBuffer )
 				return RES_ERROR;
 
-			for(unsigned short i=0;i<TAMANIO_STRING;i++){
+			for(TamanioBitset i=0;i<TAMANIO_STRING;i++){
 				char c= s.at(i);
 				if(c!= '1' && c!= '0')
 					return RES_ERROR;
@@ -176,28 +177,31 @@ class BufferBits{
 			return RES_OK;
 
 		}
-		int agregar_bits(bool* valores,unsigned short tamanioValores){
+		int agregar_bits(bool* valores,TamanioBitset tamanioValores){
 
 			if(tamanioValores+bitActual > tamanioBuffer)
 				return RES_ERROR;
 			if(!tamanioValores)
 				return RES_ERROR;
 
-			for(unsigned short i=0;i<tamanioValores;i++)
+			for(TamanioBitset i=0;i<tamanioValores;i++)
 				this->agregar_bit(valores[i]);
 
 			return RES_OK;
 
 		}
-		int get_bit(unsigned short posicion,bool& bit){
+		int get_bit(TamanioBitset posicion,bool& bit){
 
 			if(posicion>= bitActual)
 				return RES_ERROR;
 
-			string bufferString= to_string();
-			char c= bufferString.at(posicion);
+			TamanioBitset bitInspeccionar= tamanioBuffer - posicion -1;
+			bit= (*buffer)[posicion];
 
-			bit= (c=='1');
+//			string bufferString= to_string();
+//			char c= bufferString.at(posicion);
+//
+//			bit= (c=='1');
 			return RES_OK;
 
 		}/*retorna el valor del bit en la posicion deseada*/
@@ -212,8 +216,8 @@ class BufferBits{
 			string bufferString= buffer->to_string();
 
 
-			unsigned short i=tamanioBuffer-1;
-			unsigned short indice= 0;
+			TamanioBitset i=tamanioBuffer-1;
+			TamanioBitset indice= 0;
 
 			while(true){
 
@@ -241,12 +245,12 @@ class BufferBits{
 
 
 
-		unsigned short get_indice_buffer(){
-			return (unsigned short)this->bitActual;
+		TamanioBitset get_indice_buffer(){
+			return this->bitActual;
 		}/*retorna el valor bitActual, es decir la cantidad de bits que se agregaron.*/
-		unsigned short get_cantidad_bytes(){
-			unsigned short resultado;
-			resultado= (unsigned short)(bitActual/8);
+		TamanioBitset get_cantidad_bytes(){
+			TamanioBitset resultado;
+			resultado= (TamanioBitset)(bitActual/8);
 			return resultado;
 		}/*retorna la cantidad de bytes completos en buffer*/
 
@@ -291,11 +295,11 @@ class BufferBits{
 			BufferBits<8> bb;
 
 			string bs= to_string();
-			unsigned short bitNumeroByte= 8*numeroByte;
+			TamanioBitset bitNumeroByte= 8*numeroByte;
 
 			for(unsigned short i=0;i<8;i++){
 
-				unsigned short indice= bitNumeroByte+i;
+				TamanioBitset indice= bitNumeroByte+i;
 				char c= bs.at(indice);
 				bool b= c=='1';
 				bb.agregar_bit(b);
@@ -309,7 +313,7 @@ class BufferBits{
 		}/*retorna el byte en la posicion numeroByte. Los mismos se cuentan desde el 0*/
 
 
-		int quitar_bit(unsigned short posicionBit){
+		int quitar_bit(TamanioBitset posicionBit){
 
 			if(posicionBit>= bitActual)
 				return RES_ERROR;
@@ -331,13 +335,13 @@ class BufferBits{
 
 
 
-		int quitar_bits(unsigned short posicionBitInicial,unsigned short cantidadBits){
+		int quitar_bits(TamanioBitset posicionBitInicial,TamanioBitset cantidadBits){
 
-			unsigned short indiceFinal= posicionBitInicial+cantidadBits;
+			TamanioBitset indiceFinal= posicionBitInicial+cantidadBits;
 			if(indiceFinal > bitActual)
 				return RES_ERROR;
 
-			for(unsigned short i=0;i<cantidadBits;i++)
+			for(TamanioBitset i=0;i<cantidadBits;i++)
 				this->quitar_bit(posicionBitInicial);
 
 			return RES_OK;
@@ -348,7 +352,7 @@ class BufferBits{
 
 		int quitar_byte(unsigned short numeroByte){
 
-			unsigned short numeroBitByte= numeroByte*8;
+			TamanioBitset numeroBitByte= numeroByte*8;
 			if( (numeroBitByte+8) > bitActual )
 				return RES_ERROR;
 
@@ -417,6 +421,13 @@ class BufferBits{
 
 		}/*almacena en el buffer escritura los bytes almacenados en el buffer y en caso de tener una cantidad de bits en el buffer tal que el mismo no
 		completa el octeto -> se completa con ceros al final*/
+
+
+		TamanioBitset get_espacio_disponible(){
+
+			return (tamanioBuffer - bitActual);
+
+		}
 
 
 };

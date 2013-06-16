@@ -74,6 +74,8 @@ int CompresorAritmetico::comprimir_todo
 					bitsAemitir.clear();
 				}
 			}
+
+
 		}
 	}
 

@@ -14,8 +14,12 @@
 #include <vector>
 #include "Intervalo.h"
 #include "ModeloProbabilistico.h"
+#include "BufferBits.h"
 
 class CompresorAritmetico : public Compresor {
+
+
+
 
 	private:
 		std::vector<Codigo> vectorCodigos;
@@ -23,7 +27,12 @@ class CompresorAritmetico : public Compresor {
 		ModeloProbabilistico modelo;
 		char byteActual;
 
+
+
+
 	public:
+
+
 		CompresorAritmetico();
 		virtual ~ CompresorAritmetico ();
 
