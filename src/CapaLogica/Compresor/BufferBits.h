@@ -48,6 +48,54 @@ class BufferBits{
 
 	public:
 
+		/*---------------------------------------------------------------------------------------------------------------------------------------*/
+
+		/*
+		 * DOCUMENTACION:
+		 *
+		 * a tener en cuenta:
+		 * es una clase template que recibe un parametro tamanioBuffer, si dicho parametro es 0 -> se lanzara una exception en el constructor.
+		 *
+		 *el proposito original de esta clase es permitir la escritura de bits cuya cantidad no complete necesariamente el octeto.
+		 *
+		 * Metodos importantes:
+		 *
+		 * flush() -> borra todos los bits
+		 *
+		 * agregar_bits(string s) -> escribe en el buffer de bits a partir de un string
+		 * con el formato "010010101..."
+		 *
+		 * agregar_bits(bool*,unsigned short) -> escribe en el buffer a partir de un arreglo
+		 * de bool
+		 *
+		 * completa_octeto() -> verifica si en el buffer hay mas de 8 bits
+		 *
+		 * dump(char*) -> almacena los bytes COMPLETOS del buffer de bits en un arreglo
+		 * de char.
+		 *
+		 * dump_y_completar(char*) -> almacena en un arreglo de char los bytes completos
+		 * del buffer de bits y completa con 0s algun grupo de bits que no llene el octeto.
+		 *
+		 * get_indice_buffer() -> retorna en que posicion se ESCRIBIRA EL SIGUIENTE BIT
+		 * . Viendolo de otra manera devuelve la cantidad de bits ya escritos
+		 *
+		 * pop_bit() -> remueve el primer bit del buffer
+		 *
+		 * pop_byte(unsigned char&) -> remueve el primer byte del buffer de bits y lo
+		 * retorna en una referencia unsigned char&
+		 *
+		 * to_string() -> devuelve el contenido del buffer de bits como una cadena de
+		 * caracteres de 0s y 1s
+		 *
+		 * set() -> setea todos los bits en 1
+		 *
+		 * reset() -> setea todos los bits en 0
+		 */
+
+
+
+		/*---------------------------------------------------------------------------------------------------------------------------------------*/
+
 
 		class TamanioBufferIncorrecto:public exception{
 
@@ -55,7 +103,8 @@ class BufferBits{
 			const char* what()const throw() {
 				return "ExcepcionTamanioBufferIncorrecto";
 			}
-		};
+		};/*excepcion por tamanioBuffer inapropiado*/
+
 
 
 		BufferBits()throw(exception){
@@ -68,6 +117,7 @@ class BufferBits{
 			buffer->reset();
 			bitActual= 0;
 		}
+
 		~BufferBits(){
 			delete buffer;
 		}
@@ -78,14 +128,16 @@ class BufferBits{
 			this->reset();
 			this->bitActual= 0;
 
-		}
+		}/*limpia el buffer*/
 
 		void reset(){
-			buffer->reset();
+			flush();
 		}/*setea todos los bits en 0*/
 		void set(){
 			buffer->set();
+			this->bitActual= 0;
 		}/*setea todos los bits en 1*/
+
 
 
 		int agregar_bit(bool bit){
@@ -98,7 +150,7 @@ class BufferBits{
 
 			return RES_OK;
 
-		}
+		}/*agrega un bit al final del buffer. El tamanio del mismo aumenta*/
 		int agregar_bit(int bit){
 
 			if(bit)
@@ -189,8 +241,8 @@ class BufferBits{
 
 
 
-		TamanioBitset get_indice_buffer(){
-			return this->bitActual;
+		unsigned short get_indice_buffer(){
+			return (unsigned short)this->bitActual;
 		}/*retorna el valor bitActual, es decir la cantidad de bits que se agregaron.*/
 		unsigned short get_cantidad_bytes(){
 			unsigned short resultado;
@@ -203,6 +255,8 @@ class BufferBits{
 
 			const unsigned short TAMANIO_CHAR= 8;
 			if(tamanioBuffer != TAMANIO_CHAR)
+				return RES_ERROR;
+			if(bitActual<8)
 				return RES_ERROR;
 
 			string bufferString= this->to_string();
@@ -220,14 +274,14 @@ class BufferBits{
 			return (int)bitsetAuxiliar.to_ulong();
 
 		}/*devuelve un valor entero que representa el caracter guardado en bits. retorna RES_ERROR en caso que
-		tamanioBuffer sea != a 8 bits*/
+		tamanioBuffer sea != a 8 bits o el valor de bitActual sea menor a 8 (no se han agregado mas de 8 bits aun)*/
 
 
-		unsigned char get_byte(unsigned short numeroByte)throw(TamanioBufferIncorrecto){
+		int get_byte(unsigned short numeroByte,unsigned char& retornar)throw(TamanioBufferIncorrecto){
 
 			const unsigned short CANTIDAD_BYTES= get_cantidad_bytes();
 			if(numeroByte>= CANTIDAD_BYTES)
-				return UCHAR_MAX;
+				return RES_ERROR;
 			if(tamanioBuffer< 8){
 				TamanioBufferIncorrecto tbi;
 				throw tbi;
@@ -248,12 +302,121 @@ class BufferBits{
 
 			}
 
-			unsigned char retornar= (unsigned char)bb.to_char();
+			retornar= (unsigned char)bb.to_char();
 
-
-			return retornar;
+			return RES_OK;
 
 		}/*retorna el byte en la posicion numeroByte. Los mismos se cuentan desde el 0*/
+
+
+		int quitar_bit(unsigned short posicionBit){
+
+			if(posicionBit>= bitActual)
+				return RES_ERROR;
+
+			string bufferString= this->to_string();
+			bufferString.erase(posicionBit,1);
+
+			this->flush();
+			this->agregar_bits(bufferString);
+
+			return RES_OK;
+
+		}/*quita el bit en la posicion posicionBit y comprime los bits nuevamente*/
+		int pop_bit(){
+
+			return quitar_bit(0);
+
+		}/*quita el primer bit (el mas significativo)*/
+
+
+
+		int quitar_bits(unsigned short posicionBitInicial,unsigned short cantidadBits){
+
+			unsigned short indiceFinal= posicionBitInicial+cantidadBits;
+			if(indiceFinal > bitActual)
+				return RES_ERROR;
+
+			for(unsigned short i=0;i<cantidadBits;i++)
+				this->quitar_bit(posicionBitInicial);
+
+			return RES_OK;
+
+		}/*quita una cantidad de bits*/
+
+
+
+		int quitar_byte(unsigned short numeroByte){
+
+			unsigned short numeroBitByte= numeroByte*8;
+			if( (numeroBitByte+8) > bitActual )
+				return RES_ERROR;
+
+			for(unsigned short i=0;i<8;i++)
+				quitar_bit(numeroBitByte);
+
+			return RES_OK;
+
+		}/*remueve un byte completo*/
+		int pop_byte(unsigned char& retornar){
+
+			if(bitActual<8)
+				return RES_ERROR;
+			this->get_byte(0,retornar);
+
+			return quitar_byte(0);
+
+
+		}/*remueve el primer byte y lo retorna en la variable retornar*/
+
+		bool completa_octeto(){
+
+			return (bitActual>= 8);
+
+		}/*retorna true si se han agregado mas de 8 bits al buffer*/
+
+
+		int dump(char* escritura){
+
+			if(!this->completa_octeto())
+				return RES_ERROR;
+
+
+			const unsigned short CANTIDAD_BYTES= this->get_cantidad_bytes();
+			for(unsigned short i=0;i<CANTIDAD_BYTES;i++){
+
+				unsigned char c;
+				this->pop_byte(c);
+				escritura[i]= c;
+
+			}
+
+			return CANTIDAD_BYTES;
+
+		}/*Almacena en el buffer escritura los bytes completos en el buffer y los remueve del BufferBits.retorna la cantidad de bytes que fueron
+		escritos en escritura. Retorna RES_ERROR en caso de error*/
+
+
+		int dump_y_completar(char* escritura){
+
+			int res= this->dump(escritura);
+			if(res== RES_ERROR)
+				return RES_ERROR;
+
+			if( this->get_indice_buffer()==0 )
+				return res;
+
+			while( !this->completa_octeto() )
+				this->agregar_bit(0);
+
+			unsigned char c;
+			this->pop_byte(c);
+			escritura[res]= c;
+
+			return res+1;
+
+		}/*almacena en el buffer escritura los bytes almacenados en el buffer y en caso de tener una cantidad de bits en el buffer tal que el mismo no
+		completa el octeto -> se completa con ceros al final*/
 
 
 };
