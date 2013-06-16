@@ -8,6 +8,7 @@
 #include "DescompresorAritmetico.h"
 
 DescompresorAritmetico::DescompresorAritmetico() {
+	modelo.inicializar_frecuencias_en_1();
 	byteActual = '0';
 }
 
@@ -34,4 +35,35 @@ void DescompresorAritmetico::descomprimir(const char byte)
 	double low_count = modelo.calcular_low_count(valor);
 	double high_count = modelo.calcular_high_count(valor);
 	decodificar(low_count, high_count);
+}
+
+int DescompresorAritmetico::descomprimir_todo(char* buffer, int tamanio, char* descomprimido)
+{
+	/*
+		1)-Resolver overflow y underflow
+
+		2)-Definir todos los rangos de los caracteres del intervalo resultante de 1).
+
+		3)Leer los 8 bits del archivo comprimido de la sgte forma:
+		  a) Caso Overflow: Descartar los primeros n bits del archivo comprimido como n overflow haya ocurrido.
+		  b) Caso Underflow: Leer el 1er bit y luego descartar tantos bits como el contador de underflow me indique.
+
+		  Veo a que rango pertenece(busqueda binaria) y emito el caracter asociado a ese rango.
+		  Los nuevos límites del intervalo van a estar dados por el techo y piso del rango de caracter emitido.
+
+		4) Vuelvo a 1)
+	 */
+
+	BufferBits<PRECISION> bufferBits;
+
+	int punteroBuffer = 0;
+	while (punteroBuffer < tamanio)
+	{
+		std::vector<bool> byte = utilitarios::interpretar_byte(buffer[punteroBuffer]);
+
+
+
+
+		punteroBuffer++;
+	}
 }

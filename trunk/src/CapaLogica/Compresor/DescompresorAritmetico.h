@@ -9,6 +9,8 @@
 #define DESCOMPRESORARITMETICO_H_
 #include "Intervalo.h"
 #include "ModeloProbabilistico.h"
+#include "BufferBits.h"
+#include "../../Utilitarios/Utilitarios.h"
 
 class DescompresorAritmetico {
 private:
@@ -27,6 +29,7 @@ public:
 	virtual ~DescompresorAritmetico();
 
 	void descomprimir(const char byte);
+	int descomprimir_todo(char* buffer, int tamanio, char* descomprimido);
 };
 
 #endif /* DESCOMPRESORARITMETICO_H_ */
