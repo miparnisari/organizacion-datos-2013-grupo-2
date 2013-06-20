@@ -40,9 +40,9 @@ TEST_F(TestCompresorAritmetico, ComprimirString)
 
 	ASSERT_EQ(tamanioComprimido, 2);
 
-	// 00100001 01000000
-	ASSERT_EQ(buffer[0],33); //1000 0100
-	ASSERT_EQ(buffer[1],64); //0000 0000
+	// 00100000+00000000
+	ASSERT_EQ(buffer[0],32); //00100000
+	ASSERT_EQ(buffer[1],0); //00000000
 
 	delete buffer;
 }
