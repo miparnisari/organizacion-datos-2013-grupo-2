@@ -42,7 +42,10 @@ double ModeloProbabilistico::calcular_low_count (const char simbolo)
 	for (Uint i = 0; i < posicionSimbolo; i++)
 		contador += *(frecuenciasSimbolos+i);
 
-	return contador / this->calcular_total_frecuencias();
+	double totalFrecuencias= (double)(calcular_total_frecuencias());
+	double contadorD= (double)(contador);
+	double resultado= (double)(contadorD / totalFrecuencias);
+	return resultado;
 }
 
 /*
@@ -59,7 +62,10 @@ double ModeloProbabilistico::calcular_high_count (const char simbolo)
 	for (Uint i = 0; i < posicionSimbolo + 1; i++)
 		contador += *(frecuenciasSimbolos+i);
 
-	return contador / this->calcular_total_frecuencias();
+	double totalFrecuencias= (double)(calcular_total_frecuencias());
+	double contadorD= (double)(contador);
+	double resultado= (double)(contadorD / totalFrecuencias);
+	return resultado;
 }
 
 Uint ModeloProbabilistico::calcular_total_frecuencias()

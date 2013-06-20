@@ -9,7 +9,7 @@ class Compresor
 		Compresor();
 		virtual ~Compresor();
 
-		virtual int comprimir_todo(const char* buffer, const int tamanioBuffer , char* resultado);
+		virtual int comprimir_todo(const char* buffer, const unsigned int tamanioBuffer , char* resultado);
 	
 	private:
 		/* add your private declarations */

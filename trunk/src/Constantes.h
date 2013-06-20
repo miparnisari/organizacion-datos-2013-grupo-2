@@ -11,6 +11,7 @@ using std::endl;
 	cout<<#v<<" ="<<v<<endl;
 
 typedef unsigned char Byte;
+typedef unsigned short TamanioCampos;
 
 
 /*

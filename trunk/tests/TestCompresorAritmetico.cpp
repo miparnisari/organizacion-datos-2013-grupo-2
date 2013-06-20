@@ -29,11 +29,11 @@ TEST_F(TestCompresorAritmetico, ComprimirRegistroVariable)
 	std::string string = "AABC";
 	reg.agregar_campo(string.c_str(),string.length());
 
-	RegistroVariable* reg_comprimido = reg.comprimir(c);
+	RegistroVariable* reg_comprimido = reg.comprimir(&c);
 
-	int cantidadCaracteres = -1;
+	TamanioCampos cantidadCaracteres = 0;
 	reg_comprimido->recuperar_campo((char*)&cantidadCaracteres,0);
-	ASSERT_EQ(cantidadCaracteres, 8);
+	ASSERT_EQ(cantidadCaracteres, 6);
 
 	char* buffer = new char[4]();
 	reg_comprimido->recuperar_campo(buffer,1);
