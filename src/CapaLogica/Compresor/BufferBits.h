@@ -15,6 +15,7 @@ using namespace std;
 
 typedef unsigned long long TamanioBitset;
 //antes: typedef unsigned short TamanioBitset
+typedef unsigned char Byte;
 
 
 
@@ -82,8 +83,8 @@ class BufferBits{
 		 *
 		 * pop_bit() -> remueve el primer bit del buffer
 		 *
-		 * pop_byte(unsigned char&) -> remueve el primer byte del buffer de bits y lo
-		 * retorna en una referencia unsigned char&
+		 * pop_byte(&) -> remueve el primer byte del buffer de bits y lo
+		 * retorna en una referencia &
 		 *
 		 * to_string() -> devuelve el contenido del buffer de bits como una cadena de
 		 * caracteres de 0s y 1s
@@ -300,7 +301,7 @@ class BufferBits{
 		tamanioBuffer sea != a 8 bits o el valor de bitActual sea menor a 8 (no se han agregado mas de 8 bits aun)*/
 
 
-		int get_byte(unsigned short numeroByte,unsigned char& retornar)throw(TamanioBufferIncorrecto){
+		int get_byte(unsigned short numeroByte,Byte& retornar)throw(TamanioBufferIncorrecto){
 
 			const unsigned short CANTIDAD_BYTES= get_cantidad_bytes();
 			if(numeroByte>= CANTIDAD_BYTES)
@@ -325,7 +326,7 @@ class BufferBits{
 
 			}
 
-			retornar= (unsigned char)bb.to_char();
+			retornar= (Byte)bb.to_char();
 
 			return RES_OK;
 
@@ -383,7 +384,7 @@ class BufferBits{
 			return RES_OK;
 
 		}/*remueve un byte completo*/
-		int pop_byte(unsigned char& retornar){
+		int pop_byte(Byte& retornar){
 
 			if(bitActual<8)
 				return RES_ERROR;
@@ -410,7 +411,7 @@ class BufferBits{
 			const unsigned short CANTIDAD_BYTES= this->get_cantidad_bytes();
 			for(unsigned short i=0;i<CANTIDAD_BYTES;i++){
 
-				unsigned char c;
+				Byte c;
 				this->pop_byte(c);
 				escritura[i]= c;
 
@@ -434,7 +435,7 @@ class BufferBits{
 			while( !this->completa_octeto() )
 				this->agregar_bit(0);
 
-			unsigned char c;
+			Byte c;
 			this->pop_byte(c);
 			escritura[res]= c;
 
