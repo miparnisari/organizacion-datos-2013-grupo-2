@@ -49,6 +49,8 @@ class Intervalo {
 		char calcular_valor(char byteActual);
 		/*retorna el mensaje correspondiente al valor leido "byteActual" */
 
+		Uint get_contador_underflow();
+
 		void calcular_rango();
 		void actualizar_piso_techo(double low_count, double high_count);
 };
