@@ -352,16 +352,16 @@ unsigned short RegistroVariable::get_tamanio()throw()
 
 RegistroVariable* RegistroVariable::comprimir (Compresor & compresor)
 {
-	int cantidad_caracteres = tamanio + sizeof(tamanio);
 
 	char* bufferComprimido = new char[tamanio]();
 	int tamanioCompresion = compresor.comprimir_todo(buffer,tamanio,bufferComprimido);
 
 	RegistroVariable* reg_comprimido = new RegistroVariable();
-	reg_comprimido->agregar_campo((char*)&cantidad_caracteres, sizeof(cantidad_caracteres));
+	reg_comprimido->agregar_campo( (char*)tamanio, sizeof(tamanio) );
+	/*agrego un campo que representa la cantidad de caracteres originales de la fuente . */
 	reg_comprimido->agregar_campo(bufferComprimido,tamanioCompresion);
 
 	delete bufferComprimido;
 
 	return reg_comprimido;
-}
+}/*se debe liberar la memoria de la variable retornada*/

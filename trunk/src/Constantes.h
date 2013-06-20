@@ -10,6 +10,8 @@ using std::endl;
 #define IMPRIMIR_MY_VARIABLE(v)\
 	cout<<#v<<" ="<<v<<endl;
 
+typedef unsigned char Byte;
+
 
 /*
  * Retorno de funciones

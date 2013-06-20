@@ -15,7 +15,6 @@ using namespace std;
 
 typedef unsigned long long TamanioBitset;
 //antes: typedef unsigned short TamanioBitset
-typedef unsigned char Byte;
 
 
 

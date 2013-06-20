@@ -128,7 +128,7 @@ void Intervalo::actualizar_piso_techo(double low_count, double high_count)
 	techo = new std::bitset<PRECISION>(uint_techo);
 }
 
-std::vector<bool> Intervalo::normalizar()
+std::vector<bool> Intervalo::normalizar( )
 {
 	std::vector<bool> bits_a_emitir;
 	while (hay_overflow())
