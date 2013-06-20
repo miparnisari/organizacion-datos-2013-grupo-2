@@ -12,11 +12,13 @@
 #include "BufferBits.h"
 #include "../../Utilitarios/Utilitarios.h"
 
+
 class DescompresorAritmetico {
 private:
 	Intervalo intervalo;
 	char byteActual;
 	ModeloProbabilistico modelo;
+
 
 	char decodificar_objetivo ();
 	/* Determina el intervalo que contiene el simbolo.
@@ -25,11 +27,13 @@ private:
 	void decodificar(double low_count, double high_count);
 
 public:
+	static const TamanioBitset TAMANIO_BUFFER_BITS= PRECISION*2;
+
 	DescompresorAritmetico();
 	virtual ~DescompresorAritmetico();
 
 	void descomprimir(const char byte);
-	int descomprimir_todo(char* buffer, int tamanio, char* descomprimido);
+	int descomprimir_todo(char* buffer, int tamanio, char* descomprimido,unsigned int precision= PRECISION);
 };
 
 #endif /* DESCOMPRESORARITMETICO_H_ */
