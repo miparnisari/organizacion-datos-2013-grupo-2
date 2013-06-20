@@ -2,7 +2,7 @@ include makefile.inc
 
 DIRS	= CapaFisica CapaLogica CapaInterfaz Utilitarios
 SUBDIRS = CapaLogica/ArbolBMas CapaLogica/Compresor CapaLogica/HashingExtensible CapaLogica/Indices CapaLogica/ManejoArchivos CapaLogica/Parser
-OBJLIBS	= CapaFisica.a CapaLogica.a CapaInterfaz.a Utilitarios.a
+OBJETOS	= objetos
 
 EXTERNOBJ =  $(foreach path, $(DIRS), $(wildcard $(path)/*.o))
 EXTERNOBJ-CAPALOGICA = $(foreach path, $(SUBDIRS), $(wildcard $(path)/*.o))
@@ -11,16 +11,12 @@ TARGETS = main.cpp
 EXE	= main
 
 all : $(EXE)
+compilar : $(OBJETOS)
 
-%.o: %.cpp %.h
-	$(ECHO) $(CC) -c $(CFLAGS) $<
-	$(CC) -c $(CFLAGS) $<
-
-%.a :
-	-for d in $(DIRS); do (cd $$d; $(MAKE)); done
-	ar cr $@ $^
+$(OBJETOS) :
+	-for d in $(DIRS); do (cd $$d; make); done
 	
-main: $(OBJLIBS)
+$(EXE): $(OBJETOS)
 	$(ECHO) Linkeando...
 	$(CC) $(CFLAGS) $(EXTERNOBJ) $(EXTERNOBJ-CAPALOGICA) -o $@ $(TARGETS)
 
