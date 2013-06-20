@@ -17,7 +17,7 @@ $(OBJETOS) :
 	-for d in $(DIRS); do (cd $$d; make); done
 	
 $(EXE): $(OBJETOS)
-	$(ECHO) Linkeando...
+	$(ECHO) Linkeando $(EXE)...
 	$(CC) $(CFLAGS) $(EXTERNOBJ) $(EXTERNOBJ-CAPALOGICA) -o $@ $(TARGETS)
 
 clean :

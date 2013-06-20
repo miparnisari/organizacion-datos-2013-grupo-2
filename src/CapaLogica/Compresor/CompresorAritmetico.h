@@ -40,7 +40,7 @@ class CompresorAritmetico : public Compresor {
 
 	public:
 
-
+		CompresorAritmetico (ModeloProbabilistico* modelo);
 		CompresorAritmetico(unsigned int tamanioAlfabeto=TAMANIO_ALFABETO);
 		virtual ~ CompresorAritmetico ();
 
