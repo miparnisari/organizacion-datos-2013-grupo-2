@@ -33,6 +33,29 @@ void CompresorAritmetico::inicializar_frecuencias_en_1(vector<unsigned short>& v
 }
 
 
+std::vector<bool> CompresorAritmetico::_comprimir_ultimo_paso(){
+
+	BitsPiso piso= intervalo->get_piso();
+	std::vector<bool> retornar;
+
+	retornar.push_back( piso[PRECISION-1] );
+	bool negado= !piso[PRECISION-1];
+	const Uint CANTIDAD_UNDERFLOW= intervalo->get_contador_underflow();
+
+	for(Uint i=0;i<CANTIDAD_UNDERFLOW;i++)
+		retornar.push_back(negado);
+
+	for( int i=PRECISION-2 ; i>=0 ; i-- ){
+		retornar.push_back( piso[i] );
+	}
+
+	return retornar;
+
+
+}
+
+
+
 std::vector<bool> CompresorAritmetico::comprimir(const char simbolo)
 {
 	intervalo->calcular_rango();
@@ -82,20 +105,6 @@ int CompresorAritmetico::comprimir_todo
 		{
 			std::vector<bool> bits_caracter_actual = comprimir(*(buffer_a_comprimir+i));
 
-//			// Ciclo que recorre los bits que tengo que emitir
-//			for (unsigned int j = 0; j < bits_caracter_actual.size(); j++)
-//			{
-//				bitsAemitir.push_back(bits_caracter_actual[j]);
-//				if (bitsAemitir.size() == 8)
-//				{
-//					// byte_a_emitir = bits_a_emitir
-//					// comprimido += byte_a_emitir
-//					tamanioComprimido ++;
-//					bitsAemitir.clear();
-//				}
-//			}
-
-
 			const TamanioBitset TAMANIO_BITS_CARACTER_ACTUAL= bits_caracter_actual.size();
 			for( TamanioBitset j=0;j<TAMANIO_BITS_CARACTER_ACTUAL;j++ ){
 
@@ -111,10 +120,30 @@ int CompresorAritmetico::comprimir_todo
 				}
 
 
-			}//for
+			}//for j<TAMANIO_BITS_CARACTER_ACTUAL
+
+		}//for i<tamanio
+
+		std::vector<bool> bits_caracter_actual = _comprimir_ultimo_paso();
+
+		const TamanioBitset TAMANIO_BITS_CARACTER_ACTUAL= bits_caracter_actual.size();
+		for( TamanioBitset j=0;j<TAMANIO_BITS_CARACTER_ACTUAL;j++ ){
+
+			bool bit= bits_caracter_actual.at(j);
+
+			if( bufferBits.agregar_bit(bit)== RES_ERROR ){
+				char bufferTemporal[TAMANIO_BUFFER_BITS_BYTES];
+				bufferBits.dump( bufferTemporal );
+				stream.write( bufferTemporal,TAMANIO_BUFFER_BITS_BYTES );
+				bufferBits.agregar_bit(bit);
+
+				tamanioComprimido+= TAMANIO_BUFFER_BITS_BYTES;
+			}
 
 
-		}
+		}//for j<TAMANIO_BITS_CARACTER_ACTUAL
+
+
 
 		if(bufferBits.get_indice_buffer()!=0){
 

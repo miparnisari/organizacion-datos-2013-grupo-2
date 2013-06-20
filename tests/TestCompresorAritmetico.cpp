@@ -31,6 +31,18 @@ class TestCompresorAritmetico : public testing::Test {
 
 };
 
+TEST_F(TestCompresorAritmetico,ComprimirString){
+
+	std::string linea= "AABC";
+	char bufferCompresion[32];
+
+	int tamanioCompresion= compresor->comprimir_todo( linea.c_str() , linea.length() , bufferCompresion );
+	for(int i=0;i<tamanioCompresion;i++){
+		IMPRIMIR_MY_VARIABLE( bufferCompresion[i] );
+	}
+
+}
+
 TEST_F(TestCompresorAritmetico, ComprimirRegistroVariable)
 {
 	RegistroVariable reg;

@@ -426,7 +426,7 @@ class BufferBits{
 
 			int res= this->dump(escritura);
 			if(res== RES_ERROR)
-				return RES_ERROR;
+				res= 0;
 
 			if( this->get_indice_buffer()==0 )
 				return res;

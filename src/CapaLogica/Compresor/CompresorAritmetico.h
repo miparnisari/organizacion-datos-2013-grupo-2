@@ -37,6 +37,7 @@ class CompresorAritmetico : public Compresor {
 		ModeloProbabilistico* modelo;
 		char byteActual;
 
+		std::vector<bool> _comprimir_ultimo_paso();
 
 
 	public:

@@ -205,3 +205,8 @@ void Intervalo::resolver_overflow()
 	*piso <<= 1;
 	piso->set(0,0);
 }
+
+
+Uint Intervalo::get_contador_underflow(){
+	return contadorUnderflow;
+}
