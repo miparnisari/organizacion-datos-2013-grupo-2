@@ -48,7 +48,8 @@ TEST_F(TestIntervalo, Normalizar_con_overflow)
 	intervalo.set_techo("01111111111111111111111111111111");
 
 	// Se produce un overflow
-	std::vector<bool> resultado = intervalo.normalizar();
+	Byte cOverflow,cUnderflow;
+	std::vector<bool> resultado = intervalo.normalizar(	cOverflow,cUnderflow);
 	ASSERT_EQ(resultado.size(),1);
 	ASSERT_EQ(resultado[0],0);
 
@@ -64,7 +65,8 @@ TEST_F(TestIntervalo, Normalizar_con_overflow_y_underflow)
 	intervalo.set_techo("10101111111111111111111111111111");
 
 	// Se produce un overflow de "10"
-	std::vector<bool> resultado = intervalo.normalizar();
+	Byte cOverflow,cUnderflow;
+	std::vector<bool> resultado = intervalo.normalizar(	 cOverflow,cUnderflow);
 	ASSERT_EQ(resultado.size(),2);
 	ASSERT_EQ(resultado[0],1);
 	ASSERT_EQ(resultado[1],0);
@@ -82,7 +84,8 @@ TEST_F(TestIntervalo, Normalizar_con_underflow)
 
 	ASSERT_EQ(intervalo.hay_underflow(),true);
 
-	std::vector<bool> resultado = intervalo.normalizar();
+	Byte cOverflow,cUnderflow;
+	std::vector<bool> resultado = intervalo.normalizar(	 cOverflow,cUnderflow);
 	ASSERT_EQ(resultado.size(),0);
 
 	// Quedan iguales porque no se normalizo nada

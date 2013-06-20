@@ -18,36 +18,37 @@ using namespace std;
 
 class RegistroVariable {
 
+
 	protected:
-		unsigned short tamanio;
+		TamanioCampos tamanio;
 		char* buffer;
 
-		virtual int seek_numero_campo(unsigned short numeroCampo);
+		virtual int seek_numero_campo(TamanioCampos numeroCampo);
 
-		virtual std::string mostrar_campo(unsigned short numeroCampo);
+		virtual std::string mostrar_campo(TamanioCampos numeroCampo);
 		void _inicializar_buffer();
 
 	public:
-		static const unsigned short CAMPO_ENCADENAMIENTO_LIBRES= 1;
+		static const TamanioCampos CAMPO_ENCADENAMIENTO_LIBRES= 1;
 
 		RegistroVariable();
 		RegistroVariable& operator = (const RegistroVariable& otro);
 		virtual ~RegistroVariable();
 		RegistroVariable(const RegistroVariable& otro);
 
-		virtual unsigned short get_cantidad_campos()throw();
+		virtual TamanioCampos get_cantidad_campos()throw();
 		virtual char* get_buffer()throw();
-		virtual unsigned short get_tamanio()throw();
+		virtual TamanioCampos get_tamanio()throw();
 
 		virtual int eliminar()throw();
 
 
-		virtual int agregar_campo(const char* campo,unsigned short tamanioCampo)throw();
+		virtual int agregar_campo(const char* campo,TamanioCampos tamanioCampo)throw();
 		/*agrega (append) un campo al registro : tamanioCampo|datosCampo */
 
-		virtual int get_tamanio_campo(unsigned short numeroCampo);
+		virtual int get_tamanio_campo(TamanioCampos numeroCampo);
 
-		virtual int recuperar_campo(char* copia,unsigned short numeroCampo)throw();
+		virtual int recuperar_campo(char* copia,TamanioCampos numeroCampo)throw();
 		/*recupera un campo en la posicion numeroCampo , el mismo es almacenado en el buffer copia.
 		 * Se retorna el tamanio del campo leido*/
 
@@ -66,7 +67,7 @@ class RegistroVariable {
 
 		virtual bool fue_eliminado()throw();
 
-		RegistroVariable* comprimir (Compresor & compresor);
+		RegistroVariable* comprimir (Compresor * compresor);
 
 		virtual bool esta_limpio(){return tamanio==0;};
 		/*retorna true si el registru fue limpiado y el mismo no se cargo de nuevo con datos.*/
@@ -75,7 +76,7 @@ class RegistroVariable {
 /*LOS SIGUIENTES METODOS SE CREARON POR CUESTION DE PRUEBAS O PARA CUMPLIR CON CONSIGNAS DEL TP0*/
 
 		virtual std::string mostrar()throw();
-		virtual int agregar_datos(const char* datos,unsigned short tamanioDatos)throw();
+		virtual int agregar_datos(const char* datos,TamanioCampos tamanioDatos)throw();
 		/*agrega datos al final del registro (append) sin agregar delimitador de tamanio del
 		 * dato agregado*/
 		// TODO eliminarla? es lo mismo q agregar un campo..

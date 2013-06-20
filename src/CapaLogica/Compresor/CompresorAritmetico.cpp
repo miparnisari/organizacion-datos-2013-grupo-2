@@ -22,8 +22,8 @@ std::vector<bool> CompresorAritmetico::comprimir(const char simbolo)
 {
 	intervalo.calcular_rango();
 
-	double low_count_simbolo = modelo.calcular_low_count(simbolo);
-	double high_count_simbolo = modelo.calcular_high_count(simbolo);
+	double low_count_simbolo = (double)modelo.calcular_low_count(simbolo);
+	double high_count_simbolo = (double)modelo.calcular_high_count(simbolo);
 
 	/*
 	 * Nuevo Piso = 0 + 256 * 3 / 6 = 128
@@ -36,7 +36,9 @@ std::vector<bool> CompresorAritmetico::comprimir(const char simbolo)
 	 * Contador de underflow: 0
 	 * Modifica piso y techo.
 	 */
-	std::vector<bool> bits_a_emitir = intervalo.normalizar();
+
+	Byte cOverflow,cUnderflow;
+	std::vector<bool> bits_a_emitir = intervalo.normalizar(cOverflow,cUnderflow);
 
 	modelo.incrementar_frecuencia(simbolo);
 
@@ -80,7 +82,7 @@ int CompresorAritmetico::comprimir_todo
 
 
 			const TamanioBitset TAMANIO_BITS_CARACTER_ACTUAL= bits_caracter_actual.size();
-			for( TamanioBitset j=0;i<TAMANIO_BITS_CARACTER_ACTUAL;j++ ){
+			for( TamanioBitset j=0;j<TAMANIO_BITS_CARACTER_ACTUAL;j++ ){
 
 				bool bit= bits_caracter_actual.at(j);
 
@@ -99,12 +101,14 @@ int CompresorAritmetico::comprimir_todo
 
 		}
 
-		if(bufferBits.get_indice_buffer()== 0)
-			return tamanioComprimido;
+		if(bufferBits.get_indice_buffer()!=0){
 
-		char bufferAuxiliar[TAMANIO_BUFFER_BITS_BYTES];
-		TamanioBitset tamanioUltimaEscritura= bufferBits.dump_y_completar(bufferAuxiliar);
-		stream.write( bufferAuxiliar,tamanioUltimaEscritura );
+			char bufferAuxiliar[TAMANIO_BUFFER_BITS_BYTES];
+			TamanioBitset tamanioUltimaEscritura= bufferBits.dump_y_completar(bufferAuxiliar);
+			stream.write( bufferAuxiliar,tamanioUltimaEscritura );
+			tamanioComprimido+= tamanioUltimaEscritura;
+
+		}
 
 		stream.seekg(0,ios::beg);
 		stream.read( bufferCompresion,tamanioComprimido );

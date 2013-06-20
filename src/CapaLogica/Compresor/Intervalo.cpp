@@ -128,9 +128,11 @@ void Intervalo::actualizar_piso_techo(double low_count, double high_count)
 	techo = new std::bitset<PRECISION>(uint_techo);
 }
 
-std::vector<bool> Intervalo::normalizar( )
+std::vector<bool> Intervalo::normalizar( Byte& cOverflow,Byte& cUnderflow )
 {
 	std::vector<bool> bits_a_emitir;
+	cOverflow= cUnderflow= 0;
+
 	while (hay_overflow())
 	{
 		// Emito el primer bit del techo
@@ -144,14 +146,21 @@ std::vector<bool> Intervalo::normalizar( )
 			bits_a_emitir.push_back(! bitAemitir);
 		}
 
+		cOverflow++;
+		/*todo revisar si es correcto*/
+
 		contadorUnderflow = 0;
 	}
 
 	while (hay_underflow())
 	{
+		cUnderflow++;
+		/*todo revisar si es correcto*/
+
 		contadorUnderflow ++;
 		resolver_underflow();
 	}
+
 
 	return bits_a_emitir;
 }

@@ -38,7 +38,7 @@ class Intervalo {
 		BitsTecho& get_techo();
 		Ulonglong get_rango();
 
-		std::vector<bool> normalizar();
+		std::vector<bool> normalizar(Byte& cOverflow,Byte& cUnderflow);
 		/*resuelve underflows y overflows y retorna lo que se debe emitir en archivo*/
 		void resolver_underflow();
 		void resolver_overflow();
