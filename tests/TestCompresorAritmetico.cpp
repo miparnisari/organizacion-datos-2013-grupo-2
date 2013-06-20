@@ -31,38 +31,18 @@ class TestCompresorAritmetico : public testing::Test {
 
 };
 
-TEST_F(TestCompresorAritmetico,ComprimirString){
-
-	std::string linea= "AABC";
-	char bufferCompresion[32];
-
-	int tamanioCompresion= compresor->comprimir_todo( linea.c_str() , linea.length() , bufferCompresion );
-	for(int i=0;i<tamanioCompresion;i++){
-		IMPRIMIR_MY_VARIABLE( bufferCompresion[i] );
-	}
-
-}
-
-TEST_F(TestCompresorAritmetico, ComprimirRegistroVariable)
+TEST_F(TestCompresorAritmetico, ComprimirString)
 {
-	RegistroVariable reg;
-
 	std::string string = "AABC";
-	reg.agregar_campo(string.c_str(),string.length());
 
-	RegistroVariable* reg_comprimido = reg.comprimir(compresor);
+	char* buffer = new char[2]();
+	int tamanioComprimido = compresor->comprimir_todo(string.c_str(),string.size(),buffer);
 
-	TamanioCampos cantidadCaracteres = 0;
-	reg_comprimido->recuperar_campo((char*)&cantidadCaracteres,0);
-	ASSERT_EQ(cantidadCaracteres, 6);
-
-	char* buffer = new char[4]();
-	reg_comprimido->recuperar_campo(buffer,1);
+	ASSERT_EQ(tamanioComprimido, 2);
 
 	// 00100001 01000000
-	ASSERT_EQ(buffer[0],33);
-	ASSERT_EQ(buffer[1],64);
+	ASSERT_EQ(buffer[0],33); //1000 0100
+	ASSERT_EQ(buffer[1],64); //0000 0000
 
 	delete buffer;
-	delete reg_comprimido;
 }
