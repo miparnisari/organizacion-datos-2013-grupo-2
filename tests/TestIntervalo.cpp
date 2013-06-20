@@ -52,8 +52,8 @@ TEST_F(TestIntervalo, Normalizar_con_overflow)
 	ASSERT_EQ(resultado.size(),1);
 	ASSERT_EQ(resultado[0],0);
 
-	std::bitset<PRECISION> piso_despues_de_normalizar ("00000000000000000000000000000000");
-	std::bitset<PRECISION> techo_despues_de_normalizar ("11111111111111111111111111111111");
+	std::bitset<PRECISION> piso_despues_de_normalizar (std::string("00000000000000000000000000000000"));
+	std::bitset<PRECISION> techo_despues_de_normalizar (std::string("11111111111111111111111111111111"));
 	ASSERT_EQ(intervalo.get_piso(), piso_despues_de_normalizar);
 	ASSERT_EQ(intervalo.get_techo(), techo_despues_de_normalizar);
 }
@@ -69,8 +69,8 @@ TEST_F(TestIntervalo, Normalizar_con_overflow_y_underflow)
 	ASSERT_EQ(resultado[0],1);
 	ASSERT_EQ(resultado[1],0);
 
-	std::bitset<PRECISION> piso_despues_de_normalizar ("00100000000000000000000000000000");
-	std::bitset<PRECISION> techo_despues_de_normalizar ("11111111111111111111111111111111");
+	std::bitset<PRECISION> piso_despues_de_normalizar (std::string("00100000000000000000000000000000"));
+	std::bitset<PRECISION> techo_despues_de_normalizar (std::string("11111111111111111111111111111111"));
 	ASSERT_EQ(intervalo.get_piso(), piso_despues_de_normalizar);
 	ASSERT_EQ(intervalo.get_techo(), techo_despues_de_normalizar);
 }
@@ -86,8 +86,8 @@ TEST_F(TestIntervalo, Normalizar_con_underflow)
 	ASSERT_EQ(resultado.size(),0);
 
 	// Quedan iguales porque no se normalizo nada
-	std::bitset<PRECISION> piso_despues_de_normalizar ("00010000000000000000000000000000");
-	std::bitset<PRECISION> techo_despues_de_normalizar ("10011111111111111111111111111111");
+	std::bitset<PRECISION> piso_despues_de_normalizar (std::string("00010000000000000000000000000000"));
+	std::bitset<PRECISION> techo_despues_de_normalizar (std::string("10011111111111111111111111111111"));
 	ASSERT_EQ(intervalo.get_piso(), piso_despues_de_normalizar);
 	ASSERT_EQ(intervalo.get_techo(), techo_despues_de_normalizar);
 }
