@@ -643,7 +643,11 @@ A
 \begin_inset Text
 
 \begin_layout Plain Layout
-0 (0000000)
+0 (
+\series bold
+0
+\series default
+000000)
 \end_layout
 
 \end_inset
@@ -874,7 +878,7 @@ B
 
 \begin_layout Plain Layout
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="1">
+<lyxtabular version="3" rows="2" columns="1">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <row>
@@ -889,22 +893,11 @@ B
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0100100
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-0001000 (8)
+8 (0001000)
 \end_layout
 
 \end_inset
@@ -924,7 +917,7 @@ B
 
 \begin_layout Plain Layout
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="1">
+<lyxtabular version="3" rows="2" columns="1">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <row>
@@ -932,18 +925,7 @@ B
 \begin_inset Text
 
 \begin_layout Plain Layout
-66 (1000011)
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-1000111
+66 (1000010)
 \end_layout
 
 \end_inset
@@ -954,7 +936,7 @@ B
 \begin_inset Text
 
 \begin_layout Plain Layout
-1001111 (79)
+(75) 1001011
 \end_layout
 
 \end_inset
@@ -1088,7 +1070,7 @@ C
 \begin_inset Text
 
 \begin_layout Plain Layout
-79
+75
 \end_layout
 
 \end_inset
@@ -1097,7 +1079,7 @@ C
 \begin_inset Text
 
 \begin_layout Plain Layout
-80
+68
 \end_layout
 
 \end_inset
@@ -1128,7 +1110,7 @@ C
 
 \begin_layout Plain Layout
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="1">
+<lyxtabular version="3" rows="2" columns="1">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <row>
@@ -1136,22 +1118,11 @@ C
 \begin_inset Text
 
 \begin_layout Plain Layout
-74 (
+64 (
 \series bold
-10
+100
 \series default
-01010)
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0101000
+0000)
 \end_layout
 
 \end_inset
@@ -1162,7 +1133,7 @@ C
 \begin_inset Text
 
 \begin_layout Plain Layout
-0010000
+0000000
 \end_layout
 
 \end_inset
@@ -1182,7 +1153,7 @@ C
 
 \begin_layout Plain Layout
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="1">
+<lyxtabular version="3" rows="2" columns="1">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <row>
@@ -1190,22 +1161,11 @@ C
 \begin_inset Text
 
 \begin_layout Plain Layout
-87 (
+75 (
 \series bold
-10
+100
 \series default
-10111)
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-1011111
+1011)
 \end_layout
 
 \end_inset
@@ -1216,7 +1176,7 @@ C
 \begin_inset Text
 
 \begin_layout Plain Layout
-1111111
+1011111
 \end_layout
 
 \end_inset
@@ -1235,7 +1195,7 @@ C
 \begin_inset Text
 
 \begin_layout Plain Layout
-1
+0
 \end_layout
 
 \end_inset
@@ -1321,7 +1281,7 @@ C
 \begin_inset Text
 
 \begin_layout Plain Layout
-1-00-0-0-1-010000
+1-00-00-0000000
 \end_layout
 
 \end_inset
@@ -1335,7 +1295,7 @@ C
 \end_layout
 
 \begin_layout Standard
-Archivo final: (4) + 00100001010000-00
+Archivo final: (4) + 00100000+00000000
 \end_layout
 
 \end_body
