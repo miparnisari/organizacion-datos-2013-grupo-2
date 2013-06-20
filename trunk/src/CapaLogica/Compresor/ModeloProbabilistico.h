@@ -9,6 +9,10 @@
 #define MODELOPROBABILISTICO_H_
 
 #include "../../Constantes.h"
+#include <iostream>
+#include <vector>
+
+using std::vector;
 
 typedef unsigned int Uint;
 
@@ -24,6 +28,9 @@ class ModeloProbabilistico {
 		virtual ~ModeloProbabilistico();
 
 		void inicializar_frecuencias_en_1();
+		void inicializar_frecuencias_en_1(vector<unsigned short>& v);
+		/*todas las frecuencias de los mensajes estaran en 0 excepto la de aquellos mensajes contendidos en v*/
+
 
 		void incrementar_frecuencia (const char simbolo);
 		double calcular_low_count (const char simbolo);

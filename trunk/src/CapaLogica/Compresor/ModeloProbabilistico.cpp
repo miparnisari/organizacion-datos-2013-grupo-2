@@ -91,3 +91,20 @@ Uint ModeloProbabilistico::obtener_simbolo(Uint valor)
  * donde cae ese numero.
  */
 
+
+void ModeloProbabilistico::inicializar_frecuencias_en_1(vector<unsigned short>& v){
+
+	const unsigned short TAMANIO_V= v.size();
+	if(TAMANIO_V== 0)
+		return;
+
+	for(unsigned int i=0;i<TAMANIO_ALFABETO;i++)
+		this->frecuenciasSimbolos[i]= 0;
+
+	for(unsigned short i=0;i<TAMANIO_V;i++){
+		unsigned short p= v.at(i);
+		this->frecuenciasSimbolos[p]= 1;
+	}
+
+}
+
