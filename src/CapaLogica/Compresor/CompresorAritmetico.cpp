@@ -46,8 +46,7 @@ std::vector<bool> CompresorAritmetico::comprimir(const char simbolo)
 int CompresorAritmetico::comprimir_todo
 	(const char* buffer_a_comprimir,
 	const unsigned int tamanio,
-	char* bufferCompresion,
-	unsigned int tamanioBuffer)
+	char* bufferCompresion)
 {
 
 	BufferBits<TAMANIO_BUFFER_BITS_BITS> bufferBits;
@@ -56,7 +55,7 @@ int CompresorAritmetico::comprimir_todo
 
 	int tamanioComprimido = 0;
 	std::vector<bool> bitsAemitir;
-	char byte_a_emitir = '0';
+	//char byte_a_emitir = '0';
 
 
 

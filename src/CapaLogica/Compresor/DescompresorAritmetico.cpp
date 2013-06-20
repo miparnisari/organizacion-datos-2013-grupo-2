@@ -66,4 +66,6 @@ int DescompresorAritmetico::descomprimir_todo(char* buffer, int tamanio, char* d
 
 		punteroBuffer++;
 	}
+
+	return RES_OK;
 }

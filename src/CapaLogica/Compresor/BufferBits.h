@@ -195,7 +195,6 @@ class BufferBits{
 			if(posicion>= bitActual)
 				return RES_ERROR;
 
-			TamanioBitset bitInspeccionar= tamanioBuffer - posicion -1;
 			bit= (*buffer)[posicion];
 
 //			string bufferString= to_string();
@@ -327,7 +326,9 @@ class BufferBits{
 			return RES_OK;
 
 		}/*quita el bit en la posicion posicionBit y comprime los bits nuevamente*/
-		int pop_bit(){
+		int pop_bit(bool& bit){
+
+			this->get_bit(0,bit);
 
 			return quitar_bit(0);
 
@@ -425,9 +426,17 @@ class BufferBits{
 		completa el octeto -> se completa con ceros al final*/
 
 
+
+
 		TamanioBitset get_espacio_disponible(){
 
 			return (tamanioBuffer - bitActual);
+
+		}
+
+		bool esta_vacio(){
+
+			return this->bitActual== 0;
 
 		}
 
