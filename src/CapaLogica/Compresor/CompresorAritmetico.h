@@ -17,9 +17,10 @@
 #include "BufferBits.h"
 #include <sstream>
 #include <iostream>
+#include <vector>
 
 using std::stringstream;
-
+using std::vector;
 
 const TamanioBitset TAMANIO_BUFFER_FINAL= 4096;
 const TamanioBitset TAMANIO_BUFFER_BITS_BYTES= 1024;
@@ -43,6 +44,8 @@ class CompresorAritmetico : public Compresor {
 		CompresorAritmetico (ModeloProbabilistico* modelo);
 		CompresorAritmetico(unsigned int tamanioAlfabeto=TAMANIO_ALFABETO);
 		virtual ~ CompresorAritmetico ();
+
+		void inicializar_frecuencias_en_1(vector<unsigned short>& v);
 
 		std::vector<bool> comprimir(const char simbolo);
 
