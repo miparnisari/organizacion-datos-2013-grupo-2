@@ -132,6 +132,8 @@ std::vector<bool> Intervalo::normalizar( Byte& cOverflow,Byte& cUnderflow )
 {
 	std::vector<bool> bits_a_emitir;
 	cOverflow= cUnderflow= 0;
+	IMPRIMIR_MY_VARIABLE(*piso);
+	IMPRIMIR_MY_VARIABLE(*techo);
 
 	while (hay_overflow())
 	{

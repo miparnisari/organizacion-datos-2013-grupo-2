@@ -38,6 +38,9 @@ std::vector<bool> CompresorAritmetico::_comprimir_ultimo_paso(){
 	BitsPiso piso= intervalo->get_piso();
 	std::vector<bool> retornar;
 
+	Byte cOverflow,cUnderflow;
+	intervalo->normalizar(cOverflow,cUnderflow);
+
 	retornar.push_back( piso[PRECISION-1] );
 	bool negado= !piso[PRECISION-1];
 	const Uint CANTIDAD_UNDERFLOW= intervalo->get_contador_underflow();
@@ -109,6 +112,7 @@ int CompresorAritmetico::comprimir_todo
 			for( TamanioBitset j=0;j<TAMANIO_BITS_CARACTER_ACTUAL;j++ ){
 
 				bool bit= bits_caracter_actual.at(j);
+				IMPRIMIR_MY_VARIABLE(bit);
 
 				if( bufferBits.agregar_bit(bit)== RES_ERROR ){
 					char bufferTemporal[TAMANIO_BUFFER_BITS_BYTES];
