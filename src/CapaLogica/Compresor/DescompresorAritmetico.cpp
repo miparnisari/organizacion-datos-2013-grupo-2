@@ -37,8 +37,22 @@ void DescompresorAritmetico::descomprimir(const char byte)
 	decodificar(low_count, high_count);
 }
 
-int DescompresorAritmetico::descomprimir_todo(char* buffer, int tamanio, char* descomprimido)
+int DescompresorAritmetico::descomprimir_todo(char* buffer, int tamanio, char* descomprimido,unsigned int precision)
 {
+
+	unsigned long tamanioDescompresion= 0;
+	unsigned int indiceDescompresion= 0;
+	BufferBits<TAMANIO_BUFFER_BITS> bufferBits;
+	const unsigned int PRECISION_BYTES= (unsigned int)(precision/8);
+
+
+	for(unsigned int i=0;i<PRECISION_BYTES;i++){
+
+
+	}
+
+
+
 	/*
 		1)-Resolver overflow y underflow
 
@@ -54,18 +68,7 @@ int DescompresorAritmetico::descomprimir_todo(char* buffer, int tamanio, char* d
 		4) Vuelvo a 1)
 	 */
 
-	BufferBits<PRECISION> bufferBits;
 
-	int punteroBuffer = 0;
-	while (punteroBuffer < tamanio)
-	{
-		std::vector<bool> byte = utilitarios::interpretar_byte(buffer[punteroBuffer]);
-
-
-
-
-		punteroBuffer++;
-	}
 
 	return RES_OK;
 }

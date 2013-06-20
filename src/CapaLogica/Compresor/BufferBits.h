@@ -190,6 +190,26 @@ class BufferBits{
 			return RES_OK;
 
 		}
+		int agregar_bits(char valores){
+
+			const TamanioBitset ESPACIO_DISPONIBLE= tamanioBuffer - bitActual;
+			const unsigned short TAMANIO_BYTE_BITS= 8;
+			if(ESPACIO_DISPONIBLE < TAMANIO_BYTE_BITS)
+				return RES_ERROR;
+
+			unsigned long const VALORES_LONG= (unsigned long)valores;
+			bitset<8> bb(VALORES_LONG);
+
+			for( short i= (TAMANIO_BYTE_BITS-1) ;i>=0; i--){
+
+				bool b= bb[i];
+				this->agregar_bit(b);
+
+			}
+
+			return RES_OK;
+
+		}
 		int get_bit(TamanioBitset posicion,bool& bit){
 
 			if(posicion>= bitActual)

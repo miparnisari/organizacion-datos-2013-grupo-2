@@ -352,6 +352,38 @@ TEST_F(TestBufferBits,Test_dump_y_completar){
 }
 
 
+TEST_F(TestBufferBits , Agregar_bits_char){
+
+	BufferBits<32> bb;
+
+	char c1= (char)2;
+	char c2 = (char)1;
+
+	bb.agregar_bits(c1);
+	bb.agregar_bits(c2);
+	IMPRIMIR_MY_VARIABLE( bb.to_string() );
+
+	//si lo lleno
+	bb.agregar_bits(c2);
+	bb.agregar_bits(c2);
+	ASSERT_TRUE(bb.agregar_bits(c2)==RES_ERROR);
+
+}
+
+TEST_F(TestBufferBits , Agregar_bits_char_con_bits_iniciales){
+
+	BufferBits<32> bb;
+
+	bool bits[2];
+	bb.agregar_bits(bits,2);
+
+	char c1= (char)2;
+	bb.agregar_bits(c1);
+
+	IMPRIMIR_MY_VARIABLE( bb.to_string() );
+}
+
+
 
 //TEST_F(TestBufferBits,Test_stress){
 //
