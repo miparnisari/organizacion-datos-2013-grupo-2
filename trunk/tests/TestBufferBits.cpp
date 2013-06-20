@@ -190,7 +190,7 @@ TEST_F(TestBufferBits,Quitar_bit){
 	bb.agregar_bits("1000100100000000000000000000000");
 
 	bb.quitar_bit(4);
-	unsigned char c;
+	Byte c;
 	bb.get_byte(0,c);
 	IMPRIMIR_MY_VARIABLE( (int)c );
 
@@ -257,7 +257,7 @@ TEST_F(TestBufferBits,Get_byte){
 	IMPRIMIR_MY_VARIABLE(bb.to_string());
 
 
-	unsigned char c;
+	Byte c;
 	bb.get_byte(0,c);
 	IMPRIMIR_MY_VARIABLE( (int)c );
 	ASSERT_TRUE( (int)c == 255 );
@@ -298,7 +298,7 @@ TEST_F(TestBufferBits,Pop_byte){
 	const unsigned short TBS= 32;
 	BufferBits<TBS> bb;
 	bb.agregar_bits("1111111100001000");
-	unsigned char c;
+	Byte c;
 
 	bb.pop_byte(c);
 	IMPRIMIR_MY_VARIABLE((int)c);
@@ -354,10 +354,12 @@ TEST_F(TestBufferBits,Test_dump_y_completar){
 
 TEST_F(TestBufferBits , Agregar_bits_char){
 
+	imprimir_test_buffer_bits("Agregar_bits_char");
 	BufferBits<32> bb;
 
 	char c1= (char)2;
 	char c2 = (char)1;
+	char c3 = (char)7;
 
 	bb.agregar_bits(c1);
 	bb.agregar_bits(c2);
@@ -367,19 +369,28 @@ TEST_F(TestBufferBits , Agregar_bits_char){
 	bb.agregar_bits(c2);
 	bb.agregar_bits(c2);
 	ASSERT_TRUE(bb.agregar_bits(c2)==RES_ERROR);
+	IMPRIMIR_MY_VARIABLE(bb.to_string());
+
 
 }
 
 TEST_F(TestBufferBits , Agregar_bits_char_con_bits_iniciales){
 
+	imprimir_test_buffer_bits("Agregar_bits_char_con_bits_iniciales");
 	BufferBits<32> bb;
 
 	bool bits[2];
+	bits[0]= true;
+	bits[1]= false;
 	bb.agregar_bits(bits,2);
 
 	char c1= (char)2;
 	bb.agregar_bits(c1);
 
+	IMPRIMIR_MY_VARIABLE( bb.to_string() );
+
+	c1= (char)7;
+	bb.agregar_bits(c1);
 	IMPRIMIR_MY_VARIABLE( bb.to_string() );
 }
 
@@ -429,7 +440,7 @@ TEST_F(TestBufferBits,Buffer_bits)
 
 	bb.get_indice_buffer();
 	bb.get_cantidad_bytes();
-	unsigned char c;
+	Byte c;
 	bb.get_byte(0,c);
 
 

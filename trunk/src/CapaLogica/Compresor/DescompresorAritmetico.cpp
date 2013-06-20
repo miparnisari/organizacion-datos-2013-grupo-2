@@ -40,6 +40,9 @@ void DescompresorAritmetico::descomprimir(const char byte)
 int DescompresorAritmetico::descomprimir_todo(char* buffer, int tamanio, char* descomprimido,unsigned int precision)
 {
 
+	if( tamanio<= 0 )
+		return RES_ERROR;
+
 	unsigned long tamanioDescompresion= 0;
 	unsigned int indiceDescompresion= 0;
 	BufferBits<TAMANIO_BUFFER_BITS> bufferBits;
@@ -48,8 +51,11 @@ int DescompresorAritmetico::descomprimir_todo(char* buffer, int tamanio, char* d
 
 	for(unsigned int i=0;i<PRECISION_BYTES;i++){
 
+		char c= buffer[i];
+		bufferBits.agregar_bits( c );
 
-	}
+	}/*carga inicial del buffer de bits con la precision*/
+
 
 
 
