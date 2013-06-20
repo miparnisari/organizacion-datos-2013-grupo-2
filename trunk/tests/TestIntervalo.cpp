@@ -25,8 +25,8 @@ class TestIntervalo : public testing::Test {
 
 TEST_F(TestIntervalo,Crear)
 {
-	std::bitset<PRECISION> bitspiso = intervalo.get_piso();
-	std::bitset<PRECISION> bitstecho = intervalo.get_techo();
+	BitsPiso bitspiso = intervalo.get_piso();
+	BitsTecho bitstecho = intervalo.get_techo();
 
 	std::string stringCeros, stringUnos;
 	for (unsigned int i = 0; i < PRECISION; i++) {

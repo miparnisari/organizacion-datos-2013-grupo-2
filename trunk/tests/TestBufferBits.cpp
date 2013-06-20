@@ -220,6 +220,24 @@ TEST_F(TestBufferBits,Quitar_bit){
 }
 
 
+TEST_F(TestBufferBits,Pop_bit){
+
+	BufferBits<8> bb;
+	bb.agregar_bits( "00000001" );
+
+	for(unsigned short i=0;i<7;i++){
+		bool bit;
+		bb.pop_bit(bit);
+		ASSERT_TRUE(bit== false);
+	}
+
+	bool bit;
+	bb.pop_bit(bit);
+	ASSERT_TRUE(bit==true);
+
+}
+
+
 TEST_F(TestBufferBits,Get_byte){
 
 	imprimir_test_buffer_bits("Get_byte");
