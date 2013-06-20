@@ -32,8 +32,8 @@ class CompresorAritmetico : public Compresor {
 
 	private:
 		std::vector<Codigo> vectorCodigos;
-		Intervalo intervalo;
-		ModeloProbabilistico modelo;
+		Intervalo* intervalo;
+		ModeloProbabilistico* modelo;
 		char byteActual;
 
 
@@ -41,7 +41,7 @@ class CompresorAritmetico : public Compresor {
 	public:
 
 
-		CompresorAritmetico();
+		CompresorAritmetico(unsigned int tamanioAlfabeto=TAMANIO_ALFABETO);
 		virtual ~ CompresorAritmetico ();
 
 		std::vector<bool> comprimir(const char simbolo);

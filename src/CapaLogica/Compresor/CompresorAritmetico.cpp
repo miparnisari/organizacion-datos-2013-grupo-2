@@ -7,29 +7,32 @@
 
 #include "CompresorAritmetico.h"
 
-CompresorAritmetico::CompresorAritmetico()
+CompresorAritmetico::CompresorAritmetico(unsigned int tamanioAlfabeto)
 {
-	modelo.inicializar_frecuencias_en_1();
+	modelo= new ModeloProbabilistico(tamanioAlfabeto);
+	intervalo= new Intervalo();
+	modelo->inicializar_frecuencias_en_1();
 	byteActual = '0';
 }
 
 CompresorAritmetico::~CompresorAritmetico()
 {
-
+	delete modelo;
+	delete intervalo;
 }
 
 std::vector<bool> CompresorAritmetico::comprimir(const char simbolo)
 {
-	intervalo.calcular_rango();
+	intervalo->calcular_rango();
 
-	double low_count_simbolo = (double)modelo.calcular_low_count(simbolo);
-	double high_count_simbolo = (double)modelo.calcular_high_count(simbolo);
+	double low_count_simbolo = (double)modelo->calcular_low_count(simbolo);
+	double high_count_simbolo = (double)modelo->calcular_high_count(simbolo);
 
 	/*
 	 * Nuevo Piso = 0 + 256 * 3 / 6 = 128
 	 * Nuevo Techo = 0 + 256 * 5 / 6 - 1 = 212
 	 */
-	intervalo.actualizar_piso_techo(low_count_simbolo, high_count_simbolo);
+	intervalo->actualizar_piso_techo(low_count_simbolo, high_count_simbolo);
 
 	/*
 	 * Emision: 1
@@ -38,9 +41,9 @@ std::vector<bool> CompresorAritmetico::comprimir(const char simbolo)
 	 */
 
 	Byte cOverflow,cUnderflow;
-	std::vector<bool> bits_a_emitir = intervalo.normalizar(cOverflow,cUnderflow);
+	std::vector<bool> bits_a_emitir = intervalo->normalizar(cOverflow,cUnderflow);
 
-	modelo.incrementar_frecuencia(simbolo);
+	modelo->incrementar_frecuencia(simbolo);
 
 	return bits_a_emitir;
 }
