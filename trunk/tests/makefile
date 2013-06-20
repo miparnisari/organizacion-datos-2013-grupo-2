@@ -25,7 +25,7 @@ $(SRC_NECESARIO):
 	-for d in ../src; do (cd $$d; make compilar); done
 
 tests: $(SRC_NECESARIO) $(TESTS_NECESARIOS)
-	$(ECHO) Linkeando...
+	$(ECHO) Linkeando $(EXE)...
 	$(CC) $(CFLAGS) $(EXTERNOBJ) $(OBJS) $(EXTERNOBJ-CAPALOGICA) $(GTEST_LIB) -lpthread -o $@ $(TARGETS)
 
 clean :

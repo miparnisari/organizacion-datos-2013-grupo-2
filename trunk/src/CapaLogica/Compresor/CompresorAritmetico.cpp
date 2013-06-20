@@ -15,6 +15,13 @@ CompresorAritmetico::CompresorAritmetico(unsigned int tamanioAlfabeto)
 	byteActual = '0';
 }
 
+CompresorAritmetico :: CompresorAritmetico (ModeloProbabilistico* unModelo)
+{
+	modelo = unModelo;
+	intervalo= new Intervalo();
+	byteActual = '0';
+}
+
 CompresorAritmetico::~CompresorAritmetico()
 {
 	delete modelo;

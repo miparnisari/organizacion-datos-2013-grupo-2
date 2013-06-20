@@ -7,12 +7,25 @@
 
 #include "ModeloProbabilistico.h"
 
-ModeloProbabilistico::ModeloProbabilistico(short tamanio_alfabeto) {
-	frecuenciasSimbolos = new Uint[tamanio_alfabeto]();
+ModeloProbabilistico::ModeloProbabilistico(short un_tamanio_alfabeto) {
+	tamanioAlfabeto = un_tamanio_alfabeto;
+	frecuenciasSimbolos = new Uint[tamanioAlfabeto]();
 }
 
 ModeloProbabilistico::~ModeloProbabilistico() {
 	delete frecuenciasSimbolos;
+}
+
+ModeloProbabilistico& ModeloProbabilistico::operator = (const ModeloProbabilistico& otro)
+{
+	if (this != &otro)
+	{
+		delete[] frecuenciasSimbolos;
+		this->tamanioAlfabeto = otro.tamanioAlfabeto;
+		this->frecuenciasSimbolos = new Uint[tamanioAlfabeto]();
+		memcpy(frecuenciasSimbolos,otro.frecuenciasSimbolos,tamanioAlfabeto);
+	}
+	return (*this);
 }
 
 void ModeloProbabilistico::inicializar_frecuencias_en_1()

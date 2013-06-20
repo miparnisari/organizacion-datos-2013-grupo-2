@@ -114,7 +114,7 @@ const int LISTA_VACIA								=-100;
  * Compresion
  */
 const unsigned int TAMANIO_ALFABETO = 256 + 1; // + ESC
-const unsigned int PRECISION = 32;
+const unsigned int PRECISION = 7;
 
 
 #endif /* CONSTANTES_H */

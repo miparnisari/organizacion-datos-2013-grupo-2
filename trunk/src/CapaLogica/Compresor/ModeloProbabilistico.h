@@ -11,6 +11,7 @@
 #include "../../Constantes.h"
 #include <iostream>
 #include <vector>
+#include <string.h>
 
 using std::vector;
 
@@ -20,12 +21,15 @@ class ModeloProbabilistico {
 
 	private:
 		Uint* frecuenciasSimbolos;
+		short tamanioAlfabeto;
 
 		Uint calcular_total_frecuencias();
 
 	public:
-		ModeloProbabilistico(short tamanio_alfabeto = TAMANIO_ALFABETO);
+		ModeloProbabilistico(short un_tamanio_alfabeto = TAMANIO_ALFABETO);
 		virtual ~ModeloProbabilistico();
+
+		ModeloProbabilistico& operator = (const ModeloProbabilistico& otro);
 
 		void inicializar_frecuencias_en_1();
 		void inicializar_frecuencias_en_1(vector<unsigned short>& v);
