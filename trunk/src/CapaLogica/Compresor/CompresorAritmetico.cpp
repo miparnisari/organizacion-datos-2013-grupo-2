@@ -28,6 +28,11 @@ CompresorAritmetico::~CompresorAritmetico()
 	delete intervalo;
 }
 
+void CompresorAritmetico::inicializar_frecuencias_en_1(vector<unsigned short>& v){
+	modelo->inicializar_frecuencias_en_1(v);
+}
+
+
 std::vector<bool> CompresorAritmetico::comprimir(const char simbolo)
 {
 	intervalo->calcular_rango();
