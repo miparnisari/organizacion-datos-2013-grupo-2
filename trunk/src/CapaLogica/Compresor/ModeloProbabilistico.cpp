@@ -128,3 +128,13 @@ short ModeloProbabilistico::get_tamanio_alfabeto(){
 
 }
 
+
+void ModeloProbabilistico::resetear(){
+
+	for(short i=0;i<tamanioAlfabeto;i++)
+		if( this->frecuenciasSimbolos[i]!= 0 )
+			this->frecuenciasSimbolos[i] = 1;
+
+
+}
+
