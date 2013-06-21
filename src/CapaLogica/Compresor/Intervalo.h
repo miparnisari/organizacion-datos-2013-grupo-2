@@ -47,7 +47,7 @@ class Intervalo {
 		bool hay_overflow() const;
 		bool hay_underflow() const;
 
-		char calcular_valor(char byteActual);
+		Uint calcular_valor(Uint byteActual);
 
 		void calcular_rango();
 		void actualizar_piso_techo(double low_count, double high_count);

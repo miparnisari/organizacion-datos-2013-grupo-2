@@ -43,6 +43,31 @@ void CompresorAritmetico::inicializar_frecuencias_en_1(vector<unsigned short>& v
 	modelo->inicializar_frecuencias_en_1(v);
 }
 
+Uint CompresorAritmetico::descomprimir(Uint valor)
+{
+	const unsigned long long piso = intervalo->get_piso().to_ulong();
+	const unsigned long long techo = intervalo->get_techo().to_ulong();
+	const Ulonglong rango = intervalo->get_rango();
+	const int tam_alfabeto = modelo->get_tamanio_alfabeto();
+
+
+	for (Uint i = 0; i < tam_alfabeto; i++)
+	{
+		Uint piso_caracter = floor (piso + rango * modelo->calcular_low_count(i));
+		Uint techo_caracter = floor (piso + rango * modelo->calcular_high_count(i)) - 1;
+
+		if (piso_caracter <= valor && valor <= techo_caracter)
+		{
+			IMPRIMIR_MY_VARIABLE(piso_caracter);
+			IMPRIMIR_MY_VARIABLE(techo_caracter);
+			IMPRIMIR_MY_VARIABLE(i);
+			return i;
+		}
+	}
+
+	return tam_alfabeto;
+}
+
 
 std::vector<bool> CompresorAritmetico::_comprimir_ultimo_paso(){
 
@@ -70,7 +95,7 @@ std::vector<bool> CompresorAritmetico::_comprimir_ultimo_paso(){
 
 
 
-std::vector<bool> CompresorAritmetico::comprimir(const char simbolo,Byte& cOverflow,Byte& cUnderflow)
+std::vector<bool> CompresorAritmetico::comprimir(const Uint simbolo,Byte& cOverflow,Byte& cUnderflow)
 {
 	intervalo->calcular_rango();
 
@@ -205,7 +230,8 @@ int CompresorAritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBu
 
 		unsigned long valorSimboloActual;
 		bufferBitsDescompresion.get_primer_valor_numerico(precision,valorSimboloActual);
-		char simboloActual= (char)( modelo->obtener_simbolo( (Uint)valorSimboloActual ) );
+
+		Uint simboloActual= descomprimir((Uint)valorSimboloActual);
 		/*recupero un simbolo*/
 
 		Byte cantidadOverflow,cantidadUnderflow;

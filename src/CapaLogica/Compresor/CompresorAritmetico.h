@@ -12,6 +12,7 @@
 #include "Codigo.h"
 #include "Compresor.h"
 #include <vector>
+#include <cmath>
 #include "Intervalo.h"
 #include "ModeloProbabilistico.h"
 #include "BufferBits.h"
@@ -51,7 +52,9 @@ class CompresorAritmetico : public Compresor {
 
 		void inicializar_frecuencias_en_1(vector<unsigned short>& v);
 
-		std::vector<bool> comprimir(const char simbolo,Byte& cOverflow,Byte& cUnderflow);
+		Uint descomprimir(Uint valor);
+
+		std::vector<bool> comprimir(const Uint simbolo,Byte& cOverflow,Byte& cUnderflow);
 
 		virtual int comprimir_todo
 			(const char* buffer_a_comprimir,

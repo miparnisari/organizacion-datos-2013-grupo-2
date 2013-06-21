@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include <string.h>
+#include <cmath>
 
 using std::vector;
 
@@ -36,9 +37,9 @@ class ModeloProbabilistico {
 		/*todas las frecuencias de los mensajes estaran en 0 excepto la de aquellos mensajes contendidos en v*/
 
 
-		void incrementar_frecuencia (const char simbolo);
-		double calcular_low_count (const char simbolo);
-		double calcular_high_count (const char simbolo);
+		void incrementar_frecuencia (const Uint simbolo);
+		double calcular_low_count (const Uint simbolo);
+		double calcular_high_count (const Uint simbolo);
 
 
 		short get_tamanio_alfabeto();
