@@ -360,7 +360,7 @@ RegistroVariable* RegistroVariable :: descomprimir(Compresor * compresor)
 	recuperar_campo(bufferComprimido,1);
 
 	char* descomprimido = new char[tamanioOriginal + sizeof(tamanioOriginal)]();
-	memcpy( descomprimido, (void*)&tamanioOriginal , sizeof(tamanioOriginal) );
+	memcpy( descomprimido, (char*)&tamanioOriginal , sizeof(tamanioOriginal) );
 	compresor->descomprimir_todo(bufferComprimido,tamanioComprimido,descomprimido+sizeof(tamanioOriginal),PRECISION,tamanioOriginal);
 
 	RegistroVariable* registroNuevo= new RegistroVariable();
