@@ -47,6 +47,9 @@ TEST_F(TestCompresorAritmetico, ComprimirString)
 	delete buffer;
 }
 
+
+
+
 TEST_F(TestCompresorAritmetico, DescomprimirString)
 {
 	char buffer[2];
@@ -64,6 +67,43 @@ TEST_F(TestCompresorAritmetico, DescomprimirString)
 
 	delete bufferDescomprimido;
 }
+
+
+TEST_F(TestCompresorAritmetico, ComprimirYDescomprimir32bits){
+
+	CompresorAritmetico ca;
+	const unsigned short TAMANIO_BUFFER_COMPRIMIDO= 16;
+	char bufferComprimido[TAMANIO_BUFFER_COMPRIMIDO];
+	string linea= "AABC";
+
+	int tamanioComprimido= ca.comprimir_todo( linea.c_str() , linea.length() , bufferComprimido );
+	IMPRIMIR_MY_VARIABLE(tamanioComprimido);
+
+	char bufferDescomprimido[TAMANIO_BUFFER_COMPRIMIDO];
+	ca.descomprimir_todo( bufferComprimido,tamanioComprimido,bufferDescomprimido,PRECISION, linea.length() );
+	for(int i=0;i<linea.length();i++)
+		IMPRIMIR_MY_VARIABLE( (int)bufferDescomprimido[i] );
+
+	ASSERT_TRUE( bufferDescomprimido[0]=='A' );
+	ASSERT_TRUE( bufferDescomprimido[1]=='A' );
+	ASSERT_TRUE( bufferDescomprimido[2]=='B' );
+	ASSERT_TRUE( bufferDescomprimido[3]=='C' );
+
+}//funciona
+
+
+TEST_F(TestCompresorAritmetico , ComprimirYDescomprimirVarios32Bits){
+
+	CompresorAritmetico ca;
+	short numero= 4;
+	string linea= "AABC";
+	const short TAMANIO_A_COMPRIMIR= 6;
+	char aComprimir[TAMANIO_A_COMPRIMIR];
+
+
+}
+
+
 
 TEST_F(TestCompresorAritmetico, ComprimirRegistroVariableConUnCampo)
 {
@@ -89,7 +129,7 @@ TEST_F(TestCompresorAritmetico, ComprimirRegistroVariableConUnCampo)
 	reg_descomprimido->recuperar_campo(unicoCampo,0);
 
 	ASSERT_EQ(unicoCampo[0],'A');
-	ASSERT_EQ(unicoCampo[1],'B');
+	ASSERT_EQ(unicoCampo[1],'A');
 	ASSERT_EQ(unicoCampo[2],'B');
 	ASSERT_EQ(unicoCampo[3],'C');
 
