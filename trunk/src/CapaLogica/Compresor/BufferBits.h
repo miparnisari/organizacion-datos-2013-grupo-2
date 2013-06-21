@@ -15,7 +15,8 @@ using namespace std;
 
 typedef unsigned long long TamanioBitset;
 //antes: typedef unsigned short TamanioBitset
-
+const TamanioBitset TAMANIO_BUFFER_BITS_DEFAULT= 128;
+const unsigned short BITS_LONG= 32;
 
 
 template<TamanioBitset tamanioBuffer>
@@ -330,6 +331,32 @@ class BufferBits{
 			return RES_OK;
 
 		}/*retorna el byte en la posicion numeroByte. Los mismos se cuentan desde el 0*/
+		int get_long(unsigned short numeroLong,unsigned long& retornar){
+
+
+			if( bitActual< BITS_LONG )
+				return RES_ERROR;
+			const unsigned short CANTIDAD_LONGS= (unsigned short)( this->bitActual/BITS_LONG );
+			if(numeroLong >= CANTIDAD_LONGS)
+				return RES_ERROR;
+
+			const TamanioBitset BIT_INSPECCIONAR= BITS_LONG*numeroLong;
+			string bufferString= this->to_string();
+			bitset<BITS_LONG> bitsetAuxiliar;
+
+			for(unsigned short i=0;i<BITS_LONG;i++){
+
+				TamanioBitset indice= BIT_INSPECCIONAR+i;
+				bool valor= (bufferString.at(indice) == '1');
+				bitsetAuxiliar.set( BITS_LONG - 1 - i , valor );
+
+			}
+
+			retornar= bitsetAuxiliar.to_ulong();
+
+			return RES_OK;
+
+		}
 
 
 		int quitar_bit(TamanioBitset posicionBit){

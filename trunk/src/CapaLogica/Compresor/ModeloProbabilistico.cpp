@@ -121,3 +121,10 @@ void ModeloProbabilistico::inicializar_frecuencias_en_1(vector<unsigned short>& 
 
 }
 
+
+short ModeloProbabilistico::get_tamanio_alfabeto(){
+
+	return this->tamanioAlfabeto;
+
+}
+

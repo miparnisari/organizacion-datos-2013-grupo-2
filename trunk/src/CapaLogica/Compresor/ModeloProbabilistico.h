@@ -40,6 +40,10 @@ class ModeloProbabilistico {
 		double calcular_low_count (const char simbolo);
 		double calcular_high_count (const char simbolo);
 
+
+		short get_tamanio_alfabeto();
+
+
 		Uint obtener_simbolo(Uint valor);
 };
 

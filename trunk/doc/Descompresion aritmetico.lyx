@@ -183,11 +183,7 @@ C
 \end_layout
 
 \begin_layout Standard
-Archivo = (4) + 
-\series bold
-00100001010
-\series default
-00000
+Archivo = (4) + 00100000+00-000000
 \end_layout
 
 \begin_layout Standard
@@ -873,7 +869,7 @@ C
 \begin_inset Text
 
 \begin_layout Plain Layout
-0100001 (33)
+0100000 (32)
 \end_layout
 
 \end_inset
@@ -1391,7 +1387,7 @@ C
 \begin_inset Text
 
 \begin_layout Plain Layout
-1000010 (66)
+1000000 (64)
 \end_layout
 
 \end_inset
@@ -1927,7 +1923,7 @@ C
 \begin_inset Text
 
 \begin_layout Plain Layout
-1001010 (74)
+1000000 (64)
 \end_layout
 
 \end_inset

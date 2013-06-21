@@ -25,7 +25,7 @@ using std::vector;
 const TamanioBitset TAMANIO_BUFFER_FINAL= 4096;
 const TamanioBitset TAMANIO_BUFFER_BITS_BYTES= 1024;
 const TamanioBitset TAMANIO_BUFFER_BITS_BITS= TAMANIO_BUFFER_BITS_BYTES*8;
-
+const TamanioBitset TAMANIO_BUFFER_BITS= PRECISION*2;
 
 
 class CompresorAritmetico : public Compresor {
@@ -37,7 +37,10 @@ class CompresorAritmetico : public Compresor {
 		ModeloProbabilistico* modelo;
 		char byteActual;
 
+
+
 		std::vector<bool> _comprimir_ultimo_paso();
+		void _resetear();
 
 
 	public:
@@ -48,12 +51,18 @@ class CompresorAritmetico : public Compresor {
 
 		void inicializar_frecuencias_en_1(vector<unsigned short>& v);
 
-		std::vector<bool> comprimir(const char simbolo);
+		std::vector<bool> comprimir(const char simbolo,Byte& cOverflow,Byte& cUnderflow);
 
 		virtual int comprimir_todo
 			(const char* buffer_a_comprimir,
 			const unsigned int tamanio,
 			char* bufferCompresion);
+
+		virtual int descomprimir_todo
+			(char* buffer,
+			int tamanio,
+			char* descomprimido,
+			unsigned int precision);
 
 };/*Este compresor aplicara las tecnicas de compresion usando objetos del tipo
 Codigo.
