@@ -18,12 +18,9 @@ CompresorAritmetico::CompresorAritmetico(unsigned int tamanioAlfabeto)
 
 void CompresorAritmetico::_resetear(){
 
-	short tamanioAlfabeto= modelo->get_tamanio_alfabeto();
-	delete modelo;
 	delete intervalo;
-	modelo= new ModeloProbabilistico(tamanioAlfabeto);
+	modelo->resetear();
 	intervalo= new Intervalo();
-	modelo->inicializar_frecuencias_en_1();
 	byteActual= '0';
 
 }
@@ -182,7 +179,7 @@ int CompresorAritmetico::comprimir_todo
 
 
 /*fixme arreglar el hecho de trabajar con una precision variable diferente a 32 bits*/
-int CompresorAritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBuffer, char* bufferDescomprimido,
+int CompresorAritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBufferComprimido, char* bufferDescomprimido,
 		unsigned int precision, unsigned int cantidadCaracteresOriginal)
 {
 
@@ -194,20 +191,20 @@ int CompresorAritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBu
 	const unsigned int BYTES_PRECISION= (unsigned int)(precision/8);
 	const unsigned int BYTES_BUFFER_BITS= (unsigned int)(TAMANIO_BUFFER_BITS_DEFAULT / 8);
 
-	if( BYTES_PRECISION < tamanioBuffer )
-		return RES_ERROR;
+//	if( BYTES_PRECISION < tamanioBufferComprimido )
+//		return RES_ERROR;
 
-	for(unsigned int i=0;i<BYTES_BUFFER_BITS && i<tamanioBuffer ;i++){
+	/*cargo inicialmente el buffer de bits llenandolo*/
+	for(unsigned int i=0;i<BYTES_BUFFER_BITS && i<tamanioBufferComprimido ;i++){
 		unsigned char c= bufferComprimido[i];
 		bufferBitsDescompresion.agregar_bits(c);
 		indiceBufferComprimido++;
 	}
-	/*cargo inicialmente el buffer de bits llenandolo*/
 
 	for( unsigned int indiceCaracterActual= 0; indiceCaracterActual<cantidadCaracteresOriginal ; indiceCaracterActual++ ){
 
 		unsigned long valorSimboloActual;
-		bufferBitsDescompresion.get_long(0,valorSimboloActual);
+		bufferBitsDescompresion.get_primer_valor_numerico(precision,valorSimboloActual);
 		char simboloActual= (char)( modelo->obtener_simbolo( (Uint)valorSimboloActual ) );
 		/*recupero un simbolo*/
 
@@ -224,9 +221,16 @@ int CompresorAritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBu
 		/*descarto bits a partir de la cantidad de overflow y underflow resueltos*/
 
 
-		if(indiceBufferComprimido<tamanioBuffer)
-		if( bufferBitsDescompresion.agregar_bits( bufferComprimido[indiceBufferComprimido] )!=RES_ERROR )
-			indiceBufferComprimido++;
+		if(indiceBufferComprimido<tamanioBufferComprimido && (cantidadOverflow || cantidadUnderflow) ){
+
+			unsigned short cantidadBytesLeer= (unsigned short)( (cantidadOverflow+cantidadUnderflow)/8 );
+			cantidadBytesLeer++;
+
+			for( unsigned short i=0;i<cantidadBytesLeer;i++ )
+				if( bufferBitsDescompresion.agregar_bits( (Byte)bufferComprimido[indiceBufferComprimido] )!=RES_ERROR )
+					indiceBufferComprimido++;
+
+		}
 		/*intento agregar un byte mas al buffer de bits*/
 
 	}

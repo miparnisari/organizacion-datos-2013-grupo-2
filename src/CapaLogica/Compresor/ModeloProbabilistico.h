@@ -44,6 +44,9 @@ class ModeloProbabilistico {
 		short get_tamanio_alfabeto();
 
 
+		void resetear();
+
+
 		Uint obtener_simbolo(Uint valor);
 		/*se recupera el valor ASCII de un simbolo a partir de un valor*/
 };

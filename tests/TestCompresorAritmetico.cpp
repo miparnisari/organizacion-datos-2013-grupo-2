@@ -57,8 +57,9 @@ TEST_F(TestCompresorAritmetico, DescomprimirString)
 	buffer[0] = 32;
 	buffer[1] = 0;
 
-	char* bufferDescomprimido = new char[4]();
-	compresor->descomprimir_todo((char*)&buffer,2,bufferDescomprimido,7);
+	char* bufferDescomprimido = new char[8]();
+	ASSERT_TRUE(  compresor->descomprimir_todo((char*)&buffer,2,bufferDescomprimido,7,4)==RES_OK  );
+
 
 	ASSERT_EQ(bufferDescomprimido[0],'A');
 	ASSERT_EQ(bufferDescomprimido[1],'A');
