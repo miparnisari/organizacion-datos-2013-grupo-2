@@ -62,7 +62,8 @@ class CompresorAritmetico : public Compresor {
 			(char* buffer,
 			int tamanio,
 			char* descomprimido,
-			unsigned int precision);
+			unsigned int precision,
+			unsigned int cantidadCaracteresOriginal);
 
 };/*Este compresor aplicara las tecnicas de compresion usando objetos del tipo
 Codigo.

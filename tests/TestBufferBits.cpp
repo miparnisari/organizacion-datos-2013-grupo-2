@@ -420,6 +420,47 @@ TEST_F(TestBufferBits , To_long){
 	IMPRIMIR_MY_VARIABLE( bb.to_string() );
 	IMPRIMIR_MY_VARIABLE(valorLong);
 
+	bb.agregar_bits( (char)3 );
+	bb.agregar_bits( (char)0 );
+	bb.agregar_bits( (char)0 );
+	bb.agregar_bits( (char)0 );
+	bb.get_long(2,valorLong);
+	IMPRIMIR_MY_VARIABLE( bb.to_string() );
+	IMPRIMIR_MY_VARIABLE(valorLong);
+
+
+
+}
+
+
+TEST_F(TestBufferBits,Get_primer_valor_numerico){
+
+	imprimir_test_buffer_bits( "Get_primer_valor_numerico" );
+
+	BufferBits<BITS_LONG> bb;
+	bb.agregar_bits( (Byte)255 );//11111111
+
+	unsigned long valor= 0;
+	IMPRIMIR_MY_VARIABLE( bb.to_string() );
+
+	for( unsigned short i=1;i<=8;i++ ){
+
+		bb.get_primer_valor_numerico(i,valor);
+		IMPRIMIR_MY_VARIABLE(valor);
+
+
+	}
+
+	bb.flush();
+	bb.agregar_bits( (Byte)128 );
+	bb.agregar_bits( (Byte)0 );
+	for( unsigned short i=8;i<=16;i++ ){
+
+		bb.get_primer_valor_numerico(i,valor);
+		IMPRIMIR_MY_VARIABLE(valor);
+
+
+	}
 
 }
 

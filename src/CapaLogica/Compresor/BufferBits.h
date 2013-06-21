@@ -191,7 +191,7 @@ class BufferBits{
 			return RES_OK;
 
 		}
-		int agregar_bits(char valores){
+		int agregar_bits(Byte valores){
 
 			const TamanioBitset ESPACIO_DISPONIBLE= tamanioBuffer - bitActual;
 			const unsigned short TAMANIO_BYTE_BITS= 8;
@@ -486,6 +486,51 @@ class BufferBits{
 			return this->bitActual== 0;
 
 		}
+
+
+		int pop_long(unsigned long& valor){
+
+			int res= this->get_long(0,valor);
+			if(res== RES_ERROR)
+				return RES_ERROR;
+
+			for(unsigned short i=0;i<32;i++)
+				this->quitar_bit(0);
+
+			return RES_OK;
+
+		}
+
+
+		int get_primer_valor_numerico(unsigned short precision,unsigned long& retornar){
+
+			if( precision== 0 )
+				return RES_ERROR;
+			if(bitActual < precision)
+				return RES_ERROR;
+
+			BufferBits<BITS_LONG> bufferAuxiliar;
+			for(unsigned short i=0;i<precision;i++){
+				bool bit;
+				this->get_bit(i,bit);
+				bufferAuxiliar.agregar_bit(bit);
+			}
+
+			bitset<BITS_LONG> bitsetAuxiliar;
+			bitsetAuxiliar.reset();
+			string stringBufferAuxiliar= bufferAuxiliar.to_string();
+
+			for(unsigned short i=0;i<precision;i++){
+				unsigned short indiceStringBufferAuxiliar= precision-1-i;
+				bool bit= stringBufferAuxiliar.at(indiceStringBufferAuxiliar)== '1';
+				bitsetAuxiliar.set(i,bit);
+			}
+
+			retornar= bitsetAuxiliar.to_ulong();
+
+			return RES_OK;
+
+		}/*devuelve en la variable retornar el primer valor numerico en formato unsigned long de tamanio "precision" bits.*/
 
 
 };

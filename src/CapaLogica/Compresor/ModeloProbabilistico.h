@@ -45,6 +45,7 @@ class ModeloProbabilistico {
 
 
 		Uint obtener_simbolo(Uint valor);
+		/*se recupera el valor ASCII de un simbolo a partir de un valor*/
 };
 
 #endif /* MODELOPROBABILISTICO_H_ */
