@@ -70,16 +70,19 @@ Ulonglong Intervalo::get_rango()
 	return (rango);
 }
 
+Uint Intervalo::get_contador_underflow(){
+	return contadorUnderflow;
+}
+
 void Intervalo::calcular_rango()
 {
 	unsigned int u_piso = piso->to_ulong();
 	unsigned int u_techo = techo->to_ulong();
-	std::cout << rango << std::endl;
 	rango = u_techo - u_piso;
 	rango += 1;
-	std::cout << rango << std::endl;
 }
 
+/* Retorna el mensaje correspondiente al valor leido "byteActual" */
 char Intervalo::calcular_valor(char byteActual)
 {
 	char valor = '0';
@@ -87,13 +90,8 @@ char Intervalo::calcular_valor(char byteActual)
 	return valor;
 }
 
-//
-// Verificacion de overflow:
-//	Cantidad de coincidiencias de los primeros N bits entre techo y piso. Esas coincidencias son las que se emiten.
-//	Al emitir, se completa a byte de la siguiente manera:
-//		- Techo: se agregan 1 por la derecha
-//		- Piso:  se agregan 0 por la derecha
-//	Ej: techo= "0011 1010" piso= "0000 1111", Se emite: "00"; techo queda: "1110 1011" (EB); piso queda: "0011 1100" (3C)
+/* Devuelve true si el primer bit de piso y techo son iguales.
+ * Si son iguales se emitiran en el archivo. */
 bool Intervalo::hay_overflow()const
 {
 	//WARNING Order positions are counted from the rightmost bit, which is order position 0.
@@ -102,9 +100,10 @@ bool Intervalo::hay_overflow()const
 	return (primerBitPiso == primerBitTecho);
 }
 
-//Verificacion de Underflow:
-//	Si primer bit de techo es 1 y primer bit de piso es 0 Y
-//		si el segundo bit de techo es 0 y el segundo bit de piso es 1
+/* Verificacion de Underflow:
+Si primer bit de techo es 1 y primer bit de piso es 0 Y
+si el segundo bit de techo es 0 y el segundo bit de piso es 1
+ * */
 bool Intervalo::hay_underflow()const
 {
 	//WARNING Order positions are counted from the rightmost bit, which is order position 0.
@@ -116,6 +115,10 @@ bool Intervalo::hay_underflow()const
 	return false;
 }
 
+/* Actualiza el piso y techo de acuerdo a:
+ * PISO = floor ( piso + rango * low_count )
+ * TECHO = floor (piso + rango * high_count ) + 1
+ */
 void Intervalo::actualizar_piso_techo(double low_count, double high_count)
 {
 	Ulonglong uint_piso = floor(piso->to_ulong() + rango * low_count);
@@ -128,12 +131,13 @@ void Intervalo::actualizar_piso_techo(double low_count, double high_count)
 	techo = new std::bitset<PRECISION>(uint_techo);
 }
 
+/* Resuelve underflows y overflows y retorna lo que se debe emitir en archivo */
 std::vector<bool> Intervalo::normalizar( Byte& cOverflow,Byte& cUnderflow )
 {
 	std::vector<bool> bits_a_emitir;
 	cOverflow= cUnderflow= 0;
-	IMPRIMIR_MY_VARIABLE(*piso);
-	IMPRIMIR_MY_VARIABLE(*techo);
+//	IMPRIMIR_MY_VARIABLE(*piso);
+//	IMPRIMIR_MY_VARIABLE(*techo);
 
 	while (hay_overflow())
 	{
@@ -168,9 +172,8 @@ std::vector<bool> Intervalo::normalizar( Byte& cOverflow,Byte& cUnderflow )
 }
 
 /*
- * eliminar los segundos dígitos de piso y techo,
+ * Eliminar los segundos dígitos de piso y techo,
  * correr los demás dígitos a la derecha.
- *
  */
 void Intervalo::resolver_underflow()
 {
@@ -206,9 +209,4 @@ void Intervalo::resolver_overflow()
 	// Agregar 0 al piso en la posicion 0 (la mas derecha)
 	*piso <<= 1;
 	piso->set(0,0);
-}
-
-
-Uint Intervalo::get_contador_underflow(){
-	return contadorUnderflow;
 }

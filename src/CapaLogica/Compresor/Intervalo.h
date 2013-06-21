@@ -37,9 +37,10 @@ class Intervalo {
 		BitsPiso& get_piso();
 		BitsTecho& get_techo();
 		Ulonglong get_rango();
+		Uint get_contador_underflow();
 
 		std::vector<bool> normalizar(Byte& cOverflow,Byte& cUnderflow);
-		/*resuelve underflows y overflows y retorna lo que se debe emitir en archivo*/
+
 		void resolver_underflow();
 		void resolver_overflow();
 
@@ -47,9 +48,6 @@ class Intervalo {
 		bool hay_underflow() const;
 
 		char calcular_valor(char byteActual);
-		/*retorna el mensaje correspondiente al valor leido "byteActual" */
-
-		Uint get_contador_underflow();
 
 		void calcular_rango();
 		void actualizar_piso_techo(double low_count, double high_count);
