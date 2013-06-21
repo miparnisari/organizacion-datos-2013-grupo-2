@@ -57,7 +57,6 @@ TEST_F(TestManejadorRegistrosVariables,Refactorizar)
 			ClaveX clave;
 			clave= unRegistro.get_clave();
 //			clave.imprimir_dato();
-			cout<<endl;
 
 		}
 
@@ -456,5 +455,5 @@ TEST_F(TestManejadorRegistrosVariables,Agregar_registro_clave)
 
 	RegistroClave primerRegistro;
 	ASSERT_TRUE( mrv.get_registro_ocupado(&primerRegistro,0)!= RES_ERROR );
-	primerRegistro.get_clave().imprimir_dato();
+//	primerRegistro.get_clave().imprimir_dato();
 }

@@ -46,3 +46,21 @@ TEST_F(TestCompresorAritmetico, ComprimirString)
 
 	delete buffer;
 }
+
+TEST_F(TestCompresorAritmetico, DescomprimirString)
+{
+	char buffer[2];
+	buffer[0] = 32;
+	buffer[1] = 0;
+
+	char* bufferDescomprimido = new char[4]();
+	compresor->descomprimir_todo((char*)&buffer,2,bufferDescomprimido,7);
+
+	ASSERT_EQ(bufferDescomprimido[0],'A');
+	ASSERT_EQ(bufferDescomprimido[1],'A');
+	ASSERT_EQ(bufferDescomprimido[2],'B');
+	ASSERT_EQ(bufferDescomprimido[3],'C');
+
+	delete bufferDescomprimido;
+
+}
