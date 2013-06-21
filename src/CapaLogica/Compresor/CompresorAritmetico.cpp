@@ -15,6 +15,19 @@ CompresorAritmetico::CompresorAritmetico(unsigned int tamanioAlfabeto)
 	byteActual = '0';
 }
 
+
+void CompresorAritmetico::_resetear(){
+
+	short tamanioAlfabeto= modelo->get_tamanio_alfabeto();
+	delete modelo;
+	delete intervalo;
+	modelo= new ModeloProbabilistico(tamanioAlfabeto);
+	intervalo= new Intervalo();
+	byteActual= '0';
+
+}
+
+
 CompresorAritmetico :: CompresorAritmetico (ModeloProbabilistico* unModelo)
 {
 	modelo = unModelo;
@@ -59,7 +72,7 @@ std::vector<bool> CompresorAritmetico::_comprimir_ultimo_paso(){
 
 
 
-std::vector<bool> CompresorAritmetico::comprimir(const char simbolo)
+std::vector<bool> CompresorAritmetico::comprimir(const char simbolo,Byte& cOverflow,Byte& cUnderflow)
 {
 	intervalo->calcular_rango();
 
@@ -78,7 +91,6 @@ std::vector<bool> CompresorAritmetico::comprimir(const char simbolo)
 	 * Modifica piso y techo.
 	 */
 
-	Byte cOverflow,cUnderflow;
 	std::vector<bool> bits_a_emitir = intervalo->normalizar(cOverflow,cUnderflow);
 
 	modelo->incrementar_frecuencia(simbolo);
@@ -106,7 +118,8 @@ int CompresorAritmetico::comprimir_todo
 		// Ciclo que recorre el buffer de entrada
 		for (unsigned int i = 0; i < tamanio; i++)
 		{
-			std::vector<bool> bits_caracter_actual = comprimir(*(buffer_a_comprimir+i));
+			Byte cOverflow,cUnderflow;
+			std::vector<bool> bits_caracter_actual = comprimir(*(buffer_a_comprimir+i),cOverflow,cUnderflow);
 
 			const TamanioBitset TAMANIO_BITS_CARACTER_ACTUAL= bits_caracter_actual.size();
 			for( TamanioBitset j=0;j<TAMANIO_BITS_CARACTER_ACTUAL;j++ ){
@@ -164,4 +177,23 @@ int CompresorAritmetico::comprimir_todo
 
 	return tamanioComprimido;
 
+}
+
+int CompresorAritmetico::descomprimir_todo(char* buffer, int tamanio, char* descomprimido,unsigned int precision)
+{
+
+	_resetear();
+
+	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> bufferDescompresion;
+	const unsigned int BYTES_PRECISION= (unsigned int)(precision/8);
+
+	for(unsigned int i=0;i<BYTES_PRECISION;i++){
+		unsigned char c= buffer[i];
+		bufferDescompresion.agregar_bits(c);
+	}
+
+
+
+
+	return RES_OK;
 }

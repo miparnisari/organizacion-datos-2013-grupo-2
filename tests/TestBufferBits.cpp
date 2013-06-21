@@ -395,6 +395,34 @@ TEST_F(TestBufferBits , Agregar_bits_char_con_bits_iniciales){
 }
 
 
+TEST_F(TestBufferBits , To_long){
+
+	imprimir_test_buffer_bits("To_long");
+
+	BufferBits<128> bb;
+	const unsigned char CANTIDAD_BYTES= 4;
+
+	for(char c=1;c<CANTIDAD_BYTES;c++){
+		bb.agregar_bits( (char)0 );
+		IMPRIMIR_MY_VARIABLE( bb.to_string() );
+	}bb.agregar_bits( (char)1 );IMPRIMIR_MY_VARIABLE(bb.to_string());
+
+	unsigned long valorLong;
+	bb.get_long(0,valorLong);
+	IMPRIMIR_MY_VARIABLE( valorLong );
+	ASSERT_TRUE( valorLong== 1 );
+
+	bb.agregar_bits( (char)0 );
+	bb.agregar_bits( (char)0 );
+	bb.agregar_bits( (char)1 );
+	bb.agregar_bits( (char)1 );
+	bb.get_long(1,valorLong);
+	IMPRIMIR_MY_VARIABLE( bb.to_string() );
+	IMPRIMIR_MY_VARIABLE(valorLong);
+
+
+}
+
 
 //TEST_F(TestBufferBits,Test_stress){
 //
