@@ -2,6 +2,9 @@
 #define COMPRESORPPMC_H
 
 #include "Compresor.h"
+#include "../../Constantes.h"
+#include "CompresorAritmetico.h"
+#include "Contexto.h"
 
 class CompresorPPMC : public Compresor
 {

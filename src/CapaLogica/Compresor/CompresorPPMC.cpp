@@ -9,6 +9,6 @@ CompresorPPMC::CompresorPPMC() : Compresor()
 
 CompresorPPMC::~CompresorPPMC()
 {
-	
+
 }
 
