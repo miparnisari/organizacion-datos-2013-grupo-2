@@ -28,13 +28,19 @@ ModeloProbabilistico& ModeloProbabilistico::operator = (const ModeloProbabilisti
 	return (*this);
 }
 
+short ModeloProbabilistico::get_tamanio_alfabeto(){
+
+	return this->tamanioAlfabeto;
+
+}
+
 void ModeloProbabilistico::inicializar_frecuencias_en_1()
 {
 	for (unsigned int i = 0; i < TAMANIO_ALFABETO; i++)
 		*(frecuenciasSimbolos+i) = 1;
 }
 
-void ModeloProbabilistico::incrementar_frecuencia (const char simbolo)
+void ModeloProbabilistico::incrementar_frecuencia (const Uint simbolo)
 {
 	Uint posicionSimbolo = simbolo;
 	*(frecuenciasSimbolos+posicionSimbolo) += 1;
@@ -48,7 +54,7 @@ void ModeloProbabilistico::incrementar_frecuencia (const char simbolo)
  *    C                1              6              7
  *    D                1              7              8
  */
-double ModeloProbabilistico::calcular_low_count (const char simbolo)
+double ModeloProbabilistico::calcular_low_count (const Uint simbolo)
 {
 	Uint posicionSimbolo = simbolo;
 	Uint contador = 0;
@@ -68,7 +74,7 @@ double ModeloProbabilistico::calcular_low_count (const char simbolo)
  *    C                1              6              7
  *    D                1              7              8
  */
-double ModeloProbabilistico::calcular_high_count (const char simbolo)
+double ModeloProbabilistico::calcular_high_count (const Uint simbolo)
 {
 	Uint posicionSimbolo = simbolo;
 	Uint contador = 0;
@@ -90,21 +96,6 @@ Uint ModeloProbabilistico::calcular_total_frecuencias()
 	return total;
 }
 
-Uint ModeloProbabilistico::obtener_simbolo(Uint valor)
-{
-	for (Uint i = 0; i < TAMANIO_ALFABETO; i++)
-	{
-		if (valor < *(frecuenciasSimbolos + i))
-			return i;
-	}
-
-	return TAMANIO_ALFABETO;
-}
-/* Recibe un numero y devuelve la posicion del vector de frecuencias
- * donde cae ese numero.
- */
-
-
 void ModeloProbabilistico::inicializar_frecuencias_en_1(vector<unsigned short>& v){
 
 	const unsigned short TAMANIO_V= v.size();
@@ -121,20 +112,11 @@ void ModeloProbabilistico::inicializar_frecuencias_en_1(vector<unsigned short>& 
 
 }
 
-
-short ModeloProbabilistico::get_tamanio_alfabeto(){
-
-	return this->tamanioAlfabeto;
-
-}
-
-
-void ModeloProbabilistico::resetear(){
+void ModeloProbabilistico::resetear()
+{
 
 	for(short i=0;i<tamanioAlfabeto;i++)
 		if( this->frecuenciasSimbolos[i]!= 0 )
 			this->frecuenciasSimbolos[i] = 1;
 
-
 }
-

@@ -82,11 +82,10 @@ void Intervalo::calcular_rango()
 	rango += 1;
 }
 
-/* Retorna el mensaje correspondiente al valor leido "byteActual" */
-char Intervalo::calcular_valor(char byteActual)
+/* Retorna el numero correspondiente al valor leido "byteActual" */
+Uint Intervalo::calcular_valor(Uint byteActual)
 {
-	char valor = '0';
-	valor = (byteActual - piso->to_ulong()) / rango;
+	Uint valor = (byteActual - piso->to_ulong());
 	return valor;
 }
 
