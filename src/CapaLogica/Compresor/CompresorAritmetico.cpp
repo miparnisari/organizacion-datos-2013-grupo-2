@@ -53,8 +53,12 @@ Uint CompresorAritmetico::descomprimir(Uint valor)
 
 	for (Uint i = 0; i < tam_alfabeto; i++)
 	{
-		Uint piso_caracter = floor (piso + rango * modelo->calcular_low_count(i));
-		Uint techo_caracter = floor (piso + rango * modelo->calcular_high_count(i)) - 1;
+		double low_caracter =  modelo->calcular_low_count(i);
+		double high_caracter = modelo->calcular_high_count(i);
+		Uint piso_caracter = floor (piso + rango * low_caracter);
+		Uint techo_caracter = floor (piso + rango * high_caracter);
+		if (techo_caracter != piso_caracter)
+			techo_caracter -= 1;
 
 		if (piso_caracter <= valor && valor <= techo_caracter)
 		{
@@ -117,6 +121,7 @@ std::vector<bool> CompresorAritmetico::comprimir(const Uint simbolo,Byte& cOverf
 	std::vector<bool> bits_a_emitir = intervalo->normalizar(cOverflow,cUnderflow);
 
 	modelo->incrementar_frecuencia(simbolo);
+	intervalo->calcular_rango();
 
 	return bits_a_emitir;
 }
