@@ -9,13 +9,6 @@
 #include "../src/Constantes.h"
 
 
-void imprimir_test_buffer_bits(string s){
-
-	cout<<">TestBufferBits: "+s<<endl;
-
-}
-
-
 // To use a test fixture, derive a class from testing::Test.
 class TestBufferBits : public testing::Test {
  protected:
@@ -31,6 +24,11 @@ class TestBufferBits : public testing::Test {
   }
 
   // A helper function that some test uses.
+  void imprimir_test_buffer_bits(string s){
+
+  	cout<<">TestBufferBits: "+s<<endl;
+
+  }
 
 };
 

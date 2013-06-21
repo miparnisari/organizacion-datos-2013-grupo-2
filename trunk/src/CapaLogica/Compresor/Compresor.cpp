@@ -17,3 +17,12 @@ int Compresor::comprimir_todo(const char* buffer, const unsigned int tamanioBuff
 	return 0;
 }
 
+int Compresor::descomprimir_todo
+			(char* buffer,
+			int tamanio,
+			char* descomprimido,
+			unsigned int precision,
+			unsigned int cantidadCaracteresOriginal)
+{
+	return 0;
+}

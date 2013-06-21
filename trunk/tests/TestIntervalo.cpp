@@ -8,6 +8,13 @@
 #include "../src/CapaLogica/Compresor/Intervalo.h"
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
+/*
+ *
+ * NOTA: ESTOS TESTS SE PROBARON CON PRECISION = 7.
+ * CON OTRA PRECISION NO VAN A FUNCIONAR.
+ *
+ */
+
 // To use a test fixture, derive a class from testing::Test.
 class TestIntervalo : public testing::Test {
  protected:

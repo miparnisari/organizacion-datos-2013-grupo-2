@@ -68,6 +68,7 @@ class RegistroVariable {
 		virtual bool fue_eliminado()throw();
 
 		RegistroVariable* comprimir (Compresor * compresor);
+		RegistroVariable* descomprimir(Compresor * compresor);
 
 		virtual bool esta_limpio(){return tamanio==0;};
 		/*retorna true si el registru fue limpiado y el mismo no se cargo de nuevo con datos.*/
