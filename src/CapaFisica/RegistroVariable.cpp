@@ -350,9 +350,32 @@ TamanioCampos RegistroVariable::get_tamanio()throw()
 	return tamanio;
 }
 
+RegistroVariable* RegistroVariable :: descomprimir(Compresor * compresor)
+{
+	TamanioCampos tamanioOriginal;
+	recuperar_campo((char*)&tamanioOriginal,0);
+
+	TamanioCampos tamanioComprimido= this->get_tamanio_campo(1);
+	char* bufferComprimido= new char[tamanioComprimido];
+	recuperar_campo(bufferComprimido,1);
+
+	char* descomprimido = new char[tamanioOriginal + sizeof(tamanioOriginal)]();
+	memcpy( descomprimido, (void*)&tamanioOriginal , sizeof(tamanioOriginal) );
+	compresor->descomprimir_todo(bufferComprimido,tamanioComprimido,descomprimido+sizeof(tamanioOriginal),PRECISION,tamanioOriginal);
+
+	RegistroVariable* registroNuevo= new RegistroVariable();
+	registroNuevo->desempaquetar( descomprimido );
+
+	delete[] bufferComprimido;
+	delete[] descomprimido;
+
+	return registroNuevo;
+
+
+}
+
 RegistroVariable* RegistroVariable::comprimir (Compresor * compresor)
 {
-
 	char* bufferComprimido = new char[tamanio]();
 	int tamanioCompresion = compresor->comprimir_todo(buffer,tamanio,bufferComprimido);
 
@@ -361,7 +384,7 @@ RegistroVariable* RegistroVariable::comprimir (Compresor * compresor)
 	/*agrego un campo que representa la cantidad de caracteres originales de la fuente . */
 	reg_comprimido->agregar_campo(bufferComprimido,tamanioCompresion);
 
-	delete bufferComprimido;
+	delete[] bufferComprimido;
 
 	return reg_comprimido;
 }/*se debe liberar la memoria de la variable retornada*/

@@ -62,9 +62,9 @@ Uint CompresorAritmetico::descomprimir(Uint valor)
 
 		if (piso_caracter <= valor && valor <= techo_caracter)
 		{
-			IMPRIMIR_MY_VARIABLE(piso_caracter);
-			IMPRIMIR_MY_VARIABLE(techo_caracter);
-			IMPRIMIR_MY_VARIABLE(i);
+//			IMPRIMIR_MY_VARIABLE(piso_caracter);
+//			IMPRIMIR_MY_VARIABLE(techo_caracter);
+//			IMPRIMIR_MY_VARIABLE(i);
 			return i;
 		}
 	}
@@ -140,41 +140,17 @@ int CompresorAritmetico::comprimir_todo
 	std::vector<bool> bitsAemitir;
 	//char byte_a_emitir = '0';
 
-
-
-
-		// Ciclo que recorre el buffer de entrada
-		for (unsigned int i = 0; i < tamanio; i++)
-		{
-			Byte cOverflow,cUnderflow;
-			std::vector<bool> bits_caracter_actual = comprimir(*(buffer_a_comprimir+i),cOverflow,cUnderflow);
-
-			const TamanioBitset TAMANIO_BITS_CARACTER_ACTUAL= bits_caracter_actual.size();
-			for( TamanioBitset j=0;j<TAMANIO_BITS_CARACTER_ACTUAL;j++ ){
-
-				bool bit= bits_caracter_actual.at(j);
-				IMPRIMIR_MY_VARIABLE(bit);
-
-				if( bufferBits.agregar_bit(bit)== RES_ERROR ){
-					char bufferTemporal[TAMANIO_BUFFER_BITS_BYTES];
-					bufferBits.dump( bufferTemporal );
-					stream.write( bufferTemporal,TAMANIO_BUFFER_BITS_BYTES );
-					bufferBits.agregar_bit(bit);
-
-					tamanioComprimido+= TAMANIO_BUFFER_BITS_BYTES;
-				}
-
-
-			}//for j<TAMANIO_BITS_CARACTER_ACTUAL
-
-		}//for i<tamanio
-
-		std::vector<bool> bits_caracter_actual = _comprimir_ultimo_paso();
+	// Ciclo que recorre el buffer de entrada
+	for (unsigned int i = 0; i < tamanio; i++)
+	{
+		Byte cOverflow,cUnderflow;
+		std::vector<bool> bits_caracter_actual = comprimir(*(buffer_a_comprimir+i),cOverflow,cUnderflow);
 
 		const TamanioBitset TAMANIO_BITS_CARACTER_ACTUAL= bits_caracter_actual.size();
 		for( TamanioBitset j=0;j<TAMANIO_BITS_CARACTER_ACTUAL;j++ ){
 
 			bool bit= bits_caracter_actual.at(j);
+			IMPRIMIR_MY_VARIABLE(bit);
 
 			if( bufferBits.agregar_bit(bit)== RES_ERROR ){
 				char bufferTemporal[TAMANIO_BUFFER_BITS_BYTES];
@@ -188,23 +164,41 @@ int CompresorAritmetico::comprimir_todo
 
 		}//for j<TAMANIO_BITS_CARACTER_ACTUAL
 
+	}//for i<tamanio
 
+	std::vector<bool> bits_caracter_actual = _comprimir_ultimo_paso();
 
-		if(bufferBits.get_indice_buffer()!=0){
+	const TamanioBitset TAMANIO_BITS_CARACTER_ACTUAL= bits_caracter_actual.size();
+	for( TamanioBitset j=0;j<TAMANIO_BITS_CARACTER_ACTUAL;j++ )
+	{
 
-			char bufferAuxiliar[TAMANIO_BUFFER_BITS_BYTES];
-			TamanioBitset tamanioUltimaEscritura= bufferBits.dump_y_completar(bufferAuxiliar);
-			stream.write( bufferAuxiliar,tamanioUltimaEscritura );
-			tamanioComprimido+= tamanioUltimaEscritura;
+		bool bit= bits_caracter_actual.at(j);
 
+		if( bufferBits.agregar_bit(bit)== RES_ERROR ){
+			char bufferTemporal[TAMANIO_BUFFER_BITS_BYTES];
+			bufferBits.dump( bufferTemporal );
+			stream.write( bufferTemporal,TAMANIO_BUFFER_BITS_BYTES );
+			bufferBits.agregar_bit(bit);
+
+			tamanioComprimido+= TAMANIO_BUFFER_BITS_BYTES;
 		}
 
-		stream.seekg(0,ios::beg);
-		stream.read( bufferCompresion,tamanioComprimido );
 
+	}//for j<TAMANIO_BITS_CARACTER_ACTUAL
+
+	if(bufferBits.get_indice_buffer()!=0){
+
+		char bufferAuxiliar[TAMANIO_BUFFER_BITS_BYTES];
+		TamanioBitset tamanioUltimaEscritura= bufferBits.dump_y_completar(bufferAuxiliar);
+		stream.write( bufferAuxiliar,tamanioUltimaEscritura );
+		tamanioComprimido+= tamanioUltimaEscritura;
+
+	}
+
+	stream.seekg(0,ios::beg);
+	stream.read( bufferCompresion,tamanioComprimido );
 
 	return tamanioComprimido;
-
 }
 
 
@@ -265,8 +259,6 @@ int CompresorAritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBu
 		/*intento agregar un byte mas al buffer de bits*/
 
 	}
-
-
 
 	return RES_OK;
 }
