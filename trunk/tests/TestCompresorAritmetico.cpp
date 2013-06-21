@@ -31,6 +31,10 @@ class TestCompresorAritmetico : public testing::Test {
 
 };
 
+
+
+
+
 TEST_F(TestCompresorAritmetico, ComprimirString)
 {
 	std::string string = "AABC";

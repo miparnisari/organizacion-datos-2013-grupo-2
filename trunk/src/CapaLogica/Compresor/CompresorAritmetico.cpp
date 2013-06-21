@@ -23,6 +23,7 @@ void CompresorAritmetico::_resetear(){
 	delete intervalo;
 	modelo= new ModeloProbabilistico(tamanioAlfabeto);
 	intervalo= new Intervalo();
+	modelo->inicializar_frecuencias_en_1();
 	byteActual= '0';
 
 }
@@ -179,19 +180,56 @@ int CompresorAritmetico::comprimir_todo
 
 }
 
-int CompresorAritmetico::descomprimir_todo(char* buffer, int tamanio, char* descomprimido,unsigned int precision)
+
+/*fixme arreglar el hecho de trabajar con una precision variable diferente a 32 bits*/
+int CompresorAritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBuffer, char* bufferDescomprimido,
+		unsigned int precision, unsigned int cantidadCaracteresOriginal)
 {
 
 	_resetear();
 
-	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> bufferDescompresion;
+	unsigned int indiceBufferComprimido= 0;
+
+	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> bufferBitsDescompresion;
 	const unsigned int BYTES_PRECISION= (unsigned int)(precision/8);
+	const unsigned int BYTES_BUFFER_BITS= (unsigned int)(TAMANIO_BUFFER_BITS_DEFAULT / 8);
 
-	for(unsigned int i=0;i<BYTES_PRECISION;i++){
-		unsigned char c= buffer[i];
-		bufferDescompresion.agregar_bits(c);
+	if( BYTES_PRECISION < tamanioBuffer )
+		return RES_ERROR;
+
+	for(unsigned int i=0;i<BYTES_BUFFER_BITS && i<tamanioBuffer ;i++){
+		unsigned char c= bufferComprimido[i];
+		bufferBitsDescompresion.agregar_bits(c);
+		indiceBufferComprimido++;
 	}
+	/*cargo inicialmente el buffer de bits llenandolo*/
 
+	for( unsigned int indiceCaracterActual= 0; indiceCaracterActual<cantidadCaracteresOriginal ; indiceCaracterActual++ ){
+
+		unsigned long valorSimboloActual;
+		bufferBitsDescompresion.get_long(0,valorSimboloActual);
+		char simboloActual= (char)( modelo->obtener_simbolo( (Uint)valorSimboloActual ) );
+		/*recupero un simbolo*/
+
+		Byte cantidadOverflow,cantidadUnderflow;
+		this->comprimir( simboloActual, cantidadOverflow , cantidadUnderflow );
+		bufferDescomprimido[indiceCaracterActual] = simboloActual;
+		/*guardo el simbolo recuperado*/
+
+		for(Byte overflow=0;overflow<cantidadOverflow;overflow++)
+			bufferBitsDescompresion.quitar_bit(0);
+
+		for(Byte underflow=0;underflow<cantidadUnderflow;underflow++)
+			bufferBitsDescompresion.quitar_bit(1);
+		/*descarto bits a partir de la cantidad de overflow y underflow resueltos*/
+
+
+		if(indiceBufferComprimido<tamanioBuffer)
+		if( bufferBitsDescompresion.agregar_bits( bufferComprimido[indiceBufferComprimido] )!=RES_ERROR )
+			indiceBufferComprimido++;
+		/*intento agregar un byte mas al buffer de bits*/
+
+	}
 
 
 
