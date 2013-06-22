@@ -53,14 +53,19 @@ void PPMC::_guardar_bits(char* bufferComprimido,
 	if(!buffer_bits.completa_octeto())
 		return;
 
+	char* puntero= bufferComprimido+indiceBufferComprimido;
+	Uint const CANTIDAD_BYTES_ESCRIBIR= buffer_bits.get_cantidad_bytes();
+	buffer_bits.dump( puntero );
+	indiceBufferComprimido+= CANTIDAD_BYTES_ESCRIBIR;
 
-	Uint CANTIDAD_BYTES_ESCRIBIR= buffer_bits.get_cantidad_bytes();
-	for(Uint i=0;i<CANTIDAD_BYTES_ESCRIBIR;i++){
-		Byte byte;
-		buffer_bits.pop_byte(byte);
-		bufferComprimido[indiceBufferComprimido]= (char)byte;
-		indiceBufferComprimido++;
-	}
+
+//	Uint CANTIDAD_BYTES_ESCRIBIR= buffer_bits.get_cantidad_bytes();
+//	for(Uint i=0;i<CANTIDAD_BYTES_ESCRIBIR;i++){
+//		Byte byte;
+//		buffer_bits.pop_byte(byte);
+//		bufferComprimido[indiceBufferComprimido]= (char)byte;
+//		indiceBufferComprimido++;
+//	}
 
 
 
