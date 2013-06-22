@@ -13,7 +13,7 @@ ModeloProbabilistico::ModeloProbabilistico(short un_tamanio_alfabeto) {
 }
 
 ModeloProbabilistico::~ModeloProbabilistico() {
-	delete frecuenciasSimbolos;
+	delete[] frecuenciasSimbolos;
 }
 
 ModeloProbabilistico& ModeloProbabilistico::operator = (const ModeloProbabilistico& otro)

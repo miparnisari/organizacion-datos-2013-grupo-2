@@ -84,7 +84,7 @@ std::vector<bool> CompresorAritmetico::_comprimir_ultimo_paso(){
 	retornar.push_back( piso[PRECISION-1] );
 	bool negado= !piso[PRECISION-1];
 	const Uint CANTIDAD_UNDERFLOW= intervalo->get_contador_underflow();
-	IMPRIMIR_MY_VARIABLE(CANTIDAD_UNDERFLOW);
+
 	for(Uint i=0;i<CANTIDAD_UNDERFLOW;i++)
 		retornar.push_back(negado);
 
@@ -231,7 +231,7 @@ int CompresorAritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBu
 		bufferBitsDescompresion.get_primer_valor_numerico(precision,valorSimboloActual);
 
 		Uint simboloActual= descomprimir((Uint)valorSimboloActual);
-		IMPRIMIR_MY_VARIABLE(simboloActual);
+//		IMPRIMIR_MY_VARIABLE((char)simboloActual);
 		/*recupero un simbolo*/
 
 		Byte cantidadOverflow,cantidadUnderflow;
