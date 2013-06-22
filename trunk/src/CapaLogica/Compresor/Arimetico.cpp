@@ -97,6 +97,11 @@ std::vector<bool> Aritmetico::comprimir_ultimo_paso(){
 
 }
 
+ModeloProbabilistico* Aritmetico::get_modelo()
+{
+	return modelo;
+}
+
 std::vector<bool> Aritmetico::comprimir(const Uint simbolo,Byte& cOverflow,Byte& cUnderflow)
 {
 	intervalo->calcular_rango();

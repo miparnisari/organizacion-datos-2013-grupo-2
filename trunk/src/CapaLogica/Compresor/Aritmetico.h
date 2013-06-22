@@ -42,6 +42,7 @@ class Aritmetico : public Compresor {
 		virtual ~ Aritmetico ();
 
 		void inicializar_frecuencias_en_1(vector<unsigned short>& v);
+		ModeloProbabilistico* get_modelo();
 		int set_modelo(ModeloProbabilistico* mp);
 
 		std::vector<bool> comprimir_ultimo_paso();

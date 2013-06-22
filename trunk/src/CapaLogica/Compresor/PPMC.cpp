@@ -88,6 +88,34 @@ std::vector<bool> PPMC::_comprimir_ultimo_paso(string contexto)
 	return bits_a_emitir;
 }
 
+void PPMC::_actualizar_contexto(int num_contexto_actual, Uint simbolo, string contexto_del_simbolo)
+{
+
+	// Caso en el que se emitio ESCAPE y era el unico simbolo posible
+	// Entonces aumentamos la frecuencia del caracter que acabamos de leer
+	cout << "INCREMENTAR FRECUENCIA DE " << (char)simbolo << " EN " << contexto_del_simbolo << endl;
+	contextos->incrementar_frecuencia(simbolo,contexto_del_simbolo);
+
+	if (num_contexto_actual != orden_maximo)
+	{
+		// En el contexto superior, creamos el contexto "contexto + simbolo"
+		// solo con el ESCAPE
+		ModeloProbabilistico* modelo_contexto_superior;
+
+		string ctx = "";
+		if (num_contexto_actual != -1)
+			ctx += contexto_del_simbolo;
+		ctx += simbolo;
+
+		cout << "CREAR CONTEXTO " << ctx << " SOLO CON ESCAPE = 1" << endl;
+		int res = contextos->devolver_modelo(ctx,&modelo_contexto_superior);
+		if (res == RES_ERROR)
+		{
+			_crear_modelo_vacio(ctx);
+		}
+	}
+
+}
 
 int PPMC::comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::vector<bool>& a_emitir)
 {
@@ -96,6 +124,7 @@ int PPMC::comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::
 	int res = contextos->devolver_modelo(contexto_del_simbolo,&modelo_actual);
 	if (res == RES_ERROR)
 	{
+		cout << "CREAR CONTEXTO " << contexto_del_simbolo << endl;
 		_crear_modelo_vacio(contexto_del_simbolo);
 		contextos->devolver_modelo(contexto_del_simbolo,&modelo_actual);
 	}
@@ -107,16 +136,16 @@ int PPMC::comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::
 		resultado = RES_ESCAPE;
 
 
-
 		if (modelo_actual->get_frecuencia(VALOR_DEL_ESCAPE) == 1  && modelo_actual->calcular_total_frecuencias() == 1)
 		{
 			// Si el escape es el unico simbolo no se va a emitir nada asi que no hay que llamar a comprimir
+			int num_contexto_actual = utilitarios::string_a_int(contexto_del_simbolo);
+			_actualizar_contexto(num_contexto_actual,simbolo, contexto_del_simbolo);
 		}
 		else {
 			// Si el escape NO es el unico simbolo, hay que comprimirlo
 			a_emitir = comp_aritmetico->comprimir(VALOR_DEL_ESCAPE,cOverflow,cUnderflow);
-			for (unsigned int i = 0; i < a_emitir.size(); i++)
-				IMPRIMIR_MY_VARIABLE((int)a_emitir[i]);
+
 		}
 	}
 
@@ -124,8 +153,6 @@ int PPMC::comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::
 	else {
 		resultado = RES_OK;
 		a_emitir = comp_aritmetico->comprimir(simbolo,cOverflow,cUnderflow);
-		for (unsigned int i = 0; i < a_emitir.size(); i++)
-			IMPRIMIR_MY_VARIABLE((int)a_emitir[i]);
 	}
 
 	return resultado;
@@ -142,29 +169,44 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 	for (Uint i = 0; i < tamanioBuffer; i++)
 	{
 		Uint simbolo = buffer[i];
-
+		cout << "ORDEN =" << num_contexto << endl;
+		cout << "CONTEXTO = " << contexto << endl;
+		cout << "SIMBOLO A COMPRIMIR =" << (char)simbolo << endl;
 		int res = comprimir(simbolo,contexto, bits_a_emitir);
 
 		_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 
+		num_contexto --;
+
 		while (res == RES_ESCAPE)
 		{
+			cout << "EMITI ESCAPE" << endl;
+			char primer_char_ctx = contexto[0];
 			contexto.erase(0,1); // "BC"
-			if (contexto == "")
-			{
-				num_contexto = -1;
-			}
 			contexto = utilitarios::int_a_string(num_contexto);
-
+			cout << "INTENTO COMPRIMIR " << simbolo << " EN " << contexto << endl;
 			res = comprimir(simbolo,contexto,bits_a_emitir);
 			_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 
-			if (num_contexto == -1)
-				num_contexto = orden_maximo;
-			else
-				num_contexto --;
+			if (num_contexto == -1) {
+				contexto = primer_char_ctx;
+				contexto += simbolo;
+				num_contexto += 2 + i;
+				if (num_contexto > orden_maximo)
+					num_contexto = orden_maximo;
 
+				cout << "NUEVO CONTEXTO = " << contexto << endl;
+				cout << "NUEVO ORDEN = " << num_contexto << endl;
+				break;
+			}
+			else
+			{
+				num_contexto --;
+				contexto += simbolo;
+			}
 		}
+
+
 	}
 
 	bits_a_emitir = _comprimir_ultimo_paso(contexto);
