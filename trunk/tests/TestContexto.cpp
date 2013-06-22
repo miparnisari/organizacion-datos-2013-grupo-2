@@ -99,3 +99,36 @@ TEST_F(TestContexto, AgregarDosModelosIguales){
 	ASSERT_EQ(unContexto.agregar_modelo(s, modelo2), RES_ERROR);
 
 }
+
+TEST_F(TestContexto, Integracion){
+	Contextos unContexto;
+	string s1 = "A";
+	string s2 = "AB";
+	ModeloProbabilistico* modelo1 = new ModeloProbabilistico(TAMANIO_ALFABETO);
+	ModeloProbabilistico* modelo2 = new ModeloProbabilistico(TAMANIO_ALFABETO);
+	ModeloProbabilistico* modeloAux;
+	modelo1->incrementar_frecuencia(VALOR_DEL_ESCAPE);
+	modelo2->incrementar_frecuencia(VALOR_DEL_ESCAPE);
+
+	ASSERT_EQ(unContexto.agregar_modelo(s1, modelo1), RES_OK);
+	ASSERT_EQ(unContexto.agregar_modelo(s2, modelo2), RES_OK);
+
+	ASSERT_EQ(unContexto.incrementar_frecuencia(65, s2), RES_OK);
+	ASSERT_EQ(unContexto.incrementar_frecuencia(65, s2), RES_OK);
+	ASSERT_EQ(unContexto.incrementar_frecuencia(72, s1), RES_OK);
+
+	ASSERT_EQ(unContexto.devolver_modelo(s2, &modeloAux), RES_OK);
+	ASSERT_TRUE((0.65 < (modeloAux->calcular_low_count(VALOR_DEL_ESCAPE))) && ((modeloAux->calcular_low_count(VALOR_DEL_ESCAPE))< 0.67));
+	ASSERT_EQ(modeloAux->calcular_high_count(VALOR_DEL_ESCAPE), 1);
+
+	ASSERT_EQ(modeloAux->calcular_low_count(65), 0);
+	ASSERT_TRUE((0.65 < (modeloAux->calcular_high_count(65))) && ((modeloAux->calcular_high_count(65))< 0.67));
+
+	ASSERT_EQ(unContexto.devolver_modelo(s1, &modeloAux), RES_OK);
+	ASSERT_EQ(modeloAux->calcular_low_count(VALOR_DEL_ESCAPE), 0.5);
+	ASSERT_EQ(modeloAux->calcular_high_count(VALOR_DEL_ESCAPE), 1);
+
+	ASSERT_EQ(modeloAux->calcular_low_count(72), 0);
+	ASSERT_EQ(modeloAux->calcular_high_count(72), 0.5);
+
+}
