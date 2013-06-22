@@ -7,7 +7,7 @@
 
 #include "Aritmetico.h"
 
-Aritmetico::Aritmetico(unsigned int tamanioAlfabeto)
+Aritmetico::Aritmetico(Uint tamanioAlfabeto)
 {
 
 	modelo= new ModeloProbabilistico(tamanioAlfabeto);

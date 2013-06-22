@@ -22,12 +22,12 @@ class ModeloProbabilistico {
 
 	private:
 		Uint* frecuenciasSimbolos;
-		short tamanioAlfabeto;
+		Uint tamanioAlfabeto;
 
-		Uint calcular_total_frecuencias();
+
 
 	public:
-		ModeloProbabilistico(short un_tamanio_alfabeto = TAMANIO_ALFABETO);
+		ModeloProbabilistico(Uint un_tamanio_alfabeto = TAMANIO_ALFABETO);
 		ModeloProbabilistico(const ModeloProbabilistico& otro);
 		virtual ~ModeloProbabilistico();
 
@@ -38,13 +38,13 @@ class ModeloProbabilistico {
 		/*todas las frecuencias de los mensajes estaran en 0 excepto la de aquellos mensajes contendidos en v*/
 
 
+		Uint get_frecuencia(Uint simbolo);
 		void incrementar_frecuencia (const Uint simbolo);
 		double calcular_low_count (const Uint simbolo);
 		double calcular_high_count (const Uint simbolo);
-
+		Uint calcular_total_frecuencias();
 
 		short get_tamanio_alfabeto();
-
 
 		void resetear();
 
