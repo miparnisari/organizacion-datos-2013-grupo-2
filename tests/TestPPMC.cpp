@@ -11,7 +11,7 @@ class TestPPMC : public testing::Test {
   // should define it if you need to initialize the varaibles.
   // Otherwise, this can be skipped.
   virtual void SetUp() {
-	  const short orden = 3;
+	  const short orden = 2;
 	  comp_ppmc = new PPMC(orden);
   }
 

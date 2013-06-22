@@ -14,6 +14,7 @@ class PPMC : public Compresor
 		PPMC(unsigned short orden);
 		~PPMC();
 
+		void _actualizar_contexto(int num_contexto_actual, Uint simbolo, string contexto_del_simbolo);
 		int comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::vector<bool>& a_emitir);
 		virtual int comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* resultado);
 	
