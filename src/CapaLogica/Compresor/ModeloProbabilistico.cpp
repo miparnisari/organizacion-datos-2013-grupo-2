@@ -46,7 +46,7 @@ short ModeloProbabilistico::get_tamanio_alfabeto(){
 
 void ModeloProbabilistico::inicializar_frecuencias_en_1()
 {
-	for (unsigned int i = 0; i < TAMANIO_ALFABETO; i++)
+	for (unsigned int i = 0; i < tamanioAlfabeto; i++)
 		*(frecuenciasSimbolos+i) = 1;
 }
 
@@ -98,10 +98,21 @@ double ModeloProbabilistico::calcular_high_count (const Uint simbolo)
 	return resultado;
 }
 
+Uint ModeloProbabilistico::obtener_simbolo(double probabilidad)
+{
+	for (Uint i = 0; i < tamanioAlfabeto; i++)
+	{
+		if (calcular_low_count(i) <= probabilidad && probabilidad <= calcular_high_count(i))
+			return i;
+	}
+
+	return tamanioAlfabeto ;
+}
+
 Uint ModeloProbabilistico::calcular_total_frecuencias()
 {
 	Uint total = 0;
-	for (Uint i = 0; i < TAMANIO_ALFABETO; i++)
+	for (Uint i = 0; i < tamanioAlfabeto; i++)
 		total += *(frecuenciasSimbolos + i);
 
 	return total;
@@ -113,7 +124,7 @@ void ModeloProbabilistico::inicializar_frecuencias_en_1(vector<unsigned short>& 
 	if(TAMANIO_V== 0)
 		return;
 
-	for(unsigned int i=0;i<TAMANIO_ALFABETO;i++)
+	for(unsigned int i=0;i<tamanioAlfabeto;i++)
 		this->frecuenciasSimbolos[i]= 0;
 
 	for(unsigned short i=0;i<TAMANIO_V;i++){
