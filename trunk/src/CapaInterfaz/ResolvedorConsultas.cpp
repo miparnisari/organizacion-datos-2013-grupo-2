@@ -115,7 +115,7 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
 {
 	indicePrimario.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_PRIM));
 	std::string letra = "";
-	RegistroCancion* regCancion = new RegistroCancion();
+
 	ClaveX claveID;
 	claveID.set_clave(id_cancion);
 
@@ -128,9 +128,16 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
 	long offset;
 	reg.recuperar_campo((char*)&offset,1);
 
-	archivoMaestro.get_registro_por_offset(regCancion,offset);
+	CompresorAritmetico* compresor = new CompresorAritmetico();
+	RegistroVariable* regVariableComprimido = new RegistroVariable();
+	archivoMaestro.get_registro_por_offset(regVariableComprimido,offset);
 
-	return regCancion;
+	RegistroCancion* regDescomprimido = (RegistroCancion*)regVariableComprimido->descomprimir(compresor);
+
+	IMPRIMIR_MY_VARIABLE(regDescomprimido->get_cantidad_campos());
+	delete compresor;
+	delete regVariableComprimido;
+	return regDescomprimido;
 }
 
 std::string ResolvedorConsultas::get_nombre_archivo (int id_cancion)

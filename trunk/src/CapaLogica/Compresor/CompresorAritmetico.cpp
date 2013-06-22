@@ -143,14 +143,14 @@ int CompresorAritmetico::comprimir_todo
 	// Ciclo que recorre el buffer de entrada
 	for (unsigned int i = 0; i < tamanio; i++)
 	{
+		unsigned char caracter_a_comprimir = *(buffer_a_comprimir+i);
 		Byte cOverflow,cUnderflow;
-		std::vector<bool> bits_caracter_actual = comprimir(*(buffer_a_comprimir+i),cOverflow,cUnderflow);
+		std::vector<bool> bits_caracter_actual = comprimir(caracter_a_comprimir,cOverflow,cUnderflow);
 
 		const TamanioBitset TAMANIO_BITS_CARACTER_ACTUAL= bits_caracter_actual.size();
 		for( TamanioBitset j=0;j<TAMANIO_BITS_CARACTER_ACTUAL;j++ ){
 
 			bool bit= bits_caracter_actual.at(j);
-			IMPRIMIR_MY_VARIABLE(bit);
 
 			if( bufferBits.agregar_bit(bit)== RES_ERROR ){
 				char bufferTemporal[TAMANIO_BUFFER_BITS_BYTES];
@@ -231,6 +231,7 @@ int CompresorAritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBu
 		bufferBitsDescompresion.get_primer_valor_numerico(precision,valorSimboloActual);
 
 		Uint simboloActual= descomprimir((Uint)valorSimboloActual);
+		IMPRIMIR_MY_VARIABLE(simboloActual);
 		/*recupero un simbolo*/
 
 		Byte cantidadOverflow,cantidadUnderflow;
