@@ -124,18 +124,17 @@ TEST_F(TestCompresorAritmetico,ComprimirCancion){
 	RegistroCancion registroNormalizado,registroNoNormalizado;
 	string nombreCancion="";
 	pc.obtener_proxima_cancion(registroNormalizado,registroNoNormalizado,nombreCancion);
-	pc.obtener_proxima_cancion(registroNormalizado,registroNoNormalizado,nombreCancion);
 
-	IMPRIMIR_MY_VARIABLE(nombreCancion);
-	IMPRIMIR_MY_VARIABLE(registroNormalizado.get_tamanio());
-	IMPRIMIR_MY_VARIABLE( registroNormalizado.get_cantidad_campos() );
+//	IMPRIMIR_MY_VARIABLE(nombreCancion);
+//	IMPRIMIR_MY_VARIABLE(registroNormalizado.get_tamanio());
+//	IMPRIMIR_MY_VARIABLE( registroNormalizado.get_cantidad_campos() );
 
 	RegistroVariable* registroComprimido= registroNormalizado.comprimir(&ca);
-	IMPRIMIR_MY_VARIABLE( registroComprimido->get_tamanio() );
+//	IMPRIMIR_MY_VARIABLE( registroComprimido->get_tamanio() );
 
 	RegistroCancion registroDescomprimido;
 	registroComprimido->descomprimir( &ca , &registroDescomprimido );
-	IMPRIMIR_MY_VARIABLE(registroDescomprimido.get_tamanio());
+//	IMPRIMIR_MY_VARIABLE(registroDescomprimido.get_tamanio());
 
 	delete registroComprimido;
 }
