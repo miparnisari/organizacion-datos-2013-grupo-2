@@ -1,4 +1,4 @@
-#include "../src/CapaLogica/Compresor/CompresorAritmetico.h"
+#include "../src/CapaLogica/Compresor/Aritmetico.h"
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 #include "../src/CapaFisica/RegistroVariable.h"
 #include "../src/CapaLogica/Parser/ParserCanciones.h"
@@ -7,7 +7,7 @@
 class TestCompresorAritmetico : public testing::Test {
  protected:
 	// Declares the variables your tests want to use.
-	CompresorAritmetico* compresor;
+	Aritmetico* compresor;
 	ModeloProbabilistico* modelo;
 
   // virtual void SetUp() will be called before each test is run.  You
@@ -20,7 +20,7 @@ class TestCompresorAritmetico : public testing::Test {
 	  vector.push_back(67);
 	  modelo = new ModeloProbabilistico();
 	  modelo->inicializar_frecuencias_en_1(vector);
-	  compresor = new CompresorAritmetico(modelo);
+	  compresor = new Aritmetico(modelo);
   }
 
   // TearDown() is invoked immediately after a test finishes.
@@ -72,7 +72,7 @@ TEST_F(TestCompresorAritmetico, DescomprimirString)
 
 TEST_F(TestCompresorAritmetico, ComprimirYDescomprimir32bits){
 
-	CompresorAritmetico ca;
+	Aritmetico ca;
 	const unsigned short TAMANIO_BUFFER_COMPRIMIDO= 16;
 	char bufferComprimido[TAMANIO_BUFFER_COMPRIMIDO];
 	string linea= "AABC";
@@ -95,7 +95,7 @@ TEST_F(TestCompresorAritmetico, ComprimirYDescomprimir32bits){
 
 TEST_F(TestCompresorAritmetico , ComprimirYDescomprimirVarios32Bits){
 
-	CompresorAritmetico ca;
+	Aritmetico ca;
 	short numero= 4;
 	string linea= "AABC";
 	const short TAMANIO_A_COMPRIMIR= 6;
@@ -109,7 +109,7 @@ TEST_F(TestCompresorAritmetico , ComprimirYDescomprimirVarios32Bits){
 TEST_F(TestCompresorAritmetico, ComprimirRegistroVariableConUnCampo)
 {
 	delete compresor;
-	compresor = new CompresorAritmetico();
+	compresor = new Aritmetico();
 	// Comprimo el registro
 	RegistroVariable reg;
 	std::string campo = "AABC";
@@ -143,7 +143,7 @@ TEST_F(TestCompresorAritmetico, ComprimirRegistroVariableConUnCampo)
 
 TEST_F(TestCompresorAritmetico,ComprimirCancion){
 
-	CompresorAritmetico ca;
+	Aritmetico ca;
 	ParserCanciones pc;
 
 	string dir= "../songs";

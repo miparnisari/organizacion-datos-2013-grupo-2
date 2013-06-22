@@ -5,20 +5,17 @@
  *      Author: martin
  */
 
-#ifndef COMPRESORARITMETICO_H_
-#define COMPRESORARITMETICO_H_
+#ifndef ARIMETICO_H_
+#define ARIMETICO_H_
 
 #include "../../Constantes.h"
-#include "Codigo.h"
 #include "Compresor.h"
-#include <vector>
-#include <cmath>
 #include "Intervalo.h"
 #include "ModeloProbabilistico.h"
 #include "BufferBits.h"
+
+#include <cmath>
 #include <sstream>
-#include <iostream>
-#include <vector>
 
 using std::stringstream;
 using std::vector;
@@ -29,26 +26,21 @@ const TamanioBitset TAMANIO_BUFFER_BITS_BITS= TAMANIO_BUFFER_BITS_BYTES*8;
 const TamanioBitset TAMANIO_BUFFER_BITS= PRECISION*2;
 
 
-class CompresorAritmetico : public Compresor {
-
+class Aritmetico : public Compresor {
 
 	private:
-		std::vector<Codigo> vectorCodigos;
 		Intervalo* intervalo;
 		ModeloProbabilistico* modelo;
 		char byteActual;
 
-
-
 		std::vector<bool> _comprimir_ultimo_paso();
 		void _resetear();
 
-
 	public:
 
-		CompresorAritmetico (ModeloProbabilistico* modelo);
-		CompresorAritmetico(unsigned int tamanioAlfabeto=TAMANIO_ALFABETO);
-		virtual ~ CompresorAritmetico ();
+		Aritmetico (ModeloProbabilistico* modelo);
+		Aritmetico(unsigned int tamanioAlfabeto=TAMANIO_ALFABETO);
+		virtual ~ Aritmetico ();
 
 		void inicializar_frecuencias_en_1(vector<unsigned short>& v);
 
@@ -71,8 +63,6 @@ class CompresorAritmetico : public Compresor {
 		int set_modelo(ModeloProbabilistico* mp);
 
 
-};/*Este compresor aplicara las tecnicas de compresion usando objetos del tipo
-Codigo.
-El compresor contendra una lista de los codigos cada uno con su respectiva frecuencia .*/
+};
 
-#endif /* COMPRESORARITMETICO_H_ */
+#endif /* ARIMETICO_H_ */
