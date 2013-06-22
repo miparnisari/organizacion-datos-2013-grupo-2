@@ -222,7 +222,7 @@ void Indexador::_agregar_a_los_indices (
 	/* ------ guardamos el registro de la cancion en un archivo maestro ------ */
 	CompresorAritmetico* compresor = new CompresorAritmetico();
 	RegistroVariable* regComprimido = regCancionNoNormalizada.comprimir(compresor);
-	IMPRIMIR_MY_VARIABLE(regCancionNoNormalizada.get_cantidad_campos());
+
 	long offsetInicialRegCancion = archivoMaestro.agregar_registro(regComprimido);
 	delete regComprimido;
 	delete compresor;
