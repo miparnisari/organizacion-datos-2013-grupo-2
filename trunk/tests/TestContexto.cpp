@@ -6,7 +6,7 @@
  */
 
 
-#include "../src/CapaLogica/Compresor/Contexto.h"
+#include "../src/CapaLogica/Compresor/Contextos.h"
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
 
@@ -32,25 +32,70 @@ class TestContexto : public testing::Test {
 
 TEST_F(TestContexto, AgregarModeloAContexto){
 
-  	Contexto unContexto;
+  	Contextos unContexto;
   	string s = "A";
-  	ModeloProbabilistico* unModelo;
+  	ModeloProbabilistico* unModelo = new ModeloProbabilistico(TAMANIO_ALFABETO);
+  	ModeloProbabilistico* modeloAux;
+  	unModelo->incrementar_frecuencia(VALOR_DEL_ESCAPE);
 
   	ASSERT_EQ(unContexto.incrementar_frecuencia(65, s), RES_ERROR);
-  	ASSERT_EQ(unContexto.devolver_modelo(s,&unModelo), RES_ERROR);
+  	ASSERT_EQ(unContexto.devolver_modelo(s,&modeloAux), RES_ERROR);
 
-  	unContexto.agregar_modelo(s);
+  	ASSERT_EQ(unContexto.agregar_modelo(s, unModelo), RES_OK);
 
-  	ASSERT_EQ(unContexto.devolver_modelo(s,&unModelo), RES_OK);
-  	ASSERT_EQ(unModelo->calcular_low_count(VALOR_DEL_ESCAPE), 0);
-  	ASSERT_EQ(unModelo->calcular_high_count(VALOR_DEL_ESCAPE), 1);
+  	ASSERT_EQ(unContexto.devolver_modelo(s,&modeloAux), RES_OK);
+  	ASSERT_EQ(modeloAux->calcular_low_count(VALOR_DEL_ESCAPE), 0);
+  	ASSERT_EQ(modeloAux->calcular_high_count(VALOR_DEL_ESCAPE), 1);
 
   	ASSERT_EQ(unContexto.incrementar_frecuencia(65, s), RES_OK);
-  	ASSERT_EQ(unContexto.devolver_modelo(s,&unModelo), RES_OK);
-  	ASSERT_EQ(unModelo->calcular_low_count(65), 0);
-  	ASSERT_EQ(unModelo->calcular_high_count(65), 0.5);
-
-
-
+  	ASSERT_EQ(unContexto.devolver_modelo(s,&modeloAux), RES_OK);
+  	ASSERT_EQ(modeloAux->calcular_low_count(65), 0);
+  	ASSERT_EQ(modeloAux->calcular_high_count(65), 0.5);
 
   }
+
+TEST_F(TestContexto, AgregarDosModelosAContexto){
+
+	Contextos unContexto;
+	string s1 = "A";
+	string s2 = "B";
+	ModeloProbabilistico* modelo1 = new ModeloProbabilistico(TAMANIO_ALFABETO);
+	ModeloProbabilistico* modelo2 = new ModeloProbabilistico(TAMANIO_ALFABETO);
+	ModeloProbabilistico* modeloAux;
+	modelo1->incrementar_frecuencia(VALOR_DEL_ESCAPE);
+	modelo2->incrementar_frecuencia(VALOR_DEL_ESCAPE);
+
+
+	ASSERT_EQ(unContexto.agregar_modelo(s1, modelo1), RES_OK);
+	ASSERT_EQ(unContexto.agregar_modelo(s2, modelo2), RES_OK);
+
+	ASSERT_EQ(unContexto.incrementar_frecuencia(65, s2), RES_OK);
+
+
+	ASSERT_EQ(unContexto.devolver_modelo(s1,&modeloAux), RES_OK);
+	ASSERT_EQ(modeloAux->calcular_low_count(VALOR_DEL_ESCAPE), 0);
+	ASSERT_EQ(modeloAux->calcular_high_count(VALOR_DEL_ESCAPE), 1);
+
+	ASSERT_EQ(unContexto.devolver_modelo(s2,&modeloAux), RES_OK);
+	ASSERT_EQ(modeloAux->calcular_low_count(VALOR_DEL_ESCAPE), 0.5);
+	ASSERT_EQ(modeloAux->calcular_high_count(VALOR_DEL_ESCAPE), 1);
+
+	ASSERT_EQ(modeloAux->calcular_low_count(65), 0);
+	ASSERT_EQ(modeloAux->calcular_high_count(65), 0.5);
+
+}
+
+TEST_F(TestContexto, AgregarDosModelosIguales){
+	Contextos unContexto;
+	string s = "A";
+	ModeloProbabilistico* modelo1 = new ModeloProbabilistico(TAMANIO_ALFABETO);
+	ModeloProbabilistico* modelo2 = new ModeloProbabilistico(TAMANIO_ALFABETO);
+	modelo1->incrementar_frecuencia(VALOR_DEL_ESCAPE);
+	modelo2->incrementar_frecuencia(VALOR_DEL_ESCAPE);
+
+	ASSERT_EQ(unContexto.agregar_modelo(s, NULL), RES_ERROR);
+	ASSERT_EQ(unContexto.agregar_modelo(s, modelo1), RES_OK);
+	ASSERT_EQ(unContexto.agregar_modelo(s,modelo1), RES_ERROR);
+	ASSERT_EQ(unContexto.agregar_modelo(s, modelo2), RES_ERROR);
+
+}

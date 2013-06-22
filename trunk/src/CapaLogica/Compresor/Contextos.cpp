@@ -43,14 +43,16 @@ int Contextos::devolver_modelo(string nombreModelo, ModeloProbabilistico** model
 	return RES_OK;
 }
 
-void Contextos::agregar_modelo(string nombreModelo, ModeloProbabilistico* modelo)
+int Contextos::agregar_modelo(string nombreModelo, ModeloProbabilistico* modelo)
 {
-//	ModeloProbabilistico* nuevoModelo = new ModeloProbabilistico(TAMANIO_ALFABETO);
-//	vector<unsigned short> vectorDeProbabilidadesINiciales;
-//	//vectorDeProbabilidadesINiciales.push_back(VALOR_DEL_ESCAPE);
-//
-//	//nuevoModelo->inicializar_frecuencias_en_1(vectorDeProbabilidadesINiciales);
-//
-//	nuevoModelo->incrementar_frecuencia(VALOR_DEL_ESCAPE);
+	if(modelo == NULL){
+		return RES_ERROR;
+	}
+
+	if(this->listaDeModelos.find(nombreModelo) != this->listaDeModelos.end()){
+			return RES_ERROR;
+	}
+
 	this->listaDeModelos.insert(pair<string, ModeloProbabilistico*>(nombreModelo, modelo));
+	return RES_OK;
 }
