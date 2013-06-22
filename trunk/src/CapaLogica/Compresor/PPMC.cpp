@@ -40,6 +40,30 @@ void PPMC::_guardar_bits(char* bufferComprimido,
 		vector<bool> bits_a_emitir)
 {
 
+	const Uint CANTIDAD_BITS_EMITIR= bits_a_emitir.size();
+	if(CANTIDAD_BITS_EMITIR== 0)
+		return;
+
+
+	for(Uint i=0;i<CANTIDAD_BITS_EMITIR;i++){
+		bool bit= bits_a_emitir.at(i);
+		buffer_bits.agregar_bit(bit);
+	}
+
+	if(!buffer_bits.completa_octeto())
+		return;
+
+
+	Uint CANTIDAD_BYTES_ESCRIBIR= buffer_bits.get_cantidad_bytes();
+	for(Uint i=0;i<CANTIDAD_BYTES_ESCRIBIR;i++){
+		Byte byte;
+		buffer_bits.pop_byte(byte);
+		bufferComprimido[indiceBufferComprimido]= (char)byte;
+		indiceBufferComprimido++;
+	}
+
+
+
 }
 
 /*
