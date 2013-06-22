@@ -115,7 +115,7 @@ const int LISTA_VACIA								=-100;
  * Compresion
  */
 const unsigned int TAMANIO_ALFABETO = 256 + 1; // + ESC
-const unsigned int PRECISION = 32;
+const unsigned int PRECISION = 9;
 const unsigned int CANTIDAD_DE_CONTEXTOS = 2;
 const unsigned int VALOR_DEL_ESCAPE = 256;
 

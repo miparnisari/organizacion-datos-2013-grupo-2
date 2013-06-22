@@ -114,13 +114,13 @@ TEST_F(TestCompresorAritmetico, ComprimirRegistroVariableConUnCampo)
 }
 
 
-TEST_F(TestCompresorAritmetico,ComprimirCancion){
+TEST_F(TestCompresorAritmetico,DISABLED_ComprimirCancion){
 
 	Aritmetico ca;
 	ParserCanciones pc;
 
 	string dir= "../songs";
-	pc.crear(dir);
+	ASSERT_EQ(pc.crear(dir),RES_OK);
 	RegistroCancion registroNormalizado,registroNoNormalizado;
 	string nombreCancion="";
 	pc.obtener_proxima_cancion(registroNormalizado,registroNoNormalizado,nombreCancion);

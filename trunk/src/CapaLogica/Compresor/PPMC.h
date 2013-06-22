@@ -14,12 +14,8 @@ class PPMC : public Compresor
 		PPMC(unsigned short orden);
 		~PPMC();
 
-		void _guardar_bits(char* bufferComprimido,
-				Uint & indiceBufferComprimido,
-				BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
-				vector<bool> bits_a_emitir);
-
-		std::vector<bool> _comprimir_ultimo_paso(string contexto);
+		int comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::vector<bool>& a_emitir);
+		virtual int comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* resultado);
 	
 	private:
 		unsigned short orden_maximo;
@@ -28,8 +24,12 @@ class PPMC : public Compresor
 
 		void _crear_modelo_vacio (string nombre_modelo);
 
-		int comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::vector<bool>& a_emitir);
-		virtual int comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* resultado);
+		std::vector<bool> _comprimir_ultimo_paso(string contexto);
+
+		void _guardar_bits(char* bufferComprimido,
+			Uint & indiceBufferComprimido,
+			BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
+			vector<bool> bits_a_emitir);
 
 };
 

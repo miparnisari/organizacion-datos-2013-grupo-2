@@ -24,3 +24,21 @@ class TestPPMC : public testing::Test {
 
 };
 
+TEST_F(TestPPMC, ComprimirString)
+{
+	string fuente = "TATATA";
+
+	const int tamanio_buffer_comprimido = 50;
+	char* buffer_comprimido = new char[tamanio_buffer_comprimido]();
+
+	ASSERT_EQ(comp_ppmc->comprimir_todo(fuente.c_str(),fuente.size(),buffer_comprimido), RES_OK);
+
+	for (int i = 0; i < tamanio_buffer_comprimido; i++)
+	{
+		IMPRIMIR_MY_VARIABLE((int)buffer_comprimido[i]);
+	}
+
+	delete buffer_comprimido;
+
+}
+

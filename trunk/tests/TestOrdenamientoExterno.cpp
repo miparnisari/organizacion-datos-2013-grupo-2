@@ -3,7 +3,7 @@
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
 // To use a test fixture, derive a class from testing::Test.
-class TestOrdenamientoExterno : public testing::Test {
+class DISABLED_TestOrdenamientoExterno : public testing::Test {
  protected:
 		// Declares the variables your tests want to use.
 		ManejadorRegistrosVariables mv;
@@ -27,7 +27,7 @@ class TestOrdenamientoExterno : public testing::Test {
 
 };
 
-TEST_F(TestOrdenamientoExterno,Generar_runs)
+TEST_F(DISABLED_TestOrdenamientoExterno,Generar_runs)
 {
 
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
@@ -71,7 +71,7 @@ TEST_F(TestOrdenamientoExterno,Generar_runs)
 
 }
 
-TEST_F(TestOrdenamientoExterno,Merge_runs)
+TEST_F(DISABLED_TestOrdenamientoExterno,Merge_runs)
 {
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
 	{
@@ -109,7 +109,7 @@ TEST_F(TestOrdenamientoExterno,Merge_runs)
 
 }
 
-TEST_F(TestOrdenamientoExterno,Ordenar)
+TEST_F(DISABLED_TestOrdenamientoExterno,Ordenar)
 {
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
 	{
