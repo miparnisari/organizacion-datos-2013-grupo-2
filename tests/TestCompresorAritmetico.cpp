@@ -36,75 +36,48 @@ TEST_F(TestCompresorAritmetico, ComprimirString)
 {
 	std::string string = "AABC";
 
-	char* buffer = new char[2]();
+	char* buffer = new char[5]();
 	int tamanioComprimido = compresor->comprimir_todo(string.c_str(),string.size(),buffer);
 
-	ASSERT_EQ(tamanioComprimido, 2);
+	ASSERT_EQ(tamanioComprimido, 5);
 
-	// 00100000+00000000
-	ASSERT_EQ(buffer[0],32); //00100000
-	ASSERT_EQ(buffer[1],0); //00000000
+	ASSERT_EQ(buffer[0],32);
+	ASSERT_EQ(buffer[1],-74);
+	ASSERT_EQ(buffer[2],11);
+	ASSERT_EQ(buffer[3],96);
+	ASSERT_EQ(buffer[4],-112);
 
 	delete buffer;
 }
 
 
-
-
 TEST_F(TestCompresorAritmetico, DescomprimirString)
 {
-	char buffer[2];
+	// El string comprimido ocupa 5 bytes
+	const int tamanio_buffer = 5;
+	char buffer[tamanio_buffer];
 	buffer[0] = 32;
-	buffer[1] = 0;
+	buffer[1] = -74;
+	buffer[2] = 11;
+	buffer[3] = 96;
+	buffer[4] = -112;
 
-	char* bufferDescomprimido = new char[5]();
-	ASSERT_TRUE(  compresor->descomprimir_todo((char*)&buffer,2,bufferDescomprimido,7,4)==RES_OK  );
+	const int tamanio_buffer_descomp = 4;
+	char* bufferDescomprimido = new char[tamanio_buffer_descomp]();
+	ASSERT_TRUE(  compresor->descomprimir_todo
+			((char*)&buffer,
+					tamanio_buffer,
+					bufferDescomprimido,
+					PRECISION,
+					tamanio_buffer_descomp)==RES_OK  );
 
 	ASSERT_EQ(bufferDescomprimido[0],'A');
 	ASSERT_EQ(bufferDescomprimido[1],'A');
 	ASSERT_EQ(bufferDescomprimido[2],'B');
 	ASSERT_EQ(bufferDescomprimido[3],'C');
-	ASSERT_EQ(bufferDescomprimido[4], 0);
 
 	delete bufferDescomprimido;
 }
-
-
-TEST_F(TestCompresorAritmetico, ComprimirYDescomprimir32bits){
-
-	Aritmetico ca;
-	const unsigned short TAMANIO_BUFFER_COMPRIMIDO= 16;
-	char bufferComprimido[TAMANIO_BUFFER_COMPRIMIDO];
-	string linea= "AABC";
-
-	int tamanioComprimido= ca.comprimir_todo( linea.c_str() , linea.length() , bufferComprimido );
-	IMPRIMIR_MY_VARIABLE(tamanioComprimido);
-
-	char bufferDescomprimido[TAMANIO_BUFFER_COMPRIMIDO];
-	ca.descomprimir_todo( bufferComprimido,tamanioComprimido,bufferDescomprimido,PRECISION, linea.length() );
-	for(int i=0;i<linea.length();i++)
-		IMPRIMIR_MY_VARIABLE( (int)bufferDescomprimido[i] );
-
-	ASSERT_TRUE( bufferDescomprimido[0]=='A' );
-	ASSERT_TRUE( bufferDescomprimido[1]=='A' );
-	ASSERT_TRUE( bufferDescomprimido[2]=='B' );
-	ASSERT_TRUE( bufferDescomprimido[3]=='C' );
-
-}//funciona
-
-
-TEST_F(TestCompresorAritmetico , ComprimirYDescomprimirVarios32Bits){
-
-	Aritmetico ca;
-	short numero= 4;
-	string linea= "AABC";
-	const short TAMANIO_A_COMPRIMIR= 6;
-	char aComprimir[TAMANIO_A_COMPRIMIR];
-
-
-}
-
-
 
 TEST_F(TestCompresorAritmetico, ComprimirRegistroVariableConUnCampo)
 {
@@ -164,10 +137,5 @@ TEST_F(TestCompresorAritmetico,ComprimirCancion){
 	registroComprimido->descomprimir( &ca , &registroDescomprimido );
 	IMPRIMIR_MY_VARIABLE(registroDescomprimido.get_tamanio());
 
-
 	delete registroComprimido;
-
 }
-
-
-
