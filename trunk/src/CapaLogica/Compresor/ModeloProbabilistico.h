@@ -28,6 +28,7 @@ class ModeloProbabilistico {
 
 	public:
 		ModeloProbabilistico(short un_tamanio_alfabeto = TAMANIO_ALFABETO);
+		ModeloProbabilistico(const ModeloProbabilistico& otro);
 		virtual ~ModeloProbabilistico();
 
 		ModeloProbabilistico& operator = (const ModeloProbabilistico& otro);

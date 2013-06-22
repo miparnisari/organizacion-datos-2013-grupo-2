@@ -28,6 +28,16 @@ ModeloProbabilistico& ModeloProbabilistico::operator = (const ModeloProbabilisti
 	return (*this);
 }
 
+
+ModeloProbabilistico::ModeloProbabilistico(const ModeloProbabilistico& otro){
+
+	this->tamanioAlfabeto = otro.tamanioAlfabeto;
+	this->frecuenciasSimbolos = new Uint[tamanioAlfabeto]();
+	memcpy(frecuenciasSimbolos,otro.frecuenciasSimbolos,tamanioAlfabeto);
+
+}
+
+
 short ModeloProbabilistico::get_tamanio_alfabeto(){
 
 	return this->tamanioAlfabeto;

@@ -1,6 +1,7 @@
 #include "../src/CapaLogica/Compresor/CompresorAritmetico.h"
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 #include "../src/CapaFisica/RegistroVariable.h"
+#include "../src/CapaLogica/Parser/ParserCanciones.h"
 
 // To use a test fixture, derive a class from testing::Test.
 class TestCompresorAritmetico : public testing::Test {
@@ -123,10 +124,11 @@ TEST_F(TestCompresorAritmetico, ComprimirRegistroVariableConUnCampo)
 	ASSERT_EQ(*campoUno,6);
 
 	// Lo descomprimo
-	RegistroVariable* reg_descomprimido = reg_c->descomprimir(compresor);
-	ASSERT_EQ(reg_descomprimido->get_cantidad_campos(), 1);
+	RegistroCancion reg_descomprimido;
+	reg_c->descomprimir(compresor,&reg_descomprimido);
+	ASSERT_EQ(reg_descomprimido.get_cantidad_campos(), 1);
 	char* unicoCampo = new char[4]();
-	reg_descomprimido->recuperar_campo(unicoCampo,0);
+	reg_descomprimido.recuperar_campo(unicoCampo,0);
 
 	ASSERT_EQ(unicoCampo[0],'A');
 	ASSERT_EQ(unicoCampo[1],'A');
@@ -137,3 +139,35 @@ TEST_F(TestCompresorAritmetico, ComprimirRegistroVariableConUnCampo)
 	delete[] unicoCampo;
 	delete reg_c;
 }
+
+
+TEST_F(TestCompresorAritmetico,ComprimirCancion){
+
+	CompresorAritmetico ca;
+	ParserCanciones pc;
+
+	string dir= "../songs";
+	pc.crear(dir);
+	RegistroCancion registroNormalizado,registroNoNormalizado;
+	string nombreCancion="";
+	pc.obtener_proxima_cancion(registroNormalizado,registroNoNormalizado,nombreCancion);
+	pc.obtener_proxima_cancion(registroNormalizado,registroNoNormalizado,nombreCancion);
+
+	IMPRIMIR_MY_VARIABLE(nombreCancion);
+	IMPRIMIR_MY_VARIABLE(registroNormalizado.get_tamanio());
+	IMPRIMIR_MY_VARIABLE( registroNormalizado.get_cantidad_campos() );
+
+	RegistroVariable* registroComprimido= registroNormalizado.comprimir(&ca);
+	IMPRIMIR_MY_VARIABLE( registroComprimido->get_tamanio() );
+
+	RegistroCancion registroDescomprimido;
+	registroComprimido->descomprimir( &ca , &registroDescomprimido );
+	IMPRIMIR_MY_VARIABLE(registroDescomprimido.get_tamanio());
+
+
+	delete registroComprimido;
+
+}
+
+
+

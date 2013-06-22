@@ -9,10 +9,12 @@
 
 CompresorAritmetico::CompresorAritmetico(unsigned int tamanioAlfabeto)
 {
+
 	modelo= new ModeloProbabilistico(tamanioAlfabeto);
 	intervalo= new Intervalo();
 	modelo->inicializar_frecuencias_en_1();
 	byteActual = '0';
+
 }
 
 
@@ -263,3 +265,16 @@ int CompresorAritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBu
 
 	return RES_OK;
 }
+
+
+int CompresorAritmetico::set_modelo(ModeloProbabilistico* mp){
+
+	if(mp== NULL)
+		return RES_ERROR;
+
+	(*modelo)= (*mp);
+
+	return RES_OK;
+
+}
+

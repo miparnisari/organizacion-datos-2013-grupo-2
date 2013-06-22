@@ -68,6 +68,9 @@ class CompresorAritmetico : public Compresor {
 			unsigned int precision,
 			unsigned int cantidadCaracteresOriginal);
 
+		int set_modelo(ModeloProbabilistico* mp);
+
+
 };/*Este compresor aplicara las tecnicas de compresion usando objetos del tipo
 Codigo.
 El compresor contendra una lista de los codigos cada uno con su respectiva frecuencia .*/
