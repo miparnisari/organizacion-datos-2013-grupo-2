@@ -17,7 +17,7 @@
 #include "../CapaLogica/ManejoArchivos/RegistroCancion.h"
 #include "../CapaLogica/ManejoArchivos/ClaveNumerica.h"
 #include "../CapaLogica/Parser/ParserCanciones.h"
-#include "../CapaLogica/Compresor/CompresorPPMC.h"
+#include "../CapaLogica/Compresor/CompresorAritmetico.h"
 
 #include "ResolvedorConsultas.h"
 #include "GeneradorEstadisticasConsultas.h"
@@ -42,7 +42,6 @@ class Indexador
 		HashingExtensible indiceSecundarioTitulo;
 		HashingExtensible documentos;
 		ParserCanciones parser;
-		CompresorPPMC compresor;
 
 		int _crear_archivos_indices(std::string & directorioSalida);
 		int _abrir_archivos_indices (std::string & directorioSalida);

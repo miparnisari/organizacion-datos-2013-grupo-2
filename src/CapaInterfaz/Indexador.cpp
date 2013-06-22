@@ -220,9 +220,12 @@ void Indexador::_agregar_a_los_indices (
 		std::string nombreArchivo)
 {
 	/* ------ guardamos el registro de la cancion en un archivo maestro ------ */
-	RegistroVariable* regComprimido = regCancionNoNormalizada.comprimir(&compresor);
+	CompresorAritmetico* compresor = new CompresorAritmetico();
+	RegistroVariable* regComprimido = regCancionNoNormalizada.comprimir(compresor);
+	IMPRIMIR_MY_VARIABLE(regCancionNoNormalizada.get_cantidad_campos());
 	long offsetInicialRegCancion = archivoMaestro.agregar_registro(regComprimido);
 	delete regComprimido;
+	delete compresor;
 
 	/* ------ guardamos el numero de documento (clave) y el documento -------- */
 
@@ -278,7 +281,7 @@ void Indexador::_agregar_a_los_indices (
 
 	/* ----- agregamos al indice por frase: frases ----*/
 	std::string letra = regCancion.get_letra();
-	indiceSecundarioFrases.agregar_texto(letra,id.get_dato());
+//	indiceSecundarioFrases.agregar_texto(letra,id.get_dato()); FIXME
 
 	std::cout << "Se indexó " << nombreArchivo << " correctamente!" << std::endl;
 }

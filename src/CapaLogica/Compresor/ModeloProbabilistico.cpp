@@ -57,6 +57,7 @@ void ModeloProbabilistico::incrementar_frecuencia (const Uint simbolo)
 double ModeloProbabilistico::calcular_low_count (const Uint simbolo)
 {
 	Uint posicionSimbolo = simbolo;
+//	IMPRIMIR_MY_VARIABLE((char)simbolo);
 	Uint contador = 0;
 	for (Uint i = 0; i < posicionSimbolo; i++)
 		contador += *(frecuenciasSimbolos+i);
