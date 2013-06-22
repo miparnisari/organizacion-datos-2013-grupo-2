@@ -106,16 +106,26 @@ int PPMC::comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::
 	if (modelo_actual->get_frecuencia(simbolo) == 0) {
 		resultado = RES_ESCAPE;
 
-		// Si el escape NO es el unico simbolo, hay que comprimirlo
-		// Si es el unico simbolo no se va a emitir nada asi que no hay que llamar a comprimir
+
+
 		if (modelo_actual->get_frecuencia(VALOR_DEL_ESCAPE) == 1  && modelo_actual->calcular_total_frecuencias() == 1)
+		{
+			// Si el escape es el unico simbolo no se va a emitir nada asi que no hay que llamar a comprimir
+		}
+		else {
+			// Si el escape NO es el unico simbolo, hay que comprimirlo
 			a_emitir = comp_aritmetico->comprimir(VALOR_DEL_ESCAPE,cOverflow,cUnderflow);
+			for (unsigned int i = 0; i < a_emitir.size(); i++)
+				IMPRIMIR_MY_VARIABLE((int)a_emitir[i]);
+		}
 	}
 
 	// El simbolo tenia frecuencia >=1.. hay que comprimirlo y no emitir escape
 	else {
 		resultado = RES_OK;
 		a_emitir = comp_aritmetico->comprimir(simbolo,cOverflow,cUnderflow);
+		for (unsigned int i = 0; i < a_emitir.size(); i++)
+			IMPRIMIR_MY_VARIABLE((int)a_emitir[i]);
 	}
 
 	return resultado;
@@ -140,7 +150,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 		while (res == RES_ESCAPE)
 		{
 			contexto.erase(0,1); // "BC"
-			if (contexto == "0")
+			if (contexto == "")
 			{
 				num_contexto = -1;
 			}
@@ -160,5 +170,5 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 	bits_a_emitir = _comprimir_ultimo_paso(contexto);
 	_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 
-	return RES_OK;
+	return indiceBufferComprimido;
 }
