@@ -39,7 +39,7 @@ class Aritmetico : public Compresor {
 	public:
 
 		Aritmetico (ModeloProbabilistico* modelo);
-		Aritmetico(unsigned int tamanioAlfabeto=TAMANIO_ALFABETO);
+		Aritmetico(Uint tamanioAlfabeto=TAMANIO_ALFABETO);
 		virtual ~ Aritmetico ();
 
 		void inicializar_frecuencias_en_1(vector<unsigned short>& v);

@@ -36,6 +36,7 @@ const int RES_INSUFFICIENT_SPACE =		-15;
 const int RES_INVALID_OFFSET =			-16;
 const int RES_BLOQUE_NO_BORRADO	=	-17;
 const int RES_FIN 					=	-18;
+const int RES_ESCAPE 				= 	-19;
 
 
 /*
@@ -115,7 +116,6 @@ const int LISTA_VACIA								=-100;
  */
 const unsigned int TAMANIO_ALFABETO = 256 + 1; // + ESC
 const unsigned int PRECISION = 32;
-
 const unsigned int CANTIDAD_DE_CONTEXTOS = 2;
 const unsigned int VALOR_DEL_ESCAPE = 256;
 

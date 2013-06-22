@@ -7,7 +7,7 @@
 
 #include "ModeloProbabilistico.h"
 
-ModeloProbabilistico::ModeloProbabilistico(short un_tamanio_alfabeto) {
+ModeloProbabilistico::ModeloProbabilistico(Uint un_tamanio_alfabeto) {
 	tamanioAlfabeto = un_tamanio_alfabeto;
 	frecuenciasSimbolos = new Uint[tamanioAlfabeto]();
 }
@@ -134,11 +134,14 @@ void ModeloProbabilistico::inicializar_frecuencias_en_1(vector<unsigned short>& 
 
 }
 
+Uint ModeloProbabilistico::get_frecuencia(Uint simbolo)
+{
+	return frecuenciasSimbolos[simbolo];
+}
+
 void ModeloProbabilistico::resetear()
 {
-
-	for(short i=0;i<tamanioAlfabeto;i++)
+	for(Uint i=0;i<tamanioAlfabeto;i++)
 		if( this->frecuenciasSimbolos[i]!= 0 )
 			this->frecuenciasSimbolos[i] = 1;
-
 }

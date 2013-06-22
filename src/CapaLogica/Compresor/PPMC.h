@@ -5,6 +5,7 @@
 #include "../../Constantes.h"
 #include "Aritmetico.h"
 #include "Contextos.h"
+#include "../../Utilitarios/Utilitarios.h"
 #include <map>
 
 class PPMC : public Compresor
@@ -12,6 +13,10 @@ class PPMC : public Compresor
 	public:
 		PPMC(unsigned short orden);
 		~PPMC();
+
+		void _guardar_bits(char* puntero_a_resultado,
+				BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
+				vector<bool> bits_a_emitir);
 	
 	private:
 		unsigned short orden_maximo;
@@ -20,7 +25,7 @@ class PPMC : public Compresor
 
 		void _crear_modelo_vacio (string nombre_modelo);
 
-		Uint comprimir (const double proba, std::string contexto_del_simbolo);
+		int comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::vector<bool>& a_emitir);
 		virtual int comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* resultado);
 
 };

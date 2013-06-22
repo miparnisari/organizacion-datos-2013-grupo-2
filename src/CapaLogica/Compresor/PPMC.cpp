@@ -33,34 +33,85 @@ void PPMC::_crear_modelo_vacio (string nombre_modelo)
 	contextos->agregar_modelo(nombre_modelo,modelo);
 }
 
+void PPMC::_guardar_bits(char* puntero_a_resultado,
+		BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
+		vector<bool> bits_a_emitir)
+{
+
+}
+
 /*
  * El resultado puede ser Escape!
  */
-Uint PPMC::comprimir (const double proba, std::string contexto_del_simbolo)
+int PPMC::comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::vector<bool>& a_emitir)
 {
+	int resultado = RES_OK;
 	ModeloProbabilistico* modelo_actual = NULL;
 	int res = contextos->devolver_modelo(contexto_del_simbolo,&modelo_actual);
 	if (res == RES_ERROR)
 	{
 		_crear_modelo_vacio(contexto_del_simbolo);
+		contextos->devolver_modelo(contexto_del_simbolo,&modelo_actual);
 	}
+
 	comp_aritmetico->set_modelo (modelo_actual);
 
-	Uint resultado = modelo_actual->obtener_simbolo(proba);
+	Byte cOverflow, cUnderflow;
+	if (modelo_actual->get_frecuencia(simbolo) == 0) {
+		resultado = RES_ESCAPE;
+
+		// Si el escape NO es el unico simbolo, hay que comprimirlo
+		// Si es el unico simbolo no se va a emitir nada asi que no hay que llamar a comprimir
+		if (modelo_actual->get_frecuencia(VALOR_DEL_ESCAPE) == 1  && modelo_actual->calcular_total_frecuencias() == 1)
+			a_emitir = comp_aritmetico->comprimir(VALOR_DEL_ESCAPE,cOverflow,cUnderflow);
+	}
+
+	// El simbolo tenia frecuencia >=1.. hay que comprimirlo y no emitir escape
+	else {
+		resultado = RES_OK;
+		a_emitir = comp_aritmetico->comprimir(simbolo,cOverflow,cUnderflow);
+	}
+
+
 	return resultado;
+
+//	Uint resultado = modelo_actual->obtener_simbolo(proba);
+//	return resultado;
 }
 
-int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* resultado)
+int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* bufferComprimido)
 {
-	string contexto = "";
+	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> buffer_bits;
+	string contexto = "0"; // "ABC"
+	int num_contexto = 0;
 
 	for (Uint i = 0; i < tamanioBuffer; i++)
 	{
 		Uint simbolo = buffer[i];
-//		if (modelo_actual->es_frecuencia_cero (simbolo))
+
+		vector<bool> bits_a_emitir;
+
+		int res = comprimir(simbolo,contexto, bits_a_emitir);
+
+		char* puntero_a_resultado = bufferComprimido + i;
+		_guardar_bits(puntero_a_resultado, buffer_bits, bits_a_emitir);
+
+		while (res == RES_ESCAPE)
 		{
-			// hay q emitir esc
-			// y disminuir el orden
+			contexto.erase(0,1); // "BC"
+			if (contexto == "0")
+			{
+				num_contexto = -1;
+			}
+			contexto = utilitarios::int_a_string(num_contexto);
+
+			res = comprimir(simbolo,contexto,bits_a_emitir);
+
+			if (num_contexto == -1)
+				num_contexto = orden_maximo;
+			else
+				num_contexto --;
+
 		}
 
 	}
