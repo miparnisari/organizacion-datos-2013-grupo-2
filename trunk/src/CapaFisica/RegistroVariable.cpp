@@ -350,7 +350,7 @@ TamanioCampos RegistroVariable::get_tamanio()throw()
 	return tamanio;
 }
 
-RegistroVariable* RegistroVariable :: descomprimir(Compresor * compresor)
+int RegistroVariable :: descomprimir(Compresor * compresor, RegistroVariable* reg_descomp)
 {
 	TamanioCampos tamanioOriginal;
 	recuperar_campo((char*)&tamanioOriginal,0);
@@ -363,13 +363,15 @@ RegistroVariable* RegistroVariable :: descomprimir(Compresor * compresor)
 	memcpy( descomprimido, (char*)&tamanioOriginal , sizeof(tamanioOriginal) );
 	compresor->descomprimir_todo(bufferComprimido,tamanioComprimido,descomprimido+sizeof(tamanioOriginal),PRECISION,tamanioOriginal);
 
-	RegistroVariable* registroNuevo= new RegistroVariable();
-	registroNuevo->desempaquetar( descomprimido );
+	for (int i = 0; i < tamanioOriginal-1; i++)
+		std::cout << *(descomprimido+i);
+
+	reg_descomp->desempaquetar( descomprimido );
 
 	delete[] bufferComprimido;
 	delete[] descomprimido;
 
-	return registroNuevo;
+	return RES_OK;
 
 
 }

@@ -132,7 +132,8 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
 	RegistroVariable* regVariableComprimido = new RegistroVariable();
 	archivoMaestro.get_registro_por_offset(regVariableComprimido,offset);
 
-	RegistroCancion* regDescomprimido = (RegistroCancion*)regVariableComprimido->descomprimir(compresor);
+	RegistroCancion* regDescomprimido = new RegistroCancion();
+	regVariableComprimido->descomprimir(compresor, regDescomprimido);
 
 	IMPRIMIR_MY_VARIABLE(regDescomprimido->get_cantidad_campos());
 	delete compresor;
