@@ -48,6 +48,8 @@ class ModeloProbabilistico {
 
 		void resetear();
 
+		void imprimir();
+
 		Uint obtener_simbolo(double probabilidad);
 };
 

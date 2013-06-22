@@ -16,6 +16,16 @@ ModeloProbabilistico::~ModeloProbabilistico() {
 	delete[] frecuenciasSimbolos;
 }
 
+void ModeloProbabilistico::imprimir()
+{
+	for (Uint i = 0; i < tamanioAlfabeto; i++)
+	{
+		cout << "i " << i << "= " <<frecuenciasSimbolos[i] << ";";
+	}
+	cout << "--------";
+	cout << endl;
+}
+
 ModeloProbabilistico& ModeloProbabilistico::operator = (const ModeloProbabilistico& otro)
 {
 	if (this != &otro)
@@ -23,7 +33,9 @@ ModeloProbabilistico& ModeloProbabilistico::operator = (const ModeloProbabilisti
 		delete[] frecuenciasSimbolos;
 		this->tamanioAlfabeto = otro.tamanioAlfabeto;
 		this->frecuenciasSimbolos = new Uint[tamanioAlfabeto]();
-		memcpy(frecuenciasSimbolos,otro.frecuenciasSimbolos,tamanioAlfabeto);
+		for (Uint i = 0; i < otro.tamanioAlfabeto; i++)
+			this->frecuenciasSimbolos[i] = otro.frecuenciasSimbolos[i];
+//		memcpy(frecuenciasSimbolos,otro.frecuenciasSimbolos,tamanioAlfabeto);
 	}
 	return (*this);
 }
@@ -47,7 +59,7 @@ Uint ModeloProbabilistico::get_tamanio_alfabeto(){
 void ModeloProbabilistico::inicializar_frecuencias_en_1()
 {
 	for (unsigned int i = 0; i < tamanioAlfabeto; i++)
-		*(frecuenciasSimbolos+i) = 1;
+		frecuenciasSimbolos[i]= 1;
 }
 
 void ModeloProbabilistico::incrementar_frecuencia (const Uint simbolo)
@@ -70,7 +82,7 @@ double ModeloProbabilistico::calcular_low_count (const Uint simbolo)
 //	IMPRIMIR_MY_VARIABLE((char)simbolo);
 	Uint contador = 0;
 	for (Uint i = 0; i < posicionSimbolo; i++)
-		contador += *(frecuenciasSimbolos+i);
+		contador += frecuenciasSimbolos[i];
 
 	double totalFrecuencias= (double)(calcular_total_frecuencias());
 	double contadorD= (double)(contador);
@@ -142,6 +154,8 @@ Uint ModeloProbabilistico::get_frecuencia(Uint simbolo)
 void ModeloProbabilistico::resetear()
 {
 	for(Uint i=0;i<tamanioAlfabeto;i++)
-		if( this->frecuenciasSimbolos[i]!= 0 )
+	{
+		if( this->frecuenciasSimbolos[i] != 0 )
 			this->frecuenciasSimbolos[i] = 1;
+	}
 }

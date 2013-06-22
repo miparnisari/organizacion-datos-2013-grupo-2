@@ -31,7 +31,8 @@ TEST_F(TestPPMC, ComprimirString)
 	const int tamanio_buffer_comprimido = 50;
 	char* buffer_comprimido = new char[tamanio_buffer_comprimido]();
 
-	ASSERT_EQ(comp_ppmc->comprimir_todo(fuente.c_str(),fuente.size(),buffer_comprimido), RES_OK);
+	int tam_comprimido = comp_ppmc->comprimir_todo(fuente.c_str(),fuente.size(),buffer_comprimido);
+
 
 	for (int i = 0; i < tamanio_buffer_comprimido; i++)
 	{

@@ -39,7 +39,7 @@ int Contextos::devolver_modelo(string nombreModelo, ModeloProbabilistico** model
 	if(this->listaDeModelos.find(nombreModelo) == this->listaDeModelos.end()){
 		return RES_ERROR;
 	}
-	*modeloADevolver = this->listaDeModelos.at(nombreModelo);
+	(*modeloADevolver) = this->listaDeModelos.at(nombreModelo);
 	return RES_OK;
 }
 
