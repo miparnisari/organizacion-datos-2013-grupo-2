@@ -21,6 +21,7 @@ PPMC::PPMC(unsigned short orden) : Compresor()
 PPMC::~PPMC()
 {
 	delete contextos;
+	delete comp_aritmetico;
 }
 
 void PPMC::_crear_modelo_vacio (string nombre_modelo)
@@ -33,7 +34,8 @@ void PPMC::_crear_modelo_vacio (string nombre_modelo)
 	contextos->agregar_modelo(nombre_modelo,modelo);
 }
 
-void PPMC::_guardar_bits(char* puntero_a_resultado,
+void PPMC::_guardar_bits(char* bufferComprimido,
+		Uint & indiceBufferComprimido,
 		BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
 		vector<bool> bits_a_emitir)
 {
@@ -72,11 +74,7 @@ int PPMC::comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::
 		a_emitir = comp_aritmetico->comprimir(simbolo,cOverflow,cUnderflow);
 	}
 
-
 	return resultado;
-
-//	Uint resultado = modelo_actual->obtener_simbolo(proba);
-//	return resultado;
 }
 
 int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* bufferComprimido)
@@ -84,6 +82,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> buffer_bits;
 	string contexto = "0"; // "ABC"
 	int num_contexto = 0;
+	Uint indiceBufferComprimido = 0;
 
 	for (Uint i = 0; i < tamanioBuffer; i++)
 	{
@@ -93,8 +92,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 
 		int res = comprimir(simbolo,contexto, bits_a_emitir);
 
-		char* puntero_a_resultado = bufferComprimido + i;
-		_guardar_bits(puntero_a_resultado, buffer_bits, bits_a_emitir);
+		_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 
 		while (res == RES_ESCAPE)
 		{
@@ -106,6 +104,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 			contexto = utilitarios::int_a_string(num_contexto);
 
 			res = comprimir(simbolo,contexto,bits_a_emitir);
+			_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 
 			if (num_contexto == -1)
 				num_contexto = orden_maximo;

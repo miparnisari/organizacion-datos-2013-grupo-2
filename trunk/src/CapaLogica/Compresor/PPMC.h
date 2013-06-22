@@ -14,7 +14,8 @@ class PPMC : public Compresor
 		PPMC(unsigned short orden);
 		~PPMC();
 
-		void _guardar_bits(char* puntero_a_resultado,
+		void _guardar_bits(char* bufferComprimido,
+				Uint & indiceBufferComprimido,
 				BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
 				vector<bool> bits_a_emitir);
 	
