@@ -17,7 +17,6 @@ Aritmetico::Aritmetico(Uint tamanioAlfabeto)
 
 }
 
-
 void Aritmetico::_resetear(){
 
 	delete intervalo;
@@ -48,9 +47,8 @@ void Aritmetico::inicializar_frecuencias_en_1(vector<unsigned short>& v){
 Uint Aritmetico::descomprimir(Uint valor)
 {
 	const unsigned long long piso = intervalo->get_piso().to_ulong();
-	const unsigned long long techo = intervalo->get_techo().to_ulong();
 	const Ulonglong rango = intervalo->get_rango();
-	const int tam_alfabeto = modelo->get_tamanio_alfabeto();
+	const Uint tam_alfabeto = modelo->get_tamanio_alfabeto();
 
 
 	for (Uint i = 0; i < tam_alfabeto; i++)
@@ -75,7 +73,7 @@ Uint Aritmetico::descomprimir(Uint valor)
 }
 
 
-std::vector<bool> Aritmetico::_comprimir_ultimo_paso(){
+std::vector<bool> Aritmetico::comprimir_ultimo_paso(){
 
 	BitsPiso piso= intervalo->get_piso();
 	std::vector<bool> retornar;
@@ -98,8 +96,6 @@ std::vector<bool> Aritmetico::_comprimir_ultimo_paso(){
 
 
 }
-
-
 
 std::vector<bool> Aritmetico::comprimir(const Uint simbolo,Byte& cOverflow,Byte& cUnderflow)
 {
@@ -169,7 +165,7 @@ int Aritmetico::comprimir_todo
 
 	}//for i<tamanio
 
-	std::vector<bool> bits_caracter_actual = _comprimir_ultimo_paso();
+	std::vector<bool> bits_caracter_actual = comprimir_ultimo_paso();
 
 	const TamanioBitset TAMANIO_BITS_CARACTER_ACTUAL= bits_caracter_actual.size();
 	for( TamanioBitset j=0;j<TAMANIO_BITS_CARACTER_ACTUAL;j++ )
@@ -206,8 +202,11 @@ int Aritmetico::comprimir_todo
 
 
 /*fixme arreglar el hecho de trabajar con una precision variable diferente a 32 bits*/
-int Aritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBufferComprimido, char* bufferDescomprimido,
-		unsigned int precision, unsigned int cantidadCaracteresOriginal)
+int Aritmetico::descomprimir_todo(char* bufferComprimido,
+		int tamanioBufferComprimido,
+		char* bufferDescomprimido,
+		unsigned int precision,
+		unsigned int cantidadCaracteresOriginal)
 {
 
 	_resetear();
@@ -215,7 +214,6 @@ int Aritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBufferCompr
 	unsigned int indiceBufferComprimido= 0;
 
 	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> bufferBitsDescompresion;
-	const unsigned int BYTES_PRECISION= (unsigned int)(precision/8);
 	const unsigned int BYTES_BUFFER_BITS= (unsigned int)(TAMANIO_BUFFER_BITS_DEFAULT / 8);
 
 //	if( BYTES_PRECISION < tamanioBufferComprimido )

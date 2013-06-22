@@ -38,7 +38,7 @@ ModeloProbabilistico::ModeloProbabilistico(const ModeloProbabilistico& otro){
 }
 
 
-short ModeloProbabilistico::get_tamanio_alfabeto(){
+Uint ModeloProbabilistico::get_tamanio_alfabeto(){
 
 	return this->tamanioAlfabeto;
 

@@ -11,7 +11,8 @@ class TestPPMC : public testing::Test {
   // should define it if you need to initialize the varaibles.
   // Otherwise, this can be skipped.
   virtual void SetUp() {
-	  comp_ppmc = new PPMC(3);
+	  const short orden = 3;
+	  comp_ppmc = new PPMC(orden);
   }
 
   // TearDown() is invoked immediately after a test finishes.

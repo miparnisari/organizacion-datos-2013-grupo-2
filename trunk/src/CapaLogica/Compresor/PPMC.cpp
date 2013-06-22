@@ -71,9 +71,24 @@ void PPMC::_guardar_bits(char* bufferComprimido,
 
 }
 
-/*
- * El resultado puede ser Escape!
- */
+std::vector<bool> PPMC::_comprimir_ultimo_paso(string contexto)
+{
+	ModeloProbabilistico* modelo_actual = NULL;
+	int res = contextos->devolver_modelo(contexto,&modelo_actual);
+	if (res == RES_ERROR)
+	{
+		_crear_modelo_vacio(contexto);
+		contextos->devolver_modelo(contexto,&modelo_actual);
+	}
+
+	comp_aritmetico->set_modelo (modelo_actual);
+
+	vector<bool> bits_a_emitir = comp_aritmetico->comprimir_ultimo_paso();
+
+	return bits_a_emitir;
+}
+
+
 int PPMC::comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::vector<bool>& a_emitir)
 {
 	int resultado = RES_OK;
@@ -112,12 +127,11 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 	string contexto = "0"; // "ABC"
 	int num_contexto = 0;
 	Uint indiceBufferComprimido = 0;
+	vector<bool> bits_a_emitir;
 
 	for (Uint i = 0; i < tamanioBuffer; i++)
 	{
 		Uint simbolo = buffer[i];
-
-		vector<bool> bits_a_emitir;
 
 		int res = comprimir(simbolo,contexto, bits_a_emitir);
 
@@ -141,6 +155,10 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 				num_contexto --;
 
 		}
-
 	}
+
+	bits_a_emitir = _comprimir_ultimo_paso(contexto);
+	_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
+
+	return RES_OK;
 }
