@@ -5,9 +5,9 @@
  *      Author: martin
  */
 
-#include "CompresorAritmetico.h"
+#include "Aritmetico.h"
 
-CompresorAritmetico::CompresorAritmetico(unsigned int tamanioAlfabeto)
+Aritmetico::Aritmetico(unsigned int tamanioAlfabeto)
 {
 
 	modelo= new ModeloProbabilistico(tamanioAlfabeto);
@@ -18,7 +18,7 @@ CompresorAritmetico::CompresorAritmetico(unsigned int tamanioAlfabeto)
 }
 
 
-void CompresorAritmetico::_resetear(){
+void Aritmetico::_resetear(){
 
 	delete intervalo;
 	modelo->resetear();
@@ -28,24 +28,24 @@ void CompresorAritmetico::_resetear(){
 }
 
 
-CompresorAritmetico :: CompresorAritmetico (ModeloProbabilistico* unModelo)
+Aritmetico :: Aritmetico (ModeloProbabilistico* unModelo)
 {
 	modelo = unModelo;
 	intervalo= new Intervalo();
 	byteActual = '0';
 }
 
-CompresorAritmetico::~CompresorAritmetico()
+Aritmetico::~Aritmetico()
 {
 	delete modelo;
 	delete intervalo;
 }
 
-void CompresorAritmetico::inicializar_frecuencias_en_1(vector<unsigned short>& v){
+void Aritmetico::inicializar_frecuencias_en_1(vector<unsigned short>& v){
 	modelo->inicializar_frecuencias_en_1(v);
 }
 
-Uint CompresorAritmetico::descomprimir(Uint valor)
+Uint Aritmetico::descomprimir(Uint valor)
 {
 	const unsigned long long piso = intervalo->get_piso().to_ulong();
 	const unsigned long long techo = intervalo->get_techo().to_ulong();
@@ -75,7 +75,7 @@ Uint CompresorAritmetico::descomprimir(Uint valor)
 }
 
 
-std::vector<bool> CompresorAritmetico::_comprimir_ultimo_paso(){
+std::vector<bool> Aritmetico::_comprimir_ultimo_paso(){
 
 	BitsPiso piso= intervalo->get_piso();
 	std::vector<bool> retornar;
@@ -101,7 +101,7 @@ std::vector<bool> CompresorAritmetico::_comprimir_ultimo_paso(){
 
 
 
-std::vector<bool> CompresorAritmetico::comprimir(const Uint simbolo,Byte& cOverflow,Byte& cUnderflow)
+std::vector<bool> Aritmetico::comprimir(const Uint simbolo,Byte& cOverflow,Byte& cUnderflow)
 {
 	intervalo->calcular_rango();
 
@@ -128,7 +128,7 @@ std::vector<bool> CompresorAritmetico::comprimir(const Uint simbolo,Byte& cOverf
 	return bits_a_emitir;
 }
 
-int CompresorAritmetico::comprimir_todo
+int Aritmetico::comprimir_todo
 	(const char* buffer_a_comprimir,
 	const unsigned int tamanio,
 	char* bufferCompresion)
@@ -152,6 +152,7 @@ int CompresorAritmetico::comprimir_todo
 		const TamanioBitset TAMANIO_BITS_CARACTER_ACTUAL= bits_caracter_actual.size();
 		for( TamanioBitset j=0;j<TAMANIO_BITS_CARACTER_ACTUAL;j++ ){
 
+			// FIXME refactorizar
 			bool bit= bits_caracter_actual.at(j);
 
 			if( bufferBits.agregar_bit(bit)== RES_ERROR ){
@@ -205,7 +206,7 @@ int CompresorAritmetico::comprimir_todo
 
 
 /*fixme arreglar el hecho de trabajar con una precision variable diferente a 32 bits*/
-int CompresorAritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBufferComprimido, char* bufferDescomprimido,
+int Aritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBufferComprimido, char* bufferDescomprimido,
 		unsigned int precision, unsigned int cantidadCaracteresOriginal)
 {
 
@@ -267,7 +268,7 @@ int CompresorAritmetico::descomprimir_todo(char* bufferComprimido, int tamanioBu
 }
 
 
-int CompresorAritmetico::set_modelo(ModeloProbabilistico* mp){
+int Aritmetico::set_modelo(ModeloProbabilistico* mp){
 
 	if(mp== NULL)
 		return RES_ERROR;

@@ -19,7 +19,7 @@
 #include "../CapaLogica/ManejoArchivos/ClaveX.h"
 #include "../CapaLogica/ManejoArchivos/RegistroCancion.h"
 #include "../Constantes.h"
-#include "../CapaLogica/Compresor/CompresorAritmetico.h"
+#include "../CapaLogica/Compresor/Aritmetico.h"
 
 class ResolvedorConsultas {
 public:

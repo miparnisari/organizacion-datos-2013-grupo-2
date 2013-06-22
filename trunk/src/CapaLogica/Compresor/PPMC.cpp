@@ -1,11 +1,11 @@
-#include "CompresorPPMC.h"
+#include "PPMC.h"
 
 
-CompresorPPMC::CompresorPPMC(unsigned short orden) : Compresor()
+PPMC::PPMC(unsigned short orden) : Compresor()
 {
 	orden_maximo = orden;
-	comp_aritmetico = new CompresorAritmetico();
-	contextos = new Contexto();
+	comp_aritmetico = new Aritmetico();
+	contextos = new Contextos();
 
 	// ORDEN -1
 	ModeloProbabilistico* mod_menos_uno = new ModeloProbabilistico(TAMANIO_ALFABETO-1);
@@ -18,12 +18,12 @@ CompresorPPMC::CompresorPPMC(unsigned short orden) : Compresor()
 }
 
 
-CompresorPPMC::~CompresorPPMC()
+PPMC::~PPMC()
 {
 	delete contextos;
 }
 
-void CompresorPPMC::_crear_modelo_vacio (string nombre_modelo)
+void PPMC::_crear_modelo_vacio (string nombre_modelo)
 {
 	ModeloProbabilistico* modelo = new ModeloProbabilistico(TAMANIO_ALFABETO);
 	std::vector<unsigned short> vector;
@@ -36,7 +36,7 @@ void CompresorPPMC::_crear_modelo_vacio (string nombre_modelo)
 /*
  * El resultado puede ser Escape!
  */
-Uint CompresorPPMC::comprimir (const double proba, std::string contexto_del_simbolo)
+Uint PPMC::comprimir (const double proba, std::string contexto_del_simbolo)
 {
 	ModeloProbabilistico* modelo_actual = NULL;
 	int res = contextos->devolver_modelo(contexto_del_simbolo,&modelo_actual);
@@ -50,7 +50,7 @@ Uint CompresorPPMC::comprimir (const double proba, std::string contexto_del_simb
 	return resultado;
 }
 
-int CompresorPPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* resultado)
+int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* resultado)
 {
 	string contexto = "";
 

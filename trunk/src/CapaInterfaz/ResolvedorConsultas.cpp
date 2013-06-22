@@ -128,7 +128,7 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
 	long offset;
 	reg.recuperar_campo((char*)&offset,1);
 
-	CompresorAritmetico* compresor = new CompresorAritmetico();
+	Aritmetico* compresor = new Aritmetico();
 	RegistroVariable* regVariableComprimido = new RegistroVariable();
 	archivoMaestro.get_registro_por_offset(regVariableComprimido,offset);
 

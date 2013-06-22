@@ -220,7 +220,7 @@ void Indexador::_agregar_a_los_indices (
 		std::string nombreArchivo)
 {
 	/* ------ guardamos el registro de la cancion en un archivo maestro ------ */
-	CompresorAritmetico* compresor = new CompresorAritmetico();
+	Aritmetico* compresor = new Aritmetico();
 	RegistroVariable* regComprimido = regCancionNoNormalizada.comprimir(compresor);
 
 	long offsetInicialRegCancion = archivoMaestro.agregar_registro(regComprimido);

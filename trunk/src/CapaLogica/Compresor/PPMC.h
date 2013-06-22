@@ -3,20 +3,20 @@
 
 #include "Compresor.h"
 #include "../../Constantes.h"
-#include "CompresorAritmetico.h"
-#include "Contexto.h"
+#include "Aritmetico.h"
+#include "Contextos.h"
 #include <map>
 
-class CompresorPPMC : public Compresor
+class PPMC : public Compresor
 {
 	public:
-		CompresorPPMC(unsigned short orden);
-		~CompresorPPMC();
+		PPMC(unsigned short orden);
+		~PPMC();
 	
 	private:
 		unsigned short orden_maximo;
-		Contexto* contextos;
-		CompresorAritmetico* comp_aritmetico;
+		Contextos* contextos;
+		Aritmetico* comp_aritmetico;
 
 		void _crear_modelo_vacio (string nombre_modelo);
 
