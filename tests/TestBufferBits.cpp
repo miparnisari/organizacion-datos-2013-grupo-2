@@ -357,7 +357,7 @@ TEST_F(TestBufferBits , Agregar_bits_char){
 
 	char c1= (char)2;
 	char c2 = (char)1;
-	char c3 = (char)7;
+//	char c3 = (char)7;
 
 	bb.agregar_bits(c1);
 	bb.agregar_bits(c2);

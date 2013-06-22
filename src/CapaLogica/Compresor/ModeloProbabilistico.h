@@ -44,7 +44,7 @@ class ModeloProbabilistico {
 		double calcular_high_count (const Uint simbolo);
 		Uint calcular_total_frecuencias();
 
-		short get_tamanio_alfabeto();
+		Uint get_tamanio_alfabeto();
 
 		void resetear();
 

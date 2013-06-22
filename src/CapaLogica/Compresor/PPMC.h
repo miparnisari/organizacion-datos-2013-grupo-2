@@ -18,6 +18,8 @@ class PPMC : public Compresor
 				Uint & indiceBufferComprimido,
 				BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
 				vector<bool> bits_a_emitir);
+
+		std::vector<bool> _comprimir_ultimo_paso(string contexto);
 	
 	private:
 		unsigned short orden_maximo;

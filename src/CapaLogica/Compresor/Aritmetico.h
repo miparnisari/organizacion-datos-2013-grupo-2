@@ -33,18 +33,18 @@ class Aritmetico : public Compresor {
 		ModeloProbabilistico* modelo;
 		char byteActual;
 
-		std::vector<bool> _comprimir_ultimo_paso();
 		void _resetear();
 
 	public:
 
 		Aritmetico (ModeloProbabilistico* modelo);
-		Aritmetico(Uint tamanioAlfabeto=TAMANIO_ALFABETO);
+		Aritmetico (Uint tamanioAlfabeto=TAMANIO_ALFABETO);
 		virtual ~ Aritmetico ();
 
 		void inicializar_frecuencias_en_1(vector<unsigned short>& v);
+		int set_modelo(ModeloProbabilistico* mp);
 
-		Uint descomprimir(Uint valor);
+		std::vector<bool> comprimir_ultimo_paso();
 
 		std::vector<bool> comprimir(const Uint simbolo,Byte& cOverflow,Byte& cUnderflow);
 
@@ -53,15 +53,14 @@ class Aritmetico : public Compresor {
 			const unsigned int tamanio,
 			char* bufferCompresion);
 
+		Uint descomprimir(Uint valor);
+
 		virtual int descomprimir_todo
 			(char* buffer,
 			int tamanio,
 			char* descomprimido,
 			unsigned int precision,
 			unsigned int cantidadCaracteresOriginal);
-
-		int set_modelo(ModeloProbabilistico* mp);
-
 
 };
 
