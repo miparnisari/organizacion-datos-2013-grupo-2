@@ -363,9 +363,6 @@ int RegistroVariable :: descomprimir(Compresor * compresor, RegistroVariable* re
 	memcpy( descomprimido, (char*)&tamanioOriginal , sizeof(tamanioOriginal) );
 	compresor->descomprimir_todo(bufferComprimido,tamanioComprimido,descomprimido+sizeof(tamanioOriginal),PRECISION,tamanioOriginal);
 
-	for (int i = 0; i < tamanioOriginal-1; i++)
-		std::cout << *(descomprimido+i);
-
 	reg_descomp->desempaquetar( descomprimido );
 
 	delete[] bufferComprimido;
