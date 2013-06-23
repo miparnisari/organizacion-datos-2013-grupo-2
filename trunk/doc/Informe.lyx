@@ -600,7 +600,7 @@ Sistema operativo de desarrollo: GNU/Linux
 \begin_layout Itemize
 Herramientas adicionales: 
 \family typewriter
-valgrind, cppcheck
+valgrind, cppcheck, google test
 \end_layout
 
 \begin_layout Subsection
@@ -1577,6 +1577,51 @@ Archivo_coincidencias
 \end_layout
 
 \end_deeper
+\begin_layout Subsubsection
+Compresor
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename DiagramasManuales/Aritmetico.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Compresor aritmetico
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
 \begin_layout Subsection
 Capa Interfaz
 \end_layout
@@ -1621,7 +1666,7 @@ Diagrama de clases de la Interfaz
 \begin_layout Standard
 La clase 
 \family typewriter
-Indexador
+Controlador
 \family default
  se encarga de recibir las consultas del usuario, de crear y abrir los archivos
  de índice, y de utilizar los servicios que le provee el 
@@ -1939,7 +1984,7 @@ src
 \family typewriter
 \begin_inset Formula 
 \[
-\mbox{./main [-función] [parámetros]}
+\mbox{./main}
 \]
 
 \end_inset
@@ -1947,146 +1992,6 @@ src
 
 \end_layout
 
-\begin_layout Standard
-donde la función y sus parámetros pueden ser: 
-\end_layout
-
-\begin_layout Itemize
-
-\family typewriter
--indexar <carpeta de entrada> <carpeta de salida> 
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-Este comando toma los archivos que hay en <carpeta de entrada>, y los indexa,
- generando los archivos necesarios en la <carpeta de salida>.
- 
-\end_layout
-
-\begin_layout Itemize
-Si la <carpeta de salida> existía, se le preguntará al usuario si desea
- reindexar la <carpeta de entrada> o si desea anexar las nuevas canciones.
- 
-\end_layout
-
-\begin_layout Itemize
-Para cada archivo de la carpeta, se mostrará por pantalla un mensaje que
- indique si ese archivo se pudo indexar o no.
- 
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-
-\family typewriter
--consultarTitulo <carpeta de búsqueda> <titulo> 
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-Este comando recibe un <título> que se desee buscar en el índice guardado
- dentro de <carpeta de búsqueda>.
- 
-\end_layout
-
-\begin_layout Itemize
-Se mostrará por pantalla el ID de la canción, el título y la letra de la
- misma.
-\end_layout
-
-\begin_layout Itemize
-Si el campo <titulo> tiene espacios en blancos, se debe escribir el título
- entre comillas dobles (
-\begin_inset Quotes eld
-\end_inset
-
-
-\begin_inset Quotes erd
-\end_inset
-
-).
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-
-\family typewriter
--consultarAutor <carpeta de búsqueda> <autor> 
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-Este comando recibe un <autor> que se desee buscar en el índice guardado
- dentro de <carpeta de búsqueda>.
- 
-\end_layout
-
-\begin_layout Itemize
-Se mostrarán por pantalla los IDs de las canciones de <autor>, sus títulos
- y las letras de cada canción.
-\end_layout
-
-\begin_layout Itemize
-Si el campo <autor> tiene espacios en blancos, se debe escribir el autor
- entre comillas dobles (
-\begin_inset Quotes eld
-\end_inset
-
-
-\begin_inset Quotes erd
-\end_inset
-
-).
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-
-\family typewriter
--consultarFrase <carpeta de búsqueda> <frase> 
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-Este comando recibe una <frase> que se desee buscar en el índice guardado
- dentro de <carpeta de búsqueda>.
- 
-\end_layout
-
-\begin_layout Itemize
-Se mostrarán por pantalla los nombres de los archivos de las canciones que
- contengan dicha <frase>.
-\end_layout
-
-\begin_layout Itemize
-Si el campo <frase> tiene espacios en blancos, se debe escribir la frase
- entre comillas dobles (
-\begin_inset Quotes eld
-\end_inset
-
-
-\begin_inset Quotes erd
-\end_inset
-
-).
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-
-\family typewriter
--borrarCancion <carpeta de búsqueda> <id cancion>
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-Este comando recibe un <id cancion> que se desee eliminar del índice guardado
- dentro de <carpeta de búsqueda>.
- 
-\end_layout
-
-\end_deeper
 \begin_layout Subsection
 Ejemplos
 \end_layout
@@ -2105,151 +2010,114 @@ organizacion-datos-2013-grupo 2
 
 \begin_deeper
 \begin_layout Standard
-
-\family typewriter
 \begin_inset listings
 inline false
 status open
 
 \begin_layout Plain Layout
 
-user@notebook:~$ cd Desktop/organizacion-datos-2013-grupo-2/ 
+user@notebook:~/Desktop/organizacion-datos-2013-grupo-2/src$ ./main 
 \end_layout
 
 \begin_layout Plain Layout
 
-user@notebook:~/Desktop/organizacion-datos-2013-grupo-2$ ls 
+Operaciones posibles: 
 \end_layout
 
 \begin_layout Plain Layout
 
-doc  lib  songs  src  tests 
-\end_layout
-
-\begin_layout Plain Layout
-
-user@notebook:~/Desktop/organizacion-datos-2013-grupo-2$ cd src 
-\end_layout
-
-\begin_layout Plain Layout
-
-user@notebook:~/Desktop/organizacion-datos-2013-grupo-2/src$ make
-\end_layout
-
-\begin_layout Plain Layout
-
-user@notebook:~/Desktop/organizacion-datos-2013-grupo-2/src$ ./main -indexar
- ../songs ../output 
-\end_layout
-
-\begin_layout Plain Layout
-
-AVISO: El directorio de salida no existe.
-  
-\end_layout
-
-\begin_layout Plain Layout
-
-Se creó el directorio de salida.
+(0) SALIR.
  
 \end_layout
 
 \begin_layout Plain Layout
 
-Se indexó ../songs/joaquin sabina - y nos dieron las diez.txt correctamente!
+(1) Indexar carpeta.
+\end_layout
+
+\begin_layout Plain Layout
+
+(2) Consultar título.
  
 \end_layout
 
 \begin_layout Plain Layout
 
-No se indexó ../songs/at the drive in -invalid.txt porque no cumple el estándar
- especificado.
+(3) Consultar autor.
  
 \end_layout
 
 \begin_layout Plain Layout
 
-No se indexó ../songs/daft punk - the game of love.txt porque no cumple el
- estándar especificado.
+(4) Consultar frase.
  
 \end_layout
 
 \begin_layout Plain Layout
 
-Se indexó ../songs/madonna - girl gone wild.txt correctamente! 
+(5) Borrar canción por ID.
 \end_layout
 
 \begin_layout Plain Layout
 
-No se indexó ../songs/aerosmith-helter skelter.txt porque no cumple el estándar
- especificado.
+(6) Buscar titulo más consultado.
  
 \end_layout
 
 \begin_layout Plain Layout
 
-Se indexó ../songs/keane - somewhere only we know.txt correctamente! 
-\end_layout
-
-\begin_layout Plain Layout
-
-Se indexó ../songs/oasis-helter skelter.txt correctamente! 
-\end_layout
-
-\begin_layout Plain Layout
-
-Se indexó ../songs/queens of the stone age - Walkin' On The Sidewalks.txt correctam
-ente!
-\end_layout
-
-\begin_layout Plain Layout
-
-o se indexó ../songs/daft punk - give life back to music.txt porque no cumple
- el estándar especificado.
+(7) Buscar autor más consultado.
  
 \end_layout
 
 \begin_layout Plain Layout
 
-Se indexó ../songs/joaquin sabina - nos sobran los motivos.txt correctamente!
+(8) Buscar frase más consultado.
  
 \end_layout
 
 \begin_layout Plain Layout
 
-No se indexó ../songs/madonna - i'm addicted.txt porque no cumple el estándar
- especificado.
-\end_layout
-
-\begin_layout Plain Layout
-
-Se indexó ../songs/u2-pride.txt correctamente! 
-\end_layout
-
-\begin_layout Plain Layout
-
-Se indexó ../songs/madonna - gang bang.txt correctamente! 
-\end_layout
-
-\begin_layout Plain Layout
-
-No se indexó ../songs/archivo vacio.txt porque no cumple el estándar especificado.
+(9) Buscar tema más consultado.
  
 \end_layout
 
 \begin_layout Plain Layout
 
-Se indexó ../songs/the summer set - cross your fingers.txt correctamente! 
+Ingrese operacion: 1
 \end_layout
 
 \begin_layout Plain Layout
 
-Se indexó ../songs/one republic - say all i need.txt correctamente! 
+Ingrese directorio de entrada: ../songs 
 \end_layout
 
 \begin_layout Plain Layout
 
-Se indexó ../songs/nicki minaj - starships.txt correctamente! 
+Ingrese directorio de salida: ../output
+\end_layout
+
+\begin_layout Plain Layout
+
+AVISO: Ya existe un indice en ../output.
+ ¿Que desea hacer?
+\end_layout
+
+\begin_layout Plain Layout
+
+(1) Borrar el indice e indexar desde cero.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(2) Anexar las canciones de ../songs al índice.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+Ingrese opcion:  1
 \end_layout
 
 \end_inset
@@ -2258,5 +2126,9 @@ Se indexó ../songs/nicki minaj - starships.txt correctamente!
 \end_layout
 
 \end_deeper
+\begin_layout Itemize
+Para realizar consultas por autor:
+\end_layout
+
 \end_body
 \end_document
