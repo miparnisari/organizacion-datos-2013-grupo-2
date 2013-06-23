@@ -55,6 +55,10 @@ int Controlador::consultar_autor( std::string & directorioSalida, std::string & 
 	generador_estadisticas.aumentar_frecuencia_autor(autorNormalizado);
 	resolvedor_consultas.set_directorio_indice(directorioSalida);
 	std::vector <int> ids = resolvedor_consultas.get_id_canciones_autor(autorNormalizado);
+	if (ids.size() == 0)
+	{
+		std::cout << "El autor " << autor << " no fue encontrado." << std::endl;
+	}
 	for (unsigned int i = 0; i < ids.size(); i ++)
 	{
 		generador_estadisticas.aumentar_frecuencia_tema(ids.at(i));

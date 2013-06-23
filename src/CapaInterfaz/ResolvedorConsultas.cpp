@@ -82,6 +82,7 @@ std::vector<int> ResolvedorConsultas::get_id_canciones_autor(std::string & autor
 
 			ids.push_back(idDoc);
 		}
+
 	}
 
 	indiceSecundarioAutor.cerrar();
@@ -135,7 +136,6 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
 	RegistroCancion* regDescomprimido = new RegistroCancion();
 	regVariableComprimido->descomprimir(compresor, regDescomprimido);
 
-	IMPRIMIR_MY_VARIABLE(regDescomprimido->get_cantidad_campos());
 	delete compresor;
 	delete regVariableComprimido;
 	return regDescomprimido;

@@ -24,4 +24,3 @@ clean :
 	$(ECHO) Borrando archivos.
 	-$(RM) -f ./main
 	find . -name "*.o" -type f -print | xargs /bin/rm -f
-	find . -name "*.a" -type f -print | xargs /bin/rm -f
