@@ -62,9 +62,9 @@ TEST_F(TestPPMC, DescomprimirString)
 	ASSERT_EQ(bufferDescomprimido[0],'T');
 	ASSERT_EQ(bufferDescomprimido[1],'A');
 	ASSERT_EQ(bufferDescomprimido[2],'T');
-	ASSERT_EQ(bufferDescomprimido[4],'A');
-	ASSERT_EQ(bufferDescomprimido[5],'T');
-	ASSERT_EQ(bufferDescomprimido[6],'A');
+	ASSERT_EQ(bufferDescomprimido[3],'A');
+	ASSERT_EQ(bufferDescomprimido[4],'T');
+	ASSERT_EQ(bufferDescomprimido[5],'A');
 
 	delete bufferDescomprimido;
 }
