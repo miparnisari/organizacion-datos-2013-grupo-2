@@ -23,7 +23,7 @@ class Intervalo {
 
 	private:
 		Uint contadorUnderflow;
-		Ulonglong rango; // 8 bytes
+		Ulonglong rango;
 		BitsPiso* piso;
 		BitsTecho* techo;
 
@@ -47,9 +47,8 @@ class Intervalo {
 		bool hay_overflow() const;
 		bool hay_underflow() const;
 
-		Uint calcular_valor(Uint byteActual);
-
 		void calcular_rango();
+
 		void actualizar_piso_techo(double low_count, double high_count);
 };
 
