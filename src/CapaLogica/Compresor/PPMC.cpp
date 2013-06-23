@@ -6,23 +6,8 @@ PPMC::PPMC(unsigned short orden) : Compresor()
 	orden_maximo = orden;
 	comp_aritmetico = new Aritmetico();
 
-	// ORDEN -1
-	ModeloProbabilistico* mod_menos_uno = new ModeloProbabilistico(TAMANIO_ALFABETO-1);
-	mod_menos_uno->inicializar_frecuencias_en_1();
-
-	Contextos* contexto_menos_uno = new Contextos();
-	contexto_menos_uno->agregar_modelo("-1",mod_menos_uno);
-	mapa_ordenes.insert(pair<int,Contextos*> (-1,contexto_menos_uno));
-
-	// ORDEN 0
-	ModeloProbabilistico* mod_cero = new ModeloProbabilistico(TAMANIO_ALFABETO);
-	vector<unsigned short> vector;
-	vector.push_back(VALOR_DEL_ESCAPE);
-	mod_cero->inicializar_frecuencias_en_1(vector);
-
-	Contextos* ctx_cero = new Contextos();
-	ctx_cero->agregar_modelo("0",mod_cero);
-	mapa_ordenes.insert(pair<int,Contextos*> (0,ctx_cero));
+	_inicializar_orden_menosuno();
+	_inicializar_orden_cero();
 
 	// ORDEN 1 a "orden"
 	for (unsigned short i = 1; i < orden+1; i++)
@@ -31,6 +16,28 @@ PPMC::PPMC(unsigned short orden) : Compresor()
 		mapa_ordenes.insert(pair<int,Contextos*> (i,contexto_vacio));
 	}
 
+}
+
+void PPMC::_inicializar_orden_menosuno()
+{
+	ModeloProbabilistico* mod_menos_uno = new ModeloProbabilistico(TAMANIO_ALFABETO-1);
+	mod_menos_uno->inicializar_frecuencias_en_1();
+
+	Contextos* contexto_menos_uno = new Contextos();
+	contexto_menos_uno->agregar_modelo("-1",mod_menos_uno);
+	mapa_ordenes.insert(pair<int,Contextos*> (-1,contexto_menos_uno));
+}
+
+void PPMC::_inicializar_orden_cero()
+{
+	ModeloProbabilistico* mod_cero = new ModeloProbabilistico(TAMANIO_ALFABETO);
+	vector<unsigned short> vector;
+	vector.push_back(VALOR_DEL_ESCAPE);
+	mod_cero->inicializar_frecuencias_en_1(vector);
+
+	Contextos* ctx_cero = new Contextos();
+	ctx_cero->agregar_modelo("0",mod_cero);
+	mapa_ordenes.insert(pair<int,Contextos*> (0,ctx_cero));
 }
 
 
@@ -239,7 +246,7 @@ void PPMC::_emitir_completando_octeto(char* bufferComprimido,
 	}
 }
 
-void PPMC::_comprimir_un_caracter(int& orden, Uint indiceSimbolo, Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
+void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
 		vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo)
 {
 	if (orden == 0 || orden == -1)
@@ -340,11 +347,11 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 		Uint simbolo = buffer[indiceSimbolo];
 		cout << "SIMBOLO A COMPRIMIR = " << (char)simbolo << endl;
 
-		_comprimir_un_caracter(orden,indiceSimbolo,simbolo,contexto, buffer_bits,
+		comprimir_un_caracter(orden,indiceSimbolo,simbolo,contexto, buffer_bits,
 				bits_a_emitir,bufferComprimido,indiceBufferComprimido,false);
 	}
 
-	_comprimir_un_caracter(orden,indiceSimbolo, buffer[indiceSimbolo],contexto, buffer_bits,
+	comprimir_un_caracter(orden,indiceSimbolo, buffer[indiceSimbolo],contexto, buffer_bits,
 			bits_a_emitir,bufferComprimido,indiceBufferComprimido,true);
 
 	return indiceBufferComprimido;

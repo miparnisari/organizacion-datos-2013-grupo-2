@@ -12,7 +12,6 @@ Aritmetico::Aritmetico(Uint tamanioAlfabeto)
 	modelo= new ModeloProbabilistico(tamanioAlfabeto);
 	intervalo= new Intervalo();
 	modelo->inicializar_frecuencias_en_1();
-
 }
 
 Aritmetico :: Aritmetico (const ModeloProbabilistico & unModelo)
