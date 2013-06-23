@@ -233,6 +233,49 @@ int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_sim
 	return resultado;
 }
 
+void PPMC::_comprimir_un_caracter(int& orden,Uint simbolo, string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
+		vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido)
+{
+	if (orden == 0 || orden == -1)
+		contexto = utilitarios::int_a_string(orden);
+
+	string maximo_contexto_actual = contexto;
+
+	int res = comprimir(simbolo, orden, contexto, bits_a_emitir);
+	_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
+	bits_a_emitir.clear();
+	_actualizar_contexto(orden, simbolo, contexto);
+
+	while (res == RES_ESCAPE)
+	{
+		orden --;
+		if (orden == 0 || orden == -1)
+			contexto = utilitarios::int_a_string(orden);
+		else
+			contexto.erase(0,1);
+
+		res = comprimir(simbolo, orden, contexto, bits_a_emitir);
+		_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
+		bits_a_emitir.clear();
+		_actualizar_contexto(orden, simbolo, contexto);
+
+	}
+
+	if (maximo_contexto_actual == "0")
+		contexto = simbolo;
+	else if (maximo_contexto_actual != "0" && maximo_contexto_actual.size() < orden_maximo)
+	{
+		contexto= maximo_contexto_actual;
+		contexto += simbolo;
+	}
+	else
+	{
+		contexto = maximo_contexto_actual.substr(1,maximo_contexto_actual.length());
+		contexto += simbolo;
+	}
+
+}
+
 int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* bufferComprimido)
 {
 	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> buffer_bits;
@@ -240,50 +283,14 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 	int orden = 0;
 	Uint indiceBufferComprimido = 0;
 	vector<bool> bits_a_emitir;
-	int res;
 
 	for (Uint i = 0; i < tamanioBuffer - 1; i++)
 	{
-		if (orden == 0 || orden == -1)
-			contexto = utilitarios::int_a_string(orden);
-
 		Uint simbolo = buffer[i];
 		cout << "SIMBOLO A COMPRIMIR = " << (char)simbolo << endl;
 
-		string contexto_inicial = contexto;
-
-		res = comprimir(simbolo, orden, contexto, bits_a_emitir);
-		_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
-		bits_a_emitir.clear();
-		_actualizar_contexto(orden, simbolo, contexto);
-
-		while (res == RES_ESCAPE)
-		{
-			orden --;
-			if (orden == 0 || orden == -1)
-				contexto = utilitarios::int_a_string(orden);
-			else
-				contexto.erase(0,1);
-
-			res = comprimir(simbolo, orden, contexto, bits_a_emitir);
-			_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
-			bits_a_emitir.clear();
-			_actualizar_contexto(orden, simbolo, contexto);
-
-		}
-
-		if (contexto_inicial == "0")
-			contexto = simbolo;
-		else if (contexto_inicial != "0" && contexto_inicial.size() < orden_maximo)
-		{
-			contexto= contexto_inicial;
-			contexto += simbolo;
-		}
-		else
-		{
-			contexto = contexto_inicial.substr(1,contexto_inicial.length());
-			contexto += simbolo;
-		}
+		_comprimir_un_caracter(orden,simbolo,contexto, buffer_bits,
+				bits_a_emitir,bufferComprimido,indiceBufferComprimido);
 
 		orden += 2 + i;
 		if (orden > orden_maximo)
