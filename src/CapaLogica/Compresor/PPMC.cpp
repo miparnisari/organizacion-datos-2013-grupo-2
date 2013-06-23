@@ -65,6 +65,9 @@ void PPMC::_guardar_bits(char* bufferComprimido,
 		vector<bool> bits_a_emitir)
 {
 
+	if(bufferComprimido== NULL)
+		return;
+
 	const Uint CANTIDAD_BITS_A_EMITIR= bits_a_emitir.size();
 	if (CANTIDAD_BITS_A_EMITIR== 0)
 		return;
@@ -223,6 +226,9 @@ void PPMC::_emitir_completando_octeto(char* bufferComprimido,
 		BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
 		vector<bool> bits_a_emitir)
 {
+	if( bufferComprimido== NULL )
+		return;
+
 	const Uint CANTIDAD_BITS_A_EMITIR= bits_a_emitir.size();
 
 	for (Uint i=0;i<CANTIDAD_BITS_A_EMITIR;i++){
@@ -356,3 +362,142 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 
 	return indiceBufferComprimido;
 }
+
+
+int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int numeroOrdenActual,Uint& simbolo,
+	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& bufferBits){
+
+
+	Contextos* ordenActual= this->mapa_ordenes[numeroOrdenActual];
+	ModeloProbabilistico* modeloActual;
+	int resultadoDevolverModelo= ordenActual->devolver_modelo(contextoActual, &modeloActual);
+
+	if(resultadoDevolverModelo== RES_ERROR)
+		return RES_ERROR;
+
+	bool escapeEsUnicoCaracter= ( modeloActual->get_frecuencia(VALOR_DEL_ESCAPE)==1 &&
+			modeloActual->calcular_total_frecuencias()== 1);
+
+
+	string contextoInferior;
+	if( numeroOrdenActual==0 )
+		contextoInferior= "-1";
+	else
+	if(numeroOrdenActual== 1)
+		contextoInferior= "0";
+	else{
+
+		contextoInferior= contextoActual;
+		contextoInferior.erase(0,1);
+
+	}
+
+
+
+	int numeroOrdenInferior= numeroOrdenActual-1;
+
+
+	/*si escape es el unico caracter salto directamente al contexto inferior*/
+	if( escapeEsUnicoCaracter ){
+
+		return descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits);
+
+	}
+
+	/*si escape no es el unico caracter en el modelo actual intento descomprimir el valor del simbolo */
+
+	/*creo una copia del aritmetico a usar a partir del modelo actual*/
+	Aritmetico aritmeticoCopia( (*modeloActual) );
+	Byte cOverflow,cUnderflow;
+	Uint simboloCopia= aritmeticoCopia.descomprimir( (Uint)valorSimbolo);
+	aritmeticoCopia.comprimir(simboloCopia,cOverflow,cUnderflow);
+
+	/*descarto los bits de overflow y underflow*/
+	for(Uint i=0;i<cOverflow;i++)
+		bufferBits.quitar_bit(0);
+	for(Uint i=0;i<cUnderflow;i++)
+		bufferBits.quitar_bit(1);
+
+
+	bool simboloEsEscape= ( simboloCopia==VALOR_DEL_ESCAPE );
+
+	/*si el simbolo que se descomprimio es el escape debo saltar a un contexto inferior*/
+	if(simboloEsEscape){
+		/*si el simbolo es escape pero me encuentro en el contexto -1 ocurrio un ERROR FATAL*/
+		if( numeroOrdenActual == -1 )
+			return RES_ERROR;
+
+
+		return this->descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits);
+	}
+
+
+	/*si el simbolo descompreso NO ES ESCAPE ...*/
+
+	simbolo= simboloCopia;
+	return RES_OK;
+
+
+}
+
+
+int PPMC::descomprimir_todo
+	(char* bufferComprimido,
+	int tamanioBufferComprimido,
+	char* bufferDescomprimido,
+	unsigned int precision,
+	unsigned int cantidadCaracteresOriginal){
+
+	/*considero que el compresor esta propiamente inicializado y no ha sido usado para comprimir antes de
+	 * descomprimir*/
+
+	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> bufferBits;
+	string nombreContexto= "0";
+	int numeroOrden= 0;
+	Uint indiceBufferComprimido= 0;
+
+
+	const Uint TAMANIO_BUFFER_BITS_BYTES= (Uint)(TAMANIO_BUFFER_BITS_DEFAULT/8);
+
+
+	for(Uint i=0; i<TAMANIO_BUFFER_BITS_BYTES && i<tamanioBufferComprimido ; i++ ){
+
+		Byte byte= (Byte)bufferComprimido[i];
+		bufferBits.agregar_bits(byte);
+		indiceBufferComprimido++;
+
+	}
+
+
+
+	for( Uint caracterActual= 0; caracterActual < cantidadCaracteresOriginal ; caracterActual++ ){
+
+		Uint simbolo;
+		vector<bool> bitsEmitir;
+
+		unsigned long valor;
+		bufferBits.get_primer_valor_numerico(PRECISION,valor);
+
+		/*descomprimo un caracter. Dentro del metodo se descartan bits del buffer de bits*/
+		int resultadoDescomprimir= this->descomprimir(valor,nombreContexto,numeroOrden,simbolo,bufferBits);
+		if(resultadoDescomprimir== RES_ERROR)
+			return RES_ERROR;
+
+		this->comprimir_un_caracter(numeroOrden,caracterActual,simbolo,nombreContexto,bufferBits,bitsEmitir,
+				NULL,indiceBufferComprimido,false);
+
+		/*intento rellenar el buffer de bits*/
+		TamanioBitset espacioDisponibleBufferBitsBytes=(TamanioBitset)( bufferBits.get_espacio_disponible() /8 );
+		for( TamanioBitset i=0; i<espacioDisponibleBufferBitsBytes ;i++ ){
+			Byte byte= (Byte)bufferComprimido[indiceBufferComprimido];
+			bufferBits.agregar_bits( byte );
+			indiceBufferComprimido++;
+		}
+
+
+	}
+
+	return RES_OK;
+
+}
+

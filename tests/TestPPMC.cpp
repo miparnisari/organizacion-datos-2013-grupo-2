@@ -68,3 +68,31 @@ TEST_F(TestPPMC, DescomprimirString)
 
 	delete bufferDescomprimido;
 }
+
+
+TEST_F(TestPPMC,ComprimirStringIterativamente){
+
+	string linea="TATATA";
+	PPMC ppmc(2);
+	const Uint TAMANIO_BUFFER_COMPRESION= 128;
+	char bufferCompresion[TAMANIO_BUFFER_COMPRESION];
+	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> bufferBits;
+	Uint indiceBufferCompresion= 0;
+	string nombreContexto= "0";
+	int numeroOrden= 0;
+
+
+	for( Uint i=0;i<linea.length();i++ ){
+
+		vector<bool> bitsEmitir;
+		Uint simbolo= (Uint)linea.at(i);
+		ppmc.comprimir_un_caracter(numeroOrden,i,simbolo,nombreContexto,bufferBits,bitsEmitir,bufferCompresion,indiceBufferCompresion,false);
+		cout<<"ComprimirStringIterativamente: ..."<<endl;
+
+
+		IMPRIMIR_MY_VARIABLE(nombreContexto);
+		IMPRIMIR_MY_VARIABLE(numeroOrden);
+
+	}
+
+}

@@ -136,4 +136,5 @@ TEST_F(TestCompresorAritmetico,DISABLED_ComprimirCancion){
 //	IMPRIMIR_MY_VARIABLE(registroDescomprimido.get_tamanio());
 
 	delete registroComprimido;
+
 }

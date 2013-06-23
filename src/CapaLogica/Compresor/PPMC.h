@@ -20,6 +20,16 @@ class PPMC : public Compresor
 		void comprimir_un_caracter(int& orden, Uint indiceSimbolo, Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
 					vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo);
 
+		int descomprimir( unsigned long valor, string contextoActual, int ordenActual, Uint& simbolo,
+				BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& bufferBits);
+
+		int descomprimir_todo
+			(char* bufferComprimido,
+			int tamanioBufferComprimido,
+			char* bufferDescomprimido,
+			unsigned int precision,
+			unsigned int cantidadCaracteresOriginal);
+
 	private:
 		unsigned short orden_maximo;
 		map<int,Contextos*> mapa_ordenes;
