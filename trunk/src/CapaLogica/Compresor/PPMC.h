@@ -23,6 +23,9 @@ class PPMC : public Compresor
 		Aritmetico* comp_aritmetico;
 		string contexto;
 
+		void _comprimir_un_caracter(int& orden,Uint simbolo, string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
+				vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido);
+
 		void _actualizar_contexto(int orden, Uint simbolo, string contexto_del_simbolo);
 
 		void _imprimir_todos_ordenes();
