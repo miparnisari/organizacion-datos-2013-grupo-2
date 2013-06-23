@@ -21,7 +21,7 @@ class PPMC : public Compresor
 					vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo);
 
 		int descomprimir( unsigned long valor, string contextoActual, int ordenActual, Uint& simbolo,
-				BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& bufferBits);
+				BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& bufferBits,Aritmetico& aritmeticoCopia);
 
 		int descomprimir_todo
 			(char* bufferComprimido,

@@ -365,7 +365,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 
 
 int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int numeroOrdenActual,Uint& simbolo,
-	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& bufferBits){
+	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& bufferBits,Aritmetico& aritmeticoCopia){
 
 
 	Contextos* ordenActual= this->mapa_ordenes[numeroOrdenActual];
@@ -390,7 +390,10 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 		contextoInferior= contextoActual;
 		contextoInferior.erase(0,1);
 
+
 	}
+	IMPRIMIR_MY_VARIABLE(contextoActual);
+	IMPRIMIR_MY_VARIABLE(contextoInferior);
 
 
 
@@ -400,14 +403,15 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 	/*si escape es el unico caracter salto directamente al contexto inferior*/
 	if( escapeEsUnicoCaracter ){
 
-		return descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits);
+		return descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits,aritmeticoCopia);
 
 	}
 
 	/*si escape no es el unico caracter en el modelo actual intento descomprimir el valor del simbolo */
 
 	/*creo una copia del aritmetico a usar a partir del modelo actual*/
-	Aritmetico aritmeticoCopia( (*modeloActual) );
+	aritmeticoCopia.set_modelo( modeloActual );
+
 	Byte cOverflow,cUnderflow;
 	Uint simboloCopia= aritmeticoCopia.descomprimir( (Uint)valorSimbolo);
 	aritmeticoCopia.comprimir(simboloCopia,cOverflow,cUnderflow);
@@ -428,7 +432,7 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 			return RES_ERROR;
 
 
-		return this->descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits);
+		return this->descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits,aritmeticoCopia);
 	}
 
 
@@ -478,16 +482,23 @@ int PPMC::descomprimir_todo
 		unsigned long valor;
 		bufferBits.get_primer_valor_numerico(PRECISION,valor);
 
+		Aritmetico aritmeticoCopia( TAMANIO_ALFABETO );
+		Intervalo* intervaloCopia= this->comp_aritmetico->get_intervalo();
+		aritmeticoCopia.set_intervalo( intervaloCopia );
+
 		/*descomprimo un caracter. Dentro del metodo se descartan bits del buffer de bits*/
-		int resultadoDescomprimir= this->descomprimir(valor,nombreContexto,numeroOrden,simbolo,bufferBits);
+		int resultadoDescomprimir= this->descomprimir(valor,nombreContexto,numeroOrden,simbolo,bufferBits,aritmeticoCopia);
 		if(resultadoDescomprimir== RES_ERROR)
 			return RES_ERROR;
+		bufferDescomprimido[caracterActual]= (char)simbolo;
 
 		this->comprimir_un_caracter(numeroOrden,caracterActual,simbolo,nombreContexto,bufferBits,bitsEmitir,
 				NULL,indiceBufferComprimido,false);
 
 		/*intento rellenar el buffer de bits*/
 		TamanioBitset espacioDisponibleBufferBitsBytes=(TamanioBitset)( bufferBits.get_espacio_disponible() /8 );
+
+		if(indiceBufferComprimido < tamanioBufferComprimido)
 		for( TamanioBitset i=0; i<espacioDisponibleBufferBitsBytes ;i++ ){
 			Byte byte= (Byte)bufferComprimido[indiceBufferComprimido];
 			bufferBits.agregar_bits( byte );
