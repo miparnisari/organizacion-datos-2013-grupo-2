@@ -5,33 +5,54 @@ PPMC::PPMC(unsigned short orden) : Compresor()
 {
 	orden_maximo = orden;
 	comp_aritmetico = new Aritmetico();
-	contextos = new Contextos();
+//	contextos = new Contextos();
 
 	// ORDEN -1
 	ModeloProbabilistico* mod_menos_uno = new ModeloProbabilistico(TAMANIO_ALFABETO-1);
 	mod_menos_uno->inicializar_frecuencias_en_1();
 
-	contextos->agregar_modelo("-1",mod_menos_uno);
+	Contextos* contexto_menos_uno = new Contextos();
+	contexto_menos_uno->agregar_modelo("-1",mod_menos_uno);
+	mapa_ordenes.insert(pair<int,Contextos*> (-1,contexto_menos_uno));
 
 	// ORDEN 0
-	_crear_modelo_vacio("0");
+	ModeloProbabilistico* mod_cero = new ModeloProbabilistico(TAMANIO_ALFABETO);
+	vector<unsigned short> vector;
+	vector.push_back(VALOR_DEL_ESCAPE);
+	mod_cero->inicializar_frecuencias_en_1(vector);
+
+	Contextos* ctx_cero = new Contextos();
+	ctx_cero->agregar_modelo("0",mod_cero);
+	mapa_ordenes.insert(pair<int,Contextos*> (0,ctx_cero));
+
+	// ORDEN 1 a "orden"
+	for (unsigned short i = 1; i < orden; i++)
+	{
+		Contextos* contexto_vacio = new Contextos();
+		contexto_vacio->agregar_modelo("0",NULL);
+
+		mapa_ordenes.insert(pair<int,Contextos*> (i,contexto_vacio));
+	}
+
 }
 
 
 PPMC::~PPMC()
 {
-	delete contextos;
+//	delete contextos;
 	delete comp_aritmetico;
 }
 
-void PPMC::_crear_modelo_vacio (string nombre_modelo)
+void PPMC::_crear_modelo_vacio (int orden, string nombre_modelo)
 {
 	ModeloProbabilistico* modelo = new ModeloProbabilistico(TAMANIO_ALFABETO);
 	std::vector<unsigned short> vector;
 	vector.push_back(VALOR_DEL_ESCAPE);
 	modelo->inicializar_frecuencias_en_1(vector);
 
-	contextos->agregar_modelo(nombre_modelo,modelo);
+	Contextos* contexto = new Contextos();
+	contexto->agregar_modelo(nombre_modelo,modelo);
+	mapa_ordenes.insert(pair<int,Contextos*> (orden,contexto));
 }
 
 void PPMC::_guardar_bits(char* bufferComprimido,
@@ -71,14 +92,14 @@ void PPMC::_guardar_bits(char* bufferComprimido,
 
 }
 
-std::vector<bool> PPMC::_comprimir_ultimo_paso(string contexto)
+std::vector<bool> PPMC::_comprimir_ultimo_paso(int orden, string contexto)
 {
 	ModeloProbabilistico* modelo_actual = NULL;
-	int res = contextos->devolver_modelo(contexto,&modelo_actual);
+	int res = mapa_ordenes[orden]->devolver_modelo(contexto,&modelo_actual);
 	if (res == RES_ERROR)
 	{
-		_crear_modelo_vacio(contexto);
-		contextos->devolver_modelo(contexto,&modelo_actual);
+		_crear_modelo_vacio(orden, contexto);
+		mapa_ordenes[orden]->devolver_modelo(contexto,&modelo_actual);
 	}
 
 	comp_aritmetico->set_modelo (modelo_actual);
@@ -88,45 +109,49 @@ std::vector<bool> PPMC::_comprimir_ultimo_paso(string contexto)
 	return bits_a_emitir;
 }
 
-void PPMC::_actualizar_contexto(int num_contexto_actual, Uint simbolo, string contexto_del_simbolo)
+void PPMC::_actualizar_contexto(int orden, Uint simbolo, string contexto_del_simbolo)
 {
 
 	// Caso en el que se emitio ESCAPE y era el unico simbolo posible
 	// Entonces aumentamos la frecuencia del caracter que acabamos de leer
 	cout << "INCREMENTAR FRECUENCIA DE " << (char)simbolo << " EN " << contexto_del_simbolo << endl;
-	contextos->incrementar_frecuencia(simbolo,contexto_del_simbolo);
+	mapa_ordenes[orden]->incrementar_frecuencia(simbolo,contexto_del_simbolo);
 
-	if (num_contexto_actual != orden_maximo)
+	if (orden != orden_maximo)
 	{
 		// En el contexto superior, creamos el contexto "contexto + simbolo"
 		// solo con el ESCAPE
 		ModeloProbabilistico* modelo_contexto_superior;
 
 		string ctx = "";
-		if (num_contexto_actual != -1)
+		if ((orden != -1) && (orden != 0))
 			ctx += contexto_del_simbolo;
 		ctx += simbolo;
 
-		cout << "CREAR CONTEXTO " << ctx << " SOLO CON ESCAPE = 1" << endl;
-		int res = contextos->devolver_modelo(ctx,&modelo_contexto_superior);
+		cout << "CREAR CONTEXTO " << ctx << " EN ORDEN " << orden +1 << endl;
+
+
+		int res = mapa_ordenes[orden+1]->devolver_modelo(ctx,&modelo_contexto_superior);
 		if (res == RES_ERROR)
 		{
-			_crear_modelo_vacio(ctx);
+			_crear_modelo_vacio(orden+1,ctx);
 		}
 	}
 
 }
 
-int PPMC::comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::vector<bool>& a_emitir)
+int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_simbolo, std::vector<bool>& a_emitir)
 {
 	int resultado = RES_OK;
 	ModeloProbabilistico* modelo_actual = NULL;
-	int res = contextos->devolver_modelo(contexto_del_simbolo,&modelo_actual);
+	int res = mapa_ordenes[orden]->devolver_modelo(contexto_del_simbolo,&modelo_actual);
 	if (res == RES_ERROR)
 	{
-		cout << "CREAR CONTEXTO " << contexto_del_simbolo << endl;
-		_crear_modelo_vacio(contexto_del_simbolo);
-		contextos->devolver_modelo(contexto_del_simbolo,&modelo_actual);
+		if (orden == 0 || orden == -1)
+			contexto_del_simbolo = utilitarios::int_a_string(orden);
+//		cout << "CREAR CONTEXTO " << contexto_del_simbolo << " EN ORDEN " << orden << endl;
+		_crear_modelo_vacio(orden,contexto_del_simbolo);
+		mapa_ordenes[orden]->devolver_modelo(contexto_del_simbolo,&modelo_actual);
 	}
 
 	comp_aritmetico->set_modelo (modelo_actual);
@@ -139,8 +164,7 @@ int PPMC::comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::
 		if (modelo_actual->get_frecuencia(VALOR_DEL_ESCAPE) == 1  && modelo_actual->calcular_total_frecuencias() == 1)
 		{
 			// Si el escape es el unico simbolo no se va a emitir nada asi que no hay que llamar a comprimir
-			int num_contexto_actual = utilitarios::string_a_int(contexto_del_simbolo);
-			_actualizar_contexto(num_contexto_actual,simbolo, contexto_del_simbolo);
+
 		}
 		else {
 			// Si el escape NO es el unico simbolo, hay que comprimirlo
@@ -161,47 +185,53 @@ int PPMC::comprimir (const Uint simbolo, std::string contexto_del_simbolo, std::
 int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* bufferComprimido)
 {
 	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> buffer_bits;
-	string contexto = "0"; // "ABC"
-	int num_contexto = 0;
+	string contexto = ""; // "ABC"
+	int orden = 0;
 	Uint indiceBufferComprimido = 0;
 	vector<bool> bits_a_emitir;
 
 	for (Uint i = 0; i < tamanioBuffer; i++)
 	{
+		if (orden == 0 || orden == -1)
+			contexto = utilitarios::int_a_string(orden);
 		Uint simbolo = buffer[i];
-		cout << "ORDEN =" << num_contexto << endl;
+		cout << "ORDEN =" << orden << endl;
 		cout << "CONTEXTO = " << contexto << endl;
 		cout << "SIMBOLO A COMPRIMIR =" << (char)simbolo << endl;
-		int res = comprimir(simbolo,contexto, bits_a_emitir);
+		int res = comprimir(simbolo, orden, contexto, bits_a_emitir);
 
 		_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 
-		num_contexto --;
+		orden --;
 
 		while (res == RES_ESCAPE)
 		{
-			cout << "EMITI ESCAPE" << endl;
-			char primer_char_ctx = contexto[0];
-			contexto.erase(0,1); // "BC"
-			contexto = utilitarios::int_a_string(num_contexto);
-			cout << "INTENTO COMPRIMIR " << simbolo << " EN " << contexto << endl;
-			res = comprimir(simbolo,contexto,bits_a_emitir);
+			_actualizar_contexto(orden+1,simbolo, contexto);
+
+			cout << "EMITI ESCAPE EN ORDEN " << orden+1 << endl;
+			string copia_contexto = contexto;
+			if (orden == -1)
+				contexto.erase(0,2);
+			if (orden == 0)
+				contexto.erase(0,1);
+
+			cout << "INTENTO COMPRIMIR " << (char)simbolo << " EN " << orden << endl;
+			res = comprimir(simbolo,orden,contexto,bits_a_emitir);
 			_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 
-			if (num_contexto == -1) {
-				contexto = primer_char_ctx;
+			if (orden == -1) {
 				contexto += simbolo;
-				num_contexto += 2 + i;
-				if (num_contexto > orden_maximo)
-					num_contexto = orden_maximo;
+				orden += 2 + i;
+				if (orden > orden_maximo)
+					orden = orden_maximo;
 
 				cout << "NUEVO CONTEXTO = " << contexto << endl;
-				cout << "NUEVO ORDEN = " << num_contexto << endl;
+				cout << "NUEVO ORDEN = " << orden << endl;
 				break;
 			}
 			else
 			{
-				num_contexto --;
+				orden --;
 				contexto += simbolo;
 			}
 		}
@@ -209,7 +239,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 
 	}
 
-	bits_a_emitir = _comprimir_ultimo_paso(contexto);
+	bits_a_emitir = _comprimir_ultimo_paso(orden,contexto);
 	_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 
 	return indiceBufferComprimido;
