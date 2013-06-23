@@ -9,35 +9,29 @@
 
 Aritmetico::Aritmetico(Uint tamanioAlfabeto)
 {
-
 	modelo= new ModeloProbabilistico(tamanioAlfabeto);
 	intervalo= new Intervalo();
 	modelo->inicializar_frecuencias_en_1();
-	byteActual = '0';
 
 }
 
-void Aritmetico::_resetear(){
-
-	delete intervalo;
-	modelo->resetear();
-	intervalo= new Intervalo();
-	byteActual= '0';
-
-}
-
-
-Aritmetico :: Aritmetico (ModeloProbabilistico* unModelo)
+Aritmetico :: Aritmetico (const ModeloProbabilistico & unModelo)
 {
-	modelo = unModelo;
-	intervalo= new Intervalo();
-	byteActual = '0';
+	modelo = new ModeloProbabilistico(unModelo);
+	intervalo = new Intervalo();
 }
 
 Aritmetico::~Aritmetico()
 {
 	delete modelo;
 	delete intervalo;
+}
+
+void Aritmetico::_resetear()
+{
+	delete intervalo;
+	modelo->resetear();
+	intervalo= new Intervalo();
 }
 
 void Aritmetico::inicializar_frecuencias_en_1(vector<unsigned short>& v){

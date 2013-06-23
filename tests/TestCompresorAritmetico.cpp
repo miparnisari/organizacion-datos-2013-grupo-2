@@ -8,7 +8,7 @@ class TestCompresorAritmetico : public testing::Test {
  protected:
 	// Declares the variables your tests want to use.
 	Aritmetico* compresor;
-	ModeloProbabilistico* modelo;
+	ModeloProbabilistico modelo;
 
   // virtual void SetUp() will be called before each test is run.  You
   // should define it if you need to initialize the varaibles.
@@ -18,8 +18,7 @@ class TestCompresorAritmetico : public testing::Test {
 	  vector.push_back(65);
 	  vector.push_back(66);
 	  vector.push_back(67);
-	  modelo = new ModeloProbabilistico();
-	  modelo->inicializar_frecuencias_en_1(vector);
+	  modelo.inicializar_frecuencias_en_1(vector);
 	  compresor = new Aritmetico(modelo);
   }
 
