@@ -65,7 +65,7 @@ void PPMC::_guardar_bits(char* bufferComprimido,
 
 	for (Uint i=0;i<CANTIDAD_BITS_A_EMITIR;i++){
 		bool bit= bits_a_emitir.at(i);
-		buffer_bits.agregar_bit(bit);
+		buffer_bits.agregar_bit(bit);//fixme puede que aca se llene el buffer y de error, supongo que en ese caso hay que hacer dump
 	}
 
 	if (buffer_bits.completa_octeto())
@@ -90,33 +90,6 @@ void PPMC::_comprimir_ultimo_paso(Uint simbolo, int orden, string contexto,
 	}
 
 	comp_aritmetico->set_modelo (modelo_actual);
-
-//	string contexto_inicial=contexto;
-//
-//	int res = comprimir(simbolo, orden, contexto, bits_a_emitir);
-//
-//	_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
-//	_actualizar_contexto(orden, simbolo, contexto);bits_a_emitir.clear();
-//
-//	while (res == RES_ESCAPE)
-//	{
-//		orden --;
-//		if (orden == -1)
-//		{
-//			contexto = "-1";
-//		}
-//		else
-//			if (orden == 0)
-//				contexto = "0";
-//			else{
-//			contexto.erase(0,1);
-//			}
-//
-////		cout << "INTENTO COMPRIMIR " << (char)simbolo << " EN " << orden << endl;
-//		res = comprimir(simbolo,orden,contexto,bits_a_emitir);
-//		_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
-//
-//	}
 
 	vector<bool> bits_a_emitir = comp_aritmetico->comprimir_ultimo_paso();
 	_guardar_bits(bufferComprimido,indiceBufferComprimido,buffer_bits,bits_a_emitir);
@@ -233,15 +206,68 @@ int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_sim
 	return resultado;
 }
 
+void PPMC::_comprimir_ultimo (std::vector<bool>& a_emitir)
+{
+	a_emitir=comp_aritmetico->comprimir_ultimo_paso();
+}
+
+void PPMC::_emitir_completando_octeto(char* bufferComprimido,
+		Uint & indiceBufferComprimido,
+		BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
+		vector<bool> bits_a_emitir)
+{
+	const Uint CANTIDAD_BITS_A_EMITIR= bits_a_emitir.size();
+
+	for (Uint i=0;i<CANTIDAD_BITS_A_EMITIR;i++){
+		bool bit= bits_a_emitir.at(i);
+		buffer_bits.agregar_bit(bit);//fixme puede que aca se llene el buffer y de error, supongo que en ese caso hay que hacer dump
+	}
+
+	if (buffer_bits.completa_octeto())
+	{
+		char* puntero= bufferComprimido + indiceBufferComprimido;
+		Uint const CANTIDAD_BYTES_ESCRIBIR = buffer_bits.get_cantidad_bytes();
+		buffer_bits.dump( puntero );
+		indiceBufferComprimido += CANTIDAD_BYTES_ESCRIBIR;
+	}
+
+	if(!buffer_bits.esta_vacio())
+	{
+		buffer_bits.dump_y_completar((char*) bufferComprimido+indiceBufferComprimido);
+		Uint const CANTIDAD_BITS_BYTE = 8;
+		indiceBufferComprimido += CANTIDAD_BITS_BYTE;
+	}
+}
+
 void PPMC::_comprimir_un_caracter(int& orden,Uint simbolo, string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
-		vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido)
+		vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo)
 {
 	if (orden == 0 || orden == -1)
 		contexto = utilitarios::int_a_string(orden);
 
 	string maximo_contexto_actual = contexto;
 
+	if (esUltimo)
+	{
+		ModeloProbabilistico* modelo_actual = NULL;
+		mapa_ordenes[orden]->devolver_modelo(contexto,&modelo_actual);
+		int resultado;
+		//si no puedo emitir el ultimo en este contexto sigo de largo y comprimo el escape
+		if (modelo_actual->get_frecuencia(simbolo) == 0)
+			resultado = RES_ESCAPE;
+
+		if (resultado!= RES_ESCAPE)
+		{
+			_comprimir_ultimo (bits_a_emitir);
+
+			_emitir_completando_octeto(bufferComprimido, indiceBufferComprimido,
+									   buffer_bits, bits_a_emitir);
+			return;
+		}
+	}
+
 	int res = comprimir(simbolo, orden, contexto, bits_a_emitir);
+
 	_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 	bits_a_emitir.clear();
 	_actualizar_contexto(orden, simbolo, contexto);
@@ -254,7 +280,27 @@ void PPMC::_comprimir_un_caracter(int& orden,Uint simbolo, string& contexto, Buf
 		else
 			contexto.erase(0,1);
 
+		if (esUltimo)
+		{
+			ModeloProbabilistico* modelo_actual = NULL;
+			mapa_ordenes[orden]->devolver_modelo(contexto,&modelo_actual);
+			int resultado;
+			//si no puedo emitir el ultimo en este contexto sigo de largo y comprimo el escape
+			if (modelo_actual->get_frecuencia(simbolo) == 0)
+				resultado = RES_ESCAPE;
+			//sino emito el piso y salgo
+			if (resultado!= RES_ESCAPE)
+			{
+				_comprimir_ultimo (bits_a_emitir);
+
+				_emitir_completando_octeto(bufferComprimido, indiceBufferComprimido,
+										   buffer_bits, bits_a_emitir);
+				return;
+			}
+		}
+
 		res = comprimir(simbolo, orden, contexto, bits_a_emitir);
+
 		_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 		bits_a_emitir.clear();
 		_actualizar_contexto(orden, simbolo, contexto);
@@ -283,20 +329,23 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 	Uint indiceBufferComprimido = 0;
 	vector<bool> bits_a_emitir;
 
-	for (Uint i = 0; i < tamanioBuffer - 1; i++)
+	Uint i;
+
+	for (i = 0; i < tamanioBuffer - 1; i++)
 	{
 		Uint simbolo = buffer[i];
 		cout << "SIMBOLO A COMPRIMIR = " << (char)simbolo << endl;
 
 		_comprimir_un_caracter(orden,simbolo,contexto, buffer_bits,
-				bits_a_emitir,bufferComprimido,indiceBufferComprimido);
+				bits_a_emitir,bufferComprimido,indiceBufferComprimido,false);
 
 		orden += 2 + i;
 		if (orden > orden_maximo)
 			orden = orden_maximo;
 	}
 
-	_comprimir_ultimo_paso(buffer[tamanioBuffer-1], orden, contexto, bufferComprimido, indiceBufferComprimido, buffer_bits);
+	_comprimir_un_caracter(orden,buffer[i],contexto, buffer_bits,
+			bits_a_emitir,bufferComprimido,indiceBufferComprimido,true);
 
 	return indiceBufferComprimido;
 }

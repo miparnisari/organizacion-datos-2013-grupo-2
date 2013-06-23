@@ -149,10 +149,11 @@ int Aritmetico::comprimir_todo
 		Byte cOverflow,cUnderflow;
 		std::vector<bool> bits_caracter_actual = comprimir(caracter_a_comprimir,cOverflow,cUnderflow);
 
+		// FIXME refactorizar
 		const TamanioBitset TAMANIO_BITS_CARACTER_ACTUAL= bits_caracter_actual.size();
 		for( TamanioBitset j=0;j<TAMANIO_BITS_CARACTER_ACTUAL;j++ ){
 
-			// FIXME refactorizar
+
 			bool bit= bits_caracter_actual.at(j);
 
 			if( bufferBits.agregar_bit(bit)== RES_ERROR ){
