@@ -40,6 +40,12 @@ ModeloProbabilistico& ModeloProbabilistico::operator = (const ModeloProbabilisti
 	return (*this);
 }
 
+double ModeloProbabilistico::get_probabilidad(Uint simbolo)
+{
+	double high = calcular_high_count(simbolo);
+	double low = calcular_low_count(simbolo);
+	return (high - low);
+}
 
 ModeloProbabilistico::ModeloProbabilistico(const ModeloProbabilistico& otro){
 
