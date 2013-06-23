@@ -23,7 +23,6 @@ void ModeloProbabilistico::imprimir()
 		if (frecuenciasSimbolos[i] != 0)
 			cout << "i " << i << " = " <<frecuenciasSimbolos[i] << ";";
 	}
-	cout << "--------";
 	cout << endl;
 }
 
