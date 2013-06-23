@@ -36,22 +36,23 @@ int Contextos::incrementar_frecuencia(long caracter, string nombreModelo)
 
 int Contextos::devolver_modelo(string nombreModelo, ModeloProbabilistico** modeloADevolver)
 {
-	if(this->listaDeModelos.find(nombreModelo) == this->listaDeModelos.end()){
+	if (listaDeModelos.size() == 0)
 		return RES_ERROR;
-	}
+
+	if(this->listaDeModelos.find(nombreModelo) == this->listaDeModelos.end())
+		return RES_ERROR;
+
 	(*modeloADevolver) = this->listaDeModelos.at(nombreModelo);
 	return RES_OK;
 }
 
 int Contextos::agregar_modelo(string nombreModelo, ModeloProbabilistico* modelo)
 {
-	if(modelo == NULL){
+	if(modelo == NULL)
 		return RES_ERROR;
-	}
 
-	if(this->listaDeModelos.find(nombreModelo) != this->listaDeModelos.end()){
-			return RES_ERROR;
-	}
+	if(this->listaDeModelos.find(nombreModelo) != this->listaDeModelos.end())
+		return RES_ERROR;
 
 	this->listaDeModelos.insert(pair<string, ModeloProbabilistico*>(nombreModelo, modelo));
 	return RES_OK;
