@@ -14,21 +14,23 @@ class PPMC : public Compresor
 		PPMC(unsigned short orden);
 		~PPMC();
 
-		void _actualizar_contexto(int orden, Uint simbolo, string contexto_del_simbolo);
 		int comprimir (const Uint simbolo, int orden, std::string contexto_del_simbolo, std::vector<bool>& a_emitir);
 		virtual int comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* resultado);
 
-	
 	private:
 		unsigned short orden_maximo;
 		map<int,Contextos*> mapa_ordenes;
 		Aritmetico* comp_aritmetico;
+		string contexto;
+
+		void _actualizar_contexto(int orden, Uint simbolo, string contexto_del_simbolo);
 
 		void _imprimir_todos_ordenes();
 
 		void _crear_modelo_vacio (int orden, string nombre_modelo);
 
-		std::vector<bool> _comprimir_ultimo_paso(int orden, string contexto);
+		void _comprimir_ultimo_paso(Uint simbolo, int orden, string contexto,
+				char* bufferComprimido, Uint indiceBufferComprimido, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits);
 
 		void _guardar_bits(char* bufferComprimido,
 			Uint & indiceBufferComprimido,
