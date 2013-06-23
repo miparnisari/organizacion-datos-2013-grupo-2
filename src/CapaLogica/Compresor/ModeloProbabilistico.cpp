@@ -20,7 +20,8 @@ void ModeloProbabilistico::imprimir()
 {
 	for (Uint i = 0; i < tamanioAlfabeto; i++)
 	{
-		cout << "i " << i << "= " <<frecuenciasSimbolos[i] << ";";
+		if (frecuenciasSimbolos[i] != 0)
+			cout << "i " << i << " = " <<frecuenciasSimbolos[i] << ";";
 	}
 	cout << "--------";
 	cout << endl;

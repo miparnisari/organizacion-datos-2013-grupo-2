@@ -32,6 +32,8 @@ class Contextos {
 		int incrementar_frecuencia(long caracter, string nombreModelo);
 
 		int devolver_modelo(string nombreModelo, ModeloProbabilistico** modeloADevolver);
+
+		map<string, ModeloProbabilistico*> get_mapa_modelos(); //FIXME esto solo es necesario para debuggear
 };
 
 #endif /* CONTEXTOS_H_ */

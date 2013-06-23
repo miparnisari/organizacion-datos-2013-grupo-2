@@ -28,7 +28,7 @@ TEST_F(TestPPMC, ComprimirString)
 {
 	string fuente = "TATATA";
 
-	const int tamanio_buffer_comprimido = 50;
+	const int tamanio_buffer_comprimido = 10;
 	char* buffer_comprimido = new char[tamanio_buffer_comprimido]();
 
 	int tam_comprimido = comp_ppmc->comprimir_todo(fuente.c_str(),fuente.size(),buffer_comprimido);
