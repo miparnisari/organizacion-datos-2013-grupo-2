@@ -239,7 +239,7 @@ void PPMC::_emitir_completando_octeto(char* bufferComprimido,
 	}
 }
 
-void PPMC::_comprimir_un_caracter(int& orden,Uint simbolo, string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
+void PPMC::_comprimir_un_caracter(int& orden, Uint indiceSimbolo, Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
 		vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo)
 {
 	if (orden == 0 || orden == -1)
@@ -319,6 +319,10 @@ void PPMC::_comprimir_un_caracter(int& orden,Uint simbolo, string& contexto, Buf
 		contexto += simbolo;
 	}
 
+	orden += 2 + indiceSimbolo;
+	if (orden > orden_maximo)
+		orden = orden_maximo;
+
 }
 
 int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* bufferComprimido)
@@ -329,22 +333,18 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 	Uint indiceBufferComprimido = 0;
 	vector<bool> bits_a_emitir;
 
-	Uint i;
+	Uint indiceSimbolo;
 
-	for (i = 0; i < tamanioBuffer - 1; i++)
+	for (indiceSimbolo = 0; indiceSimbolo < tamanioBuffer - 1; indiceSimbolo++)
 	{
-		Uint simbolo = buffer[i];
+		Uint simbolo = buffer[indiceSimbolo];
 		cout << "SIMBOLO A COMPRIMIR = " << (char)simbolo << endl;
 
-		_comprimir_un_caracter(orden,simbolo,contexto, buffer_bits,
+		_comprimir_un_caracter(orden,indiceSimbolo,simbolo,contexto, buffer_bits,
 				bits_a_emitir,bufferComprimido,indiceBufferComprimido,false);
-
-		orden += 2 + i;
-		if (orden > orden_maximo)
-			orden = orden_maximo;
 	}
 
-	_comprimir_un_caracter(orden,buffer[i],contexto, buffer_bits,
+	_comprimir_un_caracter(orden,indiceSimbolo, buffer[indiceSimbolo],contexto, buffer_bits,
 			bits_a_emitir,bufferComprimido,indiceBufferComprimido,true);
 
 	return indiceBufferComprimido;

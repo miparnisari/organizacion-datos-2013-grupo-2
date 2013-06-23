@@ -31,13 +31,12 @@ class Aritmetico : public Compresor {
 	private:
 		Intervalo* intervalo;
 		ModeloProbabilistico* modelo;
-		char byteActual;
 
 		void _resetear();
 
 	public:
 
-		Aritmetico (ModeloProbabilistico* modelo);
+		Aritmetico (const ModeloProbabilistico & modelo);
 		Aritmetico (Uint tamanioAlfabeto=TAMANIO_ALFABETO);
 		virtual ~ Aritmetico ();
 

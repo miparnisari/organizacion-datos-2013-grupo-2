@@ -23,7 +23,7 @@ class PPMC : public Compresor
 		Aritmetico* comp_aritmetico;
 		string contexto;
 
-		void _comprimir_un_caracter(int& orden,Uint simbolo, string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
+		void _comprimir_un_caracter(int& orden, Uint indiceSimbolo, Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
 				vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo);
 
 		void _comprimir_ultimo (std::vector<bool>& a_emitir);
