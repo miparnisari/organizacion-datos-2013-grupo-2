@@ -356,7 +356,7 @@ int RegistroVariable :: descomprimir(Compresor * compresor, RegistroVariable* re
 	recuperar_campo((char*)&tamanioOriginal,0);
 
 	TamanioCampos tamanioComprimido= this->get_tamanio_campo(1);
-	char* bufferComprimido= new char[tamanioComprimido];
+	char* bufferComprimido= new char[tamanioComprimido]();
 	recuperar_campo(bufferComprimido,1);
 
 	char* descomprimido = new char[tamanioOriginal + sizeof(tamanioOriginal)]();
