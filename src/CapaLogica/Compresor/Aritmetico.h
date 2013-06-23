@@ -62,6 +62,9 @@ class Aritmetico : public Compresor {
 			unsigned int precision,
 			unsigned int cantidadCaracteresOriginal);
 
+		void set_intervalo( Intervalo* otroIntervalo );
+		Intervalo* get_intervalo();
+
 };
 
 #endif /* ARIMETICO_H_ */

@@ -275,3 +275,29 @@ int Aritmetico::set_modelo(ModeloProbabilistico* mp){
 
 }
 
+
+//todo no estan testeadas...
+Intervalo* Aritmetico::get_intervalo(){
+
+	return this->intervalo;
+
+}
+
+
+void Aritmetico::set_intervalo(Intervalo* otroIntervalo){
+
+	if(otroIntervalo== NULL)
+		return;
+
+	BitsPiso piso= otroIntervalo->get_piso();
+	BitsTecho techo= otroIntervalo->get_techo();
+	string stringPiso= piso.to_string();
+	string stringTecho= techo.to_string();
+
+	this->intervalo->set_piso( stringPiso );
+	this->intervalo->set_techo( stringTecho );
+
+	this->intervalo->calcular_rango();
+
+}
+

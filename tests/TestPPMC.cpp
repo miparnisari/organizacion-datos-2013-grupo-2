@@ -24,22 +24,39 @@ class TestPPMC : public testing::Test {
 
 };
 
-TEST_F(TestPPMC, ComprimirString)
+TEST_F(TestPPMC, ComprimirYDescomprimirString)
 {
 	string fuente = "TATATA";
 
-	const int tamanio_buffer_comprimido = 10;
+	const int tamanio_buffer_comprimido = 20;
 	char* buffer_comprimido = new char[tamanio_buffer_comprimido]();
 
+	cout<<"compresion -----------------------------------------------------------------------------"<<endl;
+
 	int tam_comprimido = comp_ppmc->comprimir_todo(fuente.c_str(),fuente.size(),buffer_comprimido);
+	IMPRIMIR_MY_VARIABLE(tam_comprimido);
 
-	ASSERT_EQ(buffer_comprimido[0],84);
-	ASSERT_EQ(buffer_comprimido[1],-96);
-	ASSERT_EQ(buffer_comprimido[2],-96);
-	ASSERT_EQ(buffer_comprimido[3],0);
-	delete buffer_comprimido;
+	for(int i=0;i<tam_comprimido;i++)
+		IMPRIMIR_MY_VARIABLE( (int)buffer_comprimido[i] );
 
-}
+	cout<<"descompresion -----------------------------------------------------------------------------"<<endl;
+
+	char * bufferDescomprimido= new char[ fuente.length() ];
+	PPMC descompresor(2);
+	descompresor.descomprimir_todo( buffer_comprimido,tam_comprimido,bufferDescomprimido,PRECISION,
+			fuente.length() );
+
+	for(int i= 0;i<fuente.length();i++)
+		IMPRIMIR_MY_VARIABLE( (int)bufferDescomprimido[i] );
+
+
+//	ASSERT_EQ(buffer_comprimido[0],84);
+//	ASSERT_EQ(buffer_comprimido[1],-96);
+//	ASSERT_EQ(buffer_comprimido[2],-96);
+//	ASSERT_EQ(buffer_comprimido[3],0);
+	delete[] buffer_comprimido;
+	delete[] bufferDescomprimido;
+ }
 
 TEST_F(TestPPMC, DescomprimirString)
 {
