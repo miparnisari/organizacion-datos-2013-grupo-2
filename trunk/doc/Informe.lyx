@@ -1590,7 +1590,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename DiagramasManuales/Aritmetico.png
-	scale 50
+	scale 35
 
 \end_inset
 
@@ -1639,7 +1639,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename DiagramasManuales/capaInterfaz.png
-	scale 25
+	scale 75
 
 \end_inset
 
@@ -1664,16 +1664,7 @@ Diagrama de clases de la Interfaz
 \end_layout
 
 \begin_layout Standard
-La clase 
-\family typewriter
-Controlador
-\family default
- se encarga de recibir las consultas del usuario, de crear y abrir los archivos
- de índice, y de utilizar los servicios que le provee el 
-\family typewriter
-ResolvedorConsultas
-\family default
-.
+
 \end_layout
 
 \begin_layout Standard
@@ -1992,6 +1983,78 @@ src
 
 \end_layout
 
+\begin_layout Standard
+El programa posee las siguientes opciones de ejecución:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+(0) SALIR.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(1) Indexar carpeta.
+\end_layout
+
+\begin_layout Plain Layout
+
+(2) Consultar título.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(3) Consultar autor.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(4) Consultar frase.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(5) Borrar canción por ID.
+\end_layout
+
+\begin_layout Plain Layout
+
+(6) Buscar titulo más consultado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(7) Buscar autor más consultado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(8) Buscar frase más consultado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(9) Buscar tema más consultado.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Ejemplos
 \end_layout
@@ -2127,8 +2190,219 @@ Ingrese opcion:  1
 
 \end_deeper
 \begin_layout Itemize
-Para realizar consultas por autor:
+Para realizar consultas por título:
 \end_layout
 
+\begin_deeper
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+user@notebook:~/Desktop/organizacion-datos-2013-grupo-2/src$ ./main 
+\end_layout
+
+\begin_layout Plain Layout
+
+Operaciones posibles: 
+\end_layout
+
+\begin_layout Plain Layout
+
+(0) SALIR.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(1) Indexar carpeta.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(2) Consultar título.
+\end_layout
+
+\begin_layout Plain Layout
+
+(3) Consultar autor.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(4) Consultar frase.
+\end_layout
+
+\begin_layout Plain Layout
+
+(5) Borrar canción por ID.
+\end_layout
+
+\begin_layout Plain Layout
+
+(6) Buscar titulo más consultado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(7) Buscar autor más consultado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(8) Buscar frase más consultado.
+\end_layout
+
+\begin_layout Plain Layout
+
+(9) Buscar tema más consultado.
+\end_layout
+
+\begin_layout Plain Layout
+
+Ingrese operacion: 2 
+\end_layout
+
+\begin_layout Plain Layout
+
+Ingrese directorio de salida: ../output 
+\end_layout
+
+\begin_layout Plain Layout
+
+Ingrese consulta: pride in the name of love 
+\end_layout
+
+\begin_layout Plain Layout
+
+La cancion pride in the name of love no fue encontrada.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+Operaciones posibles: 
+\end_layout
+
+\begin_layout Plain Layout
+
+(0) SALIR.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(1) Indexar carpeta.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(2) Consultar título.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(3) Consultar autor.
+\end_layout
+
+\begin_layout Plain Layout
+
+(4) Consultar frase.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(5) Borrar canción por ID.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(6) Buscar titulo más consultado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(7) Buscar autor más consultado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+(8) Buscar frase más consultado.
+\end_layout
+
+\begin_layout Plain Layout
+
+(9) Buscar tema más consultado.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+Ingrese operacion: 
+\end_layout
+
+\begin_layout Plain Layout
+
+2 Ingrese directorio de salida: ../output 
+\end_layout
+
+\begin_layout Plain Layout
+
+Ingrese consulta: pride (in the name of love) 
+\end_layout
+
+\begin_layout Plain Layout
+
+ ----------- ID CANCION = 0 --------- 
+\end_layout
+
+\begin_layout Plain Layout
+
+TITULO = pride (in the name of love)
+\end_layout
+
+\begin_layout Plain Layout
+
+One man come in the name of love 
+\end_layout
+
+\begin_layout Plain Layout
+
+One man come and go  
+\end_layout
+
+\begin_layout Plain Layout
+
+One come he to justify  
+\end_layout
+
+\begin_layout Plain Layout
+
+One man to overthrow 
+\end_layout
+
+\begin_layout Plain Layout
+
+(...)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
 \end_body
 \end_document
