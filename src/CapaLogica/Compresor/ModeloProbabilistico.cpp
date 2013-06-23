@@ -16,6 +16,17 @@ ModeloProbabilistico::~ModeloProbabilistico() {
 	delete[] frecuenciasSimbolos;
 }
 
+ModeloProbabilistico::ModeloProbabilistico(const ModeloProbabilistico& otro){
+
+	this->tamanioAlfabeto = otro.tamanioAlfabeto;
+	this->frecuenciasSimbolos = new Uint[tamanioAlfabeto]();
+//	memcpy(frecuenciasSimbolos,otro.frecuenciasSimbolos,tamanioAlfabeto);
+
+	for (Uint i = 0; i < otro.tamanioAlfabeto; i++)
+		this->frecuenciasSimbolos[i] = otro.frecuenciasSimbolos[i];
+
+}
+
 void ModeloProbabilistico::imprimir()
 {
 	for (Uint i = 0; i < tamanioAlfabeto; i++)
@@ -40,6 +51,19 @@ ModeloProbabilistico& ModeloProbabilistico::operator = (const ModeloProbabilisti
 	return (*this);
 }
 
+void ModeloProbabilistico::resetear()
+{
+	for(Uint i=0;i<tamanioAlfabeto;i++)
+	{
+		if( this->frecuenciasSimbolos[i] != 0 )
+			this->frecuenciasSimbolos[i] = 1;
+	}
+}
+
+/*
+ * PRECAUCION al utilizar este metodo.
+ * Comparar doubles por igualdad no siempre funciona bien.
+ */
 double ModeloProbabilistico::get_probabilidad(Uint simbolo)
 {
 	double high = calcular_high_count(simbolo);
@@ -47,81 +71,15 @@ double ModeloProbabilistico::get_probabilidad(Uint simbolo)
 	return (high - low);
 }
 
-ModeloProbabilistico::ModeloProbabilistico(const ModeloProbabilistico& otro){
-
-	this->tamanioAlfabeto = otro.tamanioAlfabeto;
-	this->frecuenciasSimbolos = new Uint[tamanioAlfabeto]();
-	//		memcpy(frecuenciasSimbolos,otro.frecuenciasSimbolos,tamanioAlfabeto);
-
-	for (Uint i = 0; i < otro.tamanioAlfabeto; i++)
-		this->frecuenciasSimbolos[i] = otro.frecuenciasSimbolos[i];
-
-}
-
-
 Uint ModeloProbabilistico::get_tamanio_alfabeto(){
 
 	return this->tamanioAlfabeto;
 
 }
 
-void ModeloProbabilistico::inicializar_frecuencias_en_1()
+Uint ModeloProbabilistico::get_frecuencia(Uint simbolo)
 {
-	for (unsigned int i = 0; i < tamanioAlfabeto; i++)
-		frecuenciasSimbolos[i]= 1;
-}
-
-void ModeloProbabilistico::incrementar_frecuencia (const Uint simbolo)
-{
-	Uint posicionSimbolo = simbolo;
-	*(frecuenciasSimbolos+posicionSimbolo) += 1;
-}
-
-
-double ModeloProbabilistico::calcular_low_count (const Uint simbolo)
-{
-	Uint posicionSimbolo = simbolo;
-	Uint contador = 0;
-	for (Uint i = 0; i < posicionSimbolo; i++)
-		contador += frecuenciasSimbolos[i];
-
-	double totalFrecuencias= (double)(calcular_total_frecuencias());
-	double contadorD= (double)(contador);
-	double resultado= (double)(contadorD / totalFrecuencias);
-	return resultado;
-}
-
-double ModeloProbabilistico::calcular_high_count (const Uint simbolo)
-{
-	Uint posicionSimbolo = simbolo;
-	Uint contador = 0;
-	for (Uint i = 0; i < posicionSimbolo + 1; i++)
-		contador += *(frecuenciasSimbolos+i);
-
-	double totalFrecuencias= (double)(calcular_total_frecuencias());
-	double contadorD= (double)(contador);
-	double resultado= (double)(contadorD / totalFrecuencias);
-	return resultado;
-}
-
-Uint ModeloProbabilistico::obtener_simbolo(double probabilidad)
-{
-	for (Uint i = 0; i < tamanioAlfabeto; i++)
-	{
-		if (calcular_low_count(i) <= probabilidad && probabilidad <= calcular_high_count(i))
-			return i;
-	}
-
-	return tamanioAlfabeto ;
-}
-
-Uint ModeloProbabilistico::calcular_total_frecuencias()
-{
-	Uint total = 0;
-	for (Uint i = 0; i < tamanioAlfabeto; i++)
-		total += *(frecuenciasSimbolos + i);
-
-	return total;
+	return frecuenciasSimbolos[simbolo];
 }
 
 void ModeloProbabilistico::inicializar_frecuencias_en_1(vector<unsigned short>& v){
@@ -140,16 +98,58 @@ void ModeloProbabilistico::inicializar_frecuencias_en_1(vector<unsigned short>& 
 
 }
 
-Uint ModeloProbabilistico::get_frecuencia(Uint simbolo)
+void ModeloProbabilistico::inicializar_frecuencias_en_1()
 {
-	return frecuenciasSimbolos[simbolo];
+	for (unsigned int i = 0; i < tamanioAlfabeto; i++)
+		frecuenciasSimbolos[i]= 1;
 }
 
-void ModeloProbabilistico::resetear()
+void ModeloProbabilistico::incrementar_frecuencia (const Uint simbolo)
 {
-	for(Uint i=0;i<tamanioAlfabeto;i++)
+	Uint posicionSimbolo = simbolo;
+	frecuenciasSimbolos [posicionSimbolo] += 1;
+}
+
+double ModeloProbabilistico::calcular_low_count (const Uint simbolo)
+{
+	Uint posicionSimbolo = simbolo;
+	double contador = 0;
+	for (Uint i = 0; i < posicionSimbolo; i++)
+		contador += frecuenciasSimbolos[i];
+
+	double totalFrecuencias= (double)(calcular_total_frecuencias());
+	double low_count= (double)(contador / totalFrecuencias);
+	return low_count;
+}
+
+double ModeloProbabilistico::calcular_high_count (const Uint simbolo)
+{
+	Uint posicionSimbolo = simbolo;
+	double contador = 0;
+	for (Uint i = 0; i < posicionSimbolo + 1; i++)
+		contador += frecuenciasSimbolos[i];
+
+	double totalFrecuencias= (double)(calcular_total_frecuencias());
+	double high_count= (double)(contador / totalFrecuencias);
+	return high_count;
+}
+
+Uint ModeloProbabilistico::obtener_simbolo(double probabilidad)
+{
+	for (Uint simbolo = 0; simbolo < tamanioAlfabeto; simbolo++)
 	{
-		if( this->frecuenciasSimbolos[i] != 0 )
-			this->frecuenciasSimbolos[i] = 1;
+		if (calcular_low_count(simbolo) <= probabilidad && probabilidad <= calcular_high_count(simbolo))
+			return simbolo;
 	}
+
+	return tamanioAlfabeto; //ultimo simbolo
+}
+
+Uint ModeloProbabilistico::calcular_total_frecuencias()
+{
+	Uint total = 0;
+	for (Uint i = 0; i < tamanioAlfabeto; i++)
+		total += frecuenciasSimbolos[i];
+
+	return total;
 }
