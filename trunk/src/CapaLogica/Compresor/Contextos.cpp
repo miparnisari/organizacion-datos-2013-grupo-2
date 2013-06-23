@@ -52,6 +52,7 @@ int Contextos::agregar_modelo(string nombreModelo, ModeloProbabilistico* modelo)
 	if(modelo == NULL)
 		return RES_ERROR;
 
+	if( listaDeModelos.size()!=0 )
 	if(this->listaDeModelos.find(nombreModelo) != this->listaDeModelos.end())
 		return RES_ERROR;
 
