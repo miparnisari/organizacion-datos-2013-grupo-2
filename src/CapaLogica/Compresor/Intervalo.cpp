@@ -17,9 +17,7 @@ Intervalo::Intervalo() {
 	}
 
 	contadorUnderflow = 0;
-	// El piso tendra 32 bits en cero
 	piso = new std::bitset<PRECISION>(stringCeros);
-	// El techo tendra 32 bits en uno
 	techo = new std::bitset<PRECISION>(stringUnos);
 	rango = 0;
 	calcular_rango();
@@ -43,6 +41,7 @@ void Intervalo::set_piso(std::string unPiso)
 	piso = new std::bitset<PRECISION>(unPiso);
 
 }
+
 void Intervalo::set_techo(std::string unTecho)
 {
 	if (unTecho.length() != PRECISION)
@@ -80,13 +79,6 @@ void Intervalo::calcular_rango()
 	unsigned int u_techo = techo->to_ulong();
 	rango = u_techo - u_piso;
 	rango += 1;
-}
-
-/* Retorna el numero correspondiente al valor leido "byteActual" */
-Uint Intervalo::calcular_valor(Uint byteActual)
-{
-	Uint valor = (byteActual - piso->to_ulong());
-	return valor;
 }
 
 /* Devuelve true si el primer bit de piso y techo son iguales.
@@ -130,13 +122,13 @@ void Intervalo::actualizar_piso_techo(double low_count, double high_count)
 	techo = new std::bitset<PRECISION>(uint_techo);
 }
 
-/* Resuelve underflows y overflows y retorna lo que se debe emitir en archivo */
+/* Resuelve underflows y overflows y retorna lo que se debe emitir en archivo.
+ * Devuelve en los parametros la cantidad de overflows y underflows
+ * que se produjeron. */
 std::vector<bool> Intervalo::normalizar( Byte& cOverflow,Byte& cUnderflow )
 {
 	std::vector<bool> bits_a_emitir;
 	cOverflow= cUnderflow= 0;
-//	IMPRIMIR_MY_VARIABLE(*piso);
-//	IMPRIMIR_MY_VARIABLE(*techo);
 
 	while (hay_overflow())
 	{
@@ -152,7 +144,6 @@ std::vector<bool> Intervalo::normalizar( Byte& cOverflow,Byte& cUnderflow )
 		}
 
 		cOverflow++;
-		/*todo revisar si es correcto*/
 
 		contadorUnderflow = 0;
 	}
@@ -160,7 +151,6 @@ std::vector<bool> Intervalo::normalizar( Byte& cOverflow,Byte& cUnderflow )
 	while (hay_underflow())
 	{
 		cUnderflow++;
-		/*todo revisar si es correcto*/
 
 		contadorUnderflow ++;
 		resolver_underflow();

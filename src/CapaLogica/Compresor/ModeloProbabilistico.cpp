@@ -51,7 +51,10 @@ ModeloProbabilistico::ModeloProbabilistico(const ModeloProbabilistico& otro){
 
 	this->tamanioAlfabeto = otro.tamanioAlfabeto;
 	this->frecuenciasSimbolos = new Uint[tamanioAlfabeto]();
-	memcpy(frecuenciasSimbolos,otro.frecuenciasSimbolos,tamanioAlfabeto);
+	//		memcpy(frecuenciasSimbolos,otro.frecuenciasSimbolos,tamanioAlfabeto);
+
+	for (Uint i = 0; i < otro.tamanioAlfabeto; i++)
+		this->frecuenciasSimbolos[i] = otro.frecuenciasSimbolos[i];
 
 }
 
@@ -75,17 +78,9 @@ void ModeloProbabilistico::incrementar_frecuencia (const Uint simbolo)
 }
 
 
-/*
- *  SIMBOLO  |||  FRECUENCIA   ||| LOW_COUNT ||| HIGH_COUNT
- *    A                4              0              4
- *    B                2              4              6
- *    C                1              6              7
- *    D                1              7              8
- */
 double ModeloProbabilistico::calcular_low_count (const Uint simbolo)
 {
 	Uint posicionSimbolo = simbolo;
-//	IMPRIMIR_MY_VARIABLE((char)simbolo);
 	Uint contador = 0;
 	for (Uint i = 0; i < posicionSimbolo; i++)
 		contador += frecuenciasSimbolos[i];
@@ -96,13 +91,6 @@ double ModeloProbabilistico::calcular_low_count (const Uint simbolo)
 	return resultado;
 }
 
-/*
- *  SIMBOLO  |||  FRECUENCIA   ||| LOW_COUNT ||| HIGH_COUNT
- *    A                4              0              4
- *    B                2              4              6
- *    C                1              6              7
- *    D                1              7              8
- */
 double ModeloProbabilistico::calcular_high_count (const Uint simbolo)
 {
 	Uint posicionSimbolo = simbolo;
