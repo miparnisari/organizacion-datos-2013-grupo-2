@@ -17,14 +17,17 @@ class PPMC : public Compresor
 		int comprimir (const Uint simbolo, int orden, std::string contexto_del_simbolo, std::vector<bool>& a_emitir);
 		virtual int comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* resultado);
 
+		void comprimir_un_caracter(int& orden, Uint indiceSimbolo, Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
+					vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo);
+
 	private:
 		unsigned short orden_maximo;
 		map<int,Contextos*> mapa_ordenes;
 		Aritmetico* comp_aritmetico;
 		string contexto;
 
-		void _comprimir_un_caracter(int& orden, Uint indiceSimbolo, Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
-				vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo);
+		void _inicializar_orden_menosuno();
+		void _inicializar_orden_cero();
 
 		void _comprimir_ultimo (std::vector<bool>& a_emitir);
 
