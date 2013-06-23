@@ -258,7 +258,6 @@ void PPMC::_comprimir_un_caracter(int& orden,Uint simbolo, string& contexto, Buf
 		_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 		bits_a_emitir.clear();
 		_actualizar_contexto(orden, simbolo, contexto);
-
 	}
 
 	if (maximo_contexto_actual == "0")

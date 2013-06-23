@@ -94,7 +94,6 @@ std::vector<bool> Aritmetico::comprimir_ultimo_paso(){
 
 	return retornar;
 
-
 }
 
 ModeloProbabilistico* Aritmetico::get_modelo()
