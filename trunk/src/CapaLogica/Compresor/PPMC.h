@@ -24,7 +24,9 @@ class PPMC : public Compresor
 		string contexto;
 
 		void _comprimir_un_caracter(int& orden,Uint simbolo, string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
-				vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido);
+				vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo);
+
+		void _comprimir_ultimo (std::vector<bool>& a_emitir);
 
 		void _actualizar_contexto(int orden, Uint simbolo, string contexto_del_simbolo);
 
@@ -39,6 +41,11 @@ class PPMC : public Compresor
 			Uint & indiceBufferComprimido,
 			BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
 			vector<bool> bits_a_emitir);
+
+		void _emitir_completando_octeto(char* bufferComprimido,
+				Uint & indiceBufferComprimido,
+				BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
+				vector<bool> bits_a_emitir);
 
 };
 

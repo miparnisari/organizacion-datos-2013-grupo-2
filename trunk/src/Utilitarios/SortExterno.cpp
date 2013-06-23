@@ -19,11 +19,11 @@ SortExterno::~SortExterno() {
 void SortExterno::_fusionar_2_archivos(string ruta1, string ruta2, string archFinal, bool temporal)
 {
 
-Heap heap; // por ahora lo necesito para comparar reg variables FixMe
+Heap heap;
 
 RegistroVariable regClaveMax;
 
-int claveMax;//extraer a funcion cargar_clave_max todo
+int claveMax;
 claveMax = CLAVE_TOPE;
 regClaveMax.agregar_campo((char*)&claveMax,sizeof(int));
 
@@ -88,8 +88,8 @@ void SortExterno:: _generar_runs()
 	unsigned tamanioTotal=0;//del vector a ordenar por heapsort en RAM
 
 	RegistroVariable regVariableLeido;
-//	RegistroClave* bufferOrdenamiento;
-	RegistroVariable bufferOrdenamiento[1000];//fixme
+//	RegistroVariable* bufferOrdenamiento;
+	RegistroVariable bufferOrdenamiento[2000];
 
 	//lleno el heap por primera vez
 	//puede que resulta un poco mayor al limite (lo ultimo que leo se puede pasar)
@@ -111,13 +111,13 @@ void SortExterno:: _generar_runs()
 //			delete[] bufferOrdenamiento;
 //			bufferOrdenamiento = new RegistroClave[cantRegLeidos-1];
 
-//			bufferOrdenamiento = bufferAuxiliar; //fixme original
+//			bufferOrdenamiento = bufferAuxiliar;
 
 //			delete[] bufferAuxiliar;
 
-			bufferOrdenamiento[cantRegLeidos-1]=regVariableLeido;//fixme
+			bufferOrdenamiento[cantRegLeidos-1]=regVariableLeido;
 
-//			bufferOrdenamiento[cantRegLeidos - 1] = regClaveLeido;//fixme
+//			bufferOrdenamiento[cantRegLeidos - 1] = regClaveLeido;
 		} else //no tengo nada dentro
 		{
 //			bufferOrdenamiento = new RegistroClave[1];
@@ -206,13 +206,13 @@ void SortExterno::_merge()
 	Heap heap;
 
 	int numeroDeMerge=0;
-	//agrego un run "vacio" para fsionar contra ese, poco eficiente, pero soluciona mi problema rapido
+	//agrego un run "vacio" para fusionar contra ese, poco eficiente, pero soluciona mi problema rapido
 	if (archivosTemporalesAFusionar.size()==1)
 	{
 
 		RegistroVariable regClaveMax;
 
-		int claveMax;//extraer a funcion cargar_clave_max todo
+		int claveMax;
 		claveMax = CLAVE_TOPE;
 		regClaveMax.agregar_campo((char*)&claveMax,sizeof(int));
 
