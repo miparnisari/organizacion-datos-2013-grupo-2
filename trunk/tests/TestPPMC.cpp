@@ -33,13 +33,38 @@ TEST_F(TestPPMC, ComprimirString)
 
 	int tam_comprimido = comp_ppmc->comprimir_todo(fuente.c_str(),fuente.size(),buffer_comprimido);
 
-
-	for (int i = 0; i < tamanio_buffer_comprimido; i++)
-	{
-		IMPRIMIR_MY_VARIABLE((int)buffer_comprimido[i]);
-	}
-
+	ASSERT_EQ(buffer_comprimido[0],84);
+	ASSERT_EQ(buffer_comprimido[1],-96);
+	ASSERT_EQ(buffer_comprimido[2],-96);
+	ASSERT_EQ(buffer_comprimido[3],0);
 	delete buffer_comprimido;
 
 }
 
+TEST_F(TestPPMC, DescomprimirString)
+{
+	const int tamanio_buffer_comprimido = 4;
+	char buffer_comprimido[tamanio_buffer_comprimido];
+	buffer_comprimido[0] = 84;
+	buffer_comprimido[1] = -96;
+	buffer_comprimido[2] = -96;
+	buffer_comprimido[3] = 0;
+
+	const int tamanio_buffer_descomp = 6;
+	char* bufferDescomprimido = new char[tamanio_buffer_descomp]();
+	ASSERT_TRUE(  comp_ppmc->descomprimir_todo
+			((char*)&buffer_comprimido,
+					tamanio_buffer_comprimido,
+					bufferDescomprimido,
+					9,
+					tamanio_buffer_descomp) ==RES_OK  );
+
+	ASSERT_EQ(bufferDescomprimido[0],'T');
+	ASSERT_EQ(bufferDescomprimido[1],'A');
+	ASSERT_EQ(bufferDescomprimido[2],'T');
+	ASSERT_EQ(bufferDescomprimido[4],'A');
+	ASSERT_EQ(bufferDescomprimido[5],'T');
+	ASSERT_EQ(bufferDescomprimido[6],'A');
+
+	delete bufferDescomprimido;
+}
