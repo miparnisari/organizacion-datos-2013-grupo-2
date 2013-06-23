@@ -58,23 +58,23 @@ void PPMC::_guardar_bits(char* bufferComprimido,
 		vector<bool> bits_a_emitir)
 {
 
-	const Uint CANTIDAD_BITS_EMITIR= bits_a_emitir.size();
-	if(CANTIDAD_BITS_EMITIR== 0)
+	const Uint CANTIDAD_BITS_A_EMITIR= bits_a_emitir.size();
+	if (CANTIDAD_BITS_A_EMITIR== 0)
 		return;
 
 
-	for(Uint i=0;i<CANTIDAD_BITS_EMITIR;i++){
+	for (Uint i=0;i<CANTIDAD_BITS_A_EMITIR;i++){
 		bool bit= bits_a_emitir.at(i);
 		buffer_bits.agregar_bit(bit);
 	}
 
-	if(!buffer_bits.completa_octeto())
-		return;
-
-	char* puntero= bufferComprimido+indiceBufferComprimido;
-	Uint const CANTIDAD_BYTES_ESCRIBIR= buffer_bits.get_cantidad_bytes();
-	buffer_bits.dump( puntero );
-	indiceBufferComprimido+= CANTIDAD_BYTES_ESCRIBIR;
+	if (buffer_bits.completa_octeto())
+	{
+		char* puntero= bufferComprimido + indiceBufferComprimido;
+		Uint const CANTIDAD_BYTES_ESCRIBIR = buffer_bits.get_cantidad_bytes();
+		buffer_bits.dump( puntero );
+		indiceBufferComprimido += CANTIDAD_BYTES_ESCRIBIR;
+	}
 
 }
 
@@ -214,7 +214,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 	Uint indiceBufferComprimido = 0;
 	vector<bool> bits_a_emitir;
 
-	for (Uint i = 0; i < tamanioBuffer; i++)
+	for (Uint i = 0; i < tamanioBuffer - 1; i++)
 	{
 		if (orden == 0 || orden == -1)
 			contexto = utilitarios::int_a_string(orden);
@@ -226,6 +226,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 		int res = comprimir(simbolo, orden, contexto, bits_a_emitir);
 
 		_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
+		bits_a_emitir.clear();
 
 		_actualizar_contexto(orden, simbolo, contexto);
 
@@ -248,7 +249,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 //			cout << "INTENTO COMPRIMIR " << (char)simbolo << " EN " << orden << endl;
 			res = comprimir(simbolo,orden,contexto,bits_a_emitir);
 			_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
-
+			bits_a_emitir.clear();
 			_actualizar_contexto(orden, simbolo, contexto);
 
 		}
@@ -269,7 +270,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 		if (orden > orden_maximo)
 			orden = orden_maximo;
 
-		}
+	}
 
 	bits_a_emitir = _comprimir_ultimo_paso(orden,contexto);
 	_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
