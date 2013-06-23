@@ -17,11 +17,14 @@ class PPMC : public Compresor
 		void _actualizar_contexto(int orden, Uint simbolo, string contexto_del_simbolo);
 		int comprimir (const Uint simbolo, int orden, std::string contexto_del_simbolo, std::vector<bool>& a_emitir);
 		virtual int comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,char* resultado);
+
 	
 	private:
 		unsigned short orden_maximo;
 		map<int,Contextos*> mapa_ordenes;
 		Aritmetico* comp_aritmetico;
+
+		void _imprimir_todos_ordenes();
 
 		void _crear_modelo_vacio (int orden, string nombre_modelo);
 

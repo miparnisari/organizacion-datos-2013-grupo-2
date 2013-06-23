@@ -25,6 +25,7 @@ Contextos::~Contextos()
 int Contextos::incrementar_frecuencia(long caracter, string nombreModelo)
 {
 	if(this->listaDeModelos.find(nombreModelo) == this->listaDeModelos.end()){
+		cout << "No pude incrementar frecuencia de " << caracter << " en modelo " << nombreModelo << endl;
 		return RES_ERROR;
 	}
 
@@ -56,4 +57,9 @@ int Contextos::agregar_modelo(string nombreModelo, ModeloProbabilistico* modelo)
 
 	this->listaDeModelos.insert(pair<string, ModeloProbabilistico*>(nombreModelo, modelo));
 	return RES_OK;
+}
+
+map<string, ModeloProbabilistico*> Contextos::get_mapa_modelos()
+{
+	return this->listaDeModelos;
 }
