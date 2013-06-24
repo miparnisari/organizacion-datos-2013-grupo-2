@@ -527,7 +527,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename DiagramasManuales/diagrama_general.png
-	scale 55
+	scale 50
 
 \end_inset
 
@@ -1763,12 +1763,6 @@ Arimetico
  de orden 0.
 \end_layout
 
-\begin_deeper
-\begin_layout Itemize
-
-\end_layout
-
-\end_deeper
 \begin_layout Itemize
 
 \family typewriter

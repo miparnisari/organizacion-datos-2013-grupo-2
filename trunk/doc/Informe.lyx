@@ -527,7 +527,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename DiagramasManuales/diagrama_general.png
-	scale 55
+	scale 50
 
 \end_inset
 
@@ -649,12 +649,12 @@ El siguiente diagrama de clases ilustra los componentes esenciales de la
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename DiagramasManuales/capaFisica.png
-	scale 25
+	scale 29
 
 \end_inset
 
@@ -1134,6 +1134,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename DiagramasManuales/HashExtensible.png
 	scale 50
