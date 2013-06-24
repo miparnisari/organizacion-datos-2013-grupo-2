@@ -17,6 +17,7 @@
 #include "../CapaLogica/ManejoArchivos/RegistroCancion.h"
 #include "../CapaLogica/ManejoArchivos/ClaveNumerica.h"
 #include "../CapaLogica/Parser/ParserCanciones.h"
+#include "../CapaLogica/Compresor/PPMC.h"
 #include "../CapaLogica/Compresor/Aritmetico.h"
 
 #include "ResolvedorConsultas.h"

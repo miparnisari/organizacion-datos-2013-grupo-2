@@ -185,7 +185,7 @@ void PPMC::_imprimir_estado(int orden,double probabilidad,Uint simbolo){
 	stringstream streamEmision;
 	streamEmision<<"emito ";
 
-	if(simbolo < 127)
+	if(64<= simbolo && simbolo <= 127)
 		streamEmision<<(char)simbolo;
 	else
 		streamEmision<<simbolo;
@@ -220,7 +220,7 @@ int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_sim
 	if (modelo_actual->get_frecuencia(simbolo) == 0) {
 		resultado = RES_ESCAPE;
 
-		_imprimir_estado(orden,modelo_actual->get_probabilidad(VALOR_DEL_ESCAPE),VALOR_DEL_ESCAPE);
+//		_imprimir_estado(orden,modelo_actual->get_probabilidad(VALOR_DEL_ESCAPE),VALOR_DEL_ESCAPE);
 
 		if (modelo_actual->get_frecuencia(VALOR_DEL_ESCAPE) == 1  && modelo_actual->calcular_total_frecuencias() == 1)
 		{
@@ -242,7 +242,7 @@ int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_sim
 
 		_imprimir_todos_ordenes();
 
-		_imprimir_estado(orden,modelo_actual->get_probabilidad(simbolo),simbolo);
+//		_imprimir_estado(orden,modelo_actual->get_probabilidad(simbolo),simbolo);
 
 		a_emitir = comp_aritmetico->comprimir(simbolo,cOverflow,cUnderflow);
 		if (orden == -1)
@@ -288,7 +288,7 @@ void PPMC::_emitir_completando_octeto(char* bufferComprimido,
 	}
 }
 
-void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
+void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
 		vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo)
 {
 	if (orden == 0 || orden == -1)
@@ -386,8 +386,9 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 
 	for (indiceSimbolo = 0; indiceSimbolo < tamanioBuffer - 1; indiceSimbolo++)
 	{
-		Uint simbolo = buffer[indiceSimbolo];
-		cout << "SIMBOLO A COMPRIMIR = " << (char)simbolo << endl;
+		const unsigned char uc_simbolo = (unsigned char) buffer[indiceSimbolo];
+		const Uint simbolo = (Uint) uc_simbolo;
+//		cout << "SIMBOLO A COMPRIMIR = " << simbolo << endl;
 
 		comprimir_un_caracter(orden,indiceSimbolo,simbolo,contexto, buffer_bits,
 				bits_a_emitir,bufferComprimido,indiceBufferComprimido,false);
@@ -483,7 +484,7 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 
 int PPMC::descomprimir_todo
 	(char* bufferComprimido,
-	int tamanioBufferComprimido,
+	unsigned int tamanioBufferComprimido,
 	char* bufferDescomprimido,
 	unsigned int precision,
 	unsigned int cantidadCaracteresOriginal){
