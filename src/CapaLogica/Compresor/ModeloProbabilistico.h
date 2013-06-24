@@ -13,7 +13,9 @@
 #include <vector>
 #include <string.h>
 #include <cmath>
+#include <fstream>
 
+using std::ofstream;
 using std::vector;
 
 typedef unsigned int Uint;
@@ -47,7 +49,7 @@ class ModeloProbabilistico {
 
 		void resetear();
 
-		void imprimir();
+		void imprimir(ofstream* archivoSalida);
 
 		Uint obtener_simbolo(double probabilidad);
 };

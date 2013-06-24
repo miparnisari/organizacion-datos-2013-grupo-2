@@ -27,14 +27,14 @@ ModeloProbabilistico::ModeloProbabilistico(const ModeloProbabilistico& otro){
 
 }
 
-void ModeloProbabilistico::imprimir()
+void ModeloProbabilistico::imprimir(ofstream* archivoSalida)
 {
 	for (Uint i = 0; i < tamanioAlfabeto; i++)
 	{
 		if (frecuenciasSimbolos[i] != 0)
-			cout << "i " << i << " = " <<frecuenciasSimbolos[i] << ";";
+			(*archivoSalida) << "i " << i << " = " <<frecuenciasSimbolos[i] << ";";
 	}
-	cout << endl;
+	(*archivoSalida) << endl;
 }
 
 ModeloProbabilistico& ModeloProbabilistico::operator = (const ModeloProbabilistico& otro)

@@ -7,6 +7,10 @@
 #include "Orden.h"
 #include "../../Utilitarios/Utilitarios.h"
 #include <map>
+#include <fstream>
+
+using std::ofstream;
+using std::stringstream;
 
 class PPMC : public Compresor
 {
@@ -36,6 +40,8 @@ class PPMC : public Compresor
 		Aritmetico* comp_aritmetico;
 		string contexto;
 
+		ofstream* archivoSalida;
+
 		void _inicializar_orden_menosuno();
 		void _inicializar_orden_cero();
 
@@ -59,6 +65,9 @@ class PPMC : public Compresor
 				Uint & indiceBufferComprimido,
 				BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
 				vector<bool> bits_a_emitir);
+
+		void _imprimir_estado(int orden,double probabilidad,Uint simbolo);
+		/*emite en un archivo de salida las emisiones del PPMC */
 
 };
 

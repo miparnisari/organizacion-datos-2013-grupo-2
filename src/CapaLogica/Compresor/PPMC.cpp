@@ -16,6 +16,8 @@ PPMC::PPMC(unsigned short orden) : Compresor()
 		mapa_ordenes.insert(pair<int,Orden*> (i,contexto_vacio));
 	}
 
+	archivoSalida= new ofstream(ARCHIVO_EMISION);
+
 }
 
 void PPMC::_inicializar_orden_menosuno()
@@ -43,7 +45,10 @@ void PPMC::_inicializar_orden_cero()
 
 PPMC::~PPMC()
 {
+	archivoSalida->seekp(0,ios::end);
+	archivoSalida->close();
 	delete comp_aritmetico;
+	delete archivoSalida;
 }
 
 
@@ -110,17 +115,20 @@ void PPMC::_imprimir_todos_ordenes()
 {
 	for (int orden = -1; orden < orden_maximo + 1; orden++)
 	{
-		cout << "---------------- ORDEN " << orden << " ----------------" << endl;
+		(*archivoSalida) << "---------------- ORDEN " << orden << " ----------------" << endl;
 		map<string, ModeloProbabilistico*> mapa_modelos = mapa_ordenes[orden]->get_mapa_modelos();
 		map<string, ModeloProbabilistico*>::iterator iterador = mapa_modelos.begin();
 		while (iterador != mapa_modelos.end())
 		{
-			cout << "~~~~~~ CTX " << (*iterador).first << " ~~~~~~" <<endl;
+			(*archivoSalida) << "~~~~~~ CTX " << (*iterador).first << " ~~~~~~" <<endl;
 			ModeloProbabilistico* unModelo = (*iterador).second;
-			unModelo->imprimir();
+			(*archivoSalida)<<'\t';
+			unModelo->imprimir( archivoSalida );
 			iterador ++;
 		}
 	}
+
+	(*archivoSalida)<<'\n';
 
 }
 
@@ -170,6 +178,34 @@ void PPMC::_actualizar_contexto(int orden, Uint simbolo, string contexto_del_sim
 
 }
 
+
+void PPMC::_imprimir_estado(int orden,double probabilidad,Uint simbolo){
+
+
+	stringstream streamEmision;
+	streamEmision<<"emito ";
+
+	if(simbolo < 127)
+		streamEmision<<(char)simbolo;
+	else
+		streamEmision<<simbolo;
+
+	streamEmision<<", en orden ";
+	streamEmision<<orden;
+	streamEmision<<" ,con probabilidad = ";
+	streamEmision<<probabilidad;
+	streamEmision<<".";
+	streamEmision<<'\n';
+//	streamEmision.seekg(0,ios::beg);
+	string stringEmision= streamEmision.str();
+
+
+	cout<<stringEmision;
+	this->archivoSalida->write( stringEmision.c_str() , stringEmision.length() );
+
+}
+
+
 int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_simbolo, std::vector<bool>& a_emitir)
 {
 	int resultado = RES_OK;
@@ -184,7 +220,7 @@ int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_sim
 	if (modelo_actual->get_frecuencia(simbolo) == 0) {
 		resultado = RES_ESCAPE;
 
-		cout << "--- EMITO ESCAPE EN ORDEN " << orden << " CON PROBA = " << modelo_actual->get_probabilidad(VALOR_DEL_ESCAPE) << endl;
+		_imprimir_estado(orden,modelo_actual->get_probabilidad(VALOR_DEL_ESCAPE),VALOR_DEL_ESCAPE);
 
 		if (modelo_actual->get_frecuencia(VALOR_DEL_ESCAPE) == 1  && modelo_actual->calcular_total_frecuencias() == 1)
 		{
@@ -206,7 +242,7 @@ int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_sim
 
 		_imprimir_todos_ordenes();
 
-		cout << "--- EMITO " << (char)simbolo << " EN ORDEN " << orden << " CON PROBA = " << modelo_actual->get_probabilidad(simbolo) << endl;
+		_imprimir_estado(orden,modelo_actual->get_probabilidad(simbolo),simbolo);
 
 		a_emitir = comp_aritmetico->comprimir(simbolo,cOverflow,cUnderflow);
 		if (orden == -1)
@@ -474,6 +510,8 @@ int PPMC::descomprimir_todo
 
 
 	for( Uint caracterActual= 0; caracterActual < cantidadCaracteresOriginal ; caracterActual++ ){
+
+		IMPRIMIR_MY_VARIABLE(bufferBits.to_string());
 
 		Uint simbolo;
 		vector<bool> bitsEmitir;
