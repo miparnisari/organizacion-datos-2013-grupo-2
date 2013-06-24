@@ -113,7 +113,7 @@ TEST_F(TestCompresorAritmetico, ComprimirRegistroVariableConUnCampo)
 }
 
 
-TEST_F(TestCompresorAritmetico,DISABLED_ComprimirCancion){
+TEST_F(TestCompresorAritmetico,ComprimirCancion){
 
 	Aritmetico ca;
 	ParserCanciones pc;

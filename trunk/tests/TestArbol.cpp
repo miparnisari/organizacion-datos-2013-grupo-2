@@ -3,7 +3,7 @@
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
 // To use a test fixture, derive a class from testing::Test.
-class DISABLED_TestArbol : public testing::Test {
+class TestArbol : public testing::Test {
  protected:
 	// Declares the variables your tests want to use.
 	ArbolBMas arbol;
@@ -24,7 +24,7 @@ class DISABLED_TestArbol : public testing::Test {
 
 };
 
-TEST_F(DISABLED_TestArbol,Insertar_registro)
+TEST_F(TestArbol,Insertar_registro)
 {
 	ASSERT_TRUE (arbol.crear("arbol.dat",BLOQUE_TAM_DEFAULT) == RES_OK);
 	ASSERT_TRUE (arbol.abrir("arbol.dat","rb+") == RES_OK);
@@ -58,7 +58,7 @@ TEST_F(DISABLED_TestArbol,Insertar_registro)
 }
 
 
-TEST_F(DISABLED_TestArbol,Abrir_cerrar)
+TEST_F(TestArbol,Abrir_cerrar)
 {
 
 	ASSERT_TRUE (arbol.crear("arbol.dat",BLOQUE_TAM_DEFAULT) == RES_OK);
@@ -71,7 +71,7 @@ TEST_F(DISABLED_TestArbol,Abrir_cerrar)
 }
 
 
-TEST_F(DISABLED_TestArbol,Insertar_pocos_registros)
+TEST_F(TestArbol,Insertar_pocos_registros)
 {
 	ASSERT_TRUE( arbol.crear("arbol.dat",BLOQUE_TAM_DEFAULT)==RES_OK );
 	ASSERT_TRUE(arbol.abrir("arbol.dat","rb+") == RES_OK);
@@ -130,7 +130,7 @@ TEST_F(DISABLED_TestArbol,Insertar_pocos_registros)
 }
 
 
-TEST_F(DISABLED_TestArbol,Split_raiz)
+TEST_F(TestArbol,Split_raiz)
 {
 	unsigned int tamanioBloque= 64;
 	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
@@ -178,7 +178,7 @@ TEST_F(DISABLED_TestArbol,Split_raiz)
 //	arbol.imprimir();
 }
 
-TEST_F(DISABLED_TestArbol,Buscar)
+TEST_F(TestArbol,Buscar)
 {
 	unsigned int tamanioBloque= 100;
 	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
@@ -227,7 +227,7 @@ TEST_F(DISABLED_TestArbol,Buscar)
 
 }
 
-TEST_F(DISABLED_TestArbol,Buscar_secuencial)
+TEST_F(TestArbol,Buscar_secuencial)
 {
 	unsigned int tamanioBloque= 100;
 	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
@@ -351,7 +351,7 @@ TEST_F(DISABLED_TestArbol,Buscar_secuencial)
 //	arbol.imprimir();
 }
 
-TEST_F(DISABLED_TestArbol,Eliminar_raiz)
+TEST_F(TestArbol,Eliminar_raiz)
 {
 	unsigned int tamanioBloque= 64;
 	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
@@ -382,7 +382,7 @@ TEST_F(DISABLED_TestArbol,Eliminar_raiz)
 //	arbol.imprimir();
 }
 
-TEST_F(DISABLED_TestArbol,Eliminar_raiz_sin_underflow)
+TEST_F(TestArbol,Eliminar_raiz_sin_underflow)
 {
 	unsigned int tamanioBloque= 64;
 	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
@@ -437,7 +437,7 @@ TEST_F(DISABLED_TestArbol,Eliminar_raiz_sin_underflow)
 //	arbol.imprimir();
 }
 
-TEST_F(DISABLED_TestArbol,Eliminar_con_merge_secuenciales)
+TEST_F(TestArbol,Eliminar_con_merge_secuenciales)
 {
 	unsigned int tamanioBloque= 64;
 	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
@@ -530,7 +530,7 @@ TEST_F(DISABLED_TestArbol,Eliminar_con_merge_secuenciales)
 
 }
 
-TEST_F(DISABLED_TestArbol,Eliminar_con_balanceo_secuenciales)
+TEST_F(TestArbol,Eliminar_con_balanceo_secuenciales)
 {
 	unsigned int tamanioBloque= 64;
 	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
@@ -617,7 +617,7 @@ TEST_F(DISABLED_TestArbol,Eliminar_con_balanceo_secuenciales)
 //	arbol.imprimir();
 }
 
-TEST_F(DISABLED_TestArbol,Eliminar_con_merge_internos)
+TEST_F(TestArbol,Eliminar_con_merge_internos)
 {
 	unsigned int tamanioBloque= 64;
 	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
@@ -703,7 +703,7 @@ TEST_F(DISABLED_TestArbol,Eliminar_con_merge_internos)
 //	arbol.imprimir();
 }
 
-TEST_F(DISABLED_TestArbol,Eliminar_con_merge_interno_en_ultimo)
+TEST_F(TestArbol,Eliminar_con_merge_interno_en_ultimo)
 {
 	unsigned int tamanioBloque= 64;
 	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
@@ -802,7 +802,7 @@ TEST_F(DISABLED_TestArbol,Eliminar_con_merge_interno_en_ultimo)
 //	arbol.imprimir();
 }
 
-TEST_F(DISABLED_TestArbol,Eliminar_con_balanceo_interno_en_ultimo)
+TEST_F(TestArbol,Eliminar_con_balanceo_interno_en_ultimo)
 {
 	unsigned int tamanioBloque= 64;
 	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
@@ -882,7 +882,7 @@ TEST_F(DISABLED_TestArbol,Eliminar_con_balanceo_interno_en_ultimo)
 //	arbol.imprimir();
 }
 
-TEST_F(DISABLED_TestArbol,Eliminar_con_balanceo_interno_en_ultimo_nodo)
+TEST_F(TestArbol,Eliminar_con_balanceo_interno_en_ultimo_nodo)
 {
 	unsigned int tamanioBloque= 64;
 	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
@@ -957,7 +957,7 @@ TEST_F(DISABLED_TestArbol,Eliminar_con_balanceo_interno_en_ultimo_nodo)
 //	arbol.imprimir();
 }
 
-TEST_F(DISABLED_TestArbol,Eliminar_arbol_completamente)
+TEST_F(TestArbol,Eliminar_arbol_completamente)
 {
 	unsigned int tamanioBloque= 64;
 	ASSERT_TRUE( arbol.crear("arbol.dat",tamanioBloque)== RES_OK );
