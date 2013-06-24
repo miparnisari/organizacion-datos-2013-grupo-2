@@ -466,6 +466,7 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 		if( numeroOrdenActual == -1 )
 			return RES_ERROR;
 
+		 bufferBits.get_primer_valor_numerico(PRECISION,valorSimbolo);
 
 		return this->descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits,aritmeticoCopia);
 	}

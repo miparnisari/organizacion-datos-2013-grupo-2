@@ -53,7 +53,8 @@ Uint Aritmetico::descomprimir(Uint valor)
 		if (techo_caracter != piso_caracter)
 			techo_caracter -= 1;
 
-		if (piso_caracter <= valor && valor <= techo_caracter)
+		//fixme ... revisar. Condicion anterior no incluia el '!='
+		if (piso_caracter <= valor && valor <= techo_caracter && (piso_caracter!= techo_caracter) )
 		{
 //			IMPRIMIR_MY_VARIABLE(piso_caracter);
 //			IMPRIMIR_MY_VARIABLE(techo_caracter);
