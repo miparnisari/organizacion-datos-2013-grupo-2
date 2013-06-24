@@ -29,7 +29,7 @@ class PPMC : public Compresor
 
 		int descomprimir_todo
 			(char* bufferComprimido,
-			int tamanioBufferComprimido,
+			unsigned int tamanioBufferComprimido,
 			char* bufferDescomprimido,
 			unsigned int precision,
 			unsigned int cantidadCaracteresOriginal);

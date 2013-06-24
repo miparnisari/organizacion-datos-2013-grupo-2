@@ -142,6 +142,7 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
 	long offset;
 	reg.recuperar_campo((char*)&offset,1);
 
+//	PPMC* compresor = new PPMC(CANTIDAD_DE_CONTEXTOS);
 	Aritmetico* compresor = new Aritmetico();
 	RegistroVariable* regVariableComprimido = new RegistroVariable();
 	archivoMaestro.get_registro_por_offset(regVariableComprimido,offset);
