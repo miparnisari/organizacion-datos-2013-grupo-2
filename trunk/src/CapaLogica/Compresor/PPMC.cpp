@@ -12,8 +12,8 @@ PPMC::PPMC(unsigned short orden) : Compresor()
 	// ORDEN 1 a "orden"
 	for (unsigned short i = 1; i < orden+1; i++)
 	{
-		Contextos* contexto_vacio = new Contextos();
-		mapa_ordenes.insert(pair<int,Contextos*> (i,contexto_vacio));
+		Orden* contexto_vacio = new Orden();
+		mapa_ordenes.insert(pair<int,Orden*> (i,contexto_vacio));
 	}
 
 }
@@ -23,9 +23,9 @@ void PPMC::_inicializar_orden_menosuno()
 	ModeloProbabilistico* mod_menos_uno = new ModeloProbabilistico(TAMANIO_ALFABETO-1);
 	mod_menos_uno->inicializar_frecuencias_en_1();
 
-	Contextos* contexto_menos_uno = new Contextos();
+	Orden* contexto_menos_uno = new Orden();
 	contexto_menos_uno->agregar_modelo("-1",mod_menos_uno);
-	mapa_ordenes.insert(pair<int,Contextos*> (-1,contexto_menos_uno));
+	mapa_ordenes.insert(pair<int,Orden*> (-1,contexto_menos_uno));
 }
 
 void PPMC::_inicializar_orden_cero()
@@ -35,9 +35,9 @@ void PPMC::_inicializar_orden_cero()
 	vector.push_back(VALOR_DEL_ESCAPE);
 	mod_cero->inicializar_frecuencias_en_1(vector);
 
-	Contextos* ctx_cero = new Contextos();
+	Orden* ctx_cero = new Orden();
 	ctx_cero->agregar_modelo("0",mod_cero);
-	mapa_ordenes.insert(pair<int,Contextos*> (0,ctx_cero));
+	mapa_ordenes.insert(pair<int,Orden*> (0,ctx_cero));
 }
 
 
@@ -54,7 +54,7 @@ void PPMC::_crear_modelo_vacio (int orden, string nombre_modelo)
 	vector.push_back(VALOR_DEL_ESCAPE);
 	modelo->inicializar_frecuencias_en_1(vector);
 
-	Contextos* contexto = mapa_ordenes[orden];
+	Orden* contexto = mapa_ordenes[orden];
 	contexto->agregar_modelo(nombre_modelo,modelo);
 	mapa_ordenes[orden] = contexto;
 }
@@ -367,8 +367,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int numeroOrdenActual,Uint& simbolo,
 	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& bufferBits,Aritmetico& aritmeticoCopia){
 
-
-	Contextos* ordenActual= this->mapa_ordenes[numeroOrdenActual];
+	Orden* ordenActual= this->mapa_ordenes[numeroOrdenActual];
 	ModeloProbabilistico* modeloActual;
 	int resultadoDevolverModelo= ordenActual->devolver_modelo(contextoActual, &modeloActual);
 

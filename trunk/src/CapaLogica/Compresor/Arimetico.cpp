@@ -199,7 +199,7 @@ int Aritmetico::comprimir_todo
 }
 
 
-/*fixme arreglar el hecho de trabajar con una precision variable diferente a 32 bits*/
+/*fixme arreglar el hecho de trabajar con una precision que no es multiplo de 8*/
 int Aritmetico::descomprimir_todo(char* bufferComprimido,
 		int tamanioBufferComprimido,
 		char* bufferDescomprimido,

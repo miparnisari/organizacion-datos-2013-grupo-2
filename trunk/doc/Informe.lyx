@@ -1443,7 +1443,7 @@ status collapsed
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename DiagramasManuales/IndiceInvertidoPorFrase.jpg
-	scale 25
+	scale 35
 
 \end_inset
 
@@ -1582,15 +1582,114 @@ Compresor
 \end_layout
 
 \begin_layout Standard
+Este paquete del trabajo contiene las siguientes clases:
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+ModeloProbabilistico
+\family default
+ representa el alfabeto con el que se está trabajando y la frecuencia de
+ cada caracter dentro de ese alfabeto.
+ Esto es un vector de frecuencias enteras, del cual se pueden obtener las
+ probabilidades de cada símbolo.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+El tamaño del alfabeto puede ser de 257 (256 caracteres ASCII) u otro valor
+ que tenga sentido para el usuario.
+ En el caso particular del compresor PPMC, el modelo -1 utiliza un vector
+ de 256 posiciones y el resto de los modelos un vector con 257 posiciones,
+ para incluir el caracter especial 
+\begin_inset Quotes eld
+\end_inset
+
+escape
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+Intervalo
+\family default
+ representa el segmento en el cual se está trabajando para comprimir.
+ Contiene los atributos 
+\begin_inset Quotes eld
+\end_inset
+
+piso
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+techo
+\begin_inset Quotes erd
+\end_inset
+
+ y 
+\begin_inset Quotes eld
+\end_inset
+
+rango
+\begin_inset Quotes erd
+\end_inset
+
+, los cuales se van modificando a medida que se comprime.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+El método 
+\family typewriter
+normalizar()
+\family default
+ es el encargado de devolver un vector de bits que representa lo que se
+ debería emitir en la compresión luego de resolver los underflow y overflow.
+ También devuelve cuántos overflow y underflow se produjeron en una normalizació
+n.
+ Estos dos datos se utilizan en otras clases.
+\end_layout
+
+\begin_layout Itemize
+El método 
+\family typewriter
+actualizar_piso_techo()
+\family default
+ recibe los valores de 
+\family typewriter
+low_count
+\family default
+ y 
+\family typewriter
+high_count
+\family default
+ de un símbolo (que representan la probabilidad de un símbolo), y actualiza
+ el piso y el techo del intervalo de acuerdo a estos valores.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
-	filename DiagramasManuales/Aritmetico.png
-	scale 35
+	filename DiagramasManuales/Relacion_modelo_intervalo.png
+	scale 50
 
 \end_inset
 
@@ -1601,7 +1700,15 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Compresor aritmetico
+Relación entre 
+\family typewriter
+ModeloProbabilistico
+\family default
+ e 
+\family typewriter
+Intervalo
+\family default
+.
 \end_layout
 
 \end_inset
@@ -1618,7 +1725,50 @@ Compresor aritmetico
 
 \end_layout
 
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+Arimetico
+\family default
+ implementa tanto el compresor como el descompresor aritmético dinámico
+ de orden 0.
+\end_layout
+
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename DiagramasManuales/Aritmetico.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Diagrama de clases del compresor aritmético.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
@@ -1638,8 +1788,8 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename DiagramasManuales/capaInterfaz.png
-	scale 75
+	filename DiagramasManuales/DiagramaCapaInterfaz.png
+	scale 50
 
 \end_inset
 
@@ -1664,7 +1814,31 @@ Diagrama de clases de la Interfaz
 \end_layout
 
 \begin_layout Standard
+La clase 
+\family typewriter
+ResolvedorConsultas
+\family default
+ es la encargada de recibir consultas y devolver datos asociados a esas
+ consultas (IDs de canciones, Registros, nombres de archivos, etc.).
+\end_layout
 
+\begin_layout Standard
+La clase 
+\family typewriter
+Indexador
+\family default
+ es la encargada de modificar los archivos de las estructuras ante pedidos
+ del usuario.
+\end_layout
+
+\begin_layout Standard
+La clase 
+\family typewriter
+GeneradorEstadisticasConsultas
+\family default
+ es la encargada de llevar cuenta de la estadística de las consultas de
+ los usarios en una corrida del programa.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2055,6 +2229,11 @@ status open
 
 \end_layout
 
+\begin_layout Standard
+Este programa no terminará la ejecución hasta que el usuario no eliga la
+ opción de salir del mismo.
+\end_layout
+
 \begin_layout Subsection
 Ejemplos
 \end_layout
@@ -2067,6 +2246,10 @@ songs
  dentro de 
 \family typewriter
 organizacion-datos-2013-grupo 2
+\family default
+ y guardar los índices dentro de 
+\family typewriter
+output
 \family default
 :
 \end_layout
@@ -2404,5 +2587,37 @@ One man to overthrow
 \end_layout
 
 \end_deeper
+\begin_layout Subsection
+Tests
+\end_layout
+
+\begin_layout Standard
+Si se desea, se pueden ejecutar los tests dentro del directorio 
+\begin_inset Quotes eld
+\end_inset
+
+tests
+\begin_inset Quotes erd
+\end_inset
+
+, ejecutando el comando 
+\begin_inset Quotes eld
+\end_inset
+
+make
+\begin_inset Quotes erd
+\end_inset
+
+ por consola y luego ejecutando 
+\begin_inset Quotes eld
+\end_inset
+
+./tests
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
 \end_body
 \end_document

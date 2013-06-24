@@ -21,6 +21,9 @@ void ResolvedorConsultas::set_directorio_indice(std::string & dirSalida)
 	this->directorioSalida = dirSalida;
 }
 
+/*
+ * Devuelve un vector de los ids de las canciones que tienen una frase dada.
+ */
 std::vector<int> ResolvedorConsultas::get_ids_canciones_frases(std::string & frase)
 {
 	std::vector<int> ids;
@@ -48,6 +51,9 @@ std::vector<int> ResolvedorConsultas::get_ids_canciones_frases(std::string & fra
 	return ids;
 }
 
+/*
+ * Devuelve un vector de los ids de las canciones de un autor dado.
+ */
 std::vector<int> ResolvedorConsultas::get_id_canciones_autor(std::string & autor)
 {
 	std::vector<int> ids;
@@ -89,6 +95,10 @@ std::vector<int> ResolvedorConsultas::get_id_canciones_autor(std::string & autor
 	return ids;
 
 }
+
+/*
+ * Devuelve el ID de la cancion con el titulo dado.
+ */
 int ResolvedorConsultas::get_id_cancion_titulo(std::string & titulo)
 {
 	int idDoc;
@@ -112,6 +122,9 @@ int ResolvedorConsultas::get_id_cancion_titulo(std::string & titulo)
 	return idDoc;
 }
 
+/*
+ * Devuelve el registro completo de la cancion cuyo ID es el dado.
+ */
 RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
 {
 	indicePrimario.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_PRIM));
@@ -141,6 +154,10 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
 	return regDescomprimido;
 }
 
+/*
+ * Devuelve el nombre del archivo (incluyendo path relativo) de la cancion
+ * con ID dado.
+ */
 std::string ResolvedorConsultas::get_nombre_archivo (int id_cancion)
 {
 	documentos.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
