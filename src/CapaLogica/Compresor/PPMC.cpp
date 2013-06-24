@@ -16,7 +16,7 @@ PPMC::PPMC(unsigned short orden) : Compresor()
 		mapa_ordenes.insert(pair<int,Orden*> (i,contexto_vacio));
 	}
 
-	archivoSalida= new ofstream(ARCHIVO_EMISION);
+	archivoSalida= new ofstream(ARCHIVO_EMISION,ios::app);
 
 }
 
@@ -240,7 +240,6 @@ int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_sim
 
 		ModeloProbabilistico* modelo_antes_de_comprimir = comp_aritmetico->get_modelo();
 
-		_imprimir_todos_ordenes();
 
 //		_imprimir_estado(orden,modelo_actual->get_probabilidad(simbolo),simbolo);
 
@@ -291,6 +290,8 @@ void PPMC::_emitir_completando_octeto(char* bufferComprimido,
 void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
 		vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo)
 {
+	_imprimir_todos_ordenes();
+
 	if (orden == 0 || orden == -1)
 		contexto = utilitarios::int_a_string(orden);
 

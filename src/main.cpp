@@ -1,5 +1,9 @@
 #include "CapaInterfaz/Controlador.h"
 #include "Constantes.h"
+#include <iostream>
+#include <fstream>
+
+using std::ofstream;
 
 void mostrar_operaciones()
 {
@@ -60,6 +64,8 @@ std::string pedir_consulta()
 
 int main (int argc, char* argv[])
 {
+	ofstream logPPMC(ARCHIVO_EMISION);
+
 	Controlador controlador;
 	
 	int operacion = pedir_operacion();
