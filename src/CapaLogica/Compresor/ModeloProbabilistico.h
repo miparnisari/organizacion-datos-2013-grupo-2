@@ -24,8 +24,6 @@ class ModeloProbabilistico {
 		Uint* frecuenciasSimbolos;
 		Uint tamanioAlfabeto;
 
-
-
 	public:
 		ModeloProbabilistico(Uint un_tamanio_alfabeto = TAMANIO_ALFABETO);
 		ModeloProbabilistico(const ModeloProbabilistico& otro);

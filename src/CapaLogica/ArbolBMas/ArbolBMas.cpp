@@ -106,7 +106,7 @@ unsigned int ArbolBMas::get_cant_maxima_nodo()
 int ArbolBMas::crear (std::string fileName, unsigned int tamBloque)
 {
 	this->tamanioMaximoNodo = tamBloque * FACTOR_CARGA /100;
-	/*FIXME . Tests funcaban con 0.6*/
+	/*FIXME Tests andan con FACTOR_CARGA=0.6*/
 
 	int res = archivoNodos.crear_archivo(fileName,tamBloque);
 	if (res != RES_OK)
@@ -307,7 +307,7 @@ int ArbolBMas::_quitar_recursivo(unsigned int& numeroNodoActual,
 		/*a continuacion se llevaran los pasos a llevar a cabo en caso de underflow del nodoSecuencial*/
 		tipoUnderflow= RES_UNDERFLOW_HOJA;
 		this->_persistir_nodo(&nodoActualSecuencial , numeroNodoActual);
-		/*FIXME, esta persistencia deberia ocurrir desde una instancia superior, pero por ahora no se me ocurre otra solucion ... */
+		/*FIXME esta persistencia deberia ocurrir desde una instancia superior */
 		return RES_UNDERFLOW;
 
 	}/*resolucion si el nodoActual es hoja*/

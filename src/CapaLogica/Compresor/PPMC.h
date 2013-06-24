@@ -4,7 +4,7 @@
 #include "Compresor.h"
 #include "../../Constantes.h"
 #include "Aritmetico.h"
-#include "Contextos.h"
+#include "Orden.h"
 #include "../../Utilitarios/Utilitarios.h"
 #include <map>
 
@@ -32,7 +32,7 @@ class PPMC : public Compresor
 
 	private:
 		unsigned short orden_maximo;
-		map<int,Contextos*> mapa_ordenes;
+		map<int,Orden*> mapa_ordenes;
 		Aritmetico* comp_aritmetico;
 		string contexto;
 

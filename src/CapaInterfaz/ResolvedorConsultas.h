@@ -45,7 +45,6 @@ private:
 
 	std::string directorioSalida;
 
-
 };
 
 #endif /* RESOLVEDORCONSULTAS_H_ */
