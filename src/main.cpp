@@ -64,8 +64,6 @@ std::string pedir_consulta()
 
 int main (int argc, char* argv[])
 {
-	ofstream logPPMC(ARCHIVO_EMISION);
-
 	Controlador controlador;
 	
 	int operacion = pedir_operacion();

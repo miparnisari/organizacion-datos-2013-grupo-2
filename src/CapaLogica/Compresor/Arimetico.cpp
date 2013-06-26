@@ -204,7 +204,6 @@ int Aritmetico::comprimir_todo
 int Aritmetico::descomprimir_todo(char* bufferComprimido,
 		int tamanioBufferComprimido,
 		char* bufferDescomprimido,
-		unsigned int precision,
 		unsigned int cantidadCaracteresOriginal)
 {
 
@@ -228,7 +227,7 @@ int Aritmetico::descomprimir_todo(char* bufferComprimido,
 	for( unsigned int indiceCaracterActual= 0; indiceCaracterActual<cantidadCaracteresOriginal ; indiceCaracterActual++ ){
 
 		unsigned long valorSimboloActual;
-		bufferBitsDescompresion.get_primer_valor_numerico(precision,valorSimboloActual);
+		bufferBitsDescompresion.get_primer_valor_numerico(PRECISION,valorSimboloActual);
 
 		Uint simboloActual= descomprimir((Uint)valorSimboloActual);
 //		IMPRIMIR_MY_VARIABLE((char)simboloActual);

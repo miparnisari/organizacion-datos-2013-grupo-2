@@ -48,7 +48,7 @@ const char FILENAME_IDX_SECUN_TITULO[]	= "idx_sec_titulo";
 const char FILENAME_IDX_SECUN_FRASES[]	= "idx_sec_frases";
 const char FILENAME_ARCH_MAESTRO[]		= "arch_maestro.dat";
 const char FILENAME_ID_DOCS[]			= "id_docs";
-const char FILENAME_LOG_PPMC[] 		= "../ppmc_logs/log";
+const char FILENAME_LOG[] 				= "../ppmc_logs/log";
 
 /*
  * Manejo de bloques

@@ -21,7 +21,6 @@ int Compresor::descomprimir_todo
 			(char* buffer,
 			int tamanio,
 			char* descomprimido,
-			unsigned int precision,
 			unsigned int cantidadCaracteresOriginal)
 {
 	return 0;

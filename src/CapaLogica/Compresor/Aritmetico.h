@@ -59,7 +59,6 @@ class Aritmetico : public Compresor {
 			(char* buffer,
 			int tamanio,
 			char* descomprimido,
-			unsigned int precision,
 			unsigned int cantidadCaracteresOriginal);
 
 		void set_intervalo( Intervalo* otroIntervalo );
