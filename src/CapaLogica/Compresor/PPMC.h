@@ -31,17 +31,19 @@ class PPMC : public Compresor
 			(char* bufferComprimido,
 			unsigned int tamanioBufferComprimido,
 			char* bufferDescomprimido,
-			unsigned int precision,
 			unsigned int cantidadCaracteresOriginal);
 
 	private:
 		unsigned short orden_maximo;
 		map<int,Orden*> mapa_ordenes;
 		Aritmetico* comp_aritmetico;
-		string contexto;
-
 		ofstream* archivoSalida;
 
+		void _limpiar_ordenes();
+
+		void _reset();
+
+		void _inicializar();
 		void _inicializar_orden_menosuno();
 		void _inicializar_orden_cero();
 

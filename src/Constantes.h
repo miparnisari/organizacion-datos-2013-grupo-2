@@ -123,7 +123,8 @@ const unsigned int VALOR_DEL_ESCAPE = 256;
  * Emision
  */
 
-const char ARCHIVO_EMISION[]= "../EmisionesPPMC.txt";
+const char ARCHIVO_EMISION_COMPRESION[]= "../CompresionPPMC.txt";
+const char ARCHIVO_EMISION_DESCOMPRESION[]= "../DescompresionPPMC.txt";
 
 
 #endif /* CONSTANTES_H */
