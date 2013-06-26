@@ -8,13 +8,12 @@ class TestOrdenamientoExterno : public testing::Test {
 		// Declares the variables your tests want to use.
 		ManejadorRegistrosVariables mv;
 		std::string filename;
-		OrdenamientoExterno* ordenador;
+		Heap heap;
 
   // virtual void SetUp() will be called before each test is run.  You
   // should define it if you need to initialize the varaibles.
   // Otherwise, this can be skipped.
   virtual void SetUp() {
-	  ordenador = new OrdenamientoExterno(filename);
 	  filename = "archivoOrdenamiento.dat";
 	  mv.crear_archivo(filename);
 	  mv.abrir_archivo(filename);
@@ -23,10 +22,21 @@ class TestOrdenamientoExterno : public testing::Test {
   // TearDown() is invoked immediately after a test finishes.
   virtual void TearDown() {
 	  mv.eliminar_archivo(filename);
-	  delete ordenador;
   }
 
   // A helper function that some test uses.
+  void comparar_registros()
+  {
+	for (int i = 0; i < mv.get_cantidad_registros_ocupados()-1; i++)
+	{
+		RegistroVariable rv1,rv2;
+
+		mv.get_registro_ocupado(&rv1,i);
+		mv.get_registro_ocupado(&rv2,i+1);
+
+		ASSERT_TRUE(heap.comparar_registros_variables(rv1,rv2)<=0);
+	}
+  }
 
 };
 
@@ -37,20 +47,17 @@ TEST_F(TestOrdenamientoExterno,Generar_runs)
 	{
 		int clave=1;
 
-		int campoClave = clave;
-
 		RegistroVariable regVariable;
 
-		regVariable.agregar_campo((char*)&campoClave,sizeof(int));
+		regVariable.agregar_campo((char*)&clave,sizeof(int));
 
 		mv.agregar_registro(& regVariable);
 	}
 
+	OrdenamientoExterno ordenador (filename);
+	ordenador._generar_runs();
 
-
-	ordenador->_generar_runs();
-
-	std::vector<string> runs = ordenador->_getVector();
+	std::vector<string> runs = ordenador._getVector();
 
 	Heap heap;
 
@@ -67,7 +74,7 @@ TEST_F(TestOrdenamientoExterno,Generar_runs)
 			mv2.get_registro_ocupado(&rv1,j);
 			mv2.get_registro_ocupado(&rv2,j+1);
 
-			assert(heap.comparar_registros_variables(rv1,rv2)<=0);
+			ASSERT_TRUE(heap.comparar_registros_variables(rv1,rv2)<=0);
 		}
 		mv2.eliminar_archivo(runs[i]);
 	}
@@ -78,12 +85,7 @@ TEST_F(TestOrdenamientoExterno,Merge_runs)
 {
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
 	{
-		int clave=1;
-		clave = (rand() % 20);
-//
-//		stringstream conversor;
-//		conversor << clave;
-//		string campoClave= conversor.str();
+		int clave = (rand() % 20);
 
 		RegistroVariable regVariable;
 
@@ -92,22 +94,11 @@ TEST_F(TestOrdenamientoExterno,Merge_runs)
 		mv.agregar_registro(& regVariable);
 	}
 
-	ordenador->_generar_runs();
+	OrdenamientoExterno ordenador (filename);
+	ordenador._generar_runs();
+	ordenador._merge();
 
-	ordenador->_merge();
-
-	Heap heap;
-
-	for (int i = 0; i < mv.get_cantidad_registros_ocupados()-1; i++)
-	{
-		RegistroVariable rv1,rv2;
-
-		mv.get_registro_ocupado(&rv1,i);
-		mv.get_registro_ocupado(&rv2,i+1);
-
-		assert(heap.comparar_registros_variables(rv1,rv2)<=0);
-	}
-
+	comparar_registros();
 }
 
 TEST_F(TestOrdenamientoExterno,Ordenar)
@@ -115,41 +106,23 @@ TEST_F(TestOrdenamientoExterno,Ordenar)
 	while (mv.get_tamanio_archivo()<1024*3) //3kB
 	{
 		//agrego clave en el primer campo
-		int clave=0;
-		clave = (rand() % 20) + 65;
-//
-//		stringstream conversor;
-//		conversor << clave;
-//		string campoClave= conversor.str();
+		int clave= (rand() % 20) + 65;
 
 		RegistroVariable regVariable;
 
 		regVariable.agregar_campo((char*)&clave,sizeof(int));
 
 		//agrego clave en el segundo campo
-		int clave2=0;
-		clave2 = (rand() % 20) + 65;
-
-//		conversor << clave2;
-//		string campoClave2= conversor.str();
+		int clave2 = (rand() % 20) + 65;
 
 		regVariable.agregar_campo((char*)&clave2,sizeof(int));
 
 		mv.agregar_registro(& regVariable);
 	}
 
-	ordenador->ordenar_archivo();
+	OrdenamientoExterno ordenador (filename);
+	ordenador.ordenar_archivo();
 
-	Heap heap;
-
-	for (int i = 0; i < mv.get_cantidad_registros_ocupados()-1; i++)
-	{
-		RegistroVariable rv1,rv2;
-
-		mv.get_registro_ocupado(&rv1,i);
-		mv.get_registro_ocupado(&rv2,i+1);
-
-		assert(heap.comparar_registros_variables(rv1,rv2)<=0);
-	}
+	comparar_registros();
 
 }

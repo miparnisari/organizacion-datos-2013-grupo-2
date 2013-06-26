@@ -5,7 +5,7 @@
 #include<iostream>
 
 #define IMPRIMIR_MY_VARIABLE(v)\
-	std::cout<<#v<<" ="<<v<<std::endl;
+	std::cout<<#v<<" = "<<v<<std::endl;
 
 typedef unsigned char Byte;
 typedef unsigned short TamanioCampos;
@@ -113,7 +113,7 @@ const int LISTA_VACIA								=-100;
  * Compresion
  */
 const unsigned int TAMANIO_ALFABETO = 256 + 1; // + ESC
-const unsigned int PRECISION = 32;//se prueba con 9 se corre con 32 . CON 32 BITS ANDA EL ARITMETICO
+const unsigned int PRECISION = 32;
 const unsigned int CANTIDAD_ORDENES_PPMC = 5;
 const unsigned int VALOR_DEL_ESCAPE = 256;
 
