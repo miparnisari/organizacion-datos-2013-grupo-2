@@ -67,7 +67,6 @@ TEST_F(TestCompresorAritmetico, DescomprimirString)
 			((char*)&buffer,
 					tamanio_buffer,
 					bufferDescomprimido,
-					PRECISION,
 					tamanio_buffer_descomp)==RES_OK  );
 
 	ASSERT_EQ(bufferDescomprimido[0],'A');
@@ -75,7 +74,7 @@ TEST_F(TestCompresorAritmetico, DescomprimirString)
 	ASSERT_EQ(bufferDescomprimido[2],'B');
 	ASSERT_EQ(bufferDescomprimido[3],'C');
 
-	delete bufferDescomprimido;
+	delete[] bufferDescomprimido;
 }
 
 TEST_F(TestCompresorAritmetico, ComprimirRegistroVariableConUnCampo)

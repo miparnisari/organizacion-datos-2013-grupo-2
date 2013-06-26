@@ -220,7 +220,7 @@ void Indexador::_agregar_a_los_indices (
 		std::string nombreArchivo)
 {
 	/* ------ guardamos el registro de la cancion en un archivo maestro ------ */
-	PPMC* compresor = new PPMC(CANTIDAD_DE_CONTEXTOS);
+	PPMC* compresor = new PPMC(CANTIDAD_ORDENES_PPMC);
 //	Aritmetico* compresor = new Aritmetico();
 	RegistroVariable* regComprimido = regCancionNoNormalizada.comprimir(compresor);
 

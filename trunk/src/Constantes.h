@@ -4,11 +4,8 @@
 #include<string>
 #include<iostream>
 
-using std::cout;
-using std::endl;
-
 #define IMPRIMIR_MY_VARIABLE(v)\
-	cout<<#v<<" ="<<v<<endl;
+	std::cout<<#v<<" ="<<v<<std::endl;
 
 typedef unsigned char Byte;
 typedef unsigned short TamanioCampos;
@@ -117,7 +114,7 @@ const int LISTA_VACIA								=-100;
  */
 const unsigned int TAMANIO_ALFABETO = 256 + 1; // + ESC
 const unsigned int PRECISION = 32;//se prueba con 9 se corre con 32 . CON 32 BITS ANDA EL ARITMETICO
-const unsigned int CANTIDAD_DE_CONTEXTOS = 2;
+const unsigned int CANTIDAD_ORDENES_PPMC = 5;
 const unsigned int VALOR_DEL_ESCAPE = 256;
 
 

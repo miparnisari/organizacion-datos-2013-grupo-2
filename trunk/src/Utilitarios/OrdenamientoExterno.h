@@ -1,26 +1,25 @@
 /*
- * SortExterno.h
+ * OrdenamientoExterno.h
  *
  *  Created on: May 16, 2013
  *      Author: juan
  */
 
-#ifndef SORTEXTERNO_H_
-#define SORTEXTERNO_H_
+#ifndef ORDENAMIENTOEXTERNO_H_
+#define ORDENAMIENTOEXTERNO_H_
 
 using namespace std;
 #include <string>
-#include<vector>
-
+#include <vector>
 
 #include "../Utilitarios/Heap.h"
 #include "../CapaFisica/ManejadorRegistrosVariables.h"
 
 
-class SortExterno {
+class OrdenamientoExterno {
 public:
-	SortExterno(std::string archAOrdenar);
-	virtual ~SortExterno();
+	OrdenamientoExterno(std::string archAOrdenar);
+	virtual ~OrdenamientoExterno();
 
 	void ordenar_archivo();
 	/*
@@ -58,4 +57,4 @@ private:
 	 * */
 };
 
-#endif /* SORTEXTERNO_H_ */
+#endif /* ORDENAMIENTOEXTERNO_H_ */

@@ -11,7 +11,7 @@
 #include "../../CapaLogica/ManejoArchivos/Texto.h"
 #include "ArchivoListas.h"
 #include "../../Constantes.h"
-#include "../../Utilitarios/SortExterno.h"
+#include "../../Utilitarios/OrdenamientoExterno.h"
 
 class IndiceInvertido
 {

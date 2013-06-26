@@ -1,22 +1,22 @@
 /*
- * SortExterno.cpp
+ * OrdenamientoExterno.cpp
  *
  *  Created on: May 16, 2013
  *      Author: juan
  */
 
-#include "SortExterno.h"
+#include "OrdenamientoExterno.h"
 
-SortExterno::SortExterno(string nombreArchivo) {
+OrdenamientoExterno::OrdenamientoExterno(string nombreArchivo) {
 	cantDeRuns=0;
 	archAOrdenar=nombreArchivo;
 }
 
-SortExterno::~SortExterno() {
+OrdenamientoExterno::~OrdenamientoExterno() {
 
 }
 
-void SortExterno::_fusionar_2_archivos(string ruta1, string ruta2, string archFinal, bool temporal)
+void OrdenamientoExterno::_fusionar_2_archivos(string ruta1, string ruta2, string archFinal, bool temporal)
 {
 
 Heap heap;
@@ -74,7 +74,7 @@ archivosTemporalesAFusionar.pop_back();
 
 }
 
-void SortExterno:: _generar_runs()
+void OrdenamientoExterno:: _generar_runs()
 {
 	ManejadorRegistrosVariables archivoAOrdenar;
 
@@ -200,7 +200,7 @@ void SortExterno:: _generar_runs()
 	}
 }
 
-void SortExterno::_merge()
+void OrdenamientoExterno::_merge()
 {
 
 	Heap heap;
@@ -252,7 +252,7 @@ void SortExterno::_merge()
 
 }
 
-void SortExterno::ordenar_archivo()
+void OrdenamientoExterno::ordenar_archivo()
 {
 	_generar_runs();
 	_merge();

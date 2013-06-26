@@ -1,6 +1,6 @@
 #include "PPMC.h"
 
-PPMC::PPMC(unsigned short orden) : Compresor()
+PPMC::PPMC(unsigned int orden) : Compresor()
 {
 	orden_maximo = orden;
 	_inicializar();
@@ -190,7 +190,7 @@ void PPMC::_actualizar_contexto(int orden, Uint simbolo, string contexto_del_sim
 	if (orden == -1)
 		return;
 
-	ModeloProbabilistico* modelo;
+	ModeloProbabilistico* modelo = NULL;
 	mapa_ordenes[orden]->devolver_modelo(contexto_del_simbolo,&modelo);
 
 	if ((modelo->get_frecuencia(VALOR_DEL_ESCAPE)==1) && (modelo->calcular_total_frecuencias()==1)) {
@@ -218,12 +218,11 @@ void PPMC::_actualizar_contexto(int orden, Uint simbolo, string contexto_del_sim
 			ctx += contexto_del_simbolo;
 		ctx += simbolo;
 
-		ModeloProbabilistico* modelo_contexto_superior;
+		ModeloProbabilistico* modelo_contexto_superior = NULL;
 		int res = mapa_ordenes[orden+1]->devolver_modelo(ctx,&modelo_contexto_superior);
 
 		if (res == RES_ERROR)
 		{
-//			cout << "VOY A CREAR CONTEXTO " << ctx << " EN ORDEN " << orden +1 << endl;
 			_crear_modelo_vacio(orden+1,ctx);
 		}
 	}
@@ -314,7 +313,7 @@ void PPMC::_emitir_completando_octeto(char* bufferComprimido,
 void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
 		vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo)
 {
-	//_imprimir_todos_ordenes();
+//	_imprimir_todos_ordenes();
 
 	if (orden == 0 || orden == -1)
 		contexto = utilitarios::int_a_string(orden);
@@ -393,7 +392,11 @@ void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint simb
 		contexto += simbolo;
 	}
 
-	orden += 2 + indiceSimbolo;
+	// Las siguientes cuentas hacen que en la proxima iteracion
+	// se comience desde el orden apropiado
+	// (en algun momento siempre va a empezar desde orden_maximo)
+
+	orden = 1 + indiceSimbolo;
 	if (orden > orden_maximo)
 		orden = orden_maximo;
 
@@ -450,10 +453,6 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 
 
 	}
-//	IMPRIMIR_MY_VARIABLE(contextoActual);
-//	IMPRIMIR_MY_VARIABLE(contextoInferior);
-
-
 
 	int numeroOrdenInferior= numeroOrdenActual-1;
 
@@ -538,8 +537,6 @@ int PPMC::descomprimir_todo
 
 
 	for( Uint caracterActual= 0; caracterActual < cantidadCaracteresOriginal ; caracterActual++ ){
-
-//		IMPRIMIR_MY_VARIABLE(bufferBits.to_string());
 
 		Uint simbolo;
 		vector<bool> bitsEmitir;
