@@ -9,6 +9,7 @@
 #define MODELOPROBABILISTICO_H_
 
 #include "../../Constantes.h"
+#include "../../Utilitarios/Utilitarios.h"
 #include <iostream>
 #include <vector>
 #include <string.h>
@@ -47,9 +48,11 @@ class ModeloProbabilistico {
 		Uint calcular_total_frecuencias();
 
 
+		bool todas_frecuencias_en_uno();
+
 		void resetear();
 
-		void imprimir(ofstream* archivoSalida);
+		std::string imprimir();
 
 		Uint obtener_simbolo(double probabilidad);
 };
