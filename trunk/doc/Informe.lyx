@@ -509,6 +509,11 @@ stopwords
 Permitir almacenar consultar un título y devolver uno o más resultados.
 \end_layout
 
+\begin_layout Enumerate
+Implementar el mecanismo de exclusión en la compresión PPMC para mejorar
+ los resultados.
+\end_layout
+
 \begin_layout Section
 Fase de diseño
 \end_layout
@@ -1775,6 +1780,29 @@ PPMC
 \family typewriter
 Constantes.h
 \family default
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Para cambiar esta constante es necesario recompilar el proyecto dentro del
+ directorio 
+\family typewriter
+src
+\family default
+, ejecutando 
+\family typewriter
+make clean
+\family default
+ y luego 
+\family typewriter
+make
+\family default
+.
+\end_layout
+
+\end_inset
+
 ).
 \end_layout
 
