@@ -6,10 +6,10 @@
 #include "Aritmetico.h"
 #include "Orden.h"
 #include "../../Utilitarios/Utilitarios.h"
+#include "../../Utilitarios/Logger.h"
 #include <map>
 #include <fstream>
 
-using std::ofstream;
 using std::stringstream;
 
 class PPMC : public Compresor
@@ -37,7 +37,6 @@ class PPMC : public Compresor
 		unsigned short orden_maximo;
 		map<int,Orden*> mapa_ordenes;
 		Aritmetico* comp_aritmetico;
-		ofstream* archivoSalida;
 
 		void _limpiar_ordenes();
 
@@ -68,7 +67,7 @@ class PPMC : public Compresor
 				BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> & buffer_bits,
 				vector<bool> bits_a_emitir);
 
-		void _imprimir_estado(int orden,double probabilidad,Uint simbolo);
+		void _imprimir_emision(int orden,double probabilidad,Uint simbolo);
 		/*emite en un archivo de salida las emisiones del PPMC */
 
 };

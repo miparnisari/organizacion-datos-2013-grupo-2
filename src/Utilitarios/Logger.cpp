@@ -4,6 +4,10 @@ ofstream Logger::archivoLog;
 int Logger::nivelDeLog = NIVEL_GLOBAL;
 Mutex Logger::mutex;
 
+void Logger::setLogLevel(int nivelLog){
+	Logger::nivelDeLog = nivelLog;
+}
+
 void Logger::warn(const string& tag, const string& msg){
 	Logger::mutex.lock();
 	if ((Logger::nivelDeLog & LOG_WARN) == 0)
@@ -33,7 +37,7 @@ void Logger::debug(const string& tag, const string& msg) {
 void Logger::info(const string& tag, const string& msg) {
 	Logger::mutex.lock();
 	if ((Logger::nivelDeLog & LOG_INFO) == 0)
-		return;	
+		return;
 	
 	log(tag, msg, LOG_INFO);
 	Logger::mutex.unlock();
@@ -60,7 +64,7 @@ void Logger::log(const string& tag, const string& msg, int level) {
 			<< p_local_t->tm_hour << ":" << p_local_t->tm_min 
 			<< ":" << p_local_t->tm_sec << "]" ;
 	
-	string timeStamp = "logs/log " + out.str() + ".txt";
+	string timeStamp = FILENAME_LOG_PPMC + out.str() + ".txt";
 	if (i == 0){
 		Logger::archivoLog.open( timeStamp.c_str() );
 		archivoLog << "  Fecha y  hora\t\t" << " Tipo\t\t" << "Lugar del mensaje\t\t\t" << "Mensaje" << endl ;
@@ -103,8 +107,4 @@ void Logger::log(const string& tag, const string& msg, int level) {
 			<< p_local_t->tm_hour << ":" << p_local_t->tm_min 
 			<< ":" << p_local_t->tm_sec << "]" << "\t" << sNivel << "\t" << tag << sep << msg
 			<< endl;
-}
-
-void Logger::setLogLevel(int nivelLog){
-	Logger::nivelDeLog = nivelLog;
 }

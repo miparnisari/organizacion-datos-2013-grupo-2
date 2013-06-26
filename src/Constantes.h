@@ -48,6 +48,7 @@ const char FILENAME_IDX_SECUN_TITULO[]	= "idx_sec_titulo";
 const char FILENAME_IDX_SECUN_FRASES[]	= "idx_sec_frases";
 const char FILENAME_ARCH_MAESTRO[]		= "arch_maestro.dat";
 const char FILENAME_ID_DOCS[]			= "id_docs";
+const char FILENAME_LOG_PPMC[] 		= "../ppmc_logs/log";
 
 /*
  * Manejo de bloques
@@ -118,13 +119,6 @@ const unsigned int TAMANIO_ALFABETO = 256 + 1; // + ESC
 const unsigned int PRECISION = 32;//se prueba con 9 se corre con 32 . CON 32 BITS ANDA EL ARITMETICO
 const unsigned int CANTIDAD_DE_CONTEXTOS = 2;
 const unsigned int VALOR_DEL_ESCAPE = 256;
-
-/*
- * Emision
- */
-
-const char ARCHIVO_EMISION_COMPRESION[]= "../CompresionPPMC.txt";
-const char ARCHIVO_EMISION_DESCOMPRESION[]= "../DescompresionPPMC.txt";
 
 
 #endif /* CONSTANTES_H */

@@ -27,14 +27,33 @@ ModeloProbabilistico::ModeloProbabilistico(const ModeloProbabilistico& otro){
 
 }
 
-void ModeloProbabilistico::imprimir(ofstream* archivoSalida)
+bool ModeloProbabilistico::todas_frecuencias_en_uno()
 {
+	bool todas_en_uno = true;
+	for (Uint i = 0; i < tamanioAlfabeto; i++)
+	{
+		if (frecuenciasSimbolos[i] != 1)
+		{
+			todas_en_uno = false;
+		}
+	}
+	return todas_en_uno;
+}
+
+std::string ModeloProbabilistico::imprimir()
+{
+	stringstream res;
 	for (Uint i = 0; i < tamanioAlfabeto; i++)
 	{
 		if (frecuenciasSimbolos[i] != 0)
-			(*archivoSalida) << "i " << i << " = " <<frecuenciasSimbolos[i] << ";";
+		{
+			res << "char = " << i << ", freq = ";
+			res << utilitarios::int_a_string(frecuenciasSimbolos[i]);
+			res << ".";
+		}
 	}
-	(*archivoSalida) << endl;
+	res << '\n';
+	return res.str();
 }
 
 ModeloProbabilistico& ModeloProbabilistico::operator = (const ModeloProbabilistico& otro)
