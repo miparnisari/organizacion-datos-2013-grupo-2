@@ -1,23 +1,37 @@
 #include "PPMC.h"
 
-
 PPMC::PPMC(unsigned short orden) : Compresor()
 {
 	orden_maximo = orden;
+	_inicializar();
+	archivoSalida= new ofstream(ARCHIVO_EMISION_COMPRESION,ios::app);
+}
+
+void PPMC::_inicializar()
+{
 	comp_aritmetico = new Aritmetico();
 
 	_inicializar_orden_menosuno();
 	_inicializar_orden_cero();
 
 	// ORDEN 1 a "orden"
-	for (unsigned short i = 1; i < orden+1; i++)
+	for (unsigned short i = 1; i < orden_maximo+1; i++)
 	{
 		Orden* contexto_vacio = new Orden();
 		mapa_ordenes.insert(pair<int,Orden*> (i,contexto_vacio));
 	}
 
-	archivoSalida= new ofstream(ARCHIVO_EMISION,ios::app);
+}
 
+void PPMC::_reset()
+{
+	archivoSalida->seekp(0,ios::end);
+	archivoSalida->close();
+	delete comp_aritmetico;
+	delete archivoSalida;
+	_limpiar_ordenes();
+	_inicializar();
+	archivoSalida= new ofstream(ARCHIVO_EMISION_DESCOMPRESION,ios::app);
 }
 
 void PPMC::_inicializar_orden_menosuno()
@@ -42,13 +56,30 @@ void PPMC::_inicializar_orden_cero()
 	mapa_ordenes.insert(pair<int,Orden*> (0,ctx_cero));
 }
 
-
 PPMC::~PPMC()
 {
 	archivoSalida->seekp(0,ios::end);
 	archivoSalida->close();
 	delete comp_aritmetico;
 	delete archivoSalida;
+	_limpiar_ordenes();
+}
+
+void PPMC::_limpiar_ordenes()
+{
+	for (int orden = -1; orden < orden_maximo + 1; orden++)
+	{
+		map<string, ModeloProbabilistico*> mapa_modelos = mapa_ordenes[orden]->get_mapa_modelos();
+		map<string, ModeloProbabilistico*>::iterator iterador = mapa_modelos.begin();
+		while (iterador != mapa_modelos.end())
+		{
+			ModeloProbabilistico* unModelo = (*iterador).second;
+			delete unModelo;
+			++iterador;
+		}
+	}
+
+	mapa_ordenes.clear();
 }
 
 
@@ -220,7 +251,7 @@ int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_sim
 	if (modelo_actual->get_frecuencia(simbolo) == 0) {
 		resultado = RES_ESCAPE;
 
-//		_imprimir_estado(orden,modelo_actual->get_probabilidad(VALOR_DEL_ESCAPE),VALOR_DEL_ESCAPE);
+		_imprimir_estado(orden,modelo_actual->get_probabilidad(VALOR_DEL_ESCAPE),VALOR_DEL_ESCAPE);
 
 		if (modelo_actual->get_frecuencia(VALOR_DEL_ESCAPE) == 1  && modelo_actual->calcular_total_frecuencias() == 1)
 		{
@@ -241,7 +272,7 @@ int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_sim
 		ModeloProbabilistico* modelo_antes_de_comprimir = comp_aritmetico->get_modelo();
 
 
-//		_imprimir_estado(orden,modelo_actual->get_probabilidad(simbolo),simbolo);
+		_imprimir_estado(orden,modelo_actual->get_probabilidad(simbolo),simbolo);
 
 		a_emitir = comp_aritmetico->comprimir(simbolo,cOverflow,cUnderflow);
 		if (orden == -1)
@@ -253,6 +284,7 @@ int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_sim
 
 void PPMC::_comprimir_ultimo (std::vector<bool>& a_emitir)
 {
+	a_emitir.clear();
 	a_emitir=comp_aritmetico->comprimir_ultimo_paso();
 }
 
@@ -301,7 +333,7 @@ void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint simb
 	{
 		ModeloProbabilistico* modelo_actual = NULL;
 		mapa_ordenes[orden]->devolver_modelo(contexto,&modelo_actual);
-		int resultado;
+		int resultado = RES_OK;
 		//si no puedo emitir el ultimo en este contexto sigo de largo y comprimo el escape
 		if (modelo_actual->get_frecuencia(simbolo) == 0)
 			resultado = RES_ESCAPE;
@@ -334,7 +366,7 @@ void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint simb
 		{
 			ModeloProbabilistico* modelo_actual = NULL;
 			mapa_ordenes[orden]->devolver_modelo(contexto,&modelo_actual);
-			int resultado;
+			int resultado = RES_OK;
 			//si no puedo emitir el ultimo en este contexto sigo de largo y comprimo el escape
 			if (modelo_actual->get_frecuencia(simbolo) == 0)
 				resultado = RES_ESCAPE;
@@ -383,9 +415,9 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 	Uint indiceBufferComprimido = 0;
 	vector<bool> bits_a_emitir;
 
-	Uint indiceSimbolo;
+	Uint indiceSimbolo = 0;
 
-	for (indiceSimbolo = 0; indiceSimbolo < tamanioBuffer - 1; indiceSimbolo++)
+	for (; indiceSimbolo < tamanioBuffer - 1; indiceSimbolo++)
 	{
 		const unsigned char uc_simbolo = (unsigned char) buffer[indiceSimbolo];
 		const Uint simbolo = (Uint) uc_simbolo;
@@ -406,15 +438,11 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& bufferBits,Aritmetico& aritmeticoCopia){
 
 	Orden* ordenActual= this->mapa_ordenes[numeroOrdenActual];
-	ModeloProbabilistico* modeloActual;
+	ModeloProbabilistico* modeloActual = NULL;
 	int resultadoDevolverModelo= ordenActual->devolver_modelo(contextoActual, &modeloActual);
 
 	if(resultadoDevolverModelo== RES_ERROR)
 		return RES_ERROR;
-
-	bool escapeEsUnicoCaracter= ( modeloActual->get_frecuencia(VALOR_DEL_ESCAPE)==1 &&
-			modeloActual->calcular_total_frecuencias()== 1);
-
 
 	string contextoInferior;
 	if( numeroOrdenActual==0 )
@@ -438,10 +466,15 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 
 
 	/*si escape es el unico caracter salto directamente al contexto inferior*/
-	if( escapeEsUnicoCaracter ){
+	if (numeroOrdenActual != -1)
+	{
+		bool escapeEsUnicoCaracter= ( modeloActual->get_frecuencia(VALOR_DEL_ESCAPE)==1 &&
+				modeloActual->calcular_total_frecuencias()== 1);
+		if( escapeEsUnicoCaracter ){
 
-		return descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits,aritmeticoCopia);
+			return descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits,aritmeticoCopia);
 
+		}
 	}
 
 	/*si escape no es el unico caracter en el modelo actual intento descomprimir el valor del simbolo */
@@ -487,20 +520,16 @@ int PPMC::descomprimir_todo
 	(char* bufferComprimido,
 	unsigned int tamanioBufferComprimido,
 	char* bufferDescomprimido,
-	unsigned int precision,
 	unsigned int cantidadCaracteresOriginal){
 
-	/*considero que el compresor esta propiamente inicializado y no ha sido usado para comprimir antes de
-	 * descomprimir*/
+	_reset();
 
 	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> bufferBits;
 	string nombreContexto= "0";
 	int numeroOrden= 0;
 	Uint indiceBufferComprimido= 0;
 
-
 	const Uint TAMANIO_BUFFER_BITS_BYTES= (Uint)(TAMANIO_BUFFER_BITS_DEFAULT/8);
-
 
 	for(Uint i=0; i<TAMANIO_BUFFER_BITS_BYTES && i<tamanioBufferComprimido ; i++ ){
 
@@ -511,10 +540,9 @@ int PPMC::descomprimir_todo
 	}
 
 
-
 	for( Uint caracterActual= 0; caracterActual < cantidadCaracteresOriginal ; caracterActual++ ){
 
-		IMPRIMIR_MY_VARIABLE(bufferBits.to_string());
+//		IMPRIMIR_MY_VARIABLE(bufferBits.to_string());
 
 		Uint simbolo;
 		vector<bool> bitsEmitir;
@@ -528,7 +556,7 @@ int PPMC::descomprimir_todo
 
 		/*descomprimo un caracter. Dentro del metodo se descartan bits del buffer de bits*/
 		int resultadoDescomprimir= this->descomprimir(valor,nombreContexto,numeroOrden,simbolo,bufferBits,aritmeticoCopia);
-		if(resultadoDescomprimir== RES_ERROR)
+		if (resultadoDescomprimir== RES_ERROR)
 			return RES_ERROR;
 		bufferDescomprimido[caracterActual]= (char)simbolo;
 
@@ -544,8 +572,6 @@ int PPMC::descomprimir_todo
 			bufferBits.agregar_bits( byte );
 			indiceBufferComprimido++;
 		}
-
-
 	}
 
 	return RES_OK;

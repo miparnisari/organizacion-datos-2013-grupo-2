@@ -1,96 +1,52 @@
 #include "../src/CapaLogica/Compresor/PPMC.h"
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
-// To use a test fixture, derive a class from testing::Test.
 class TestPPMC : public testing::Test {
  protected:
-	// Declares the variables your tests want to use.
-	PPMC* comp_ppmc;
+	PPMC* ppmc;
+	unsigned short orden;
 
-  // virtual void SetUp() will be called before each test is run.  You
-  // should define it if you need to initialize the varaibles.
-  // Otherwise, this can be skipped.
+
   virtual void SetUp() {
-	  const short orden = 2;
-	  comp_ppmc = new PPMC(orden);
+	  orden = 2;
+	  ppmc = new PPMC(orden);
   }
 
-  // TearDown() is invoked immediately after a test finishes.
   virtual void TearDown() {
-	  delete comp_ppmc;
+	  delete ppmc;
   }
-
-  // A helper function that some test uses.
-
 };
 
 TEST_F(TestPPMC, ComprimirYDescomprimirString)
 {
-	string fuente = "TATATA";
-
+	const string fuente = "TATATA";
+	const unsigned int fuente_length = fuente.length();
 	const int tamanio_buffer_comprimido = 20;
+
 	char* buffer_comprimido = new char[tamanio_buffer_comprimido]();
 
-	cout<<"compresion -----------------------------------------------------------------------------"<<endl;
-
-	int tam_comprimido = comp_ppmc->comprimir_todo(fuente.c_str(),fuente.size(),buffer_comprimido);
+	int tam_comprimido = ppmc->comprimir_todo(fuente.c_str(),fuente_length,buffer_comprimido);
 	IMPRIMIR_MY_VARIABLE(tam_comprimido);
 
 	for(int i=0;i<tam_comprimido;i++)
 		IMPRIMIR_MY_VARIABLE( (int)buffer_comprimido[i] );
 
-	cout<<"descompresion -----------------------------------------------------------------------------"<<endl;
+	char * bufferDescomprimido= new char[ fuente_length ] ();
 
-	char * bufferDescomprimido= new char[ fuente.length() ];
-	PPMC descompresor(2);
-	descompresor.descomprimir_todo( buffer_comprimido,tam_comprimido,bufferDescomprimido,PRECISION,
-			fuente.length() );
+	int res = ppmc->descomprimir_todo( buffer_comprimido,tam_comprimido,bufferDescomprimido,fuente_length );
 
-	for(int i= 0;i<fuente.length();i++)
-		IMPRIMIR_MY_VARIABLE( (int)bufferDescomprimido[i] );
+	for (unsigned int i=0; i<fuente_length;i++)
+		ASSERT_EQ(bufferDescomprimido[i],fuente[i]);
 
+	ASSERT_EQ(res,RES_OK);
 
-//	ASSERT_EQ(buffer_comprimido[0],84);
-//	ASSERT_EQ(buffer_comprimido[1],-96);
-//	ASSERT_EQ(buffer_comprimido[2],-96);
-//	ASSERT_EQ(buffer_comprimido[3],0);
 	delete[] buffer_comprimido;
 	delete[] bufferDescomprimido;
  }
 
-TEST_F(TestPPMC, DescomprimirString)
-{
-	const int tamanio_buffer_comprimido = 4;
-	char buffer_comprimido[tamanio_buffer_comprimido];
-	buffer_comprimido[0] = 84;
-	buffer_comprimido[1] = -96;
-	buffer_comprimido[2] = -96;
-	buffer_comprimido[3] = 0;
-
-	const int tamanio_buffer_descomp = 6;
-	char* bufferDescomprimido = new char[tamanio_buffer_descomp]();
-	ASSERT_TRUE(  comp_ppmc->descomprimir_todo
-			((char*)&buffer_comprimido,
-					tamanio_buffer_comprimido,
-					bufferDescomprimido,
-					9,
-					tamanio_buffer_descomp) ==RES_OK  );
-
-	ASSERT_EQ(bufferDescomprimido[0],'T');
-	ASSERT_EQ(bufferDescomprimido[1],'A');
-	ASSERT_EQ(bufferDescomprimido[2],'T');
-	ASSERT_EQ(bufferDescomprimido[3],'A');
-	ASSERT_EQ(bufferDescomprimido[4],'T');
-	ASSERT_EQ(bufferDescomprimido[5],'A');
-
-	delete bufferDescomprimido;
-}
-
-
-TEST_F(TestPPMC,ComprimirStringIterativamente){
+TEST_F(TestPPMC,DISABLED_ComprimirStringIterativamente){
 
 	string linea="TATATA";
-	PPMC ppmc(2);
 	const Uint TAMANIO_BUFFER_COMPRESION= 128;
 	char bufferCompresion[TAMANIO_BUFFER_COMPRESION];
 	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT> bufferBits;
@@ -98,18 +54,44 @@ TEST_F(TestPPMC,ComprimirStringIterativamente){
 	string nombreContexto= "0";
 	int numeroOrden= 0;
 
-
 	for( Uint i=0;i<linea.length();i++ ){
 
 		vector<bool> bitsEmitir;
 		Uint simbolo= (Uint)linea.at(i);
-		ppmc.comprimir_un_caracter(numeroOrden,i,simbolo,nombreContexto,bufferBits,bitsEmitir,bufferCompresion,indiceBufferCompresion,false);
-		cout<<"ComprimirStringIterativamente: ..."<<endl;
-
+		ppmc->comprimir_un_caracter(numeroOrden,i,simbolo,nombreContexto,bufferBits,bitsEmitir,bufferCompresion,indiceBufferCompresion,false);
 
 		IMPRIMIR_MY_VARIABLE(nombreContexto);
 		IMPRIMIR_MY_VARIABLE(numeroOrden);
 
 	}
 
+}
+
+TEST_F(TestPPMC,ComprimirYDescomprimirStringLargo)
+{
+	const string fuente = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	const unsigned int fuente_length = fuente.length();
+
+	const int tamanio_buffer_comprimido = 100;
+	char* bufferComprimido = new char[tamanio_buffer_comprimido]();
+
+	int tam_comprimido = ppmc->comprimir_todo(fuente.c_str(),fuente_length,bufferComprimido);
+
+	for(int i=0;i<tam_comprimido;i++)
+		IMPRIMIR_MY_VARIABLE( (int)bufferComprimido[i] );
+
+	char* bufferDescomprimido= new char[ fuente_length ]();
+
+	int res = ppmc->descomprimir_todo( bufferComprimido,tam_comprimido,bufferDescomprimido,fuente_length );
+
+	for(unsigned int i= 0;i<fuente_length;i++)
+		IMPRIMIR_MY_VARIABLE( (char)bufferDescomprimido[i] );
+
+	for (unsigned int i=0; i<fuente_length;i++)
+		ASSERT_EQ(bufferDescomprimido[i],fuente[i]);
+
+	ASSERT_EQ(res,RES_OK);
+
+	delete[] bufferComprimido;
+	delete[] bufferDescomprimido;
 }
