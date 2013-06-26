@@ -361,7 +361,7 @@ int RegistroVariable :: descomprimir(Compresor * compresor, RegistroVariable* re
 
 	char* descomprimido = new char[tamanioOriginal + sizeof(tamanioOriginal)]();
 	memcpy( descomprimido, (char*)&tamanioOriginal , sizeof(tamanioOriginal) );
-	compresor->descomprimir_todo(bufferComprimido,tamanioComprimido,descomprimido+sizeof(tamanioOriginal),PRECISION,tamanioOriginal);
+	compresor->descomprimir_todo(bufferComprimido,tamanioComprimido,descomprimido+sizeof(tamanioOriginal),tamanioOriginal);
 
 	reg_descomp->desempaquetar( descomprimido );
 

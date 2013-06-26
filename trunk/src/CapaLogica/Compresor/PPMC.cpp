@@ -174,10 +174,12 @@ void PPMC::_imprimir_emision(int orden, double probabilidad, Uint simbolo){
 
 	if (64<= simbolo && simbolo <= 127)
 		res << (char)simbolo;
+	else if (simbolo == VALOR_DEL_ESCAPE)
+		res << "ESCAPE";
 	else
-		res << simbolo;
+		res << "(int) "<<simbolo;
 
-	res << ", en orden " << orden << ", con probabilidad = " << probabilidad << "." << endl;
+	res << ", en orden " << orden << ", con probabilidad = " << probabilidad << ".";
 
 	Logger::info("PPMC",res.str());
 }
@@ -312,9 +314,7 @@ void PPMC::_emitir_completando_octeto(char* bufferComprimido,
 void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
 		vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo)
 {
-	string mensaje = "Comprimiendo simbolo " + (int) simbolo;
-	Logger::info("PPMC",mensaje);
-	_imprimir_todos_ordenes();
+	//_imprimir_todos_ordenes();
 
 	if (orden == 0 || orden == -1)
 		contexto = utilitarios::int_a_string(orden);
@@ -492,7 +492,8 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 	if(simboloEsEscape){
 		if( numeroOrdenActual == -1 )
 		{
-			Logger::error("PPMC","Se quiso descomprimir ESC en orden -1.");
+			cout << "Se quiso descomprimir ESCAPE en orden -1." << endl;
+//			Logger::info("PPMC","Se quiso descomprimir ESCAPE en orden -1.");
 			return RES_ERROR;
 		}
 
@@ -513,7 +514,7 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 
 int PPMC::descomprimir_todo
 	(char* bufferComprimido,
-	unsigned int tamanioBufferComprimido,
+	int tamanioBufferComprimido,
 	char* bufferDescomprimido,
 	unsigned int cantidadCaracteresOriginal){
 
@@ -554,6 +555,7 @@ int PPMC::descomprimir_todo
 		int resultadoDescomprimir= this->descomprimir(valor,nombreContexto,numeroOrden,simbolo,bufferBits,aritmeticoCopia);
 		if (resultadoDescomprimir== RES_ERROR)
 			return RES_ERROR;
+
 		bufferDescomprimido[caracterActual]= (char)simbolo;
 
 		this->comprimir_un_caracter(numeroOrden,caracterActual,simbolo,nombreContexto,bufferBits,bitsEmitir,

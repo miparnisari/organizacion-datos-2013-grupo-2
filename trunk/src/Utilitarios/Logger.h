@@ -7,7 +7,6 @@
 #include <vector>
 #include <ctime>
 #include <time.h>
-#include "Mutex.h"
 #include "../Constantes.h"
 
 using namespace std;
@@ -29,14 +28,13 @@ using namespace std;
 class Logger {
 
 private:
-	Logger();
 	static ofstream archivoLog;
 	// nivel de log con el que logeamos. Por defecto, DEBUG.
 	static int nivelDeLog;
 	static void log(const string& tag, const string& msg, int level);
-	static Mutex mutex;
 	
 public:
+	Logger();
 	static void fatal(const string&, const string&);
 	static void error(const string&, const string&);
 	static void warn(const string&, const string&);
@@ -45,5 +43,7 @@ public:
 	
 	static void setLogLevel(int);
 };
+
+extern Logger my_Logger;
 
 #endif /* LOGGER_H_ */
