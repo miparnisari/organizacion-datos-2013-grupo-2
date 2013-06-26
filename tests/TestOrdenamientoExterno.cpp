@@ -1,5 +1,5 @@
 #include "../src/CapaFisica/ManejadorRegistrosVariables.h"
-#include "../src/Utilitarios/SortExterno.h"
+#include "../src/Utilitarios/OrdenamientoExterno.h"
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
 // To use a test fixture, derive a class from testing::Test.
@@ -8,11 +8,13 @@ class TestOrdenamientoExterno : public testing::Test {
 		// Declares the variables your tests want to use.
 		ManejadorRegistrosVariables mv;
 		std::string filename;
+		OrdenamientoExterno* ordenador;
 
   // virtual void SetUp() will be called before each test is run.  You
   // should define it if you need to initialize the varaibles.
   // Otherwise, this can be skipped.
   virtual void SetUp() {
+	  ordenador = new OrdenamientoExterno(filename);
 	  filename = "archivoOrdenamiento.dat";
 	  mv.crear_archivo(filename);
 	  mv.abrir_archivo(filename);
@@ -21,6 +23,7 @@ class TestOrdenamientoExterno : public testing::Test {
   // TearDown() is invoked immediately after a test finishes.
   virtual void TearDown() {
 	  mv.eliminar_archivo(filename);
+	  delete ordenador;
   }
 
   // A helper function that some test uses.
@@ -43,11 +46,11 @@ TEST_F(TestOrdenamientoExterno,Generar_runs)
 		mv.agregar_registro(& regVariable);
 	}
 
-	SortExterno ordenador(filename);
 
-	ordenador._generar_runs();
 
-	std::vector<string> runs = ordenador._getVector();
+	ordenador->_generar_runs();
+
+	std::vector<string> runs = ordenador->_getVector();
 
 	Heap heap;
 
@@ -89,11 +92,9 @@ TEST_F(TestOrdenamientoExterno,Merge_runs)
 		mv.agregar_registro(& regVariable);
 	}
 
-	SortExterno ordenador(filename);
+	ordenador->_generar_runs();
 
-	ordenador._generar_runs();
-
-	ordenador._merge();
+	ordenador->_merge();
 
 	Heap heap;
 
@@ -137,9 +138,7 @@ TEST_F(TestOrdenamientoExterno,Ordenar)
 		mv.agregar_registro(& regVariable);
 	}
 
-	SortExterno ordenador(filename);
-
-	ordenador.ordenar_archivo();
+	ordenador->ordenar_archivo();
 
 	Heap heap;
 

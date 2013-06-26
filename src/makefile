@@ -13,6 +13,10 @@ EXE	= main
 all : $(EXE)
 compilar : $(OBJETOS)
 
+%.o: %.cpp
+	$(ECHO) $(CC) -c $(CFLAGS) $<
+	$(CC) -c $(CFLAGS) $<
+
 $(OBJETOS) :
 	-for d in $(DIRS); do (cd $$d; make); done
 	

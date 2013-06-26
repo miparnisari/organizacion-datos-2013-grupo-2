@@ -111,7 +111,7 @@ int IndiceInvertido::_armar_archivo_coincidencias(std::string unTexto)
 		pos++;
 	}
 
-	SortExterno sort (this->fileName+"Coincidencias.dat");
+	OrdenamientoExterno sort (this->fileName+"Coincidencias.dat");
 	sort.ordenar_archivo();
 
 	return RES_OK;
@@ -384,7 +384,7 @@ int IndiceInvertido::_buscar_cancion_con_frase(RegistroVariable & terminos_frase
 	int i = 0;
 	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones.dat") != RES_OK)
 		return RES_ERROR;
-	SortExterno sort (this->ruta+"archivo_terminos_canciones.dat");
+	OrdenamientoExterno sort (this->ruta+"archivo_terminos_canciones.dat");
 	sort.ordenar_archivo();
 
 	if (archivo_temp.abrir_archivo(this->ruta+"archivo_terminos_canciones.dat") != RES_OK)

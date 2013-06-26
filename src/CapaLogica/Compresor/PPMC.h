@@ -15,7 +15,7 @@ using std::stringstream;
 class PPMC : public Compresor
 {
 	public:
-		PPMC(unsigned short orden);
+		PPMC(unsigned int orden);
 		~PPMC();
 
 		int comprimir (const Uint simbolo, int orden, std::string contexto_del_simbolo, std::vector<bool>& a_emitir);
@@ -34,7 +34,7 @@ class PPMC : public Compresor
 			unsigned int cantidadCaracteresOriginal);
 
 	private:
-		unsigned short orden_maximo;
+		unsigned int orden_maximo;
 		map<int,Orden*> mapa_ordenes;
 		Aritmetico* comp_aritmetico;
 
