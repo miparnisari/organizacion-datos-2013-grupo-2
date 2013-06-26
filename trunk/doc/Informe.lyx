@@ -1771,7 +1771,7 @@ Arimetico
 PPMC
 \family default
  implementa tanto el compresor como el descompresor, con un orden definido
- en 2 (que se puede modificar en el archivo 
+ en 5 (que se puede modificar en el archivo 
 \family typewriter
 Constantes.h
 \family default
@@ -1784,12 +1784,85 @@ Esta clase utiliza la clase
 \family typewriter
 Orden
 \family default
-, que representa mediante un mapa a los modelos contenidos en cada contexto
- del orden.
+, que representa mediante un mapa a los 
+\family typewriter
+ModeloProbabilistico
+\family default
+ contenidos en cada contexto del orden.
+ El orden -1 tiene un único contexto, y el modelo 0 también.
+ El modelo 1 tiene 257 objetos de tipo 
+\family typewriter
+ModeloProbabilistico
+\family default
+, el modelo 2 tiene 
+\begin_inset Formula $257^{2}$
+\end_inset
+
+, y así sucesivamente.
+\end_layout
+
+\begin_layout Itemize
+En la carpeta 
+\family typewriter
+ppmc_logs
+\family default
+ se generarán archivos de log para cada ejecución, que indicarán, para cada
+ compresión y descompresión, lo siguiente:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Caracter emitido,
+\end_layout
+
+\begin_layout Itemize
+Orden en el que el caracter es emitido,
+\end_layout
+
+\begin_layout Itemize
+Probabilidad con que el caracter es emitido.
 \end_layout
 
 \end_deeper
+\end_deeper
 \begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename DiagramasManuales/PPMC.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Diagrama de clases del compresor PPMC.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
 \begin_inset Float figure
 wide false
 sideways false
@@ -1876,7 +1949,7 @@ no normalizado
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
