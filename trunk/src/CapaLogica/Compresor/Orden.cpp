@@ -58,7 +58,7 @@ int Orden::agregar_modelo(string nombreModelo, ModeloProbabilistico* modelo)
 		return RES_ERROR;
 
 
-	if( modelos.empty() )
+	if(! modelos.empty() )
 		if(this->modelos.find(nombreModelo) != this->modelos.end())
 			return RES_ERROR;
 
