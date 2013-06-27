@@ -35,6 +35,7 @@ char ParserCanciones::_estandarizar (char caracter)
 int ParserCanciones::crear (std::string & dir)
 {
 	_init();
+	archivos.clear();
 	return utilitarios::listpath (dir, archivos, ".txt");
 }
 

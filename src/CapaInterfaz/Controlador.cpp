@@ -31,6 +31,7 @@ void Controlador::mostrar_contenido(int id, RegistroCancion* reg)
 
 int Controlador::indexar (std::string & directorioEntrada, std::string & directorioSalida )
 {
+	resolvedor_consultas.set_directorio_indice(directorioSalida);
 	return indexador.indexar(directorioEntrada, directorioSalida, resolvedor_consultas);
 }
 
