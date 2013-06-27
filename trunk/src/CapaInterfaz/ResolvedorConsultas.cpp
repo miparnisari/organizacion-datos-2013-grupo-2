@@ -33,7 +33,7 @@ std::vector<int> ResolvedorConsultas::get_ids_canciones_frases(std::string & fra
 	int res = indiceSecundarioFrases.buscar_frase(frase,listaInvertida);
 	if (res != RES_OK || listaInvertida.get_cantidad_campos() == 0)
 	{
-		std::cout << "La frase " << frase << " no fue encontrada." << std::endl;
+		std::cout << "La frase '" << frase << "' no fue encontrada." << std::endl;
 	}
 	else {
 
@@ -65,7 +65,7 @@ std::vector<int> ResolvedorConsultas::get_id_canciones_autor(std::string & autor
 	int res = buscador.comienzo(">=",claveInicio);
 	if (res == RES_ERROR)
 	{
-		std::cout << "El autor " << autor << " no fue encontrado." << std::endl;
+		// No hacer nada
 	}
 	else {
 		ClaveX claveFin;
@@ -99,27 +99,13 @@ std::vector<int> ResolvedorConsultas::get_id_canciones_autor(std::string & autor
 /*
  * Devuelve el ID de la cancion con el titulo dado.
  */
-int ResolvedorConsultas::get_id_cancion_titulo(std::string & titulo)
+vector<int> ResolvedorConsultas::get_ids_cancion_titulo(std::string & titulo)
 {
-	int idDoc;
-	indiceSecundarioTitulo.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
-	ClaveX claveTitulo;
-	claveTitulo.set_clave(titulo);
-
-	RegistroClave regDevuelto;
-	int res = indiceSecundarioTitulo.devolver(claveTitulo,&regDevuelto);
-	if (res == RES_RECORD_DOESNT_EXIST)
-	{
-		std::cout << "La cancion " << titulo << " no fue encontrada." << std::endl;
-		indiceSecundarioTitulo.cerrar_archivo();
-		return RES_RECORD_DOESNT_EXIST;
-	}
-	else {
-		regDevuelto.recuperar_campo((char*)&idDoc,1);
-	}
-
-	indiceSecundarioTitulo.cerrar_archivo();
-	return idDoc;
+	vector<int> id_docs;
+	indiceSecundarioTitulo.abrir_indice(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
+	indiceSecundarioTitulo.buscar(titulo,id_docs);
+	indiceSecundarioTitulo.cerrar_indice();
+	return id_docs;
 }
 
 /*
@@ -143,7 +129,7 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
 	reg.recuperar_campo((char*)&offset,1);
 
 	PPMC* compresor = new PPMC(CANTIDAD_ORDENES_PPMC);
-//	Aritmetico* compresor = new Aritmetico();
+
 	RegistroVariable* regVariableComprimido = new RegistroVariable();
 	archivoMaestro.get_registro_por_offset(regVariableComprimido,offset);
 

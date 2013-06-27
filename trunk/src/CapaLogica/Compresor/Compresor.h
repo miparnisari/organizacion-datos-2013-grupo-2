@@ -9,12 +9,15 @@ class Compresor
 		Compresor();
 		virtual ~Compresor();
 
-		virtual int comprimir_todo(const char* buffer, const unsigned int tamanioBuffer , char* resultado);
+		virtual int comprimir_todo
+			(const char* buffer,
+			const unsigned int tamanioBuffer,
+			char* resultado) = 0;
 		virtual int descomprimir_todo
 			(char* buffer,
-			int tamanio,
+			unsigned int tamanio,
 			char* descomprimido,
-			unsigned int cantidadCaracteresOriginal);
+			unsigned int cantidadCaracteresOriginal) = 0;
 	
 	private:
 		/* add your private declarations */

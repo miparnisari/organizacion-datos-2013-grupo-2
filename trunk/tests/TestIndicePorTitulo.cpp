@@ -1,179 +1,73 @@
 #include "../src/CapaLogica/Indices/IndiceInvertidoPorTitulo.h"
-#include "../src/CapaLogica/Indices/ArchivoListas.h"
-#include "../src/CapaLogica/HashingExtensible/HashingExtensible.h"
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
-
-const std::string ARCHIVO_HASH = "IndicePorTitulo";
-const std::string ARCHIVO_LISTAS = "ListasPorTitulo";
 
 // To use a test fixture, derive a class from testing::Test.
 class TestIndicePorTitulo : public testing::Test {
  protected:
 	// Declares the variables your tests want to use.
-    IndiceInvertidoPorTitulo indice;
-    ArchivoListas listas;
-    HashingExtensible hash;
+	std::string nombre_archivo;
+    IndiceInvertidoPorTitulo indice_titulo;
 
   // virtual void SetUp() will be called before each test is run.  You
   // should define it if you need to initialize the varaibles.
   // Otherwise, this can be skipped.
   virtual void SetUp() {
-	ASSERT_TRUE(indice.crear_indice("") == RES_OK);
-	ASSERT_TRUE(indice.abrir_indice("") == RES_OK);
-    ASSERT_TRUE(listas.abrir("",ARCHIVO_LISTAS) == RES_OK);
-    ASSERT_TRUE(hash.abrir_archivo(ARCHIVO_HASH) == RES_OK);
+	nombre_archivo = "TestIndiceTitulo";
+	ASSERT_TRUE(indice_titulo.crear_indice(nombre_archivo) == RES_OK);
+	ASSERT_TRUE(indice_titulo.abrir_indice(nombre_archivo) == RES_OK);
   }
 
   virtual void TearDown() {
-	  ASSERT_TRUE(indice.borrar_indice() == RES_OK);
-  }
-
-  // A helper function
-  int crear_reg_cancion(std::string titulo, RegistroCancion &reg)
-  {
-      //Crea un reg cancion con el autor que nos pasan por parametro
-  	std::string cancion = "Pink Floyd-2013-"+titulo+"-english\nlalalalalalalala\n";
-  	return reg.cargar(cancion.c_str(), cancion.length());
+	  ASSERT_TRUE(indice_titulo.cerrar_indice() == RES_OK);
+	  ASSERT_TRUE(indice_titulo.eliminar_indice() == RES_OK);
   }
 
 };
 
-TEST_F(TestIndicePorTitulo,Agregar_cancion)
+TEST_F(TestIndicePorTitulo,Agregar_Buscar)
 {
-    RegistroCancion cancion;
-    RegistroVariable lista;
-    RegistroClave reg_titulo;
-    ClaveX clave, clave_aux;
-    int id, ref_lista;
+    int id_doc_uno = 23;
+    int id_doc_dos = 68;
+    vector<int> id_docs_devueltos;
 
-    ASSERT_TRUE(this->crear_reg_cancion("Pink Floyd", cancion) == RES_OK);
-    ASSERT_TRUE(indice.agregar_cancion(cancion, 23) == RES_OK);
+    // Titulo que no existe
+    ASSERT_TRUE(indice_titulo.buscar("titulo inexistente",id_docs_devueltos)==RES_RECORD_DOESNT_EXIST);
 
-    //Veo si se guardo una lista con el IDcancion 23
-    ASSERT_TRUE(listas.get_cantidad_listas() == 1);
-    ASSERT_TRUE(listas.devolver(&lista,0) == RES_OK);
-    ASSERT_TRUE(lista.get_cantidad_campos() == 1);
-    //Recupero el ID que guarda la lista y este deberia ser 23
-    lista.recuperar_campo((char*)&id,0);
-    ASSERT_TRUE(id == 23);
+    // Un titulo y su id_doc
+    ASSERT_TRUE(indice_titulo.agregar("Dark side of the moon", id_doc_uno) == RES_OK);
+    ASSERT_TRUE(indice_titulo.buscar("Dark side of the moon",id_docs_devueltos) ==RES_OK);
+    ASSERT_TRUE(id_docs_devueltos.size() == 1);
+    ASSERT_TRUE(id_docs_devueltos[0] == id_doc_uno);
 
-    //Veo si se guardo el registro del autor en el arbol
-    clave.set_clave("The final cut");
-    //Busco el registro en el arbol
-    ASSERT_TRUE(hash.devolver(clave, &reg_titulo) == RES_OK);
-    clave_aux.set_clave("The final cut");
-    ASSERT_TRUE(reg_titulo.get_clave() == clave_aux);
-    ASSERT_TRUE(reg_titulo.get_cantidad_campos() == 2);
-    //Recupero  la referencia a la lista y esta deberia ser la pos 0 del archivo de listas
-    reg_titulo.recuperar_campo(((char*)&ref_lista),0);
-    ASSERT_TRUE(ref_lista == 0);
+    // El mismo titulo y otro id_doc
+    ASSERT_TRUE(indice_titulo.agregar("Dark side of the moon", id_doc_dos) == RES_OK);
+    ASSERT_TRUE(indice_titulo.buscar("Dark side of the moon",id_docs_devueltos) ==RES_OK);
+    ASSERT_TRUE(id_docs_devueltos.size() == 2);
+    ASSERT_TRUE(id_docs_devueltos[0] != id_docs_devueltos[1]);
+    ASSERT_TRUE(id_docs_devueltos[0] == id_doc_uno);
+    ASSERT_TRUE(id_docs_devueltos[1] == id_doc_dos);
 
+
+    // Agregar un titulo con id_doc dos veces, deberia fallar
+    // (para no tener valores duplicados)
+    ASSERT_TRUE(indice_titulo.agregar("Dark side of the moon", id_doc_dos) == RES_RECORD_EXISTS);
 }
 
-TEST_F(TestIndicePorTitulo,Devolver_canciones_por_titulo)
+TEST_F(TestIndicePorTitulo,Eliminar)
 {
-    RegistroCancion cancion;
-    RegistroVariable lista;
-    RegistroClave reg_titulo;
-    ClaveX clave;
-    int id;
+    int id_doc_uno = 23;
+    vector<int> id_docs_devueltos;
 
-    ASSERT_TRUE(this->crear_reg_cancion("The final cut", cancion) == RES_OK);
-    ASSERT_TRUE(indice.agregar_cancion(cancion, 23) == RES_OK);
+    ASSERT_TRUE(indice_titulo.eliminar("Dark side of the moon",id_doc_uno) == RES_RECORD_DOESNT_EXIST);
 
-	//Le pido al indice que me devuelva la lista de canciones con titulo The final cut
-	ASSERT_TRUE(indice.buscar_titulo("The final cut", lista) == RES_OK);
-	//Veo que solo tenga un campo
-	ASSERT_TRUE(lista.get_cantidad_campos() == 1);
-	lista.recuperar_campo((char*)&id, 0);
-	//Veo que sea el id correcto
-	ASSERT_TRUE(id == 23);
-}
+    // Un titulo y su id_doc
+    ASSERT_TRUE(indice_titulo.agregar("Dark side of the moon", id_doc_uno) == RES_OK);
+    ASSERT_TRUE(indice_titulo.buscar("Dark side of the moon",id_docs_devueltos) ==RES_OK);
+    ASSERT_TRUE(id_docs_devueltos.size() == 1);
+    ASSERT_TRUE(id_docs_devueltos[0] == id_doc_uno);
 
-TEST_F(TestIndicePorTitulo,Agregar_muchas_canciones)
-{
-    RegistroCancion cancion;
-    RegistroVariable lista1, lista2;
-    RegistroClave reg_titulo;
-    ClaveX clave;
-    int ref_lista;
+    ASSERT_TRUE(indice_titulo.eliminar("Dark side of the moon",id_doc_uno) == RES_OK);
 
-    //Agrego tres canciones con el mismo titulo y uno distinto
-    ASSERT_TRUE( this->crear_reg_cancion("The final cut", cancion) == RES_OK);
-    ASSERT_TRUE(indice.agregar_cancion(cancion, 23) == RES_OK);
-    ASSERT_TRUE(this->crear_reg_cancion("The final cut", cancion) == RES_OK);
-    ASSERT_TRUE(indice.agregar_cancion(cancion, 24) == RES_OK);
-    ASSERT_TRUE(this->crear_reg_cancion("The Trial", cancion) == RES_OK);
-    ASSERT_TRUE(indice.agregar_cancion(cancion, 25) == RES_OK);
-    ASSERT_TRUE(this->crear_reg_cancion("The final cut", cancion) == RES_OK);
-    ASSERT_TRUE(indice.agregar_cancion(cancion, 26) == RES_OK);
-
-    //Veo si se guardaron 2 listas, ya que solo tenemos 2 titulos
-    ASSERT_TRUE(listas.get_cantidad_listas() == 2);
-    ASSERT_TRUE(listas.devolver(&lista1,0) == RES_OK);
-    ASSERT_TRUE(listas.devolver(&lista2,0) == RES_OK);
-    //La suma de las dos listas deberia dar la cantidad de canciones almacenados
-    ASSERT_TRUE((lista1.get_cantidad_campos()+lista2.get_cantidad_campos()) == 4);
-
-	//Veo si se guardo el registro de titulo The final cut en el hash
-    clave.set_clave("The final cut");
-    //Busco el registro en el hash
-    ASSERT_TRUE(hash.devolver(clave, &reg_titulo) == RES_OK);
-    clave.set_clave("The final cut");
-    ASSERT_TRUE(reg_titulo.get_clave() == clave);
-    ASSERT_TRUE(reg_titulo.get_cantidad_campos() == 2);
-    //Recupero  la referencia a la lista y esta deberia ser la pos 0 del archivo de listas
-	reg_titulo.recuperar_campo(((char*)&ref_lista),0);
-	//Veo que guarde 3 canciones
-	ASSERT_TRUE(listas.devolver(&lista1,ref_lista) == RES_OK);
-	ASSERT_TRUE(lista1.get_cantidad_campos() == 3);
-
-    //Veo si se guardo el registro del titulo The trial en el hash
-    clave.set_clave("The Trial");
-    //Busco el registro en el hash
-    ASSERT_TRUE(hash.devolver(clave, &reg_titulo) == RES_OK);
-    clave.set_clave("The Trial");
-    ASSERT_TRUE(reg_titulo.get_clave() == clave);
-    ASSERT_TRUE(reg_titulo.get_cantidad_campos() == 1);
-    //Recupero  la referencia a la lista y esta deberia ser la pos 0 del archivo de listas
-    reg_titulo.recuperar_campo(((char*)&ref_lista),0);
-    //Veo que guarde 1 cancion
-    ASSERT_TRUE(listas.devolver(&lista2,ref_lista) == RES_OK);
-    ASSERT_TRUE(lista2.get_cantidad_campos() == 1);
-
-}
-
-TEST_F(TestIndicePorTitulo,Devolver_muchas_canciones_por_titulo)
-{
-    RegistroCancion cancion;
-    RegistroVariable lista1, lista2;
-    RegistroClave reg_titulo;
-    ClaveX clave;
-    int id;
-
-    //Agrego tres canciones con el mismo autor y uno distinto
-    ASSERT_TRUE(this->crear_reg_cancion("The final cut", cancion) == RES_OK);
-    ASSERT_TRUE(indice.agregar_cancion(cancion, 23) == RES_OK);
-    ASSERT_TRUE(this->crear_reg_cancion("The final cut", cancion) == RES_OK);
-    ASSERT_TRUE(indice.agregar_cancion(cancion, 24) == RES_OK);
-    ASSERT_TRUE(this->crear_reg_cancion("The Trial", cancion) == RES_OK);
-    ASSERT_TRUE(indice.agregar_cancion(cancion, 25) == RES_OK);
-    ASSERT_TRUE(this->crear_reg_cancion("The final cut", cancion) == RES_OK);
-    ASSERT_TRUE(indice.agregar_cancion(cancion, 26) == RES_OK);
-
-    //Veo que me devuelvan las listas por cada autor con los IDcanciones correspondientes
-    ASSERT_TRUE(indice.buscar_titulo("The final cut", lista1));
-    ASSERT_TRUE(lista1.get_cantidad_campos() == 3);
-    lista1.recuperar_campo((char*)&id, 0);
-    ASSERT_TRUE(id == 23);
-    lista1.recuperar_campo((char*)&id, 1);
-    ASSERT_TRUE(id == 24);
-    lista1.recuperar_campo((char*)&id, 2);
-    ASSERT_TRUE(id == 26);
-
-    ASSERT_TRUE(indice.buscar_titulo("The Trial", lista2));
-    ASSERT_TRUE(lista2.get_cantidad_campos() == 3);
-    lista2.recuperar_campo((char*)&id, 0);
-    ASSERT_TRUE(id == 25);
-
+    ASSERT_TRUE(indice_titulo.buscar("Dark side of the moon",id_docs_devueltos) == RES_RECORD_DOESNT_EXIST);
+    ASSERT_TRUE(id_docs_devueltos.size() == 0);
 }

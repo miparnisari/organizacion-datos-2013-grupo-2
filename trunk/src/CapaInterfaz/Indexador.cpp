@@ -15,7 +15,7 @@ int Indexador::borrar_cancion (std::string & directorioSalida, int idCancion, Re
 {
 	_abrir_archivos_indices(directorioSalida);
 
-	ClaveX claveID, claveAutor, claveTitulo;
+	ClaveX claveID, claveAutor;
 
 	int offsetArchivoMaestro;
 	RegistroClave regClave;
@@ -44,8 +44,7 @@ int Indexador::borrar_cancion (std::string & directorioSalida, int idCancion, Re
 			indiceSecundarioAutor.quitar(regArbol);
 		}
 
-		claveTitulo.set_clave(reg.get_titulo());
-		indiceSecundarioTitulo.eliminar(claveTitulo);
+		indiceSecundarioTitulo.eliminar(reg.get_titulo(), idCancion);
 
 
 		// TODO eliminar del indiceSecundarioFrases;
@@ -115,8 +114,10 @@ int Indexador::_crear_archivos_indices(std::string & directorioSalida)
 	res += archivoMaestro.crear_archivo(directorioSalida+'/'+std::string(FILENAME_ARCH_MAESTRO));
 	res += documentos.crear_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
 	res += indiceSecundarioAutor.crear(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_AUTOR));
-	res += indiceSecundarioTitulo.crear_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
+	res += indiceSecundarioTitulo.crear_indice(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
 	res += indiceSecundarioFrases.crear_indice(directorioSalida+'/',std::string(FILENAME_IDX_SECUN_FRASES));
+	if (res != RES_OK)
+		Logger::error("Indexador","No se pudieron crear los archivo de los indices.");
 	return res;
 }
 
@@ -127,8 +128,10 @@ int Indexador::_abrir_archivos_indices(std::string & directorioSalida)
 	res += archivoMaestro.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ARCH_MAESTRO));
 	res += documentos.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
 	res += indiceSecundarioAutor.abrir(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_AUTOR),"rb+");
-	res += indiceSecundarioTitulo.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
+	res += indiceSecundarioTitulo.abrir_indice(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
 	res += indiceSecundarioFrases.abrir_indice(directorioSalida+'/',std::string(FILENAME_IDX_SECUN_FRASES));
+	if (res != RES_OK)
+		Logger::error("Indexador","No se pudieron abrir los archivo de los indices.");
 	return res;
 }
 
@@ -137,7 +140,7 @@ int Indexador::_finalizar()
 	int res = indicePrimario.cerrar_archivo();
 	res += documentos.cerrar_archivo();
 	res += indiceSecundarioAutor.cerrar();
-	res += indiceSecundarioTitulo.cerrar_archivo();
+	res += indiceSecundarioTitulo.cerrar_indice();
 	res += indiceSecundarioFrases.cerrar_indice();
 	return res;
 }
@@ -269,15 +272,8 @@ void Indexador::_agregar_a_los_indices (
 	}
 
 	/* ----- agregamos al indice por titulo: el titulo + ID cancion ----*/
-
-	RegistroClave regClave3;
-	ClaveX claveTitulo;
-	claveTitulo.set_clave(regCancion.get_titulo());
-	regClave3.set_clave(claveTitulo);
-
 	int idCancion = id.get_dato();
-	regClave3.agregar_campo((char*)&idCancion,sizeof(idCancion));
-	indiceSecundarioTitulo.agregar(regClave3);
+	indiceSecundarioTitulo.agregar(regCancion.get_titulo(),idCancion);
 
 
 	/* ----- agregamos al indice por frase: frases ----*/

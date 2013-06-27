@@ -1,5 +1,5 @@
-#ifndef INDICEINVERTIDOPORTITULO_H_INCLUDED
-#define INDICEINVERTIDOPORTITULO_H_INCLUDED
+#ifndef INDICE_TITULO_H_
+#define INDICE_TITULO_H_
 
 #include "../../CapaFisica/RegistroVariable.h"
 #include "../../CapaLogica/HashingExtensible/HashingExtensible.h"
@@ -7,17 +7,13 @@
 #include "../../CapaLogica/ManejoArchivos/RegistroClave.h"
 #include "../../Constantes.h"
 #include "../../CapaLogica/ManejoArchivos/RegistroCancion.h"
-#include "ArchivoListas.h"
 
 class IndiceInvertidoPorTitulo
 {
     private:
 
-        std::string ruta;
-
+        std::string nombre_archivo;
         HashingExtensible indice;
-
-        ArchivoListas listas;
 
     public:
 
@@ -25,21 +21,21 @@ class IndiceInvertidoPorTitulo
 
         virtual ~IndiceInvertidoPorTitulo();
 
-        virtual int crear_indice(std::string directorioSalida);
-        //Crea el indice en la direccion que se le pasan por parametro
+        int crear_indice(std::string directorioSalida);
+        int eliminar_indice();
 
-        virtual int abrir_indice(std::string directorioSalida);
-        //Abre el indice en la direccion que se le pasan por parametro
+        int abrir_indice(std::string directorioSalida);
+        int cerrar_indice();
 
-        virtual int agregar_cancion(RegistroCancion & cancion, int IDcancion);
-        //Agrega el IDcancion a la lista de canciones que tienen el mismo titulo
+        int agregar(const std::string & titulo, const int IDcancion);
+        //Agrega el IDcancion a la lista de canciones que tienen el titulo
 
-        virtual long buscar_titulo(std::string titulo, RegistroVariable &listaDeCanciones);
-        //Guarda en la listaDeCanciones la lista de canciones que tienen el mismo titulo buscado
+        int buscar(const std::string & titulo, vector<int> & id_docs);
+        //Guarda en id_docs la lista de IDs de canciones que tienen el titulo buscado
 
-        virtual int borrar_indice();
-        //Borra el indice junto a sus archivos
+        int eliminar(const std::string & titulo, const int IDcancion);
+         //Guarda en id_docs la lista de IDs de canciones que tienen el titulo buscado
 
 };
 
-#endif // INDICEINVERTIDOPORTITULO_H_INCLUDED
+#endif // INDICE_TITULO_H_

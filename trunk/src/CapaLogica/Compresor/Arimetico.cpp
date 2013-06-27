@@ -202,7 +202,7 @@ int Aritmetico::comprimir_todo
 
 /*fixme arreglar el hecho de trabajar con una precision que no es multiplo de 8*/
 int Aritmetico::descomprimir_todo(char* bufferComprimido,
-		int tamanioBufferComprimido,
+		unsigned int tamanioBufferComprimido,
 		char* bufferDescomprimido,
 		unsigned int cantidadCaracteresOriginal)
 {

@@ -13,7 +13,7 @@ EXE	= main
 all : $(EXE)
 compilar : $(OBJETOS)
 
-%.o: %.cpp
+%.o: %.cpp %.h
 	$(ECHO) $(CC) -c $(CFLAGS) $<
 	$(CC) -c $(CFLAGS) $<
 
