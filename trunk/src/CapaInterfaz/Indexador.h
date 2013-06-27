@@ -49,7 +49,7 @@ class Indexador
 
 		int _crear_archivos_indices(std::string & directorioSalida);
 		int _abrir_archivos_indices (std::string & directorioSalida);
-		int _finalizar();
+		int _cerrar_archivos_indices();
 		void _agregar_a_los_indices (
 				ClaveNumerica & id,
 				RegistroCancion & regCancion,

@@ -19,7 +19,7 @@ Orden::~Orden()
 	{
 		ModeloProbabilistico* unModelo = (*iterador).second;
 		delete unModelo;
-		iterador ++;
+		++ iterador;
 	}
 }
 
@@ -42,7 +42,7 @@ int Orden::incrementar_frecuencia(long caracter, string nombreModelo)
 
 int Orden::devolver_modelo(string nombreModelo, ModeloProbabilistico** modeloADevolver)
 {
-	if (modelos.size() == 0)
+	if (modelos.empty())
 		return RES_ERROR;
 
 	if(this->modelos.find(nombreModelo) == this->modelos.end())
@@ -57,7 +57,8 @@ int Orden::agregar_modelo(string nombreModelo, ModeloProbabilistico* modelo)
 	if(modelo == NULL)
 		return RES_ERROR;
 
-	if( modelos.size()!=0 )
+
+	if( modelos.empty() )
 		if(this->modelos.find(nombreModelo) != this->modelos.end())
 			return RES_ERROR;
 

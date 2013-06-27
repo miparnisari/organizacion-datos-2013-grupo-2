@@ -22,7 +22,7 @@ int Indexador::borrar_cancion (std::string & directorioSalida, int idCancion, Re
 	claveID.set_clave(idCancion);
 	if (indicePrimario.devolver(claveID,&regClave) == RES_RECORD_DOESNT_EXIST)
 	{
-		std::cout << "No se pudo eliminar la canción con ID " << idCancion << "." << std::endl;
+		std::cout << "No existe la canción con ID " << idCancion << "." << std::endl;
 		return RES_ERROR;
 	}
 	else {
@@ -52,7 +52,7 @@ int Indexador::borrar_cancion (std::string & directorioSalida, int idCancion, Re
 		documentos.eliminar(claveID);
 	}
 
-	return _finalizar();
+	return _cerrar_archivos_indices();
 }
 
 int Indexador::_mostrar_opciones(std::string & directorioEntrada, std::string & directorioSalida)
@@ -135,9 +135,10 @@ int Indexador::_abrir_archivos_indices(std::string & directorioSalida)
 	return res;
 }
 
-int Indexador::_finalizar()
+int Indexador::_cerrar_archivos_indices()
 {
-	int res = indicePrimario.cerrar_archivo();
+	int res = RES_OK;
+	res += indicePrimario.cerrar_archivo();
 	res += documentos.cerrar_archivo();
 	res += indiceSecundarioAutor.cerrar();
 	res += indiceSecundarioTitulo.cerrar_indice();
@@ -149,12 +150,12 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 {
 	ClaveNumerica id(archivoMaestro.get_cantidad_registros());
 
-	RegistroCancion regCancionNormalizado;
-	RegistroCancion regCancionNoNormalizado;
+	RegistroCancion cancionNormalizada;
+	RegistroCancion cancionOriginal;
 	std::string nombreArchivo;
 	while (! parser.fin_directorio())
 	{
-		int res = parser.obtener_proxima_cancion(regCancionNormalizado, regCancionNoNormalizado, nombreArchivo);
+		int res = parser.obtener_proxima_cancion(cancionNormalizada, cancionOriginal, nombreArchivo);
 		if (res != RES_OK)
 		{
 			std::cout << "No se indexó " << nombreArchivo << " porque no cumple el estandar especificado." << std::endl;
@@ -162,12 +163,12 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 		}
 
 		std::vector<std::string> autores;
-		for (unsigned int i = 0; i < regCancionNormalizado.get_cantidad_autores(); i ++)
+		for (unsigned short i = 0; i < cancionNormalizada.get_cantidad_autores(); i ++)
 		{
-			autores.push_back(regCancionNormalizado.get_autor(i));
+			autores.push_back(cancionNormalizada.get_autor(i));
 		}
-		std::string titulo = regCancionNormalizado.get_titulo();
-		std::string idioma = regCancionNormalizado.get_idioma();
+		std::string titulo = cancionOriginal.get_titulo();
+		std::string idioma = cancionOriginal.get_idioma();
 		std::vector<int> idsDelAutor;
 
 		// Verifico que no haya ninguna cancion ya indexada
@@ -190,9 +191,13 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 				reg.recuperar_campo((char*)&offsetAlMaestro,1);
 
 				RegistroCancion regCancionAlmacenada;
+				RegistroCancion reg_almacenado_descomprimido;
 
 				archivoMaestro.get_registro_por_offset(&regCancionAlmacenada,offsetAlMaestro);
-				if (regCancionAlmacenada.get_idioma() == idioma && regCancionAlmacenada.get_titulo() == titulo)
+				PPMC ppmc (CANTIDAD_ORDENES_PPMC);
+				regCancionAlmacenada.descomprimir(&ppmc, &reg_almacenado_descomprimido);
+
+				if (reg_almacenado_descomprimido.get_idioma() == idioma && reg_almacenado_descomprimido.get_titulo() == titulo)
 				{
 					cancionEstaRepetida = true;
 				}
@@ -204,16 +209,16 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 
 		if (cancionEstaRepetida == true)
 		{
-			std::cout << "No se indexará la cancion " << titulo << " porque está repetida." << std::endl;
+			std::cout << "No se indexará la cancion '" << titulo << "' porque está repetida." << std::endl;
 			continue;
 		}
 
-		_agregar_a_los_indices(id, regCancionNormalizado, regCancionNoNormalizado, nombreArchivo);
+		_agregar_a_los_indices(id, cancionNormalizada, cancionOriginal, nombreArchivo);
 		id.incrementar();
 
 	}
 
-	return _finalizar();
+	return _cerrar_archivos_indices();
 }
 
 void Indexador::_agregar_a_los_indices (
@@ -223,13 +228,12 @@ void Indexador::_agregar_a_los_indices (
 		std::string nombreArchivo)
 {
 	/* ------ guardamos el registro de la cancion en un archivo maestro ------ */
-	PPMC* compresor = new PPMC(CANTIDAD_ORDENES_PPMC);
+	PPMC compresor (CANTIDAD_ORDENES_PPMC);
 //	Aritmetico* compresor = new Aritmetico();
-	RegistroVariable* regComprimido = regCancionNoNormalizada.comprimir(compresor);
+	RegistroVariable* regComprimido = regCancionNoNormalizada.comprimir(&compresor);
 
 	long offsetInicialRegCancion = archivoMaestro.agregar_registro(regComprimido);
 	delete regComprimido;
-	delete compresor;
 
 	/* ------ guardamos el numero de documento (clave) y el documento -------- */
 
@@ -339,7 +343,7 @@ int Indexador::indexar (std::string & directorioEntrada, std::string & directori
 		}
 
 	}
-	int res_fin =  _finalizar();
+	int res_fin = _cerrar_archivos_indices();
 	if (res_fin != RES_OK)
 		std::cout << "ERROR: No se pudieron cerrar los archivos.";
 	return RES_OK;

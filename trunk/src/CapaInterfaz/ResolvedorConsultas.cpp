@@ -65,7 +65,7 @@ std::vector<int> ResolvedorConsultas::get_id_canciones_autor(std::string & autor
 	int res = buscador.comienzo(">=",claveInicio);
 	if (res == RES_ERROR)
 	{
-		// No hacer nada
+		cout << "no se encontraron canciones del autor '" <<autor<<"'."<<endl;
 	}
 	else {
 		ClaveX claveFin;
