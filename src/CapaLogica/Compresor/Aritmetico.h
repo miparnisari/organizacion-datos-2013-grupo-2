@@ -57,7 +57,7 @@ class Aritmetico : public Compresor {
 
 		virtual int descomprimir_todo
 			(char* buffer,
-			int tamanio,
+			unsigned int tamanio,
 			char* descomprimido,
 			unsigned int cantidadCaracteresOriginal);
 

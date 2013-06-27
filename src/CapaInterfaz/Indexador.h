@@ -13,12 +13,15 @@
 #include "../CapaLogica/ArbolBMas/IterArbolBMas.h"
 
 #include "../CapaLogica/Indices/IndiceInvertido.h"
+#include "../CapaLogica/Indices/IndiceInvertidoPorTitulo.h"
 
 #include "../CapaLogica/ManejoArchivos/RegistroCancion.h"
 #include "../CapaLogica/ManejoArchivos/ClaveNumerica.h"
 #include "../CapaLogica/Parser/ParserCanciones.h"
 #include "../CapaLogica/Compresor/PPMC.h"
 #include "../CapaLogica/Compresor/Aritmetico.h"
+
+#include "../Utilitarios/Logger.h"
 
 #include "ResolvedorConsultas.h"
 #include "GeneradorEstadisticasConsultas.h"
@@ -40,7 +43,7 @@ class Indexador
 		HashingExtensible indicePrimario;
 		ManejadorRegistrosVariables archivoMaestro;
 		ArbolBMas indiceSecundarioAutor;
-		HashingExtensible indiceSecundarioTitulo;
+		IndiceInvertidoPorTitulo indiceSecundarioTitulo;
 		HashingExtensible documentos;
 		ParserCanciones parser;
 

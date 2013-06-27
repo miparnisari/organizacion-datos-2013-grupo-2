@@ -229,7 +229,7 @@ void PPMC::_actualizar_contexto(int orden, Uint simbolo, string contexto_del_sim
 
 }
 
-int PPMC::comprimir (const Uint simbolo, int orden, std::string contexto_del_simbolo, std::vector<bool>& a_emitir)
+int PPMC::_comprimir (const Uint simbolo, int orden, std::string contexto_del_simbolo, std::vector<bool>& a_emitir)
 {
 	int resultado = RES_OK;
 	ModeloProbabilistico* modelo_actual = NULL;
@@ -310,7 +310,7 @@ void PPMC::_emitir_completando_octeto(char* bufferComprimido,
 	}
 }
 
-void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
+void PPMC::_comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint simbolo , string& contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
 		vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido,bool esUltimo)
 {
 //	_imprimir_todos_ordenes();
@@ -339,7 +339,7 @@ void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint simb
 		}
 	}
 
-	int res = comprimir(simbolo, orden, contexto, bits_a_emitir);
+	int res = _comprimir(simbolo, orden, contexto, bits_a_emitir);
 
 	_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 	bits_a_emitir.clear();
@@ -372,7 +372,7 @@ void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint simb
 			}
 		}
 
-		res = comprimir(simbolo, orden, contexto, bits_a_emitir);
+		res = _comprimir(simbolo, orden, contexto, bits_a_emitir);
 
 		_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir);
 		bits_a_emitir.clear();
@@ -381,7 +381,7 @@ void PPMC::comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint simb
 
 	if (maximo_contexto_actual == "0")
 		contexto = simbolo;
-	else if (maximo_contexto_actual != "0" && maximo_contexto_actual.size() < orden_maximo)
+	else if (maximo_contexto_actual != "0" && maximo_contexto_actual.size() < (Uint)orden_maximo)
 	{
 		contexto= maximo_contexto_actual;
 		contexto += simbolo;
@@ -416,11 +416,11 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 		const unsigned char uc_simbolo = (unsigned char) buffer[indiceSimbolo];
 		const Uint simbolo = (Uint) uc_simbolo;
 
-		comprimir_un_caracter(orden,indiceSimbolo,simbolo,contexto, buffer_bits,
+		_comprimir_un_caracter(orden,indiceSimbolo,simbolo,contexto, buffer_bits,
 				bits_a_emitir,bufferComprimido,indiceBufferComprimido,false);
 
 		if (indiceSimbolo == tamanioBuffer -1)
-			comprimir_un_caracter(orden,indiceSimbolo, simbolo, contexto, buffer_bits,
+			_comprimir_un_caracter(orden,indiceSimbolo, simbolo, contexto, buffer_bits,
 						bits_a_emitir,bufferComprimido,indiceBufferComprimido,true);
 	}
 
@@ -430,7 +430,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 }
 
 
-int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int numeroOrdenActual,Uint& simbolo,
+int PPMC::_descomprimir(unsigned long valorSimbolo,string contextoActual,int numeroOrdenActual,Uint& simbolo,
 	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& bufferBits,Aritmetico& aritmeticoCopia){
 
 	Orden* ordenActual= this->mapa_ordenes[numeroOrdenActual];
@@ -464,7 +464,7 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 				modeloActual->calcular_total_frecuencias()== 1);
 		if( escapeEsUnicoCaracter ){
 
-			return descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits,aritmeticoCopia);
+			return _descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits,aritmeticoCopia);
 
 		}
 	}
@@ -498,7 +498,7 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 
 		bufferBits.get_primer_valor_numerico(PRECISION,valorSimbolo);
 
-		return this->descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits,aritmeticoCopia);
+		return this->_descomprimir(valorSimbolo,contextoInferior,numeroOrdenInferior,simbolo,bufferBits,aritmeticoCopia);
 	}
 
 
@@ -513,7 +513,7 @@ int PPMC::descomprimir(unsigned long valorSimbolo,string contextoActual,int nume
 
 int PPMC::descomprimir_todo
 	(char* bufferComprimido,
-	int tamanioBufferComprimido,
+	unsigned int tamanioBufferComprimido,
 	char* bufferDescomprimido,
 	unsigned int cantidadCaracteresOriginal){
 
@@ -549,13 +549,13 @@ int PPMC::descomprimir_todo
 		aritmeticoCopia.set_intervalo( intervaloCopia );
 
 		/*descomprimo un caracter. Dentro del metodo se descartan bits del buffer de bits*/
-		int resultadoDescomprimir= this->descomprimir(valor,nombreContexto,numeroOrden,simbolo,bufferBits,aritmeticoCopia);
+		int resultadoDescomprimir= this->_descomprimir(valor,nombreContexto,numeroOrden,simbolo,bufferBits,aritmeticoCopia);
 		if (resultadoDescomprimir== RES_ERROR)
 			return RES_ERROR;
 
 		bufferDescomprimido[caracterActual]= (char)simbolo;
 
-		this->comprimir_un_caracter(numeroOrden,caracterActual,simbolo,nombreContexto,bufferBits,bitsEmitir,
+		this->_comprimir_un_caracter(numeroOrden,caracterActual,simbolo,nombreContexto,bufferBits,bitsEmitir,
 				NULL,indiceBufferComprimido,false);
 
 		/*intento rellenar el buffer de bits*/

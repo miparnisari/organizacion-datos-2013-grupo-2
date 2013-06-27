@@ -2,69 +2,119 @@
 
 IndiceInvertidoPorTitulo::IndiceInvertidoPorTitulo()
 {
-
 }
 
 IndiceInvertidoPorTitulo::~IndiceInvertidoPorTitulo()
 {
-
 }
 
 int IndiceInvertidoPorTitulo::crear_indice(std::string directorioSalida)
 {
-    this->ruta = directorioSalida;
-    int res = this->indice.crear_archivo(this->ruta+"IndicePorTitulo");
-    res += this->listas.crear(this->ruta, "ListasPorTitulo");
-    return res;
+    this->nombre_archivo = directorioSalida;
+    return this->indice.crear_archivo(this->nombre_archivo);
+}
+
+int IndiceInvertidoPorTitulo::eliminar_indice()
+{
+    return this->indice.eliminar_archivo();
 }
 
 int IndiceInvertidoPorTitulo::abrir_indice(std::string directorioSalida)
 {
-    this->ruta = directorioSalida;
-    int resultado = this->indice.abrir_archivo(this->ruta+"IndicePorTitulo");
-    resultado += this->listas.abrir(this->ruta,"ListasPorTitulo");
-    return resultado;
+    this->nombre_archivo = directorioSalida;
+    return this->indice.abrir_archivo(this->nombre_archivo);
 }
 
-int IndiceInvertidoPorTitulo::agregar_cancion(RegistroCancion & cancion, int IDcancion)
+int IndiceInvertidoPorTitulo::cerrar_indice()
 {
-    unsigned short ref_lista = this->listas.get_cantidad_listas();
-    unsigned short* ref_listas = new unsigned short[1]();
-    RegistroClave reg_cancion;
-    ClaveX clave;
-    clave.set_clave(cancion.get_titulo());
-    //Veo si el titulo se encuentra en el indice
-    if(this->indice.devolver(clave, &reg_cancion) == RES_RECORD_DOESNT_EXIST){
-        //Creo un registro con el titulo en el indice y la referencia a una nueva lista
-        reg_cancion.set_clave(clave);
-        reg_cancion.agregar_campo((char*)&ref_lista,sizeof(ref_lista));
-        this->indice.agregar(reg_cancion);
-    }else{
-        reg_cancion.recuperar_campo((char*)&ref_lista, 1);
-    }
-    //Actualizamos la lista del titulo agregandole el IDcancion
-    ref_listas[0]= ref_lista;
-    return this->listas.recontruir_listas(ref_listas, 1, IDcancion);
+	return this->indice.cerrar_archivo();
 }
 
-long IndiceInvertidoPorTitulo::buscar_titulo(std::string titulo, RegistroVariable &listaDeCanciones)
+int IndiceInvertidoPorTitulo::agregar(const std::string & titulo, int IDcancion)
 {
-    unsigned short ref_lista;
-    RegistroClave reg_cancion;
-    ClaveX clave;
-    clave.set_clave(titulo);
-    //Veo si el titulo se encuentra en el indice
-    if(this->indice.devolver(clave, &reg_cancion) == RES_RECORD_DOESNT_EXIST)
-    	return RES_RECORD_DOESNT_EXIST;
-    //Busco la posicion relativa de la lista en el archivo de listas
-    reg_cancion.recuperar_campo((char*)&ref_lista, 1);
-    //Le pido la lista al archivo de listas
-    return this->listas.devolver(&listaDeCanciones, ref_lista);
+	ClaveX claveTitulo;
+	claveTitulo.set_clave(titulo);
+	RegistroClave reg_clave;
+
+	if (indice.devolver(claveTitulo,&reg_clave) == RES_RECORD_DOESNT_EXIST)
+	{
+		reg_clave.set_clave(claveTitulo);
+		reg_clave.agregar_campo((char*)&IDcancion,sizeof(IDcancion));
+		indice.agregar(reg_clave);
+	}
+	else {
+		int id_doc_ya_existente = -1;
+		int cantidad_id_docs = reg_clave.get_cantidad_campos();
+		for (int i = 1; i < cantidad_id_docs; i++)
+		{
+			reg_clave.recuperar_campo((char*)&id_doc_ya_existente,i);
+			if (id_doc_ya_existente == IDcancion)
+				return RES_RECORD_EXISTS;
+		}
+		reg_clave.agregar_campo((char*)&IDcancion,sizeof(IDcancion));
+		indice.modificar(reg_clave);
+	}
+
+	return RES_OK;
 }
 
-int IndiceInvertidoPorTitulo::borrar_indice()
+int IndiceInvertidoPorTitulo::buscar(const std::string & titulo, vector<int> & id_docs)
 {
-    int res = this->indice.eliminar_archivo();
-    res += this->listas.eliminar(this->ruta,"ListasPorTitulo");
-    return res;
+	ClaveX clave;
+	clave.set_clave(titulo);
+	id_docs.clear();
+	RegistroClave reg_titulo;
+	if (indice.devolver(clave,&reg_titulo) == RES_RECORD_DOESNT_EXIST)
+	{
+		return RES_RECORD_DOESNT_EXIST;
+	}
+	else {
+		int id_doc_ya_existente = -1;
+		int cantidad_id_docs = reg_titulo.get_cantidad_campos();
+		for (int i = 1; i < cantidad_id_docs; i++)
+		{
+			reg_titulo.recuperar_campo((char*)&id_doc_ya_existente,i);
+			id_docs.push_back(id_doc_ya_existente);
+		}
+	}
+
+	return RES_OK;
+}
+
+
+
+int IndiceInvertidoPorTitulo::eliminar(const std::string & titulo, const int IDcancion)
+{
+	ClaveX clave;
+	clave.set_clave(titulo);
+	RegistroClave reg_titulo;
+	reg_titulo.set_clave(clave);
+	if (indice.devolver(clave,&reg_titulo) == RES_RECORD_DOESNT_EXIST)
+	{
+		return RES_RECORD_DOESNT_EXIST;
+	}
+	else {
+		// Copio en un nuevo registro todos los IDs, excepto el que quiero eliminar
+		RegistroClave reg_titulo_copia;
+		reg_titulo_copia.set_clave(clave);
+
+		int id_doc_ya_existente = -1;
+		int cantidad_id_docs = reg_titulo.get_cantidad_campos();
+		for (int i = 1; i < cantidad_id_docs; i++)
+		{
+			reg_titulo.recuperar_campo((char*)&id_doc_ya_existente,i);
+			if (id_doc_ya_existente != IDcancion)
+				reg_titulo_copia.agregar_campo((char*)&id_doc_ya_existente,sizeof(int));
+		}
+
+		// No quedaron IDs para este titulo
+		if (reg_titulo_copia.get_cantidad_campos() == 1) //quedo solo la clave
+			return indice.eliminar(clave);
+
+
+		indice.modificar(reg_titulo_copia);
+
+	}
+
+	return RES_OK;
 }

@@ -15,6 +15,7 @@
 #include "../CapaLogica/ArbolBMas/ArbolBMas.h"
 #include "../CapaLogica/ArbolBMas/IterArbolBMas.h"
 #include "../CapaLogica/Indices/IndiceInvertido.h"
+#include "../CapaLogica/Indices/IndiceInvertidoPorTitulo.h"
 
 #include "../CapaLogica/ManejoArchivos/ClaveX.h"
 #include "../CapaLogica/ManejoArchivos/RegistroCancion.h"
@@ -33,14 +34,14 @@ public:
 	std::string get_nombre_archivo (int id_cancion);
 	std::vector<int> get_ids_canciones_frases(std::string & frase);
 	RegistroCancion* get_reg_completo (int id_cancion);
-	int get_id_cancion_titulo(std::string & titulo);
+	std::vector<int> get_ids_cancion_titulo(std::string & titulo);
 
 
 private:
 	HashingExtensible indicePrimario;
 	ManejadorRegistrosVariables archivoMaestro;
 	ArbolBMas indiceSecundarioAutor;
-	HashingExtensible indiceSecundarioTitulo;
+	IndiceInvertidoPorTitulo indiceSecundarioTitulo;
 	IndiceInvertido indiceSecundarioFrases;
 	HashingExtensible documentos;
 

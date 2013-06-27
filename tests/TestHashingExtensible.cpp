@@ -1,6 +1,11 @@
 #include "../src/CapaLogica/HashingExtensible/HashingExtensible.h"
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
+#define DIRECCIONTABLA "HashingDePruebaTabla.dat" //Ya sabemos como se va a llamar el archivo
+
+using namespace std;
+using namespace utilitarios;
+
 // To use a test fixture, derive a class from testing::Test.
 class TestHashingExtensible : public testing::Test {
  protected:
@@ -41,10 +46,7 @@ class TestHashingExtensible : public testing::Test {
 
 };
 
-#define DIRECCIONTABLA "HashingDePruebaTabla.dat" //Ya sabemos como se va a llamar el archivo
 
-using namespace std;
-using namespace utilitarios;
 
 TEST_F(TestHashingExtensible,Guardar_recuperar_ints)
 {
@@ -57,11 +59,12 @@ TEST_F(TestHashingExtensible,Guardar_recuperar_ints)
 	ClaveX claveTitulo;
 	claveTitulo.set_clave("orgadedatos");
 	int idCancion = 156;
-	// Registro = "orgadedatos" + "10"
+	// Registro = "orgadedatos" + "156"
 	regClave.set_clave(claveTitulo);
 	regClave.agregar_campo((char*)&idCancion,sizeof(idCancion));
 	ASSERT_TRUE(indiceSecundarioTitulo.agregar(regClave) == RES_OK);
 	indiceSecundarioTitulo.cerrar_archivo();
+
 	// Consulto del disco
 	indiceSecundarioTitulo.abrir_archivo("hash_autor_id");
 	ClaveX claveConsulta;
@@ -75,7 +78,7 @@ TEST_F(TestHashingExtensible,Guardar_recuperar_ints)
 
 	// Recupero el dato
 	int intrecuperado;
-	ASSERT_TRUE(regRecuperado.recuperar_campo((char*)(&intrecuperado),1) != RES_ERROR);
+	ASSERT_TRUE (regRecuperado.recuperar_campo((char*)(&intrecuperado),1) != RES_ERROR);
 	ASSERT_TRUE (regRecuperado.get_cantidad_campos() == 2);
 	ASSERT_TRUE (regRecuperado.get_tamanio_campo(0) == 11 + 1);
 	ASSERT_TRUE (regRecuperado.get_tamanio_campo(1) == 4);
