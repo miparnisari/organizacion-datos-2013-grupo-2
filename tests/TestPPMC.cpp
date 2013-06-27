@@ -42,7 +42,7 @@ TEST_F(TestPPMC, ComprimirYDescomprimirStringTATATA)
 
 TEST_F(TestPPMC,ComprimirYDescomprimirStringOrden2)
 {
-	const string fuente = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	const string fuente = "AAAABBBBBCCCCCDDDEEEFFFFGGGBBBB";
 	const unsigned int fuente_length = fuente.length();
 
 	const int tamanio_buffer_comprimido = 100;
@@ -65,7 +65,7 @@ TEST_F(TestPPMC,ComprimirYDescomprimirStringOrden2)
 
 TEST_F(TestPPMC,ComprimirYDescomprimirStringOrden3)
 {
-	const string fuente = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	const string fuente = "AAABBBBBCCCCCDDDDADBBBBAAAABBBEEBBBBDDDDD";
 	const unsigned int fuente_length = fuente.length();
 
 	const int tamanio_buffer_comprimido = 100;
@@ -93,7 +93,7 @@ TEST_F(TestPPMC,ComprimirYDescomprimirStringOrden3)
 
 TEST_F(TestPPMC,ComprimirYDescomprimirStringOrden4)
 {
-	const string fuente = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	const string fuente = "AAAAAAABAACBBBAAAABBBBBBCCCCAAABABBBBBBBBAAAAAAABABABCCCCCBBAAAAAA8912A";
 	const unsigned int fuente_length = fuente.length();
 
 	const int tamanio_buffer_comprimido = 100;
