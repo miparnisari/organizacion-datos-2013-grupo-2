@@ -142,7 +142,7 @@ Profesor titular
 \begin_layout Standard
 
 \series bold
-Docente a cargo del TP
+Docente a cargo
 \series default
 : Maximiliano Stibel 
 \end_layout
@@ -480,12 +480,6 @@ sp, spanish, español, espaniol, espanol
 \end_deeper
 \end_deeper
 \begin_layout Enumerate
-No habrá dos canciones con el mismo título.
- Si las hubiera, se indexarán ambas, pero al consultar por un título solo
- se devolverá la canción que se haya indexado primero.
-\end_layout
-
-\begin_layout Enumerate
 El usuario correrá la aplicación en el sistema operativo Linux.
 \end_layout
 
@@ -503,10 +497,6 @@ stemming
 stopwords
 \emph default
  para reducir el tamaño final del índice.
-\end_layout
-
-\begin_layout Enumerate
-Permitir almacenar consultar un título y devolver uno o más resultados.
 \end_layout
 
 \begin_layout Enumerate
@@ -654,7 +644,7 @@ El siguiente diagrama de clases ilustra los componentes esenciales de la
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -1136,7 +1126,7 @@ El siguiente diagrama de clases ilustra el diseño del hashing extensible:
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -1426,12 +1416,23 @@ Tabla
 \end_deeper
 \end_deeper
 \begin_layout Subsubsection
-Índice invertido
+Índices
 \end_layout
 
 \begin_layout Standard
-Un índice invertido es una estructura de datos que permite recuperar los
- 
+Para la búsquedas por frase se implementó una estructura de tipo 
+\family typewriter
+IndiceInvertido
+\family default
+.
+\end_layout
+
+\begin_layout Standard
+Un 
+\family typewriter
+IndiceInvertido
+\family default
+ es una estructura de datos que permite recuperar los 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1451,7 +1452,10 @@ términos
 \end_layout
 
 \begin_layout Standard
-El siguiente diagrama ilustra la clase correspondiente al índice invertido
+El siguiente diagrama ilustra la clase correspondiente al 
+\family typewriter
+IndiceInvertido
+\family default
  para la búsqueda por frases:
 \end_layout
 
@@ -1598,6 +1602,16 @@ Archivo_coincidencias
 \end_layout
 
 \end_deeper
+\begin_layout Standard
+Para las búsquedas por título se utiliza un 
+\family typewriter
+HashingExtensible
+\family default
+, donde la clave a utilizar es el título normalizado de cada canción, y
+ los posibles valores de la clave son los ID de las canciones que poseen
+ dicho título.
+\end_layout
+
 \begin_layout Subsubsection
 Compresor
 \end_layout
@@ -1782,7 +1796,7 @@ Constantes.h
 \family default
 
 \begin_inset Foot
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Para cambiar esta constante es necesario recompilar el proyecto dentro del
@@ -2272,7 +2286,7 @@ indiceSecundarioAutor
 \begin_layout Plain Layout
 
 \family typewriter
-HashingExtensible
+IndicePorTitulo
 \end_layout
 
 \end_inset
@@ -2294,7 +2308,7 @@ indiceSecundarioTitulo
 \begin_layout Plain Layout
 
 \family typewriter
-(i(titulo canción), id canción)
+(i(titulo canción), (id canción)+)
 \end_layout
 
 \end_inset
@@ -2351,6 +2365,35 @@ documentos
 
 \begin_layout Section
 Manual de usuario
+\end_layout
+
+\begin_layout Subsection
+Pasos previos
+\end_layout
+
+\begin_layout Standard
+Para poder indexar canciones en idioma español, se requiere que el usuario
+ ejecute por consola el siguiente comando:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+user@notebook:~/organizacion-datos-2013-grupo-2$ sudo
+\end_layout
+
+\begin_layout Plain Layout
+
+user@notebook:~/organizacion-datos-2013-grupo-2$ sh install_locale_es.sh
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -2468,7 +2511,7 @@ status open
 \end_layout
 
 \begin_layout Standard
-Este programa no terminará la ejecución hasta que el usuario no eliga la
+Este programa no terminará la ejecución hasta que el usuario no escoja la
  opción de salir del mismo.
 \end_layout
 
@@ -2500,75 +2543,17 @@ status open
 
 \begin_layout Plain Layout
 
-user@notebook:~/Desktop/organizacion-datos-2013-grupo-2/src$ ./main 
+user@notebook:~/organizacion-datos-2013-grupo-2/src$ ./main  
 \end_layout
 
 \begin_layout Plain Layout
 
-Operaciones posibles: 
+(Menú)
 \end_layout
 
 \begin_layout Plain Layout
 
-(0) SALIR.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-(1) Indexar carpeta.
-\end_layout
-
-\begin_layout Plain Layout
-
-(2) Consultar título.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-(3) Consultar autor.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-(4) Consultar frase.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-(5) Borrar canción por ID.
-\end_layout
-
-\begin_layout Plain Layout
-
-(6) Buscar titulo más consultado.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-(7) Buscar autor más consultado.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-(8) Buscar frase más consultado.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-(9) Buscar tema más consultado.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-Ingrese operacion: 1
+Ingrese operacion: 1 
 \end_layout
 
 \begin_layout Plain Layout
@@ -2578,30 +2563,41 @@ Ingrese directorio de entrada: ../songs
 
 \begin_layout Plain Layout
 
-Ingrese directorio de salida: ../output
+Ingrese directorio de salida: ../salida 
 \end_layout
 
 \begin_layout Plain Layout
 
-AVISO: Ya existe un indice en ../output.
- ¿Que desea hacer?
-\end_layout
-
-\begin_layout Plain Layout
-
-(1) Borrar el indice e indexar desde cero.
+AVISO: El directorio de salida no existe.
  
 \end_layout
 
 \begin_layout Plain Layout
 
-(2) Anexar las canciones de ../songs al índice.
+Se creó el directorio de salida.
  
 \end_layout
 
 \begin_layout Plain Layout
 
-Ingrese opcion:  1
+Se indexó ../songs/joaquin sabina - y nos dieron las diez.txt correctamente!
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+No se indexó ../songs/at the drive in -invalid.txt porque no cumple el estándar
+ especificado.
+\end_layout
+
+\begin_layout Plain Layout
+
+(...)
+\end_layout
+
+\begin_layout Plain Layout
+
+user@notebook:~/organizacion-datos-2013-grupo-2/src$
 \end_layout
 
 \end_inset
@@ -2622,67 +2618,12 @@ status open
 
 \begin_layout Plain Layout
 
-user@notebook:~/Desktop/organizacion-datos-2013-grupo-2/src$ ./main 
+user@notebook:~/organizacion-datos-2013-grupo-2/src$ ./main 
 \end_layout
 
 \begin_layout Plain Layout
 
-Operaciones posibles: 
-\end_layout
-
-\begin_layout Plain Layout
-
-(0) SALIR.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-(1) Indexar carpeta.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-(2) Consultar título.
-\end_layout
-
-\begin_layout Plain Layout
-
-(3) Consultar autor.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-(4) Consultar frase.
-\end_layout
-
-\begin_layout Plain Layout
-
-(5) Borrar canción por ID.
-\end_layout
-
-\begin_layout Plain Layout
-
-(6) Buscar titulo más consultado.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-(7) Buscar autor más consultado.
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-(8) Buscar frase más consultado.
-\end_layout
-
-\begin_layout Plain Layout
-
-(9) Buscar tema más consultado.
+(Menú)
 \end_layout
 
 \begin_layout Plain Layout
@@ -2692,131 +2633,164 @@ Ingrese operacion: 2
 
 \begin_layout Plain Layout
 
-Ingrese directorio de salida: ../output 
+Ingrese directorio de salida: ../salida 
 \end_layout
 
 \begin_layout Plain Layout
 
-Ingrese consulta: pride in the name of love 
+Ingrese consulta: helter skelter 
 \end_layout
 
 \begin_layout Plain Layout
 
-La cancion pride in the name of love no fue encontrada.
- 
+---------------------------------------------- 
 \end_layout
 
 \begin_layout Plain Layout
 
-Operaciones posibles: 
+- ID  = 3 
 \end_layout
 
 \begin_layout Plain Layout
 
-(0) SALIR.
- 
+- AUTOR/ES  = aerosmith, 
 \end_layout
 
 \begin_layout Plain Layout
 
-(1) Indexar carpeta.
- 
+- TITULO = helter skelter 
 \end_layout
 
 \begin_layout Plain Layout
 
-(2) Consultar título.
- 
+(Letras)
 \end_layout
 
 \begin_layout Plain Layout
 
-(3) Consultar autor.
+---------------------------------------------- 
 \end_layout
 
 \begin_layout Plain Layout
 
-(4) Consultar frase.
- 
+---------------------------------------------- 
 \end_layout
 
 \begin_layout Plain Layout
 
-(5) Borrar canción por ID.
- 
+- ID  = 5
 \end_layout
 
 \begin_layout Plain Layout
 
-(6) Buscar titulo más consultado.
- 
+- AUTOR/ES  = oasis,
 \end_layout
 
 \begin_layout Plain Layout
 
-(7) Buscar autor más consultado.
- 
+ - TITULO = helter skelter
 \end_layout
 
 \begin_layout Plain Layout
 
-(8) Buscar frase más consultado.
+(Letras)
 \end_layout
 
 \begin_layout Plain Layout
 
-(9) Buscar tema más consultado.
- 
+Ingrese operacion:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Para realizar consultas por autor:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Ingrese operacion: 3 
+\end_layout
+
+\begin_layout Plain Layout
+
+Ingrese directorio de salida: ../salida 
+\end_layout
+
+\begin_layout Plain Layout
+
+Ingrese consulta: u2 
+\end_layout
+
+\begin_layout Plain Layout
+
+----------------------------------------------
+\end_layout
+
+\begin_layout Plain Layout
+
+- ID  = 8
+\end_layout
+
+\begin_layout Plain Layout
+
+- AUTOR/ES  = u2, 
+\end_layout
+
+\begin_layout Plain Layout
+
+- TITULO = pride (in the name of love)
+\end_layout
+
+\begin_layout Plain Layout
+
+(Letras)
+\end_layout
+
+\begin_layout Plain Layout
+
+Ingrese operacion:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Para saber el título que más fue consultado en una ejecución del programa:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Ingrese operacion: 6 
+\end_layout
+
+\begin_layout Plain Layout
+
+Título más consultado: 'helter skelter'
 \end_layout
 
 \begin_layout Plain Layout
 
 Ingrese operacion: 
-\end_layout
-
-\begin_layout Plain Layout
-
-2 Ingrese directorio de salida: ../output 
-\end_layout
-
-\begin_layout Plain Layout
-
-Ingrese consulta: pride (in the name of love) 
-\end_layout
-
-\begin_layout Plain Layout
-
- ----------- ID CANCION = 0 --------- 
-\end_layout
-
-\begin_layout Plain Layout
-
-TITULO = pride (in the name of love)
-\end_layout
-
-\begin_layout Plain Layout
-
-One man come in the name of love 
-\end_layout
-
-\begin_layout Plain Layout
-
-One man come and go  
-\end_layout
-
-\begin_layout Plain Layout
-
-One come he to justify  
-\end_layout
-
-\begin_layout Plain Layout
-
-One man to overthrow 
-\end_layout
-
-\begin_layout Plain Layout
-
-(...)
 \end_layout
 
 \end_inset
