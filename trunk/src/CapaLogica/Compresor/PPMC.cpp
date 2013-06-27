@@ -61,16 +61,8 @@ void PPMC::_limpiar_ordenes()
 {
 	for (int orden = -1; orden < orden_maximo + 1; orden++)
 	{
-		map<string, ModeloProbabilistico*> mapa_modelos = mapa_ordenes[orden]->get_mapa_modelos();
-		map<string, ModeloProbabilistico*>::iterator iterador = mapa_modelos.begin();
-		while (iterador != mapa_modelos.end())
-		{
-			ModeloProbabilistico* unModelo = (*iterador).second;
-			delete unModelo;
-			++iterador;
-		}
+		delete mapa_ordenes[orden];
 	}
-
 	mapa_ordenes.clear();
 }
 
