@@ -37,7 +37,7 @@
 // simply stores two values a string and an integer, which are returned via
 // public accessors in multiple forms.
 
-#import <string>
+#include <string>
 
 class Widget {
  public:

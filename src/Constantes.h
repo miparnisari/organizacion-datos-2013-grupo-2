@@ -98,7 +98,7 @@ const int RES_BALANCEO				= -5;
  * Ordenamiento Externo
  */
 
-const int TAM_MAX_BUFFER_ORDENAMIENTO	= 12; // 8 kb
+const int TAM_MAX_BUFFER_ORDENAMIENTO	= 4096; // 4 kB
 const int CLAVE_TOPE					= 99999;
 
 /*

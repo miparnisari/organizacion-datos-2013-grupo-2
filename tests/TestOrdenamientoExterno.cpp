@@ -40,9 +40,9 @@ TEST_F(TestOrdenamientoExterno,Generar_runs)
 {
 	RegistroVariable regVariable;
 
-	while (mv.get_tamanio_archivo()<2*1024) // 2 MB
+	while (mv.get_tamanio_archivo()<5*1024) // 5 kB
 	{
-		int clave=1;
+		int clave=(rand() % 20) +65;
 
 		regVariable.limpiar_campos();
 
@@ -81,9 +81,9 @@ TEST_F(TestOrdenamientoExterno,Generar_runs)
 TEST_F(TestOrdenamientoExterno,Merge_runs)
 {
 	RegistroVariable regVariable;
-	while (mv.get_tamanio_archivo()<2*1024) // 2 MB
+	while (mv.get_tamanio_archivo()<2*1024) // 2 kB
 	{
-		int clave = (rand() % 20);
+		int clave = (rand() % 20) +65;
 
 		regVariable.limpiar_campos();
 
@@ -101,7 +101,7 @@ TEST_F(TestOrdenamientoExterno,Merge_runs)
 TEST_F(TestOrdenamientoExterno,Ordenar)
 {
 	RegistroVariable regVariable;
-	while (mv.get_tamanio_archivo()<2*1024) // 2 MB
+	while (mv.get_tamanio_archivo()<2*1024) // 2 kB
 	{
 		//agrego clave en el primer campo
 		int clave = (rand() % 20) + 65;
