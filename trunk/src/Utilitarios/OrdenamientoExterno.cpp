@@ -93,6 +93,8 @@ void OrdenamientoExterno:: _generar_runs()
 	int tamanioTotal=0;//del vector a ordenar por heapsort en RAM
 
 	RegistroVariable regVariableLeido;
+	regVariableLeido.limpiar_campos();
+
 	RegistroVariable bufferOrdenamiento[2000];
 
 	//lleno el heap por primera vez
@@ -109,7 +111,7 @@ void OrdenamientoExterno:: _generar_runs()
 	int tamanioHeapInicial=cantRegLeidos;
 	int tamanioHeapActual=tamanioHeapInicial;
 
-	while((archivoAOrdenar.get_cantidad_registros_ocupados()>cantRegLeidos)||(cantRunsArmados==0))
+	while(archivoAOrdenar.get_cantidad_registros_ocupados()>cantRegLeidos)
 	{
 		heap.transformar_en_heap(bufferOrdenamiento,tamanioHeapActual);
 
@@ -127,40 +129,39 @@ void OrdenamientoExterno:: _generar_runs()
 		archivoTemporal.abrir_archivo(nombreDelRun);
 
 		//si no se acaba el archivo, y tengo por lo menos 1 run, hago replacement selection
-		while (tamanioHeapActual>0)//si el heap no esta vacio
+		while ((tamanioHeapActual>0) && (archivoAOrdenar.get_cantidad_registros_ocupados()>cantRegLeidos))//si el heap no esta vacio y quedan para leer
 		{
-			if (archivoAOrdenar.get_cantidad_registros_ocupados()>cantRegLeidos)
-			{
-				archivoAOrdenar.get_registro_ocupado(&regVariableLeido,cantRegLeidos);
-				cantRegLeidos++;
+			archivoAOrdenar.get_registro_ocupado(&regVariableLeido,cantRegLeidos);
+			cantRegLeidos++;
 
-				if ((heap.comparar_registros_variables(regVariableLeido,bufferOrdenamiento[0])==1)||(heap.comparar_registros_variables(regVariableLeido,bufferOrdenamiento[0])==0))//es decir mayor que la raiz
-				{
-					archivoTemporal.agregar_registro(&bufferOrdenamiento[0]);
-					RegistroVariable copia1(regVariableLeido);
-					bufferOrdenamiento[0]=copia1;
-					heap.transformar_en_heap(bufferOrdenamiento,tamanioHeapActual);
-				}else
-				{
-					int ultimaPosicionDelHeap = tamanioHeapActual-1;
-					archivoTemporal.agregar_registro(&bufferOrdenamiento[0]);
-					RegistroVariable copia1(bufferOrdenamiento[ultimaPosicionDelHeap]);
-					bufferOrdenamiento[0]=copia1;
-					RegistroVariable copia2(regVariableLeido);
-					bufferOrdenamiento[ultimaPosicionDelHeap]=copia2;
-					tamanioHeapActual--;
-					heap.transformar_en_heap(bufferOrdenamiento,tamanioHeapActual);
-				}
+			if ((heap.comparar_registros_variables(regVariableLeido,bufferOrdenamiento[0])>=0))//es decir mayor o igual que la raiz
+			{
+				archivoTemporal.agregar_registro(&bufferOrdenamiento[0]);
+				RegistroVariable copia1(regVariableLeido);
+				bufferOrdenamiento[0]=copia1;
+				heap.transformar_en_heap(bufferOrdenamiento,tamanioHeapActual);
 			}else
 			{
 				int ultimaPosicionDelHeap = tamanioHeapActual-1;
 				archivoTemporal.agregar_registro(&bufferOrdenamiento[0]);
 				RegistroVariable copia1(bufferOrdenamiento[ultimaPosicionDelHeap]);
 				bufferOrdenamiento[0]=copia1;
+				RegistroVariable copia2(regVariableLeido);
+				bufferOrdenamiento[ultimaPosicionDelHeap]=copia2;
 				tamanioHeapActual--;
 				heap.transformar_en_heap(bufferOrdenamiento,tamanioHeapActual);
 			}
 		}
+//		else //vacio el resto del heap que queda ordenado
+//			{
+//				int ultimaPosicionDelHeap = tamanioHeapActual-1;
+//				archivoTemporal.agregar_registro(&bufferOrdenamiento[0]);
+//				RegistroVariable copia1(bufferOrdenamiento[ultimaPosicionDelHeap]);
+//				bufferOrdenamiento[0]=copia1;
+//				tamanioHeapActual--;
+//				heap.transformar_en_heap(bufferOrdenamiento,tamanioHeapActual);
+//			}
+
 
 		int claveMax = CLAVE_TOPE;
 
@@ -173,11 +174,44 @@ void OrdenamientoExterno:: _generar_runs()
 
 		cantRunsArmados++;
 	}
+
+	//termino de vaciar el heap (refactor)
+	heap.transformar_en_heap(bufferOrdenamiento,tamanioHeapActual);
+
+	std::string numeroRun = utilitarios::int_a_string(cantRunsArmados);
+
+	//creo el archivo temporal y guardo nombre en vector de runs
+	string nombreDelRun=nombreGeneralDeRun+numeroRun+extension;
+	archivosTemporalesAFusionar.push_back(nombreDelRun);
+
+	ManejadorRegistrosVariables archivoTemporal;
+
+	archivoTemporal.eliminar_archivo(nombreDelRun);//solo por si acaso hay runs anteriores las borra
+
+	archivoTemporal.crear_archivo(nombreDelRun);
+	archivoTemporal.abrir_archivo(nombreDelRun);
+
+	//si no se acaba el archivo, y tengo por lo menos 1 run, hago replacement selection
+	while (tamanioHeapActual>0)//si el heap no esta vacio
+	{
+		heap.transformar_en_heap(bufferOrdenamiento,tamanioHeapActual);
+		int ultimaPosicionDelHeap = tamanioHeapActual-1;
+		archivoTemporal.agregar_registro(&bufferOrdenamiento[0]);
+		RegistroVariable copia1(bufferOrdenamiento[ultimaPosicionDelHeap]);
+		bufferOrdenamiento[0]=copia1;
+		tamanioHeapActual--;
+	}
+
+	int claveMax = CLAVE_TOPE;
+
+	RegistroVariable regClaveMax;
+
+	regClaveMax.agregar_campo((char*)&claveMax,sizeof(claveMax));
+	archivoTemporal.agregar_registro(& regClaveMax);
 }
 
 void OrdenamientoExterno::_merge()
 {
-
 	Heap heap;
 
 	int numeroDeMerge=0;
@@ -185,16 +219,15 @@ void OrdenamientoExterno::_merge()
 	//agrego un run "vacio" para fusionar contra ese, poco eficiente, pero soluciona mi problema rapido
 	if (archivosTemporalesAFusionar.size()==1)
 	{
-
 		RegistroVariable regClaveMax;
 
 		int claveMax = CLAVE_TOPE;
 		regClaveMax.agregar_campo((char*)&claveMax,sizeof(claveMax));
 
-		string nombreDelRun="run1.dat";
+		string nombreDelRun="runExtra.dat";
 
 		ManejadorRegistrosVariables archivoTemporal;
-		archivoTemporal.eliminar_archivo(nombreDelRun);//solo por si acaso hay runs anteriores las borr
+		archivoTemporal.eliminar_archivo(nombreDelRun);//solo por si acaso hay runs anteriores las borra
 		archivoTemporal.crear_archivo(nombreDelRun);
 		archivoTemporal.abrir_archivo(nombreDelRun);
 
@@ -202,7 +235,6 @@ void OrdenamientoExterno::_merge()
 
 		archivosTemporalesAFusionar.push_back(nombreDelRun);
 	}
-
 
 	//cuando quedan 2 a fusionar lo hago sobre el archivo original
 	while (archivosTemporalesAFusionar.size() > 2)
