@@ -145,8 +145,9 @@ std::string ResolvedorConsultas::get_nombre_archivo (IDdocumento_t id_cancion)
 
 	this->documentos.devolver(IDdoc, &regDoc);
 
-	char* bufferNombreArchivo = new char[regDoc.get_tamanio_campo(1) + 1]();
-	bufferNombreArchivo [regDoc.get_tamanio_campo(1)] = '\0';
+	const unsigned int TAMANIO_NOMBRE_ARCHIVO = regDoc.get_tamanio_campo(1);
+	char* bufferNombreArchivo = new char[TAMANIO_NOMBRE_ARCHIVO + 1]();
+	bufferNombreArchivo [TAMANIO_NOMBRE_ARCHIVO] = '\0';
 	regDoc.recuperar_campo(bufferNombreArchivo,1);
 
 	documentos.cerrar_archivo();
