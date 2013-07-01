@@ -57,11 +57,6 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 		  espacioNecesario. En caso de no existir tal registro, se retorna RES_ERROR
 		  NOTA: espacioNecesario de un registro deberia ser el espacio de empaquetamiento*/
 
-		virtual void _pegar_registro(RegistroVariable* registro,long offset);
-		/*esta primitiva se invoca en caso que el espacio libre de un registro libre
-		 * coincide EXACTAMENTE con el tamanio de empaquetamiento del registro a insertar.*/
-
-
 		void _reemplazar(string& nombreArchivoAuxiliar);
 
 		void _cambiar_header(Header& headerCambiar);
@@ -95,7 +90,7 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 		 * RES_ERROR*/
 
 
-		virtual long get_registro_ocupado(RegistroVariable* registro ,
+		virtual long get_registro(RegistroVariable* registro ,
 				unsigned int numeroRegistro);
 		/*recupera un registro NO ELIMINADO por su numero de registro.*/
 
@@ -121,20 +116,6 @@ class ManejadorRegistrosVariables:public ManejadorArchivos {
 
 		int refactorizar();
 		/*reconstruye el archivo descartando todos los registros eliminados .*/
-
-
-/*-----------------NO PRESTAR ATENCION -------------------------------------------------*/
-
-		//virtual long eliminar_registro(unsigned short numeroRegistro);
-		/*elimina en un registro en la posicion numeroRegistro. En caso de no poder
-		 * hacerlo retorna RES_ERROR . En caso de lograrlo se retorna el offset del
-		 * registro eliminado*/
-//		virtual long get_registro(RegistroVariable* registro,
-//				unsigned short numeroRegistro);
-		/*recupera un registro del archivo. En caso que el mismo no se hallase se retorna
-		 * RES_ERROR . si el mismo es hallado se retorna el offset del registro en el
-		 * archivo .
-		 * Los registros se cuentan desde el 0! */
 
 
 };/*el archivo se manejara con la politica first-fit. Los espacios libres se particionan

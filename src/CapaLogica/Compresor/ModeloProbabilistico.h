@@ -26,6 +26,7 @@ class ModeloProbabilistico {
 	private:
 		Uint* frecuenciasSimbolos;
 		Uint tamanioAlfabeto;
+		Uint totalFrecuencias;
 
 	public:
 		ModeloProbabilistico(Uint un_tamanio_alfabeto = TAMANIO_ALFABETO);
@@ -38,23 +39,22 @@ class ModeloProbabilistico {
 		void inicializar_frecuencias_en_1(vector<unsigned short>& v);
 		/*todas las frecuencias de los mensajes estaran en 0 excepto la de aquellos mensajes contendidos en v*/
 
-		double get_probabilidad(Uint simbolo);
-		Uint get_frecuencia(Uint simbolo);
-		Uint get_tamanio_alfabeto();
+		double get_probabilidad(Uint simbolo)const;
+		Uint get_frecuencia(Uint simbolo)const;
+		Uint get_tamanio_alfabeto()const;
 
 		void incrementar_frecuencia (const Uint simbolo);
-		double calcular_low_count (const Uint simbolo);
-		double calcular_high_count (const Uint simbolo);
-		Uint calcular_total_frecuencias();
+		double calcular_low_count (const Uint simbolo)const;
+		double calcular_high_count (const Uint simbolo)const;
+		Uint calcular_total_frecuencias()const;
 
-
-		bool todas_frecuencias_en_uno();
+		bool todas_frecuencias_en_uno()const;
 
 		void resetear();
 
-		std::string imprimir();
+		std::string imprimir()const;
 
-		Uint obtener_simbolo(double probabilidad);
+		Uint obtener_simbolo(double probabilidad)const;
 };
 
 #endif /* MODELOPROBABILISTICO_H_ */

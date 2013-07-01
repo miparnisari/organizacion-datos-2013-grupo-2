@@ -53,7 +53,7 @@ TEST_F(TestManejadorRegistrosVariables,Refactorizar)
 		for(unsigned short i=0;i< mrv.get_cantidad_registros_ocupados();i++ ){
 
 			RegistroClave unRegistro;
-			mrv.get_registro_ocupado(&unRegistro,i);
+			mrv.get_registro(&unRegistro,i);
 			ClaveX clave;
 			clave= unRegistro.get_clave();
 //			clave.imprimir_dato();
@@ -99,7 +99,7 @@ TEST_F(TestManejadorRegistrosVariables,Refactorizar)
 		for(unsigned short i=0;i< mrv.get_cantidad_registros_ocupados();i++ ){
 
 			RegistroClave unRegistro;
-			mrv.get_registro_ocupado(&unRegistro,i);
+			mrv.get_registro(&unRegistro,i);
 			ClaveX clave;
 			clave= unRegistro.get_clave();
 //			clave.imprimir_dato();
@@ -145,7 +145,7 @@ TEST_F(TestManejadorRegistrosVariables,Refactorizar)
 			for(unsigned short i=0;i< mrv.get_cantidad_registros_ocupados();i++ ){
 
 				RegistroClave unRegistro;
-				mrv.get_registro_ocupado(&unRegistro,i);
+				mrv.get_registro(&unRegistro,i);
 				ClaveX clave;
 				clave= unRegistro.get_clave();
 //				clave.imprimir_dato();
@@ -305,7 +305,7 @@ TEST_F(TestManejadorRegistrosVariables,Recuperar_espacio_libre)
 
 		ASSERT_TRUE( mrv.eliminar_registro_ocupado( 1 )== offsetsRegistros[1] );
 		RegistroVariable rv;
-		ASSERT_TRUE( mrv.get_registro_ocupado( &rv,1 )== offsetsRegistros[2] );
+		ASSERT_TRUE( mrv.get_registro( &rv,1 )== offsetsRegistros[2] );
 		char campo[64];
 		int tamanioCampo= rv.recuperar_campo(campo,0);
 		string s(campo,tamanioCampo);
@@ -406,7 +406,7 @@ TEST_F(TestManejadorRegistrosVariables,Chequear_registros_ocupados)
 		ASSERT_TRUE( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[0] );
 		RegistroVariable rv;
 		char campo[32];
-		ASSERT_TRUE( mrv.get_registro_ocupado(&rv,0)== offsetsRegistros[1] );
+		ASSERT_TRUE( mrv.get_registro(&rv,0)== offsetsRegistros[1] );
 		int tamanioCampo= rv.recuperar_campo(campo,0);
 		string s(campo,tamanioCampo);
 		ASSERT_TRUE(s==datos[1]);
@@ -418,7 +418,7 @@ TEST_F(TestManejadorRegistrosVariables,Chequear_registros_ocupados)
 		ASSERT_TRUE( mrv.eliminar_registro_ocupado( 0 )== offsetsRegistros[1] );
 		RegistroVariable rv;
 		char campo[32];
-		ASSERT_TRUE( mrv.get_registro_ocupado(&rv,0)== offsetsRegistros[2] );
+		ASSERT_TRUE( mrv.get_registro(&rv,0)== offsetsRegistros[2] );
 		int tamanioCampo= rv.recuperar_campo(campo,0);
 		string s(campo,tamanioCampo);
 		ASSERT_TRUE(s==datos[2]);
@@ -454,6 +454,6 @@ TEST_F(TestManejadorRegistrosVariables,Agregar_registro_clave)
 	}
 
 	RegistroClave primerRegistro;
-	ASSERT_TRUE( mrv.get_registro_ocupado(&primerRegistro,0)!= RES_ERROR );
+	ASSERT_TRUE( mrv.get_registro(&primerRegistro,0)!= RES_ERROR );
 //	primerRegistro.get_clave().imprimir_dato();
 }

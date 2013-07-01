@@ -26,8 +26,8 @@ class TestOrdenamientoExterno : public testing::Test {
 	{
 		RegistroVariable rv1,rv2;
 
-		mv.get_registro_ocupado(&rv1,i);
-		mv.get_registro_ocupado(&rv2,i+1);
+		mv.get_registro(&rv1,i);
+		mv.get_registro(&rv2,i+1);
 
 		// El primero menor o igual al segundo
 		ASSERT_TRUE(heap.comparar_registros_variables(rv1,rv2) <= 0);
@@ -68,8 +68,8 @@ TEST_F(TestOrdenamientoExterno,Generar_runs)
 		{
 			RegistroVariable rv1,rv2;
 
-			mv2.get_registro_ocupado(&rv1,j);
-			mv2.get_registro_ocupado(&rv2,j+1);
+			mv2.get_registro(&rv1,j);
+			mv2.get_registro(&rv2,j+1);
 
 			ASSERT_TRUE(heap.comparar_registros_variables(rv1,rv2)<=0);
 		}

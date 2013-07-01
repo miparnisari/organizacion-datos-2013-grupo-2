@@ -75,7 +75,7 @@ std::vector<ListaInvertida_t> ListaInvertida::devolver (const ReferenciaListaInv
 
 	RegistroVariable registro_cantidad;
 
-	int res = archivo.get_registro_ocupado(&registro_cantidad,ref_lista);
+	int res = archivo.get_registro(&registro_cantidad,ref_lista);
 
 	if (res != RES_ERROR)
 	{
@@ -85,7 +85,7 @@ std::vector<ListaInvertida_t> ListaInvertida::devolver (const ReferenciaListaInv
 		for (int i = 1; i < CANTIDAD + 1; i++)
 		{
 			RegistroVariable registro;
-			archivo.get_registro_ocupado(&registro,ref_lista+i);
+			archivo.get_registro(&registro,ref_lista+i);
 
 			IDdocumento_t id_doc;
 			CantidadPosiciones_t cantidad_posiciones;

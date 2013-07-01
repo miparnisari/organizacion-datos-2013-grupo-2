@@ -73,7 +73,7 @@ int ListaPosicionesTerminosEnDocumentos::devolver
 
 	RegistroVariable registro;
 
-	int res = archivo.get_registro_ocupado(&registro,posicion);
+	int res = archivo.get_registro(&registro,posicion);
 
 	if (res != RES_ERROR)
 	{

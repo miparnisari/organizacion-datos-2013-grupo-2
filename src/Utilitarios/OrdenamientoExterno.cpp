@@ -46,8 +46,8 @@ void OrdenamientoExterno::_fusionar_2_archivos(string ruta1, string ruta2, strin
 
 	RegistroVariable regPrimero,regSegundo;
 
-	PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
-	SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
+	PrimerArchivoAUnir.get_registro(&regPrimero,indicePrimero);
+	SegundoArchivoAUnir.get_registro(&regSegundo,indiceSegundo);
 
 	while ( heap.comparar_registros_variables(regPrimero,regClaveMax)==-1 || heap.comparar_registros_variables(regSegundo,regClaveMax)==-1 )
 	{
@@ -56,11 +56,11 @@ void OrdenamientoExterno::_fusionar_2_archivos(string ruta1, string ruta2, strin
 		{
 			archivoMerge.agregar_registro(&regPrimero);
 			indicePrimero++;
-			PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
+			PrimerArchivoAUnir.get_registro(&regPrimero,indicePrimero);
 		}else{
 			archivoMerge.agregar_registro(&regSegundo);
 			indiceSegundo++;
-			SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
+			SegundoArchivoAUnir.get_registro(&regSegundo,indiceSegundo);
 		}
 	}
 
@@ -101,7 +101,7 @@ void OrdenamientoExterno:: _generar_runs()
 	//puede que resulta un poco mayor al limite (lo ultimo que leo se puede pasar)
 	while ((tamanioTotal < TAM_MAX_BUFFER_ORDENAMIENTO)&&(archivoAOrdenar.get_cantidad_registros_ocupados()>cantRegLeidos))
 	{
-		archivoAOrdenar.get_registro_ocupado(&regVariableLeido, cantRegLeidos);
+		archivoAOrdenar.get_registro(&regVariableLeido, cantRegLeidos);
 		bufferOrdenamiento[cantRegLeidos]= regVariableLeido;
 		cantRegLeidos++;
 		tamanioTotal += sizeof(regVariableLeido);
@@ -131,7 +131,7 @@ void OrdenamientoExterno:: _generar_runs()
 		//si no se acaba el archivo, y tengo por lo menos 1 run, hago replacement selection
 		while ((tamanioHeapActual>0) && (archivoAOrdenar.get_cantidad_registros_ocupados()>cantRegLeidos))//si el heap no esta vacio y quedan para leer
 		{
-			archivoAOrdenar.get_registro_ocupado(&regVariableLeido,cantRegLeidos);
+			archivoAOrdenar.get_registro(&regVariableLeido,cantRegLeidos);
 			cantRegLeidos++;
 
 			if ((heap.comparar_registros_variables(regVariableLeido,bufferOrdenamiento[0])>=0))//es decir mayor o igual que la raiz

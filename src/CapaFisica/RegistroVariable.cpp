@@ -34,10 +34,7 @@ RegistroVariable::RegistroVariable(const RegistroVariable& otro)
 {
 	tamanio = otro.tamanio;
 	buffer = new char[tamanio];
-	stringstream ss;
-	ss.write(otro.buffer,tamanio);
-	ss.seekg(0,ios::beg);
-	ss.read(this->buffer,tamanio);
+	memcpy(buffer,otro.buffer,tamanio);
 }
 
 
@@ -49,30 +46,30 @@ void RegistroVariable::_inicializar_buffer(){
 		buffer[i]= '*';
 }
 
-int RegistroVariable::agregar_datos(const char* datos,TamanioCampos tamanioDatos)throw(){
+int RegistroVariable::agregar_datos(const char* datos, TamanioCampos tamanioDatos)throw(){
 
 	if (this->fue_eliminado() )
 	{
 		return RES_ERROR;
 	}
 	TamanioCampos tamanioFinal = tamanio + tamanioDatos;
+
 	if (tamanioFinal > REG_VAR_MAX_TAM)
 	{
 		return RES_RECORD_TOO_LONG;
 	}
 
-	stringstream stream(ios::in | ios::out);
-	if (buffer)
-		stream.write(buffer,tamanio); //Inserts the first n characters of the array pointed by s into the stream.
-	stream.write(datos,tamanioDatos);
-	RegistroVariable::limpiar_campos();
+	char* copia = new char[tamanioFinal]();
+	memcpy(copia,buffer,tamanio);
+	memcpy(copia+tamanio,datos,tamanioDatos);
 
-	tamanio= tamanioFinal;
-	buffer= new char[tamanioFinal];
-	_inicializar_buffer();
-	stream.seekg(0,ios::beg);
-	stream.read(buffer,tamanio);
 
+	tamanio = tamanioFinal;
+	delete[] buffer;
+	buffer = new char[tamanioFinal]();
+	memcpy(buffer,copia,tamanioFinal);
+
+	delete[] copia;
 	return RES_OK;
 
 }/*agrega datos al buffer menor que REG_VAR_MAX_TAM.
@@ -83,7 +80,7 @@ int RegistroVariable::agregar_campo(const char* campo,TamanioCampos tamanioCampo
 
 	int res=this->agregar_datos( (char*)&tamanioCampo, sizeof(tamanioCampo) );
 
-	if(res!= RES_OK)
+	if (res!= RES_OK)
 		return RES_ERROR;
 
 	return this->agregar_datos(campo,tamanioCampo);
@@ -137,16 +134,12 @@ int RegistroVariable::eliminar()throw(){
 	if(this->fue_eliminado())
 		return RES_OK;
 
-	stringstream stream;
-	stream.write(buffer,tamanio);
+
 	TamanioCampos uno= 1;
-	stream.seekp(0,ios::beg);
 
-	stream.write( (char*)(&uno),sizeof(uno) );
-	stream.write( (char*)(&MARCA_BORRADO) , sizeof(MARCA_BORRADO) );
-	stream.seekg(0,stream.beg);
+	memcpy(buffer,&uno,sizeof(uno));
+	memcpy(buffer+sizeof(uno),&MARCA_BORRADO,sizeof(MARCA_BORRADO));
 
-	stream.read(buffer,tamanio);
 
 	return RES_OK;
 }/*marca al registro como eliminado:
@@ -158,18 +151,17 @@ bool RegistroVariable::fue_eliminado()throw(){
 	if(buffer==NULL)
 		return false;
 
-	stringstream stream;
-	stream.write(buffer,tamanio);
-	stream.seekg(0,stream.beg);
 	TamanioCampos tamanioPrimerCampo= 0;
-	char primerCampo=1;
 
-	stream.read( (char*)(&tamanioPrimerCampo) , sizeof(tamanioPrimerCampo) );
+	memcpy(&tamanioPrimerCampo,buffer,sizeof(tamanioPrimerCampo));
+
 	if(tamanioPrimerCampo > 1)
 		return false;
 
-	stream.read( (char*)(&primerCampo) , sizeof(primerCampo) );
-	if( primerCampo!= MARCA_BORRADO )
+	char primerCampo=1;
+	memcpy(&primerCampo,buffer+sizeof(tamanioPrimerCampo),sizeof(primerCampo));
+
+	if( primerCampo != MARCA_BORRADO )
 		return false;
 
 	return true;
@@ -183,12 +175,8 @@ int RegistroVariable::empaquetar(char* copia)throw(){
 	if(buffer== NULL || copia== NULL)
 		return RES_ERROR;
 
-	stringstream stream;
-
-	stream.write( (char*)(&tamanio) , sizeof(tamanio) );
-	stream.write( buffer,tamanio );
-	stream.seekg(0,stream.beg);
-	stream.read(copia, tamanio+sizeof(tamanio) );
+	memcpy(copia,&tamanio,sizeof(tamanio));
+	memcpy(copia+sizeof(tamanio),buffer,tamanio);
 
 	return RES_OK;
 
@@ -206,19 +194,12 @@ TamanioCampos RegistroVariable::get_cantidad_campos()throw(){
 
 	TamanioCampos contadorOffset= 0;
 	TamanioCampos contadorCampos= 0;
-	stringstream stream;
-	stream.write(buffer,tamanio);
+	TamanioCampos tamanioCampo;
 
 	while(contadorOffset < tamanio){
-
-		TamanioCampos tamanioCampo;
-		stream.read( (char*)&tamanioCampo , sizeof(tamanioCampo) );
-		contadorOffset+= sizeof(tamanioCampo);
-		contadorCampos++;
-		char* bufferCampo = new char[tamanioCampo];
-		stream.read(bufferCampo,tamanioCampo);
-		contadorOffset+= tamanioCampo;
-		delete[] bufferCampo;
+		memcpy(&tamanioCampo,buffer+contadorOffset,sizeof(tamanioCampo));
+		contadorOffset += tamanioCampo + sizeof(tamanioCampo);
+		contadorCampos ++;
 	}
 
 	return contadorCampos;
@@ -228,27 +209,14 @@ TamanioCampos RegistroVariable::get_cantidad_campos()throw(){
 
 int RegistroVariable::seek_numero_campo(TamanioCampos numeroCampo){
 
-	if (this->fue_eliminado())
-			return RES_ERROR;
-	if (numeroCampo >= this->get_cantidad_campos())
-		return RES_ERROR;
-
-	stringstream stream;
-	stream.write(buffer,tamanio);
-	stream.seekg(0,ios::beg);
-
 	TamanioCampos contadorCampo= 0;
 	TamanioCampos offsetCampo= 0;
+	TamanioCampos tamanioCampo;
 
 	while(contadorCampo < numeroCampo){
 
-		TamanioCampos tamanioCampo;
-		stream.read( (char*)&tamanioCampo , sizeof(tamanioCampo) );
-		offsetCampo+= sizeof(tamanioCampo)+tamanioCampo;
-		char* dummyBuffer= new char[tamanioCampo];
-		stream.read(dummyBuffer,tamanioCampo);
-		delete[] dummyBuffer;
-
+		memcpy(&tamanioCampo,buffer+offsetCampo,sizeof(tamanioCampo));
+		offsetCampo += sizeof(tamanioCampo)+tamanioCampo;
 		contadorCampo++;
 	}
 
@@ -263,12 +231,9 @@ int RegistroVariable::get_tamanio_campo(TamanioCampos numeroCampo)
 	if (numeroCampo >= this->get_cantidad_campos())
 		return RES_ERROR;
 
-	stringstream stream;
-	stream.write(buffer,tamanio);
-	stream.seekg( this->seek_numero_campo(numeroCampo) , ios::beg );
-
+	int offsetCampo = this->seek_numero_campo(numeroCampo);
 	TamanioCampos tamanioCampo;
-	stream.read( (char*)&tamanioCampo , sizeof(tamanioCampo) );
+	memcpy(&tamanioCampo,buffer+offsetCampo,sizeof(tamanioCampo));
 
 	return tamanioCampo;
 }
@@ -281,24 +246,19 @@ int RegistroVariable::recuperar_campo(char* copia,TamanioCampos numeroCampo)thro
 	if (numeroCampo >= this->get_cantidad_campos())
 		return RES_ERROR;
 
-	stringstream stream;
-	stream.write(buffer,tamanio);
 	TamanioCampos contadorCampos= 0;
+	TamanioCampos tamanioCampo;
+	TamanioCampos offsetCampos = 0;
 
 	while(contadorCampos < numeroCampo){
 
-		TamanioCampos tamanioCampo;
-		stream.read( (char*)&tamanioCampo , sizeof(tamanioCampo) );
-		char* bufferCampo = new char[tamanioCampo];
-		stream.read(bufferCampo,tamanioCampo);
-		delete[] bufferCampo;
+		memcpy(&tamanioCampo,buffer+offsetCampos,sizeof(tamanioCampo));
 		contadorCampos++;
+		offsetCampos += tamanioCampo + sizeof(tamanioCampo);
 	}
 
-	TamanioCampos tamanioCampo;
-
-	stream.read( (char*)&tamanioCampo,sizeof(tamanioCampo) );
-	stream.read(copia,tamanioCampo);
+	memcpy(&tamanioCampo,buffer+offsetCampos,sizeof(tamanioCampo));
+	memcpy(copia,buffer+offsetCampos+sizeof(tamanioCampo),tamanioCampo);
 
 	return tamanioCampo;
 
@@ -313,16 +273,14 @@ int RegistroVariable::desempaquetar(const char* copia)throw()
 	}
 
 	limpiar_campos();
-	stringstream stream;
-	stream.write(copia,sizeof(tamanio)); //Inserts the first n characters of the array pointed by s into the stream.
-	stream.seekg(0,stream.beg);
+
 	TamanioCampos tamanioLeido;
 
-	stream.read( (char*)(&tamanioLeido),sizeof(tamanioLeido) );
+	memcpy(&tamanioLeido, copia, sizeof(tamanioLeido));
 	if(tamanioLeido > REG_VAR_MAX_TAM)
 		return RES_RECORD_TOO_LONG;
 
-	tamanio= tamanioLeido;
+	tamanio = tamanioLeido;
 	buffer= new char[tamanio]();
 	memcpy(buffer , copia+sizeof(tamanio) , tamanio);
 
@@ -369,8 +327,6 @@ int RegistroVariable :: descomprimir(Compresor * compresor, RegistroVariable* re
 	delete[] descomprimido;
 
 	return RES_OK;
-
-
 }
 
 RegistroVariable* RegistroVariable::comprimir (Compresor * compresor)

@@ -106,7 +106,7 @@ TEST_F(TestRegistroCancion,Guardar_en_archivo_registros_variables)
 
 		mrv.agregar_registro( &rc9 );
 		RegistroCancion rc10;
-		mrv.get_registro_ocupado( &rc10,0 );
+		mrv.get_registro( &rc10,0 );
 	}
 
 	mrv.eliminar_archivo(nombreArchivo);
