@@ -1,36 +1,36 @@
-#include "IndiceInvertidoPorTitulo.h"
+#include "IndicePorTitulo.h"
 
-IndiceInvertidoPorTitulo::IndiceInvertidoPorTitulo()
+IndicePorTitulo::IndicePorTitulo()
 {
 }
 
-IndiceInvertidoPorTitulo::~IndiceInvertidoPorTitulo()
+IndicePorTitulo::~IndicePorTitulo()
 {
 }
 
-int IndiceInvertidoPorTitulo::crear_indice(std::string directorioSalida)
+int IndicePorTitulo::crear_indice(std::string directorioSalida)
 {
     this->nombre_archivo = directorioSalida;
     return this->indice.crear_archivo(this->nombre_archivo);
 }
 
-int IndiceInvertidoPorTitulo::eliminar_indice()
+int IndicePorTitulo::eliminar_indice()
 {
     return this->indice.eliminar_archivo();
 }
 
-int IndiceInvertidoPorTitulo::abrir_indice(std::string directorioSalida)
+int IndicePorTitulo::abrir_indice(std::string directorioSalida)
 {
     this->nombre_archivo = directorioSalida;
     return this->indice.abrir_archivo(this->nombre_archivo);
 }
 
-int IndiceInvertidoPorTitulo::cerrar_indice()
+int IndicePorTitulo::cerrar_indice()
 {
 	return this->indice.cerrar_archivo();
 }
 
-int IndiceInvertidoPorTitulo::agregar(const std::string & titulo, int IDcancion)
+int IndicePorTitulo::agregar(const std::string & titulo, IDdocumento_t IDcancion)
 {
 	ClaveX claveTitulo;
 	claveTitulo.set_clave(titulo);
@@ -43,7 +43,7 @@ int IndiceInvertidoPorTitulo::agregar(const std::string & titulo, int IDcancion)
 		indice.agregar(reg_clave);
 	}
 	else {
-		int id_doc_ya_existente = -1;
+		IDdocumento_t id_doc_ya_existente;
 		int cantidad_id_docs = reg_clave.get_cantidad_campos();
 		for (int i = 1; i < cantidad_id_docs; i++)
 		{
@@ -58,7 +58,7 @@ int IndiceInvertidoPorTitulo::agregar(const std::string & titulo, int IDcancion)
 	return RES_OK;
 }
 
-int IndiceInvertidoPorTitulo::buscar(const std::string & titulo, vector<int> & id_docs)
+int IndicePorTitulo::buscar(const std::string & titulo, vector<IDdocumento_t> & id_docs)
 {
 	ClaveX clave;
 	clave.set_clave(titulo);
@@ -69,7 +69,7 @@ int IndiceInvertidoPorTitulo::buscar(const std::string & titulo, vector<int> & i
 		return RES_RECORD_DOESNT_EXIST;
 	}
 	else {
-		int id_doc_ya_existente = -1;
+		IDdocumento_t id_doc_ya_existente;
 		int cantidad_id_docs = reg_titulo.get_cantidad_campos();
 		for (int i = 1; i < cantidad_id_docs; i++)
 		{
@@ -83,7 +83,7 @@ int IndiceInvertidoPorTitulo::buscar(const std::string & titulo, vector<int> & i
 
 
 
-int IndiceInvertidoPorTitulo::eliminar(const std::string & titulo, const int IDcancion)
+int IndicePorTitulo::eliminar(const std::string & titulo, const IDdocumento_t IDcancion)
 {
 	ClaveX clave;
 	clave.set_clave(titulo);
@@ -98,7 +98,7 @@ int IndiceInvertidoPorTitulo::eliminar(const std::string & titulo, const int IDc
 		RegistroClave reg_titulo_copia;
 		reg_titulo_copia.set_clave(clave);
 
-		int id_doc_ya_existente = -1;
+		IDdocumento_t id_doc_ya_existente;
 		int cantidad_id_docs = reg_titulo.get_cantidad_campos();
 		for (int i = 1; i < cantidad_id_docs; i++)
 		{

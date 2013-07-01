@@ -115,7 +115,7 @@ int Indexador::_crear_archivos_indices(std::string & directorioSalida)
 	res += documentos.crear_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
 	res += indiceSecundarioAutor.crear(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_AUTOR));
 	res += indiceSecundarioTitulo.crear_indice(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
-	res += indiceSecundarioFrases.crear_indice(directorioSalida+'/',std::string(FILENAME_IDX_SECUN_FRASES));
+	res += indiceSecundarioFrases.crear(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_FRASES));
 	if (res != RES_OK)
 		Logger::error("Indexador","No se pudieron crear los archivo de los indices.");
 	return res;
@@ -129,7 +129,7 @@ int Indexador::_abrir_archivos_indices(std::string & directorioSalida)
 	res += documentos.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
 	res += indiceSecundarioAutor.abrir(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_AUTOR),"rb+");
 	res += indiceSecundarioTitulo.abrir_indice(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
-	res += indiceSecundarioFrases.abrir_indice(directorioSalida+'/',std::string(FILENAME_IDX_SECUN_FRASES));
+	res += indiceSecundarioFrases.abrir(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_FRASES));
 	if (res != RES_OK)
 		Logger::error("Indexador","No se pudieron abrir los archivo de los indices.");
 	return res;
@@ -142,7 +142,7 @@ int Indexador::_cerrar_archivos_indices()
 	res += documentos.cerrar_archivo();
 	res += indiceSecundarioAutor.cerrar();
 	res += indiceSecundarioTitulo.cerrar_indice();
-	res += indiceSecundarioFrases.cerrar_indice();
+	res += indiceSecundarioFrases.cerrar();
 	return res;
 }
 
@@ -169,7 +169,7 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 		}
 		std::string titulo = cancionOriginal.get_titulo();
 		std::string idioma = cancionOriginal.get_idioma();
-		std::vector<int> idsDelAutor;
+		std::vector<IDdocumento_t> idsDelAutor;
 
 		// Verifico que no haya ninguna cancion ya indexada
 		// que tenga los mismos tres parametros anteriores
@@ -218,6 +218,8 @@ int Indexador::_anexar(std::string & directorioEntrada, std::string & directorio
 
 	}
 
+	indiceSecundarioFrases.finalizar_agregado();
+
 	return _cerrar_archivos_indices();
 }
 
@@ -229,7 +231,6 @@ void Indexador::_agregar_a_los_indices (
 {
 	/* ------ guardamos el registro de la cancion en un archivo maestro ------ */
 	PPMC compresor (CANTIDAD_ORDENES_PPMC);
-//	Aritmetico* compresor = new Aritmetico();
 	RegistroVariable* regComprimido = regCancionNoNormalizada.comprimir(&compresor);
 
 	long offsetInicialRegCancion = archivoMaestro.agregar_registro(regComprimido);
@@ -282,7 +283,8 @@ void Indexador::_agregar_a_los_indices (
 
 	/* ----- agregamos al indice por frase: frases ----*/
 	std::string letra = regCancion.get_letra();
-	indiceSecundarioFrases.agregar_texto(letra,id.get_dato());
+	indiceSecundarioFrases.agregar(letra,id.get_dato());
+
 
 	std::cout << "Se indexó " << nombreArchivo << " correctamente!" << std::endl;
 }
@@ -308,6 +310,8 @@ void Indexador::_indexar()
 			id.incrementar();
 		}
 	}
+	cout << "Finalizando indexación... Espere por favor." << endl;
+	indiceSecundarioFrases.finalizar_agregado();
 }
 
 int Indexador::indexar (std::string & directorioEntrada, std::string & directorioSalida, ResolvedorConsultas& rc)

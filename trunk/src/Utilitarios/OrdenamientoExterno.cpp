@@ -7,70 +7,75 @@
 
 #include "OrdenamientoExterno.h"
 
-OrdenamientoExterno::OrdenamientoExterno(string nombreArchivo) {
+OrdenamientoExterno::OrdenamientoExterno(string nombreArchivo)
+{
 	cantDeRuns=0;
 	archAOrdenar=nombreArchivo;
 }
 
-OrdenamientoExterno::~OrdenamientoExterno() {
+OrdenamientoExterno::~OrdenamientoExterno()
+{
+}
 
+void OrdenamientoExterno::ordenar_archivo()
+{
+	_generar_runs();
+	_merge();
 }
 
 void OrdenamientoExterno::_fusionar_2_archivos(string ruta1, string ruta2, string archFinal, bool temporal)
 {
+	Heap heap;
 
-Heap heap;
+	RegistroVariable regClaveMax;
 
-RegistroVariable regClaveMax;
+	int claveMax = CLAVE_TOPE;
+	regClaveMax.agregar_campo((char*)&claveMax,sizeof(claveMax));
 
-int claveMax;
-claveMax = CLAVE_TOPE;
-regClaveMax.agregar_campo((char*)&claveMax,sizeof(int));
+	ManejadorRegistrosVariables PrimerArchivoAUnir,SegundoArchivoAUnir;
+	PrimerArchivoAUnir.abrir_archivo(ruta1);
+	SegundoArchivoAUnir.abrir_archivo(ruta2);
 
-ManejadorRegistrosVariables PrimerArchivoAUnir,SegundoArchivoAUnir;
-PrimerArchivoAUnir.abrir_archivo(ruta1);
-SegundoArchivoAUnir.abrir_archivo(ruta2);
+	ManejadorRegistrosVariables archivoMerge;
+	archivoMerge.eliminar_archivo(archFinal);
+	archivoMerge.crear_archivo(archFinal);
+	archivoMerge.abrir_archivo(archFinal);
 
-ManejadorRegistrosVariables archivoMerge;
-archivoMerge.eliminar_archivo(archFinal);
-archivoMerge.crear_archivo(archFinal);
-archivoMerge.abrir_archivo(archFinal);
+	unsigned int indicePrimero=0;
+	unsigned int indiceSegundo=0;
 
-unsigned int indicePrimero=0;
-unsigned int indiceSegundo=0;
+	RegistroVariable regPrimero,regSegundo;
 
-RegistroVariable regPrimero,regSegundo;
+	PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
+	SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
 
-PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
-SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
-
-while ( heap.comparar_registros_variables(regPrimero,regClaveMax)==-1 || heap.comparar_registros_variables(regSegundo,regClaveMax)==-1 )
-{
-	//comparo y avanzo en el correspondiente
-	if (heap.comparar_registros_variables(regPrimero,regSegundo)==0 || heap.comparar_registros_variables(regPrimero,regSegundo)==-1)
+	while ( heap.comparar_registros_variables(regPrimero,regClaveMax)==-1 || heap.comparar_registros_variables(regSegundo,regClaveMax)==-1 )
 	{
-		archivoMerge.agregar_registro(&regPrimero);
-		indicePrimero++;
-		PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
-	}else{
-		archivoMerge.agregar_registro(&regSegundo);
-		indiceSegundo++;
-		SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
+		//comparo y avanzo en el correspondiente
+		if (heap.comparar_registros_variables(regPrimero,regSegundo)<=0)
+		{
+			archivoMerge.agregar_registro(&regPrimero);
+			indicePrimero++;
+			PrimerArchivoAUnir.get_registro_ocupado(&regPrimero,indicePrimero);
+		}else{
+			archivoMerge.agregar_registro(&regSegundo);
+			indiceSegundo++;
+			SegundoArchivoAUnir.get_registro_ocupado(&regSegundo,indiceSegundo);
+		}
 	}
-}
 
-if (temporal) {
-	archivoMerge.agregar_registro(&regClaveMax);
-}
+	if (temporal) {
+		archivoMerge.agregar_registro(&regClaveMax);
+	}
 
-//borrar los dos archivos y agregar el de merge al vector en la posicion 0.
-archivosTemporalesAFusionar.insert(archivosTemporalesAFusionar.begin(), archFinal);
+	//borrar los dos archivos y agregar el de merge al vector en la posicion 0.
+	archivosTemporalesAFusionar.insert(archivosTemporalesAFusionar.begin(), archFinal);
 
-PrimerArchivoAUnir.eliminar_archivo(ruta1);
-SegundoArchivoAUnir.eliminar_archivo(ruta2);
+	PrimerArchivoAUnir.eliminar_archivo(ruta1);
+	SegundoArchivoAUnir.eliminar_archivo(ruta2);
 
-archivosTemporalesAFusionar.pop_back();//saco los que uni y borre de disco
-archivosTemporalesAFusionar.pop_back();
+	archivosTemporalesAFusionar.pop_back();//saco los que uni y borre de disco
+	archivosTemporalesAFusionar.pop_back();
 
 }
 
@@ -85,10 +90,9 @@ void OrdenamientoExterno:: _generar_runs()
 	int cantRunsArmados=0;
 
 	int cantRegLeidos=0;
-	unsigned tamanioTotal=0;//del vector a ordenar por heapsort en RAM
+	int tamanioTotal=0;//del vector a ordenar por heapsort en RAM
 
 	RegistroVariable regVariableLeido;
-//	RegistroVariable* bufferOrdenamiento;
 	RegistroVariable bufferOrdenamiento[2000];
 
 	//lleno el heap por primera vez
@@ -96,35 +100,11 @@ void OrdenamientoExterno:: _generar_runs()
 	while ((tamanioTotal < TAM_MAX_BUFFER_ORDENAMIENTO)&&(archivoAOrdenar.get_cantidad_registros_ocupados()>cantRegLeidos))
 	{
 		archivoAOrdenar.get_registro_ocupado(&regVariableLeido, cantRegLeidos);
-
+		bufferOrdenamiento[cantRegLeidos]= regVariableLeido;
 		cantRegLeidos++;
 		tamanioTotal += sizeof(regVariableLeido);
-
-		if (cantRegLeidos > 1) //tengo algo dentro del buffer
-		{
-//			RegistroClave* bufferAuxiliar = new RegistroClave[cantRegLeidos - 1];
-//			for (int i=0;i<cantRegLeidos-1;i++)
-//			{
-//				RegistroClave copia(bufferOrdenamiento[i]);
-//				bufferAuxiliar[i]=copia;
-//			}
-//			delete[] bufferOrdenamiento;
-//			bufferOrdenamiento = new RegistroClave[cantRegLeidos-1];
-
-//			bufferOrdenamiento = bufferAuxiliar;
-
-//			delete[] bufferAuxiliar;
-
-			bufferOrdenamiento[cantRegLeidos-1]=regVariableLeido;
-
-//			bufferOrdenamiento[cantRegLeidos - 1] = regClaveLeido;
-		} else //no tengo nada dentro
-		{
-//			bufferOrdenamiento = new RegistroClave[1];
-			bufferOrdenamiento[0]= regVariableLeido;
-		}
 	}
-//replacement selection
+	//replacement selection
 	Heap heap;
 	int tamanioHeapInicial=cantRegLeidos;
 	int tamanioHeapActual=tamanioHeapInicial;
@@ -133,11 +113,7 @@ void OrdenamientoExterno:: _generar_runs()
 	{
 		heap.transformar_en_heap(bufferOrdenamiento,tamanioHeapActual);
 
-		//obtengo el numero de run
-		std::string numeroRun;
-		std::stringstream out;
-		out << cantRunsArmados;
-		numeroRun = out.str();
+		std::string numeroRun = utilitarios::int_a_string(cantRunsArmados);
 
 		//creo el archivo temporal y guardo nombre en vector de runs
 		string nombreDelRun=nombreGeneralDeRun+numeroRun+extension;
@@ -149,6 +125,7 @@ void OrdenamientoExterno:: _generar_runs()
 
 		archivoTemporal.crear_archivo(nombreDelRun);
 		archivoTemporal.abrir_archivo(nombreDelRun);
+
 		//si no se acaba el archivo, y tengo por lo menos 1 run, hago replacement selection
 		while (tamanioHeapActual>0)//si el heap no esta vacio
 		{
@@ -185,17 +162,15 @@ void OrdenamientoExterno:: _generar_runs()
 			}
 		}
 
-		int claveMax;
-		claveMax = CLAVE_TOPE;
+		int claveMax = CLAVE_TOPE;
 
 		RegistroVariable regClaveMax;
 
-		regClaveMax.agregar_campo((char*)&claveMax,sizeof(int));
+		regClaveMax.agregar_campo((char*)&claveMax,sizeof(claveMax));
 		archivoTemporal.agregar_registro(& regClaveMax);
 
 		tamanioHeapActual=tamanioHeapInicial;
 
-//		delete[] bufferOrdenamiento;
 		cantRunsArmados++;
 	}
 }
@@ -206,15 +181,15 @@ void OrdenamientoExterno::_merge()
 	Heap heap;
 
 	int numeroDeMerge=0;
+
 	//agrego un run "vacio" para fusionar contra ese, poco eficiente, pero soluciona mi problema rapido
 	if (archivosTemporalesAFusionar.size()==1)
 	{
 
 		RegistroVariable regClaveMax;
 
-		int claveMax;
-		claveMax = CLAVE_TOPE;
-		regClaveMax.agregar_campo((char*)&claveMax,sizeof(int));
+		int claveMax = CLAVE_TOPE;
+		regClaveMax.agregar_campo((char*)&claveMax,sizeof(claveMax));
 
 		string nombreDelRun="run1.dat";
 
@@ -233,14 +208,8 @@ void OrdenamientoExterno::_merge()
 	while (archivosTemporalesAFusionar.size() > 2)
 	{
 		//genero archivo donde va la fusion
-		std::string rutaMerge;
-
-		std::string numeroMerge;
-		std::stringstream out;
-		out << numeroDeMerge;
-		numeroMerge = out.str();
-
-		rutaMerge= "Merge"+numeroMerge+".dat";
+        std::string numeroMerge = utilitarios::int_a_string(numeroDeMerge);
+        std::string rutaMerge= "Merge"+numeroMerge+".dat";
 
 		_fusionar_2_archivos(archivosTemporalesAFusionar[archivosTemporalesAFusionar.size()-1], archivosTemporalesAFusionar[archivosTemporalesAFusionar.size()-2], rutaMerge, true);
 
@@ -250,10 +219,4 @@ void OrdenamientoExterno::_merge()
 	//borro el original para sobreescribirlo con el ordenado
 	_fusionar_2_archivos(archivosTemporalesAFusionar[archivosTemporalesAFusionar.size()-1], archivosTemporalesAFusionar[archivosTemporalesAFusionar.size()-2], archAOrdenar, false);
 
-}
-
-void OrdenamientoExterno::ordenar_archivo()
-{
-	_generar_runs();
-	_merge();
 }

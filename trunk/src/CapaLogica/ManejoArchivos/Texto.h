@@ -26,8 +26,8 @@ class Texto {
 		int get_proxima_palabra(std::string & palabra);
 
 	private:
-	    std::vector<std::string> elTexto;
-	    unsigned int contador_palabra;
+	    std::vector<std::string> texto_parseado;
+	    unsigned int contador_palabras_parseadas;
 
 	    bool _es_delimitador(char c);
 	    char _to_lowercase (char c);

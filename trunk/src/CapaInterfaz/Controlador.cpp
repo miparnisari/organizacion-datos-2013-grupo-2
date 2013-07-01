@@ -19,11 +19,15 @@ void Controlador::mostrar_contenido(int id, RegistroCancion* reg)
 	if (reg == NULL)
 		return;
 	std::cout << "----------------------------------------------" << std::endl;
-	std::cout << "- ID  = " << id << std::endl;
+	std::cout << "- ID DE LA CANCIÓN = " << id << std::endl;
 	std::cout << "- AUTOR/ES  = ";
 	for (unsigned short i = 0; i < reg->get_cantidad_autores(); i++)
-		std::cout << reg->get_autor(i) << ", " << std::endl;
+	{
+		std::cout << reg->get_autor(i) << ", ";
+	}
+	std::cout << std::endl;
 	std::cout << "- TITULO = " << reg->get_titulo() << std::endl;
+	std::cout << "- LETRAS = " << std::endl;
 	std::cout << reg->get_letra() << std::endl;
 	std::cout << "----------------------------------------------" << std::endl;
 
@@ -41,7 +45,7 @@ int Controlador::consultar_titulo( std::string & directorioSalida, std::string &
 
 	generador_estadisticas.aumentar_frecuencia_titulo(tituloNormalizado);
 	resolvedor_consultas.set_directorio_indice(directorioSalida);
-	std::vector <int> ids = resolvedor_consultas.get_ids_cancion_titulo(titulo);
+	std::vector <IDdocumento_t> ids = resolvedor_consultas.get_ids_cancion_titulo(titulo);
 	if (ids.size() == 0)
 	{
 		std::cout << "No se encontraron canciones con título '" << titulo << "'." << std::endl;
@@ -62,7 +66,7 @@ int Controlador::consultar_autor( std::string & directorioSalida, std::string & 
 
 	generador_estadisticas.aumentar_frecuencia_autor(autorNormalizado);
 	resolvedor_consultas.set_directorio_indice(directorioSalida);
-	std::vector <int> ids = resolvedor_consultas.get_id_canciones_autor(autorNormalizado);
+	std::vector <IDdocumento_t> ids = resolvedor_consultas.get_id_canciones_autor(autorNormalizado);
 	if (ids.size() == 0)
 	{
 		std::cout << "El autor '" << autor << "' no fue encontrado." << std::endl;
@@ -83,7 +87,7 @@ int Controlador::consultar_frase( std::string & directorioSalida, std::string & 
 
 	generador_estadisticas.aumentar_frecuencia_frase(fraseNormalizada);
 	resolvedor_consultas.set_directorio_indice(directorioSalida);
-	std::vector <int> ids = resolvedor_consultas.get_ids_canciones_frases(fraseNormalizada);
+	std::vector <IDdocumento_t> ids = resolvedor_consultas.get_ids_canciones_frases(fraseNormalizada);
 	for (unsigned int i = 0; i < ids.size(); i ++)
 	{
 		generador_estadisticas.aumentar_frecuencia_frase(frase);

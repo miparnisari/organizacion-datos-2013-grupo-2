@@ -1,6 +1,6 @@
 # Definiciones comunes a todos los make
 CC	= g++
-CFLAGS = -Wall -std=gnu++0x -Wunused -Wunreachable-code -g -ggdb
+CFLAGS = -Wall -std=c++0x -Wunused -Wunreachable-code -g -ggdb
 
 #Comando para remover
 RM	= rm

@@ -8,12 +8,12 @@
 #include "Texto.h"
 
 Texto::Texto() {
-	contador_palabra = 0;
-	elTexto.clear();
+	contador_palabras_parseadas = 0;
+	texto_parseado.clear();
 }
 
 Texto::~Texto() {
-	elTexto.clear();
+	texto_parseado.clear();
 }
 
 bool Texto::_es_delimitador(char c)
@@ -29,8 +29,10 @@ bool Texto::_es_delimitador(char c)
 	return false;
 }
 
-char Texto::_to_lowercase (char c) {
-	if (c >= 65 && c <= 90) {
+char Texto::_to_lowercase (char c)
+{
+	if (c >= 65 && c <= 90)
+	{
 		return c + 32;
 	}
 	return c;
@@ -56,7 +58,7 @@ int Texto::parsear(std::string unTexto)
     	if (_es_delimitador(caracterActual) )
     	{
     		if (palabraActual.size() > 0) {
-    			this->elTexto.push_back(palabraActual);
+    			this->texto_parseado.push_back(palabraActual);
     			palabraActual.clear();
     			numberChars = 0;
     		}
@@ -71,7 +73,7 @@ int Texto::parsear(std::string unTexto)
 			if (palabraActual.size() == numberChars && numberChars == LONGITUD_MAXIMA_NUMERO_INDEXABLE)
 			{
 				numberChars = 0;
-				this->elTexto.push_back(palabraActual);
+				this->texto_parseado.push_back(palabraActual);
 				palabraActual.clear();
 			}
     	}
@@ -81,20 +83,20 @@ int Texto::parsear(std::string unTexto)
 		i ++;
 
     }
-    if (! _es_delimitador(caracterActual))
-    	this->elTexto.push_back(palabraActual);
+    if (! _es_delimitador(caracterActual) && ! palabraActual.empty())
+    	this->texto_parseado.push_back(palabraActual);
 
-    return this->elTexto.size();
+    return this->texto_parseado.size();
 }
 
-int Texto::get_proxima_palabra(std::string & palabra)
+int Texto::get_proxima_palabra(std::string & proxima_palabra)
 {
-	unsigned int cantidadPalabras = elTexto.size();
-	if (contador_palabra +1 > cantidadPalabras)
+	unsigned int cantidadPalabras = texto_parseado.size();
+	if (contador_palabras_parseadas +1 > cantidadPalabras)
 		return RES_FIN;
 
-	palabra = elTexto.at(contador_palabra);
-	contador_palabra++;
+	proxima_palabra = texto_parseado.at(contador_palabras_parseadas);
+	contador_palabras_parseadas++;
 	return RES_OK;
 }
 
