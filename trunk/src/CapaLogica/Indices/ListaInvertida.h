@@ -14,7 +14,6 @@
 
 class ListaInvertida {
 
-
 	private:
 		std::string nombre_archivo;
 		ManejadorRegistrosVariables archivo;		// Registro::(IDDocumento,cantidadPosiciones,refListaPos)
@@ -29,9 +28,9 @@ class ListaInvertida {
 		int abrir(std::string nombre_archivo);
 		int cerrar();
 
-		ReferenciaListaInvertida_t guardar_listas (const std::vector<ListaInvertida_t> & listas);
+		ReferenciaListaInvertida_t agregar (const std::vector<ListaInvertida_t> & listas);
 
-		std::vector<ListaInvertida_t> recuperar_listas (const ReferenciaListaInvertida_t ref_lista);
+		std::vector<ListaInvertida_t> devolver (const ReferenciaListaInvertida_t ref_lista);
 };
 
 #endif /* LISTAINVERTIDA_H_ */

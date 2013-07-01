@@ -13,16 +13,12 @@
 #include "Definiciones.h"
 #include "../../Utilitarios/Logger.h"
 #include "../../Utilitarios/Utilitarios.h"
-#include <cassert>
 
 class ListaPosicionesTerminosEnDocumentos {
 
 	private:
 		std::string nombre_archivo;
 		ManejadorRegistrosVariables archivo;		// Registro::(IDtermino, IDdocumento, posicion)
-
-		void _comparar_registros();
-
 
 	public:
 		ListaPosicionesTerminosEnDocumentos();
@@ -36,7 +32,7 @@ class ListaPosicionesTerminosEnDocumentos {
 
 		int ordenar_por_ID_termino();
 
-		int agregar(const ListaPosicionesTerminosEnDocumentos_t & lista);
+		int agregar (const ListaPosicionesTerminosEnDocumentos_t & lista);
 
 		int devolver (int posicion, ListaPosicionesTerminosEnDocumentos_t & lista );
 

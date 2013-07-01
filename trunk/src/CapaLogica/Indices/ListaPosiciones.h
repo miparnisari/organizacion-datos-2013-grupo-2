@@ -30,9 +30,9 @@ class ListaPosiciones {
 		int abrir(std::string nombre_archivo);
 		int cerrar();
 
-		ReferenciaListaPos_t guardar_lista (const ListaPos_t & lista) ;
+		ReferenciaListaPos_t guardar (const ListaPos_t & lista) ;
 
-		ListaPos_t devolver_lista (const CantidadPosiciones_t cuantos, const ReferenciaListaPos_t desde);
+		ListaPos_t devolver (const CantidadPosiciones_t cuantos, const ReferenciaListaPos_t desde);
 };
 
 #endif /* LISTAPOSICIONES_H_ */

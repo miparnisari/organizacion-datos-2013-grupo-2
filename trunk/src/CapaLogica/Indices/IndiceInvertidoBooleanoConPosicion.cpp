@@ -162,7 +162,7 @@ int IndiceInvertidoBooleanoConPosicion::finalizar_agregado()
 
 		ReferenciaListaInvertida_t ref_lista_invertida = _guardar_lista_invertida(id_termino_actual,vector_IDdoc_posTermino);
 
-		termino = listasTerminos.get_termino(id_termino_actual);
+		termino = listasTerminos.devolver(id_termino_actual);
 
 		vocabulario.actualizar_referencia_lista_invertida(termino,ref_lista_invertida);
 
@@ -202,14 +202,14 @@ ReferenciaListaInvertida_t IndiceInvertidoBooleanoConPosicion::_guardar_lista_in
 		}
 
 		sort(v_posiciones_un_id_doc.begin(),v_posiciones_un_id_doc.end());
-		ReferenciaListaPos_t ref_lista_pos = listasPosicion.guardar_lista(v_posiciones_un_id_doc);
+		ReferenciaListaPos_t ref_lista_pos = listasPosicion.guardar(v_posiciones_un_id_doc);
 		CantidadPosiciones_t cantidad_posiciones = v_posiciones_un_id_doc.size();
 		ListaInvertida_t lista_invertida;
 		lista_invertida.id_doc = id_doc_actual;
 		lista_invertida.cantidad_pos = cantidad_posiciones;
 		lista_invertida.ref_lista_pos = ref_lista_pos;
 
-		Termino_t termino = listasTerminos.get_termino(id_termino);
+		Termino_t termino = listasTerminos.devolver(id_termino);
 
 		vector_listas_invertidas.push_back(lista_invertida);
 
@@ -218,7 +218,7 @@ ReferenciaListaInvertida_t IndiceInvertidoBooleanoConPosicion::_guardar_lista_in
 			id_doc_actual = v_IDdoc_posTermino[i].first;
 	}
 
-	ref_lista_inv = listasInvertidas.guardar_listas(vector_listas_invertidas);
+	ref_lista_inv = listasInvertidas.agregar(vector_listas_invertidas);
 	return ref_lista_inv;
 
 }
@@ -239,7 +239,7 @@ int IndiceInvertidoBooleanoConPosicion::_buscar_termino(const Termino_t & termin
 	int res_busqueda = vocabulario.buscar_termino(termino, id_termino, ref_lista_invertida);
 	if (res_busqueda == RES_OK)
 	{
-		std::vector<ListaInvertida_t> vectorListasInvertidas = listasInvertidas.recuperar_listas(ref_lista_invertida);
+		std::vector<ListaInvertida_t> vectorListasInvertidas = listasInvertidas.devolver(ref_lista_invertida);
 
 		const int CANTIDAD_LISTAS_INVERTIDAS = vectorListasInvertidas.size();
 
@@ -251,7 +251,7 @@ int IndiceInvertidoBooleanoConPosicion::_buscar_termino(const Termino_t & termin
 			CantidadPosiciones_t cantidad_posiciones = lista_invertida.cantidad_pos;
 			ReferenciaListaPos_t ref_lista_pos = lista_invertida.ref_lista_pos;
 
-			ListaPos_t lista_posiciones = listasPosicion.devolver_lista(cantidad_posiciones,ref_lista_pos);
+			ListaPos_t lista_posiciones = listasPosicion.devolver(cantidad_posiciones,ref_lista_pos);
 
 			for (unsigned int j = 0; j < lista_posiciones.size(); j ++)
 			{
