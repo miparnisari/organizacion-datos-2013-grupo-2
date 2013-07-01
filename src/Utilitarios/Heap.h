@@ -11,18 +11,18 @@ using namespace std;
 
 class Heap
 {
-private:
-    int tamanio;
-    void CargarVectorYTransformarEnHeap(RegistroVariable vector[]);
-    void reestructurar_Heap(RegistroVariable vectorAOrdenar[],int desde,int hasta);
+	private:
+		int tamanio;
+		void _cargar_vector_y_transformar_en_heap(RegistroVariable vector[]);
+		void _reestructurar_heap(RegistroVariable vectorAOrdenar[],int desde,int hasta);
 
-public:
-    Heap();
-    ~Heap();
+	public:
+		Heap();
+		~Heap();
 
-    void transformar_en_heap(RegistroVariable vectorAOrdenar[],int tamanio);
+		void transformar_en_heap(RegistroVariable vectorAOrdenar[],int tamanio);
 
-    int comparar_registros_variables(RegistroVariable reg1,RegistroVariable reg2);
+		int comparar_registros_variables(RegistroVariable reg1,RegistroVariable reg2);
 };
 
 #endif // HEAP_H

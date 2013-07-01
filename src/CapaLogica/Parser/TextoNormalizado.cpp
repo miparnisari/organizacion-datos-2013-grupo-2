@@ -5,18 +5,18 @@
  *      Author: maine
  */
 
-#include "Texto.h"
+#include "TextoNormalizado.h"
 
-Texto::Texto() {
+TextoNormalizado::TextoNormalizado() {
 	contador_palabras_parseadas = 0;
 	texto_parseado.clear();
 }
 
-Texto::~Texto() {
+TextoNormalizado::~TextoNormalizado() {
 	texto_parseado.clear();
 }
 
-bool Texto::_es_delimitador(char c)
+bool TextoNormalizado::_es_delimitador(char c)
 {
 	const char delimit[31] = {'=','`','\'',' ','\n','\t','\b','#','&','.',';',':',',','_','~','(',')', '[', ']','{','}','?','!','<','>','"','@','/','$','%','*'};
 	unsigned int i;
@@ -29,7 +29,7 @@ bool Texto::_es_delimitador(char c)
 	return false;
 }
 
-char Texto::_to_lowercase (char c)
+char TextoNormalizado::_to_lowercase (char c)
 {
 	if (c >= 65 && c <= 90)
 	{
@@ -38,7 +38,7 @@ char Texto::_to_lowercase (char c)
 	return c;
 }
 
-int Texto::parsear(std::string unTexto)
+int TextoNormalizado::parsear(std::string unTexto)
 {
 	if (unTexto.size() == 0)
 		return 0;
@@ -89,7 +89,7 @@ int Texto::parsear(std::string unTexto)
     return this->texto_parseado.size();
 }
 
-int Texto::get_proxima_palabra(std::string & proxima_palabra)
+int TextoNormalizado::get_proxima_palabra(std::string & proxima_palabra)
 {
 	unsigned int cantidadPalabras = texto_parseado.size();
 	if (contador_palabras_parseadas +1 > cantidadPalabras)

@@ -69,7 +69,7 @@ dentro del documento p:
 		b. Se registra (idT, idD, p) en el archivo de posiciones de términos en documentos.
 	 *
 	 */
-	Texto doc_parseado;
+	TextoNormalizado doc_parseado;
 	doc_parseado.parsear(doc);
 
 	Termino_t termino;
@@ -319,7 +319,7 @@ int IndiceInvertidoBooleanoConPosicion::buscar_frase(const string & frase, vecto
 {
 	Termino_t termino;
 	id_docs.clear();
-	Texto frase_parseada;
+	TextoNormalizado frase_parseada;
 	frase_parseada.parsear(frase);
 
 	vector<pair<IDdocumento_t,PosicionTermino_t> > vector_termino_dos;

@@ -14,7 +14,7 @@
 #include "../../Utilitarios/Logger.h"
 #include "../../Utilitarios/Utilitarios.h"
 
-#include "../../CapaLogica/ManejoArchivos/Texto.h"
+#include "../../CapaLogica/Parser/TextoNormalizado.h"
 #include "Definiciones.h"
 #include "Vocabulario.h"
 #include "ListaInvertida.h"

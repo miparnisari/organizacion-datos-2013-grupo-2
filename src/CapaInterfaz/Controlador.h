@@ -11,7 +11,7 @@
 #include "Indexador.h"
 #include "GeneradorEstadisticasConsultas.h"
 #include "ResolvedorConsultas.h"
-#include "../Utilitarios/Normalizador.h"
+#include "../CapaLogica/Parser/TextoNormalizado.h"
 
 class Controlador {
 

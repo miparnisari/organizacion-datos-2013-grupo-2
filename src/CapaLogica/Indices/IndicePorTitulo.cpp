@@ -81,8 +81,6 @@ int IndicePorTitulo::buscar(const std::string & titulo, vector<IDdocumento_t> & 
 	return RES_OK;
 }
 
-
-
 int IndicePorTitulo::eliminar(const std::string & titulo, const IDdocumento_t IDcancion)
 {
 	ClaveX clave;

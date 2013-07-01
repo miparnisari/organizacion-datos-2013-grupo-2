@@ -12,15 +12,14 @@
 #include <string>
 #include <iostream>
 
-class Texto {
+class TextoNormalizado {
 	public:
-		Texto();
-		virtual ~Texto();
+		TextoNormalizado();
+		virtual ~TextoNormalizado();
 
 		/* Parsea un string de palabras a un vector de palabras sin espacios delimitadores ni numeros muy grandes.
 		Devuelve la cantidad de palabras en la que se descompuso el texto. */
 		int parsear(std::string unTexto);
-
 
 		/* Devuelve la siguiente palabra del texto a procesar, o RES_FIN si no hay mas palabras. */
 		int get_proxima_palabra(std::string & palabra);
