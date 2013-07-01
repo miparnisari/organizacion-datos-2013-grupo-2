@@ -44,16 +44,15 @@ void Heap::reestructurar_Heap(RegistroVariable vectorAOrdenar[],int desde,int ha
     }
 }
 
-void Heap::transformar_en_heap(RegistroVariable vectorAOrdenar[],int tamanio)
+void Heap::transformar_en_heap(RegistroVariable vectorAOrdenar[],int un_tamanio)
 {
+    this->tamanio=un_tamanio;
 
-    this->tamanio=tamanio;
-
-    int UltimoConHijo=(tamanio-2)/2;
+    int UltimoConHijo=(un_tamanio-2)/2;
 
     for(int raiz=UltimoConHijo; raiz>=0; raiz--)
     {
-        this->reestructurar_Heap(vectorAOrdenar,raiz,tamanio-1);
+        this->reestructurar_Heap(vectorAOrdenar,raiz,un_tamanio-1);
     }
 }
 
@@ -69,44 +68,37 @@ int Heap::comparar_registros_variables(RegistroVariable reg1,RegistroVariable re
 
 	if (resPrimerCampo==0)
 	{
-		if (reg1.get_cantidad_campos()>=2)
-		{
-
-			int campo3Int;
-			reg1.recuperar_campo((char*)&campo3Int,1);
-//			campo2Reg1[reg1.get_tamanio_campo(1)]='\0';
-//			string campo2Reg1Str=campo2Reg1;
-
-			int campo4Int;
-			reg2.recuperar_campo((char*)&campo4Int,1);
-//			char* campo2Reg2 = new char[reg2.get_tamanio_campo(1)];
-//			reg2.recuperar_campo(campo2Reg2,1);
-//			int campo4Int=campo2Reg2;
-//			campo2Reg2[reg2.get_tamanio_campo(1)]='\0';
-//			string campo2Reg2Str=campo2Reg2;
-
-			int resSegundoCampo= campo3Int - campo4Int;
-
-			if (resSegundoCampo==0)
+			if (reg1.get_cantidad_campos()>=2)
 			{
-				return 0;
-			}else if (resSegundoCampo>0)
+
+					int campo3Int;
+					reg1.recuperar_campo((char*)&campo3Int,1);
+
+					int campo4Int;
+					reg2.recuperar_campo((char*)&campo4Int,1);
+
+					int resSegundoCampo= campo3Int - campo4Int;
+
+					if (resSegundoCampo==0)
+					{
+							return 0;
+					}else if (resSegundoCampo>0)
+					{
+							return 1;
+					}else{
+							return -1;
+					}
+			}else
 			{
-				return 1;
-			}else{
-				return -1;
+					return 0;
 			}
-		}else
-		{
-			return 0;
-		}
 	}else{
-		if (resPrimerCampo>0)
-		{
-			return 1;
-		}else
-		{
-			return -1;
-		}
+			if (resPrimerCampo>0)
+			{
+					return 1;
+			}else
+			{
+					return -1;
+			}
 	}
 }

@@ -12,8 +12,8 @@
 #include "../CapaLogica/ArbolBMas/ArbolBMas.h"
 #include "../CapaLogica/ArbolBMas/IterArbolBMas.h"
 
-#include "../CapaLogica/Indices/IndiceInvertido.h"
-#include "../CapaLogica/Indices/IndiceInvertidoPorTitulo.h"
+#include "../CapaLogica/Indices/IndiceInvertidoBooleanoConPosicion.h"
+#include "../CapaLogica/Indices/IndicePorTitulo.h"
 
 #include "../CapaLogica/ManejoArchivos/RegistroCancion.h"
 #include "../CapaLogica/ManejoArchivos/ClaveNumerica.h"
@@ -39,11 +39,11 @@ class Indexador
 		static const int OPCION_INDEXAR = 1;
 		static const int OPCION_ANEXAR = 2;
 
-		IndiceInvertido indiceSecundarioFrases;
+		IndiceInvertidoBooleanoConPosicion indiceSecundarioFrases;
 		HashingExtensible indicePrimario;
 		ManejadorRegistrosVariables archivoMaestro;
 		ArbolBMas indiceSecundarioAutor;
-		IndiceInvertidoPorTitulo indiceSecundarioTitulo;
+		IndicePorTitulo indiceSecundarioTitulo;
 		HashingExtensible documentos;
 		ParserCanciones parser;
 

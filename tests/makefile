@@ -2,7 +2,7 @@ include ../src/makefile.inc
 
 DIRS	= ../src/Utilitarios ../src/CapaFisica ../src/CapaLogica ../src/CapaInterfaz 
 SUBDIRS = ../src/CapaLogica/ManejoArchivos ../src/CapaLogica/ArbolBMas ../src/CapaLogica/Compresor ../src/CapaLogica/HashingExtensible ../src/CapaLogica/Indexador  ../src/CapaLogica/Indices ../src/CapaLogica/Parser
-OBJS = TestModeloProbabilistico.o TestPPMC.o TestUtilitarios.o TestIntervalo.o TestParserCanciones.o TestClave.o TestArchivoListas.o TestIndicePorTitulo.o TestTabla.o TestArbol.o TestManejadorArchivoDatosBasicos.o TestRegistroCancion.o TestOrdenamientoExterno.o TestHeap.o  TestRegistroClave.o TestNodoInterno.o TestNodoSecuencial.o TestBloque.o TestHashingExtensible.o TestManejadorBloques.o TestManejadorRegistrosVariables.o TestRegistroVariable.o TestIndiceInvertidoPorFrase.o TestNormalizador.o TestCompresorAritmetico.o TestBufferBits.o TestOrden.o
+OBJS = TestModeloProbabilistico.o TestPPMC.o TestUtilitarios.o TestIntervalo.o TestParserCanciones.o TestClave.o TestIndiceInvertidoBooleanoConPosicion.o TestIndicePorTitulo.o TestTabla.o TestArbol.o TestManejadorArchivoDatosBasicos.o TestRegistroCancion.o TestOrdenamientoExterno.o TestHeap.o TestRegistroClave.o TestNodoInterno.o TestNodoSecuencial.o TestBloque.o TestHashingExtensible.o TestManejadorBloques.o TestManejadorRegistrosVariables.o TestRegistroVariable.o TestNormalizador.o TestCompresorAritmetico.o TestBufferBits.o TestOrden.o
 GTEST_LIB = ../lib/gtest-1.6.0/make/gtest.a
 EXTERNOBJ =  $(foreach path, $(DIRS), $(wildcard $(path)/*.o))
 EXTERNOBJ-CAPALOGICA = $(foreach path, $(SUBDIRS), $(wildcard $(path)/*.o))

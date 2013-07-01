@@ -14,7 +14,7 @@ using namespace std;
 
 #include "../Utilitarios/Heap.h"
 #include "../CapaFisica/ManejadorRegistrosVariables.h"
-
+#include "Utilitarios.h"
 
 class OrdenamientoExterno {
 public:

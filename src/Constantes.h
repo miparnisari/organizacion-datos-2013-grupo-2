@@ -98,16 +98,13 @@ const int RES_BALANCEO				= -5;
  * Ordenamiento Externo
  */
 
-const unsigned int TAM_MAX_BUFFER_ORDENAMIENTO	=8192; //en bytes
-const int CLAVE_TOPE								= 99999;
+const int TAM_MAX_BUFFER_ORDENAMIENTO	= 12; // 8 kb
+const int CLAVE_TOPE					= 99999;
 
 /*
- *Manejo del IndiceInvertido
+ * Parseo de texto
  */
-const unsigned int LONGITUD_MAXIMA_NUMERO_INDEXABLE = 4;
-const int NO_EXISTE_INDICE                         	=-1;
-const int NO_PERTENECE								= -2;
-const int LISTA_VACIA								=-100;
+const unsigned int		LONGITUD_MAXIMA_NUMERO_INDEXABLE = 4;
 
 /*
  * Compresion

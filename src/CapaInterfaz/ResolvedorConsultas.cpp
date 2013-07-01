@@ -24,39 +24,29 @@ void ResolvedorConsultas::set_directorio_indice(std::string & dirSalida)
 /*
  * Devuelve un vector de los ids de las canciones que tienen una frase dada.
  */
-std::vector<int> ResolvedorConsultas::get_ids_canciones_frases(std::string & frase)
+std::vector<IDdocumento_t> ResolvedorConsultas::get_ids_canciones_frases(std::string frase)
 {
-	std::vector<int> ids;
-	RegistroVariable listaInvertida;
-	indiceSecundarioFrases.abrir_indice(directorioSalida+'/',std::string(FILENAME_IDX_SECUN_FRASES));
+	std::vector<IDdocumento_t> ids;
+	indiceSecundarioFrases.abrir(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_FRASES));
 
-	int res = indiceSecundarioFrases.buscar_frase(frase,listaInvertida);
-	if (res != RES_OK || listaInvertida.get_cantidad_campos() == 0)
+	indiceSecundarioFrases.buscar_frase(frase,ids);
+	if (ids.size() == 0)
 	{
 		std::cout << "La frase '" << frase << "' no fue encontrada." << std::endl;
 	}
 	else {
-
-		// Cada campo de la lista invertida tiene un ID de cancion
-		unsigned int q = listaInvertida.get_cantidad_campos();
-		for (unsigned int i = 0; i < q; i++)
-		{
-			int iDdoc;
-			listaInvertida.recuperar_campo((char*)&iDdoc,i);
-			ids.push_back(iDdoc);
-		}
 	}
 
-	indiceSecundarioFrases.cerrar_indice();
+	indiceSecundarioFrases.cerrar();
 	return ids;
 }
 
 /*
  * Devuelve un vector de los ids de las canciones de un autor dado.
  */
-std::vector<int> ResolvedorConsultas::get_id_canciones_autor(std::string & autor)
+std::vector<IDdocumento_t> ResolvedorConsultas::get_id_canciones_autor(std::string & autor)
 {
-	std::vector<int> ids;
+	std::vector<IDdocumento_t> ids;
 
 	indiceSecundarioAutor.abrir(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_AUTOR),"rb+");
 	IterArbolBMas buscador(indiceSecundarioAutor);
@@ -99,9 +89,9 @@ std::vector<int> ResolvedorConsultas::get_id_canciones_autor(std::string & autor
 /*
  * Devuelve el ID de la cancion con el titulo dado.
  */
-vector<int> ResolvedorConsultas::get_ids_cancion_titulo(std::string & titulo)
+std::vector<IDdocumento_t> ResolvedorConsultas::get_ids_cancion_titulo(std::string & titulo)
 {
-	vector<int> id_docs;
+	vector<IDdocumento_t> id_docs;
 	indiceSecundarioTitulo.abrir_indice(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_TITULO));
 	indiceSecundarioTitulo.buscar(titulo,id_docs);
 	indiceSecundarioTitulo.cerrar_indice();
@@ -111,7 +101,7 @@ vector<int> ResolvedorConsultas::get_ids_cancion_titulo(std::string & titulo)
 /*
  * Devuelve el registro completo de la cancion cuyo ID es el dado.
  */
-RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
+RegistroCancion* ResolvedorConsultas::get_reg_completo (IDdocumento_t id_cancion)
 {
 	indicePrimario.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_IDX_PRIM));
 	std::string letra = "";
@@ -130,7 +120,7 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
 
 	PPMC* compresor = new PPMC(CANTIDAD_ORDENES_PPMC);
 
-	RegistroVariable* regVariableComprimido = new RegistroVariable();
+	RegistroCancion* regVariableComprimido = new RegistroCancion();
 	archivoMaestro.get_registro_por_offset(regVariableComprimido,offset);
 
 	RegistroCancion* regDescomprimido = new RegistroCancion();
@@ -145,7 +135,7 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (int id_cancion)
  * Devuelve el nombre del archivo (incluyendo path relativo) de la cancion
  * con ID dado.
  */
-std::string ResolvedorConsultas::get_nombre_archivo (int id_cancion)
+std::string ResolvedorConsultas::get_nombre_archivo (IDdocumento_t id_cancion)
 {
 	documentos.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ID_DOCS));
 

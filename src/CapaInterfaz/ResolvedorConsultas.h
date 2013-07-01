@@ -14,14 +14,14 @@
 #include "../CapaLogica/HashingExtensible/HashingExtensible.h"
 #include "../CapaLogica/ArbolBMas/ArbolBMas.h"
 #include "../CapaLogica/ArbolBMas/IterArbolBMas.h"
-#include "../CapaLogica/Indices/IndiceInvertido.h"
-#include "../CapaLogica/Indices/IndiceInvertidoPorTitulo.h"
+#include "../CapaLogica/Indices/IndiceInvertidoBooleanoConPosicion.h"
+#include "../CapaLogica/Indices/IndicePorTitulo.h"
 
 #include "../CapaLogica/ManejoArchivos/ClaveX.h"
 #include "../CapaLogica/ManejoArchivos/RegistroCancion.h"
 #include "../Constantes.h"
 #include "../CapaLogica/Compresor/PPMC.h"
-#include "../CapaLogica/Compresor/Aritmetico.h"
+#include "../CapaLogica/Indices/Definiciones.h"
 
 class ResolvedorConsultas {
 public:
@@ -30,19 +30,22 @@ public:
 
 	void set_directorio_indice(std::string & dirSalida);
 
-	std::vector<int> get_id_canciones_autor(std::string & autor);
-	std::string get_nombre_archivo (int id_cancion);
-	std::vector<int> get_ids_canciones_frases(std::string & frase);
-	RegistroCancion* get_reg_completo (int id_cancion);
-	std::vector<int> get_ids_cancion_titulo(std::string & titulo);
+	std::vector<IDdocumento_t> get_id_canciones_autor(std::string & autor);
+
+	std::vector<IDdocumento_t> get_ids_canciones_frases(std::string frase);
+
+	std::vector<IDdocumento_t> get_ids_cancion_titulo(std::string & titulo);
+
+	std::string get_nombre_archivo (IDdocumento_t id_cancion);
+	RegistroCancion* get_reg_completo (IDdocumento_t id_cancion);
 
 
 private:
 	HashingExtensible indicePrimario;
 	ManejadorRegistrosVariables archivoMaestro;
 	ArbolBMas indiceSecundarioAutor;
-	IndiceInvertidoPorTitulo indiceSecundarioTitulo;
-	IndiceInvertido indiceSecundarioFrases;
+	IndicePorTitulo indiceSecundarioTitulo;
+	IndiceInvertidoBooleanoConPosicion indiceSecundarioFrases;
 	HashingExtensible documentos;
 
 	std::string directorioSalida;

@@ -7,8 +7,9 @@
 #include "../../CapaLogica/ManejoArchivos/RegistroClave.h"
 #include "../../Constantes.h"
 #include "../../CapaLogica/ManejoArchivos/RegistroCancion.h"
+#include "Definiciones.h"
 
-class IndiceInvertidoPorTitulo
+class IndicePorTitulo
 {
     private:
 
@@ -17,9 +18,9 @@ class IndiceInvertidoPorTitulo
 
     public:
 
-        IndiceInvertidoPorTitulo();
+        IndicePorTitulo();
 
-        virtual ~IndiceInvertidoPorTitulo();
+        virtual ~IndicePorTitulo();
 
         int crear_indice(std::string directorioSalida);
         int eliminar_indice();
@@ -27,13 +28,13 @@ class IndiceInvertidoPorTitulo
         int abrir_indice(std::string directorioSalida);
         int cerrar_indice();
 
-        int agregar(const std::string & titulo, const int IDcancion);
+        int agregar(const std::string & titulo, const IDdocumento_t IDcancion);
         //Agrega el IDcancion a la lista de canciones que tienen el titulo
 
-        int buscar(const std::string & titulo, vector<int> & id_docs);
+        int buscar(const std::string & titulo, vector<IDdocumento_t> & id_docs);
         //Guarda en id_docs la lista de IDs de canciones que tienen el titulo buscado
 
-        int eliminar(const std::string & titulo, const int IDcancion);
+        int eliminar(const std::string & titulo, const IDdocumento_t IDcancion);
          //Guarda en id_docs la lista de IDs de canciones que tienen el titulo buscado
 
 };

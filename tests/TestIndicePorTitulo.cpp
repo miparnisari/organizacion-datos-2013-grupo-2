@@ -1,4 +1,4 @@
-#include "../src/CapaLogica/Indices/IndiceInvertidoPorTitulo.h"
+#include "../src/CapaLogica/Indices/IndicePorTitulo.h"
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
 // To use a test fixture, derive a class from testing::Test.
@@ -6,7 +6,7 @@ class TestIndicePorTitulo : public testing::Test {
  protected:
 	// Declares the variables your tests want to use.
 	std::string nombre_archivo;
-    IndiceInvertidoPorTitulo indice_titulo;
+    IndicePorTitulo indice_titulo;
 
   // virtual void SetUp() will be called before each test is run.  You
   // should define it if you need to initialize the varaibles.
@@ -26,9 +26,9 @@ class TestIndicePorTitulo : public testing::Test {
 
 TEST_F(TestIndicePorTitulo,Agregar_Buscar)
 {
-    int id_doc_uno = 23;
-    int id_doc_dos = 68;
-    vector<int> id_docs_devueltos;
+	IDdocumento_t id_doc_uno = 23;
+	IDdocumento_t id_doc_dos = 68;
+    vector<IDdocumento_t> id_docs_devueltos;
 
     // Titulo que no existe
     ASSERT_TRUE(indice_titulo.buscar("titulo inexistente",id_docs_devueltos)==RES_RECORD_DOESNT_EXIST);
@@ -55,8 +55,8 @@ TEST_F(TestIndicePorTitulo,Agregar_Buscar)
 
 TEST_F(TestIndicePorTitulo,Eliminar)
 {
-    int id_doc_uno = 23;
-    vector<int> id_docs_devueltos;
+	IDdocumento_t id_doc_uno = 23;
+    vector<IDdocumento_t> id_docs_devueltos;
 
     ASSERT_TRUE(indice_titulo.eliminar("Dark side of the moon",id_doc_uno) == RES_RECORD_DOESNT_EXIST);
 

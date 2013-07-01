@@ -5,23 +5,18 @@
 // To use a test fixture, derive a class from testing::Test.
 class TestOrdenamientoExterno : public testing::Test {
  protected:
-		// Declares the variables your tests want to use.
-		ManejadorRegistrosVariables mv;
-		std::string filename;
-		Heap heap;
+	ManejadorRegistrosVariables mv;
+	std::string nombre_archivo;
+	Heap heap;
 
-  // virtual void SetUp() will be called before each test is run.  You
-  // should define it if you need to initialize the varaibles.
-  // Otherwise, this can be skipped.
   virtual void SetUp() {
-	  filename = "archivoOrdenamiento.dat";
-	  mv.crear_archivo(filename);
-	  mv.abrir_archivo(filename);
+	  nombre_archivo = "archivo_a_ordenar.dat";
+	  mv.crear_archivo(nombre_archivo);
+	  mv.abrir_archivo(nombre_archivo);
   }
 
-  // TearDown() is invoked immediately after a test finishes.
   virtual void TearDown() {
-	  mv.eliminar_archivo(filename);
+	  mv.eliminar_archivo(nombre_archivo);
   }
 
   // A helper function that some test uses.
@@ -34,7 +29,8 @@ class TestOrdenamientoExterno : public testing::Test {
 		mv.get_registro_ocupado(&rv1,i);
 		mv.get_registro_ocupado(&rv2,i+1);
 
-		ASSERT_TRUE(heap.comparar_registros_variables(rv1,rv2)<=0);
+		// El primero menor o igual al segundo
+		ASSERT_TRUE(heap.comparar_registros_variables(rv1,rv2) <= 0);
 	}
   }
 
@@ -42,19 +38,20 @@ class TestOrdenamientoExterno : public testing::Test {
 
 TEST_F(TestOrdenamientoExterno,Generar_runs)
 {
+	RegistroVariable regVariable;
 
-	while (mv.get_tamanio_archivo()<1024*3) //3kB
+	while (mv.get_tamanio_archivo()<2*1024) // 2 MB
 	{
 		int clave=1;
 
-		RegistroVariable regVariable;
+		regVariable.limpiar_campos();
 
-		regVariable.agregar_campo((char*)&clave,sizeof(int));
+		regVariable.agregar_campo((char*)&clave,sizeof(clave));
 
 		mv.agregar_registro(& regVariable);
 	}
 
-	OrdenamientoExterno ordenador (filename);
+	OrdenamientoExterno ordenador (nombre_archivo);
 	ordenador._generar_runs();
 
 	std::vector<string> runs = ordenador._getVector();
@@ -83,46 +80,156 @@ TEST_F(TestOrdenamientoExterno,Generar_runs)
 
 TEST_F(TestOrdenamientoExterno,Merge_runs)
 {
-	while (mv.get_tamanio_archivo()<1024*3) //3kB
+	RegistroVariable regVariable;
+	while (mv.get_tamanio_archivo()<2*1024) // 2 MB
 	{
 		int clave = (rand() % 20);
 
-		RegistroVariable regVariable;
+		regVariable.limpiar_campos();
 
-		regVariable.agregar_campo((char*)&clave,sizeof(int));
+		regVariable.agregar_campo((char*)&clave,sizeof(clave));
 
 		mv.agregar_registro(& regVariable);
 	}
 
-	OrdenamientoExterno ordenador (filename);
-	ordenador._generar_runs();
-	ordenador._merge();
+	OrdenamientoExterno ordenador (nombre_archivo);
+	ordenador.ordenar_archivo();
 
 	comparar_registros();
 }
 
 TEST_F(TestOrdenamientoExterno,Ordenar)
 {
-	while (mv.get_tamanio_archivo()<1024*3) //3kB
+	RegistroVariable regVariable;
+	while (mv.get_tamanio_archivo()<2*1024) // 2 MB
 	{
 		//agrego clave en el primer campo
-		int clave= (rand() % 20) + 65;
+		int clave = (rand() % 20) + 65;
 
-		RegistroVariable regVariable;
+		regVariable.limpiar_campos();
 
-		regVariable.agregar_campo((char*)&clave,sizeof(int));
+		regVariable.agregar_campo((char*)&clave,sizeof(clave));
 
 		//agrego clave en el segundo campo
 		int clave2 = (rand() % 20) + 65;
 
-		regVariable.agregar_campo((char*)&clave2,sizeof(int));
+		regVariable.agregar_campo((char*)&clave2,sizeof(clave2));
+
+		mv.agregar_registro(& regVariable);
+	}
+	const int CANTIDAD_REGISTROS = mv.get_cantidad_registros_ocupados();
+
+	OrdenamientoExterno ordenador (nombre_archivo);
+	ordenador.ordenar_archivo();
+	ASSERT_EQ(mv.get_cantidad_registros_ocupados(),CANTIDAD_REGISTROS);
+	comparar_registros();
+}
+
+TEST_F(TestOrdenamientoExterno,Ordenar_3812_registros)
+{
+	RegistroVariable regVariable;
+	const int CANTIDAD_REGISTROS = 3812;
+	for (int i = 0; i < CANTIDAD_REGISTROS; i++)
+	{
+		//agrego clave en el primer campo
+		int clave = (rand() % 20) + 65;
+
+		regVariable.limpiar_campos();
+
+		regVariable.agregar_campo((char*)&clave,sizeof(clave));
+
+		//agrego clave en el segundo campo
+		int clave2 = (rand() % 20) + 65;
+
+		regVariable.agregar_campo((char*)&clave2,sizeof(clave2));
 
 		mv.agregar_registro(& regVariable);
 	}
 
-	OrdenamientoExterno ordenador (filename);
+	OrdenamientoExterno ordenador (nombre_archivo);
 	ordenador.ordenar_archivo();
-
+	ASSERT_EQ(mv.get_cantidad_registros_ocupados(),CANTIDAD_REGISTROS);
 	comparar_registros();
+}
 
+TEST_F(TestOrdenamientoExterno,Ordenar_2588_registros)
+{
+	RegistroVariable regVariable;
+	const int CANTIDAD_REGISTROS = 2588;
+	for (int i = 0; i < CANTIDAD_REGISTROS; i++)
+	{
+		//agrego clave en el primer campo
+		int clave = (rand() % 20) + 65;
+
+		regVariable.limpiar_campos();
+
+		regVariable.agregar_campo((char*)&clave,sizeof(clave));
+
+		//agrego clave en el segundo campo
+		int clave2 = (rand() % 20) + 65;
+
+		regVariable.agregar_campo((char*)&clave2,sizeof(clave2));
+
+		mv.agregar_registro(& regVariable);
+	}
+
+	OrdenamientoExterno ordenador (nombre_archivo);
+	ordenador.ordenar_archivo();
+	ASSERT_EQ(mv.get_cantidad_registros_ocupados(),CANTIDAD_REGISTROS);
+	comparar_registros();
+}
+
+TEST_F(TestOrdenamientoExterno,Ordenar_1240_registros)
+{
+	RegistroVariable regVariable;
+	const int CANTIDAD_REGISTROS = 1240;
+	for (int i = 0; i < CANTIDAD_REGISTROS; i++)
+	{
+		//agrego clave en el primer campo
+		int clave = (rand() % 20) + 65;
+
+		regVariable.limpiar_campos();
+
+		regVariable.agregar_campo((char*)&clave,sizeof(clave));
+
+		//agrego clave en el segundo campo
+		int clave2 = (rand() % 20) + 65;
+
+		regVariable.agregar_campo((char*)&clave2,sizeof(clave2));
+
+		mv.agregar_registro(& regVariable);
+	}
+
+	OrdenamientoExterno ordenador (nombre_archivo);
+	ordenador.ordenar_archivo();
+	ASSERT_EQ(mv.get_cantidad_registros_ocupados(),CANTIDAD_REGISTROS);
+	comparar_registros();
+}
+
+TEST_F(TestOrdenamientoExterno,Ordenar_505_registros)
+{
+	RegistroVariable regVariable;
+	const int CANTIDAD_REGISTROS = 505;
+	for (int i = 0; i < CANTIDAD_REGISTROS; i++)
+	{
+		//agrego clave en el primer campo
+		int clave = (rand() % 20) + 65;
+
+		regVariable.limpiar_campos();
+
+		regVariable.agregar_campo((char*)&clave,sizeof(clave));
+
+		//agrego clave en el segundo campo
+		int clave2 = (rand() % 20) + 65;
+
+		regVariable.agregar_campo((char*)&clave2,sizeof(clave2));
+
+		mv.agregar_registro(& regVariable);
+	}
+
+	const int CANTIDAD_REGISTROS_ANTES = mv.get_cantidad_registros_ocupados();
+	OrdenamientoExterno ordenador (nombre_archivo);
+	ordenador.ordenar_archivo();
+	ASSERT_EQ(mv.get_cantidad_registros_ocupados(),CANTIDAD_REGISTROS_ANTES);
+	comparar_registros();
 }
