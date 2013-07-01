@@ -65,9 +65,10 @@ void RegistroClave::set_clave(const ClaveX& clave){
 	const unsigned int CANTIDAD_CAMPOS = get_cantidad_campos();
 	for (unsigned int i = 1; i < CANTIDAD_CAMPOS; i ++)
 	{
-		char* copiaDato = new char[get_tamanio_campo(i)]();
+		const unsigned int TAMANIO_CAMPO = get_tamanio_campo(i);
+		char* copiaDato = new char[TAMANIO_CAMPO]();
 		recuperar_campo(copiaDato,i);
-		copiaDeDatos.agregar_campo(copiaDato,get_tamanio_campo(i));
+		copiaDeDatos.agregar_campo(copiaDato,TAMANIO_CAMPO);
 		delete[] copiaDato;
 	}
 
@@ -79,9 +80,10 @@ void RegistroClave::set_clave(const ClaveX& clave){
 	const unsigned int COPIA_DATOS_CANTIDAD_CAMPOS = copiaDeDatos.get_cantidad_campos();
 	for (unsigned int i = 0; i < COPIA_DATOS_CANTIDAD_CAMPOS; i++)
 	{
-		char* copiaDato = new char[copiaDeDatos.get_tamanio_campo(i)]();
+		const unsigned int TAMANIO_CAMPO_COPIA = copiaDeDatos.get_tamanio_campo(i);
+		char* copiaDato = new char[TAMANIO_CAMPO_COPIA]();
 		copiaDeDatos.recuperar_campo(copiaDato,i);
-		this->agregar_campo(copiaDato,copiaDeDatos.get_tamanio_campo(i));
+		this->agregar_campo(copiaDato,TAMANIO_CAMPO_COPIA);
 		delete[] copiaDato;
 	}
 
