@@ -16,14 +16,6 @@ ManejadorRegistrosVariables::ManejadorRegistrosVariables():ManejadorArchivos(){
 
 }
 
-
-void ManejadorRegistrosVariables::_pegar_registro(RegistroVariable* registro,long offset){
-
-
-
-}
-
-
 long ManejadorRegistrosVariables::_buscar_registro_libre(unsigned short espacioNecesario,
 		long& offsetLibreAnterior , long& offsetLibreSiguiente){
 
@@ -123,7 +115,7 @@ int ManejadorRegistrosVariables::get_registro_por_offset(RegistroVariable* regis
 }
 
 
-long ManejadorRegistrosVariables::get_registro_ocupado(RegistroVariable* registro ,
+long ManejadorRegistrosVariables::get_registro(RegistroVariable* registro ,
 		unsigned int numeroRegistro){
 
 	if( !archivo_existe(nombreArchivo) )
@@ -137,13 +129,13 @@ long ManejadorRegistrosVariables::get_registro_ocupado(RegistroVariable* registr
 	unsigned int contadorRegistros= 0;
 	long contadorOffset= OFFSET_PRIMER_REGISTRO;
 	char* bufferRegistro;
-	unsigned short tamanioRegistro , tamanioEmpaquetado;
+	TamanioCampos tamanioRegistro , tamanioEmpaquetado;
 
 
 	while( contadorRegistros <= numeroRegistro ){
 
 		archivo.read( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
-		tamanioEmpaquetado= tamanioRegistro + sizeof(tamanioRegistro);
+		tamanioEmpaquetado = tamanioRegistro + sizeof(tamanioRegistro);
 		bufferRegistro= new char[tamanioEmpaquetado]();
 		archivo.read( bufferRegistro , tamanioRegistro );
 
@@ -159,17 +151,19 @@ long ManejadorRegistrosVariables::get_registro_ocupado(RegistroVariable* registr
 	}/*mientras no se haya llegado al numero de registro*/
 
 	stringstream stream;
+	// (const char* s, streamsize n);
+	//Inserts the first n characters of the array pointed by s into the stream.
 	stream.write( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
 	stream.write( bufferRegistro , tamanioRegistro );
 	stream.seekg( 0,ios::beg );
+
+	//Extracts n characters from the stream and stores them in the array pointed by by s.
 	stream.read( bufferRegistro , tamanioEmpaquetado );
 	registro->desempaquetar( bufferRegistro );
 
 	delete[] bufferRegistro;
 	_cerrar_archivo(&archivo);
 	return contadorOffset;
-
-
 }
 
 
@@ -199,7 +193,7 @@ int ManejadorRegistrosVariables::refactorizar(){
 	for(unsigned int i=0;i<CANTIDAD_REGISTROS_OCUPADOS;i++){
 
 		RegistroVariable unRegistro;
-		this->get_registro_ocupado(&unRegistro,i);
+		this->get_registro(&unRegistro,i);
 		manejadorArchivoAuxiliar.agregar_registro(&unRegistro);
 
 	}
@@ -262,7 +256,7 @@ long ManejadorRegistrosVariables::eliminar_registro_ocupado(unsigned int numeroR
 		return RES_ERROR;
 
 	RegistroVariable registroEliminar;
-	long offsetRegistroEliminar= this->get_registro_ocupado(&registroEliminar,
+	long offsetRegistroEliminar= this->get_registro(&registroEliminar,
 			numeroRegistro);
 
 	if(offsetRegistroEliminar == RES_ERROR )

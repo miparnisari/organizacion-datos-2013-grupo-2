@@ -36,7 +36,7 @@ TEST_F(TestRegistroVariable,Agregar_campos)
 	assert(rv.get_tamanio_campo(0) == 6);
 	assert(rv.get_tamanio_campo(1) == 5);
 	assert(rv.get_tamanio_campo(2) == 6);
-	assert(rv.get_tamanio() == tamanioCampos + cantidadCampos * sizeof(unsigned short));
+	assert(rv.get_tamanio() == tamanioCampos + cantidadCampos * sizeof(TamanioCampos));
 
 	{
 		RegistroVariable rv1;
@@ -57,6 +57,23 @@ TEST_F(TestRegistroVariable,Agregar_campos)
 
 
 	}
+}
+
+TEST_F(TestRegistroVariable, Contar_campos)
+{
+	// Cero campos
+	ASSERT_EQ(rv.get_cantidad_campos(),0);
+
+	// Un campo
+	string campoUno = "un campo";
+	rv.agregar_campo(campoUno.c_str(),campoUno.length());
+	ASSERT_EQ(rv.get_cantidad_campos(),1);
+
+	// Dos campos
+	string campoDos = "dos campos";
+	rv.agregar_campo(campoDos.c_str(),campoDos.length());
+	ASSERT_EQ(rv.get_cantidad_campos(),2);
+
 }
 
 TEST_F(TestRegistroVariable,Eliminar)

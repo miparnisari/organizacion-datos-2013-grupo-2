@@ -59,7 +59,7 @@ Termino_t ListaTerminos::devolver(const IDtermino_t & id_termino)
 
 	RegistroVariable registro;
 
-	archivo.get_registro_ocupado(&registro,id_termino);
+	archivo.get_registro(&registro,id_termino);
 
 	char* c_termino = new char[registro.get_tamanio_campo(0) + 1]();
 	c_termino[registro.get_tamanio_campo(0)] = '\0';
