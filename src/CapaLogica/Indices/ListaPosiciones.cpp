@@ -21,6 +21,7 @@ int ListaPosiciones::crear(std::string p_nombre_archivo)
 	int res = archivo.crear_archivo(nombre_archivo);
 	return res;
 }
+
 int ListaPosiciones::eliminar()
 {
 	int res = archivo.eliminar_archivo(nombre_archivo);
@@ -33,6 +34,7 @@ int ListaPosiciones::abrir(std::string p_nombre_archivo)
 	int res = archivo.abrir_archivo(nombre_archivo, "rb+");
 	return res;
 }
+
 int ListaPosiciones::cerrar()
 {
 	int res = archivo.cerrar_archivo();
@@ -59,7 +61,7 @@ PosicionTermino_t ListaPosiciones::_devolver_posicion(const int posicion_guardad
 	return pos_leida;
 }
 
-ReferenciaListaPos_t ListaPosiciones::guardar_lista (const ListaPos_t & lista)
+ReferenciaListaPos_t ListaPosiciones::guardar (const ListaPos_t & lista)
 {
 	const unsigned int TAMANIO_LISTA = lista.size();
 
@@ -77,7 +79,7 @@ ReferenciaListaPos_t ListaPosiciones::guardar_lista (const ListaPos_t & lista)
 	return offset_inicio;
 }
 
-ListaPos_t ListaPosiciones::devolver_lista (const CantidadPosiciones_t cuantos, const ReferenciaListaPos_t desde)
+ListaPos_t ListaPosiciones::devolver (const CantidadPosiciones_t cuantos, const ReferenciaListaPos_t desde)
 {
 	ListaPos_t lista_pos;
 

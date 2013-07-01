@@ -53,7 +53,7 @@ IDtermino_t ListaTerminos::agregar(const Termino_t & termino)
 	return ID_termino;
 }
 
-Termino_t ListaTerminos::get_termino(const IDtermino_t & id_termino)
+Termino_t ListaTerminos::devolver(const IDtermino_t & id_termino)
 {
 	// Si se quiere descomprimir el termino, este es el lugar para hacerlo.
 

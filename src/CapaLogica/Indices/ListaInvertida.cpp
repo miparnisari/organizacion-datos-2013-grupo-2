@@ -39,7 +39,7 @@ int ListaInvertida::cerrar()
 	return RES_OK;
 }
 
-ReferenciaListaInvertida_t ListaInvertida::guardar_listas (const std::vector<ListaInvertida_t> & listas)
+ReferenciaListaInvertida_t ListaInvertida::agregar (const std::vector<ListaInvertida_t> & listas)
 {
 	// Primero se guarda en cuantos documentos aparece el termino
 	const unsigned int CANTIDAD = listas.size();
@@ -69,7 +69,7 @@ ReferenciaListaInvertida_t ListaInvertida::guardar_listas (const std::vector<Lis
 	return offset_inicio;
 }
 
-std::vector<ListaInvertida_t> ListaInvertida::recuperar_listas (const ReferenciaListaInvertida_t ref_lista)
+std::vector<ListaInvertida_t> ListaInvertida::devolver (const ReferenciaListaInvertida_t ref_lista)
 {
 	std::vector<ListaInvertida_t> vector_lista_invertida;
 

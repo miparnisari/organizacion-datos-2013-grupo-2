@@ -517,7 +517,7 @@ En la fase de diseño se obtuvo el siguiente diagrama final, que muestra
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -1415,6 +1415,16 @@ Tabla
 
 \end_deeper
 \end_deeper
+\begin_layout Standard
+Para las búsquedas por título se utiliza un 
+\family typewriter
+HashingExtensible
+\family default
+, donde la clave a utilizar es el título normalizado de cada canción, y
+ los posibles valores de la clave son los ID de las canciones que poseen
+ dicho título.
+\end_layout
+
 \begin_layout Subsubsection
 Índices
 \end_layout
@@ -1424,7 +1434,7 @@ Para la búsquedas por frase se implementó una estructura de tipo
 \family typewriter
 IndiceInvertido
 \family default
-.
+, que permite resolver consultas booleanas por frase.
 \end_layout
 
 \begin_layout Standard
@@ -1440,7 +1450,7 @@ documentos
 \begin_inset Quotes erd
 \end_inset
 
- (en este caso, archivos de canciones) que contienen ciertos 
+ (en este caso, letras archivos de canciones) que contienen ciertos 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1467,8 +1477,8 @@ status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename DiagramasManuales/IndiceInvertidoPorFrase.jpg
-	scale 35
+	filename DiagramasManuales/IndiceInvertido.png
+	scale 40
 
 \end_inset
 
@@ -1493,17 +1503,17 @@ Diagrama de clases de Indice Invertido.
 \end_layout
 
 \begin_layout Standard
-Los archivos que son necesarios para implementar este índice invertido son:
+Las clases que son necesarias para implementar este índice invertido son:
 \end_layout
 
 \begin_layout Itemize
 
 \family typewriter
-Archivo_terminos
+ListaTerminos
 \family default
-: es un archivo secuencial de registros variables donde se guarda el término
- completo.
- Cada término se lo puede indentificar mediante su posición relativa en
+: es un archivo secuencial de registros variables donde se guarda cada término
+ distinto que se encuentra en los archivos a indexar.
+ A cada término se lo puede identificar mediante su posición relativa en
  este archivo, este valor lo llamaremos 
 \family typewriter
 IDtermino
@@ -1518,17 +1528,22 @@ IDtermino
 \align center
 
 \family typewriter
-(término)
+(término : string)
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
 
 \family typewriter
-Archivo_vocabulario
+Vocabulario
 \family default
 : es un archivo de tipo árbol B+ con el término completo como identificador
  del registro.
+ Cada término tendrá almacenado una referencia a su propia 
+\family typewriter
+ListaInvertida
+\family default
+.
  Sus registros tienen la siguiente estructura:
 \end_layout
 
@@ -1538,57 +1553,18 @@ Archivo_vocabulario
 \align center
 
 \family typewriter
-(i(término), IDtermino, refListaInvertida)
+(i(término) : string, IDtermino : int, refListaInvertida : int)
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
 
 \family typewriter
-Archivo_listas_invertidas
+ListasInvertidas
 \family default
- : es un archivo de bloques grandes.
- Cada bloque representa una lista invertida.
- Sus registros son de longitud variable y tienen la siguiente estructura:
-\end_layout
-
-\begin_deeper
-\begin_layout Standard
-\noindent
-\align center
-
-\family typewriter
-((IDdocumento, posicion)+)
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-
-\family typewriter
-Archivo_listas_posiciones
-\family default
- : es un archivo de bloques grandes.
- Cada bloque representa una lista invertida.
- Sus registros son de longitud variable y tienen la siguiente estructura:
-\end_layout
-
-\begin_deeper
-\begin_layout Standard
-\noindent
-\align center
-
-\family typewriter
-(posicion)
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-
-\family typewriter
-Archivo_coincidencias
-\family default
-: este es un archivo secuencial de registros variables.
- Es temporal, con lo cual se eliminará al terminar de indexar los documentos.
+: es un archivo que indica, para algún termino: en qué documento aparece,
+ cuántas veces, y dónde está almacenada la lista que contiene las posiciones
+ donde aparece ese término en ese documento.
  Sus registros tienen la siguiente estructura:
 \end_layout
 
@@ -1598,18 +1574,191 @@ Archivo_coincidencias
 \align center
 
 \family typewriter
-((IDtermino, posicion)+)
+(IDdocumento : int, cantidadPosiciones : int, refListaPosiciones : int)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+ListasPosiciones
+\family default
+ : es un archivo que contiene nada más que números.
+ Cada número es la posición de algun término en algún documento.
+ Este archivo tiene la siguiente estructura:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\noindent
+\align center
+
+\family typewriter
+(posicion : int)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\family typewriter
+ListaPosicionesTerminosEnDocumentos
+\family default
+: es un archivo que se va actualizando a medida que se indexan los documentos.
+ Para cada término encontrado en cada documento, se registra el identificador
+ del término, el identificador del documento, y la posición dentro del mismo
+ donde aparece dicho término.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\noindent
+\align center
+
+\family typewriter
+(IDtermino : int, IDdocumento : int, posicion : int)
 \end_layout
 
 \end_deeper
 \begin_layout Standard
-Para las búsquedas por título se utiliza un 
-\family typewriter
-HashingExtensible
-\family default
-, donde la clave a utilizar es el título normalizado de cada canción, y
- los posibles valores de la clave son los ID de las canciones que poseen
- dicho título.
+El algoritmo de indexación consta de dos fases:
+\end_layout
+
+\begin_layout Enumerate
+La fase de 
+\series bold
+\emph on
+scanning
+\series default
+\emph default
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Por cada término relevante t encontrado en un documento idD 
+\end_layout
+
+\begin_layout Plain Layout
+
+en la posición relativa dentro del documento p: 	
+\end_layout
+
+\begin_layout Plain Layout
+
+	Se busca t en el Vocabulario (archivo B+).
+ 	
+\end_layout
+
+\begin_layout Plain Layout
+
+		Si está: 			 	
+\end_layout
+
+\begin_layout Plain Layout
+
+			Se obtiene su idT.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+		Si no: 				
+\end_layout
+
+\begin_layout Plain Layout
+
+			Se registra t al final del ListaTerminos por orden de aparición, 
+\end_layout
+
+\begin_layout Plain Layout
+
+				con su posición relativa determinando su idT.
+\end_layout
+
+\begin_layout Plain Layout
+
+			Se agrega (t, idT, REF_NULL) al vocabulario.
+ 	
+\end_layout
+
+\begin_layout Plain Layout
+
+	Se registra (idT, idD, p) en el archivo de posiciones de términos en documentos.
+	
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+La fase de 
+\series bold
+\emph on
+indexing
+\series default
+\emph default
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Ordenar ListaPosicionesTerminosEnDocumentos por idT y idD.
+\end_layout
+
+\begin_layout Plain Layout
+
+Para cada registro en ListaPosicionesTerminosEnDocumentos:
+\end_layout
+
+\begin_layout Plain Layout
+
+	Para cada idT distinto:
+\end_layout
+
+\begin_layout Plain Layout
+
+		Para cada idD distinto:
+\end_layout
+
+\begin_layout Plain Layout
+
+			Guardar las posiciones en ListasPosiciones, obteniendo RefListaPos
+\end_layout
+
+\begin_layout Plain Layout
+
+			Guardar una nueva lista en ListasInvertidas con RefListaPos
+\end_layout
+
+\begin_layout Plain Layout
+
+		Actualizar la entrada del Vocabulario con la referencia a la lista invertida
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+Para encontrar los documentos que poseen una frase dada, se utiliza un algoritmo
+ de intersección de conjuntos.
 \end_layout
 
 \begin_layout Subsubsection

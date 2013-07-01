@@ -29,7 +29,7 @@ class ListaTerminos {
 
 		IDtermino_t agregar(const Termino_t & termino);
 
-		Termino_t get_termino(const IDtermino_t & id_termino);
+		Termino_t devolver(const IDtermino_t & id_termino);
 };
 
 #endif /* LISTATERMINOS_H_ */
