@@ -4,10 +4,11 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include "Normalizador.h"
 #include "../../Constantes.h"
 #include "../ManejoArchivos/RegistroCancion.h"
 #include "../../Utilitarios/Utilitarios.h"
-#include "../../Utilitarios/Normalizador.h"
+
 
 using namespace utilitarios;
 

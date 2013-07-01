@@ -16,7 +16,7 @@ Heap::~Heap()
 {
 }
 
-void Heap::reestructurar_Heap(RegistroVariable vectorAOrdenar[],int desde,int hasta)
+void Heap::_reestructurar_heap(RegistroVariable vectorAOrdenar[],int desde,int hasta)
 {
     int hijoIzq=2*desde+1;
     int hijoDer=2*desde+2;
@@ -40,7 +40,7 @@ void Heap::reestructurar_Heap(RegistroVariable vectorAOrdenar[],int desde,int ha
         vectorAOrdenar[posicionMax]=vectorAOrdenar[desde];
         vectorAOrdenar[desde]=auxIntercambio;
 
-        reestructurar_Heap(vectorAOrdenar,posicionMax,hasta);
+        _reestructurar_heap(vectorAOrdenar,posicionMax,hasta);
     }
 }
 
@@ -52,7 +52,7 @@ void Heap::transformar_en_heap(RegistroVariable vectorAOrdenar[],int un_tamanio)
 
     for(int raiz=UltimoConHijo; raiz>=0; raiz--)
     {
-        this->reestructurar_Heap(vectorAOrdenar,raiz,un_tamanio-1);
+        this->_reestructurar_heap(vectorAOrdenar,raiz,un_tamanio-1);
     }
 }
 

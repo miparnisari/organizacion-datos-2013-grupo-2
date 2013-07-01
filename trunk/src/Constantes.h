@@ -104,15 +104,15 @@ const int CLAVE_TOPE					= 99999;
 /*
  * Parseo de texto
  */
-const unsigned int		LONGITUD_MAXIMA_NUMERO_INDEXABLE = 4;
+const unsigned int LONGITUD_MAXIMA_NUMERO_INDEXABLE = 4;
 
 /*
  * Compresion
  */
-const unsigned int TAMANIO_ALFABETO = 256 + 1; // + ESC
-const unsigned int PRECISION = 32;
-const unsigned int CANTIDAD_ORDENES_PPMC = 5;
-const unsigned int VALOR_DEL_ESCAPE = 256;
+const unsigned int TAMANIO_ALFABETO 			= 256 + 1; // + ESC
+const unsigned int PRECISION 					= 32;
+const unsigned int CANTIDAD_ORDENES_PPMC		= 5;
+const unsigned int VALOR_DEL_ESCAPE			= 256;
 
 
 #endif /* CONSTANTES_H */

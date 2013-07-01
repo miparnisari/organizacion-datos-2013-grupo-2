@@ -12,12 +12,10 @@
 class IndicePorTitulo
 {
     private:
-
         std::string nombre_archivo;
         HashingExtensible indice;
 
     public:
-
         IndicePorTitulo();
 
         virtual ~IndicePorTitulo();

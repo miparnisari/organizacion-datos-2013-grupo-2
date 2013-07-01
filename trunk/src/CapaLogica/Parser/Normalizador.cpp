@@ -100,47 +100,20 @@ wstring Normalizador::a_minuscula(wstring & linea){
 }
 
 
-//string Normalizador::normalizar_string(wstring & linea){
-//
-//	wstring lineaMinuscula=  this->a_minuscula(linea);
-//
-//	string s = "";
-//	for (unsigned i=0; i < lineaMinuscula.length(); ++i){
-//
-//			// Se filtra el caracter y se lo agrega al final del string
-//			char c = filtrar_char(lineaMinuscula[i]);
-//			s.push_back(c);
-//	}
-//	return s;
-//
-//}
-
 
 string Normalizador::normalizar_input( string linea ){
 
 	string nombreArchivoTemporal= "normalizar_input.txt";
 	string nombreArchivoTemporalNormalizado= "normalizar_input_normalizado.txt";
 	ofstream archivoTemporal(nombreArchivoTemporal.c_str());
-//	archivoTemporal<<linea;
-//	archivoTemporal<<'\n';
 
 	archivoTemporal.write( linea.c_str(),linea.length() );
 	archivoTemporal.close();
 
 	normalizar(nombreArchivoTemporal,nombreArchivoTemporalNormalizado);
 	ifstream archivoResultado(nombreArchivoTemporalNormalizado.c_str());
-//	const unsigned short TAMANIO_BUFFER_INPUT= 4096;
-//	char bufferInput[TAMANIO_BUFFER_INPUT];
-
-//	archivoResultado.getline(bufferInput , TAMANIO_BUFFER_INPUT);
-//	unsigned short longitudLineaNormalizada= strlen(bufferInput);
-
 	std::string resultado="";
 	while(!archivoResultado.eof()){
-//		string temp;
-//		archivoResultado>>temp;
-//		if(!archivoResultado.eof())
-//			resultado+=temp+'\n';
 		const unsigned short TAMANIO_BUFFER_INPUT= 512;
 		char bufferInput[TAMANIO_BUFFER_INPUT];
 		archivoResultado.getline(bufferInput,TAMANIO_BUFFER_INPUT);
@@ -155,7 +128,6 @@ string Normalizador::normalizar_input( string linea ){
 	remove(nombreArchivoTemporal.c_str());
 	remove(nombreArchivoTemporalNormalizado.c_str());
 
-//	string resultado(bufferInput,longitudLineaNormalizada);
 	return resultado;
 
 }

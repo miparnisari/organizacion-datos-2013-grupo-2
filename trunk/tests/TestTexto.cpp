@@ -4,7 +4,7 @@
 class TestTexto : public testing::Test {
 
  protected:
-	Texto texto;
+	TextoNormalizado texto;
 
 };
 

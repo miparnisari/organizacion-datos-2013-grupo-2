@@ -13,7 +13,6 @@
 
 class HashingExtensible
 {
-    /*Atributos..... No se necesitan guardar en el archivo pero son utiles en RAM*/
     private:
         std::string fileName;
         std::string fileNameTabla;
@@ -32,8 +31,6 @@ class HashingExtensible
 
 		virtual int abrir_archivo(std::string nombreArchivo);
 		virtual int cerrar_archivo();
-
-
 
 		virtual int agregar(RegistroClave & reg);
         virtual int devolver(ClaveX & clave, RegistroClave* reg);
