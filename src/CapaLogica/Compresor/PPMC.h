@@ -2,13 +2,14 @@
 #define COMPRESORPPMC_H
 
 #include "Compresor.h"
-#include "../../Constantes.h"
 #include "Aritmetico.h"
-#include "Orden.h"
+#include "TablaModelos.h"
+
+#include <map>
+
 #include "../../Utilitarios/Utilitarios.h"
 #include "../../Utilitarios/Logger.h"
-#include <map>
-#include <fstream>
+#include "../../Constantes.h"
 
 using std::stringstream;
 
@@ -28,7 +29,7 @@ class PPMC : public Compresor
 
 	private:
 		int orden_maximo;
-		map<int,Orden*> mapa_ordenes;
+		map<int,TablaModelos*> mapa_ordenes;
 		Aritmetico* comp_aritmetico;
 
 		void _limpiar_ordenes();

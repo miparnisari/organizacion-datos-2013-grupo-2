@@ -5,22 +5,20 @@
  *      Author: nico
  */
 
-#ifndef ORDEN_H_
-#define ORDEN_H_
+#ifndef TABLAMODELOS_H_
+#define TABLAMODELOS_H_
 
 #include "ModeloProbabilistico.h"
 #include <map>
 
-using namespace std;
-
-class Orden {
+class TablaModelos {
 
 	private:
-		map<string, ModeloProbabilistico*> modelos;
+		std::map<std::string, ModeloProbabilistico*> modelos;
 
 	public:
-		Orden();
-		~Orden();
+		TablaModelos();
+		~TablaModelos();
 
 		/*a la lista de modelos, se le agrega un nuevo modelo en el cual, la unica frecuencia con
 		 * probabilidad 1 es el caracter escape*/
@@ -33,8 +31,7 @@ class Orden {
 
 		int devolver_modelo(string nombreModelo, ModeloProbabilistico** modeloADevolver);
 
-		//FIXME esto solo es necesario para debuggear
-		map<string, ModeloProbabilistico*> get_mapa_modelos();
+		std::map<std::string, ModeloProbabilistico*> get_mapa_modelos();
 };
 
-#endif /* ORDEN_H_ */
+#endif /* TABLAMODELOS_H_ */
