@@ -1,7 +1,5 @@
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
-using namespace testing;
-
 /*
  * @info https://code.google.com/p/googletest/
  */
