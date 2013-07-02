@@ -6,16 +6,16 @@
  */
 
 
-#include "../src/CapaLogica/Compresor/Orden.h"
+#include "../src/CapaLogica/Compresor/TablaModelos.h"
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
 
 using namespace std;
 // To use a test fixture, derive a class from testing::Test.
-class TestOrden : public testing::Test {
+class TestTablaModelos : public testing::Test {
  protected:
 	// Declares the variables your tests want to use.
-	Orden orden;
+	TablaModelos orden;
 
   // virtual void SetUp() will be called before each test is run.  You
   // should define it if you need to initialize the varaibles.
@@ -31,7 +31,7 @@ class TestOrden : public testing::Test {
 };
 
 
-TEST_F(TestOrden, AgregarModeloAContexto){
+TEST_F(TestTablaModelos, AgregarModeloAContexto){
 
   	string s = "A";
   	ModeloProbabilistico* unModelo = new ModeloProbabilistico(TAMANIO_ALFABETO);
@@ -54,7 +54,7 @@ TEST_F(TestOrden, AgregarModeloAContexto){
 
   }
 
-TEST_F(TestOrden, AgregarDosModelosAContexto){
+TEST_F(TestTablaModelos, AgregarDosModelosAContexto){
 
 	string s1 = "A";
 	string s2 = "B";
@@ -84,7 +84,7 @@ TEST_F(TestOrden, AgregarDosModelosAContexto){
 
 }
 
-TEST_F(TestOrden, AgregarDosModelosIguales){
+TEST_F(TestTablaModelos, AgregarDosModelosIguales){
 	string s = "A";
 	ModeloProbabilistico* modelo1 = new ModeloProbabilistico(TAMANIO_ALFABETO);
 	ModeloProbabilistico* modelo2 = new ModeloProbabilistico(TAMANIO_ALFABETO);
@@ -100,7 +100,7 @@ TEST_F(TestOrden, AgregarDosModelosIguales){
 
 }
 
-TEST_F(TestOrden, Integracion){
+TEST_F(TestTablaModelos, Integracion){
 	string s1 = "A";
 	string s2 = "AB";
 	ModeloProbabilistico* modelo1 = new ModeloProbabilistico(TAMANIO_ALFABETO);

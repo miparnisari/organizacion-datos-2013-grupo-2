@@ -16,8 +16,8 @@ void PPMC::_inicializar()
 	// ORDEN 1 a "orden"
 	for (unsigned short i = 1; i < orden_maximo+1; i++)
 	{
-		Orden* contexto_vacio = new Orden();
-		mapa_ordenes.insert(pair<int,Orden*> (i,contexto_vacio));
+		TablaModelos* contexto_vacio = new TablaModelos();
+		mapa_ordenes.insert(pair<int,TablaModelos*> (i,contexto_vacio));
 	}
 
 }
@@ -34,9 +34,9 @@ void PPMC::_inicializar_orden_menosuno()
 	ModeloProbabilistico* mod_menos_uno = new ModeloProbabilistico(TAMANIO_ALFABETO-1);
 	mod_menos_uno->inicializar_frecuencias_en_1();
 
-	Orden* contexto_menos_uno = new Orden();
+	TablaModelos* contexto_menos_uno = new TablaModelos();
 	contexto_menos_uno->agregar_modelo("-1",mod_menos_uno);
-	mapa_ordenes.insert(pair<int,Orden*> (-1,contexto_menos_uno));
+	mapa_ordenes.insert(pair<int,TablaModelos*> (-1,contexto_menos_uno));
 }
 
 void PPMC::_inicializar_orden_cero()
@@ -46,9 +46,9 @@ void PPMC::_inicializar_orden_cero()
 	vector.push_back(VALOR_DEL_ESCAPE);
 	mod_cero->inicializar_frecuencias_en_1(vector);
 
-	Orden* ctx_cero = new Orden();
+	TablaModelos* ctx_cero = new TablaModelos();
 	ctx_cero->agregar_modelo("0",mod_cero);
-	mapa_ordenes.insert(pair<int,Orden*> (0,ctx_cero));
+	mapa_ordenes.insert(pair<int,TablaModelos*> (0,ctx_cero));
 }
 
 PPMC::~PPMC()
@@ -74,7 +74,7 @@ void PPMC::_crear_modelo_vacio (int orden, string nombre_modelo)
 	vector.push_back(VALOR_DEL_ESCAPE);
 	modelo->inicializar_frecuencias_en_1(vector);
 
-	Orden* contexto = mapa_ordenes[orden];
+	TablaModelos* contexto = mapa_ordenes[orden];
 	contexto->agregar_modelo(nombre_modelo,modelo);
 	mapa_ordenes[orden] = contexto;
 }
@@ -425,7 +425,7 @@ int PPMC::comprimir_todo(const char* buffer,const unsigned int tamanioBuffer,cha
 int PPMC::_descomprimir(unsigned long valorSimbolo,string contextoActual,int numeroOrdenActual,Uint& simbolo,
 	BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& bufferBits,Aritmetico& aritmeticoCopia){
 
-	Orden* ordenActual= this->mapa_ordenes[numeroOrdenActual];
+	TablaModelos* ordenActual= this->mapa_ordenes[numeroOrdenActual];
 	ModeloProbabilistico* modeloActual = NULL;
 	int resultadoDevolverModelo= ordenActual->devolver_modelo(contextoActual, &modeloActual);
 

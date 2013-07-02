@@ -1,20 +1,20 @@
 /*
- * Orden.cpp
+ * TablaModelos.cpp
  *
  *  Created on: Jun 21, 2013
  *      Author: nico
  */
 
-#include "Orden.h"
+#include "TablaModelos.h"
 
-Orden::Orden(){
+TablaModelos::TablaModelos(){
 
 }
 
 
-Orden::~Orden()
+TablaModelos::~TablaModelos()
 {
-	map<string, ModeloProbabilistico*>::iterator iterador = this->modelos.begin();
+	std::map<std::string, ModeloProbabilistico*>::iterator iterador = this->modelos.begin();
 	while (iterador != this->modelos.end())
 	{
 		ModeloProbabilistico* unModelo = (*iterador).second;
@@ -23,12 +23,12 @@ Orden::~Orden()
 	}
 }
 
-map<string, ModeloProbabilistico*> Orden::get_mapa_modelos()
+std::map<std::string, ModeloProbabilistico*> TablaModelos::get_mapa_modelos()
 {
 	return this->modelos;
 }
 
-int Orden::incrementar_frecuencia(long caracter, string nombreModelo)
+int TablaModelos::incrementar_frecuencia(long caracter, string nombreModelo)
 {
 	if(this->modelos.find(nombreModelo) == this->modelos.end()){
 		return RES_ERROR;
@@ -40,7 +40,7 @@ int Orden::incrementar_frecuencia(long caracter, string nombreModelo)
 	return RES_OK;
 }
 
-int Orden::devolver_modelo(string nombreModelo, ModeloProbabilistico** modeloADevolver)
+int TablaModelos::devolver_modelo(std::string nombreModelo, ModeloProbabilistico** modeloADevolver)
 {
 	if (modelos.empty())
 		return RES_ERROR;
@@ -52,7 +52,7 @@ int Orden::devolver_modelo(string nombreModelo, ModeloProbabilistico** modeloADe
 	return RES_OK;
 }
 
-int Orden::agregar_modelo(string nombreModelo, ModeloProbabilistico* modelo)
+int TablaModelos::agregar_modelo(std::string nombreModelo, ModeloProbabilistico* modelo)
 {
 	if(modelo == NULL)
 		return RES_ERROR;
@@ -62,7 +62,7 @@ int Orden::agregar_modelo(string nombreModelo, ModeloProbabilistico* modelo)
 		if(this->modelos.find(nombreModelo) != this->modelos.end())
 			return RES_ERROR;
 
-	this->modelos.insert(pair<string, ModeloProbabilistico*>(nombreModelo, modelo));
+	this->modelos.insert(std::pair<std::string, ModeloProbabilistico*>(nombreModelo, modelo));
 	return RES_OK;
 }
 

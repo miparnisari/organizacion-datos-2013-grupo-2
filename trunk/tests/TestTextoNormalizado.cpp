@@ -1,14 +1,14 @@
-#include "../src/CapaLogica/ManejoArchivos/Texto.h"
+#include "../src/CapaLogica/Parser/TextoNormalizado.h"
 #include "../lib/gtest-1.6.0/include/gtest/gtest.h"
 
-class TestTexto : public testing::Test {
+class TestTextoNormalizado : public testing::Test {
 
  protected:
 	TextoNormalizado texto;
 
 };
 
-TEST_F(TestTexto,Obtener_letras_parseadas)
+TEST_F(TestTextoNormalizado,Obtener_letras_parseadas)
 {
 	std::string letra = "(Introducción)\nEste adiós, no maquilla un \"hasta luego\",19998bc 9001,97 hola";
 	std::vector<std::string> palabras;
