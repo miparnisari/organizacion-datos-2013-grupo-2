@@ -48,7 +48,7 @@ void RegistroVariable::_inicializar_buffer(){
 
 int RegistroVariable::agregar_datos(const char* datos, TamanioCampos tamanioDatos)throw(){
 
-	if (this->fue_eliminado() )
+	if (this->fue_eliminado() || datos == NULL)
 	{
 		return RES_ERROR;
 	}
@@ -59,14 +59,18 @@ int RegistroVariable::agregar_datos(const char* datos, TamanioCampos tamanioDato
 		return RES_RECORD_TOO_LONG;
 	}
 
-	char* copia = new char[tamanioFinal]();
-	memcpy(copia,buffer,tamanio);
+	// Creo una copia del buffer, agregandole los nuevos datos
+	char* copia = new char[tamanioFinal];
+	if ((buffer != NULL) && (tamanio > 0))
+		memcpy(copia,buffer,tamanio);
 	memcpy(copia+tamanio,datos,tamanioDatos);
-
 
 	tamanio = tamanioFinal;
 	delete[] buffer;
-	buffer = new char[tamanioFinal]();
+	buffer = new char[tamanioFinal];
+	_inicializar_buffer();
+
+	// Muevo la copia al buffer original, cambiado de tamanio
 	memcpy(buffer,copia,tamanioFinal);
 
 	delete[] copia;
@@ -78,9 +82,9 @@ Los datos se agregan de forma directa sin separadores*/
 
 int RegistroVariable::agregar_campo(const char* campo,TamanioCampos tamanioCampo)throw(){
 
-	int res=this->agregar_datos( (char*)&tamanioCampo, sizeof(tamanioCampo) );
+	int res = this->agregar_datos( (char*)&tamanioCampo, sizeof(tamanioCampo) );
 
-	if (res!= RES_OK)
+	if (res != RES_OK)
 		return RES_ERROR;
 
 	return this->agregar_datos(campo,tamanioCampo);
@@ -152,16 +156,16 @@ bool RegistroVariable::fue_eliminado()throw(){
 		return false;
 
 	TamanioCampos tamanioPrimerCampo= 0;
-
 	memcpy(&tamanioPrimerCampo,buffer,sizeof(tamanioPrimerCampo));
 
-	if(tamanioPrimerCampo > 1)
+	if (tamanioPrimerCampo > 1)
 		return false;
 
-	char primerCampo=1;
-	memcpy(&primerCampo,buffer+sizeof(tamanioPrimerCampo),sizeof(primerCampo));
+	char primerCampo = 1;
+	if (tamanio > sizeof(tamanioPrimerCampo))
+		memcpy(&primerCampo,buffer+sizeof(tamanioPrimerCampo),sizeof(primerCampo));
 
-	if( primerCampo != MARCA_BORRADO )
+	if (primerCampo != MARCA_BORRADO )
 		return false;
 
 	return true;
@@ -331,7 +335,8 @@ int RegistroVariable :: descomprimir(Compresor * compresor, RegistroVariable* re
 
 RegistroVariable* RegistroVariable::comprimir (Compresor * compresor)
 {
-	char* bufferComprimido = new char[tamanio]();
+	// Le asignamos el doble del tamanio original, por si el compresor expande la fuente
+	char* bufferComprimido = new char[2*tamanio];
 	int tamanioCompresion = compresor->comprimir_todo(buffer,tamanio,bufferComprimido);
 
 	RegistroVariable* reg_comprimido = new RegistroVariable();

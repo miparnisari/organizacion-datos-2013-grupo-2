@@ -46,7 +46,7 @@ TEST_F(TestCompresorAritmetico, ComprimirString)
 	ASSERT_EQ(buffer[3],96);
 	ASSERT_EQ(buffer[4],-112);
 
-	delete buffer;
+	delete[] buffer;
 }
 
 
@@ -115,24 +115,33 @@ TEST_F(TestCompresorAritmetico, ComprimirRegistroVariableConUnCampo)
 TEST_F(TestCompresorAritmetico,ComprimirCancion){
 
 	Aritmetico ca;
-	ParserCanciones pc;
 
-	string dir= "../songs";
-	ASSERT_EQ(pc.crear(dir),RES_OK);
-	RegistroCancion registroNormalizado,registroNoNormalizado;
-	string nombreCancion="";
-	pc.obtener_proxima_cancion(registroNormalizado,registroNoNormalizado,nombreCancion);
+	RegistroCancion registroOriginal;
 
-//	IMPRIMIR_MY_VARIABLE(nombreCancion);
-//	IMPRIMIR_MY_VARIABLE(registroNormalizado.get_tamanio());
-//	IMPRIMIR_MY_VARIABLE( registroNormalizado.get_cantidad_campos() );
+	string archivo = "madonna;nicki minaj-2012-starships-english\n"
+	"Red one \n"
+	"Let’s go to the beach, each \n"
+	"Let’s go get away \n"
+	"They say, what they gonna say? \n"
+	"Have a drink, clink, found the Bud Light \n"
+	"Bad bitches like me, is hard to come by \n"
+	"The Patrón, own, let’s go get it on \n"
+	"The zone, own, yes I’m in the zone \n"
+	"Is it two, three, leave a good tip \n"
+	"I’ma blow all my money and don’t give two shits \n";
 
-	RegistroVariable* registroComprimido= registroNormalizado.comprimir(&ca);
-//	IMPRIMIR_MY_VARIABLE( registroComprimido->get_tamanio() );
+	ASSERT_EQ(registroOriginal.cargar(archivo.c_str(),archivo.size()),RES_OK);
+
+	RegistroVariable* registroComprimido= registroOriginal.comprimir(&ca);
+	ASSERT_TRUE(registroComprimido != NULL);
 
 	RegistroCancion registroDescomprimido;
+
 	registroComprimido->descomprimir( &ca , &registroDescomprimido );
-//	IMPRIMIR_MY_VARIABLE(registroDescomprimido.get_tamanio());
+
+	ASSERT_EQ(registroOriginal.get_letra(),registroDescomprimido.get_letra());
+	ASSERT_EQ(registroOriginal.get_anio(),registroDescomprimido.get_anio());
+	ASSERT_EQ(registroOriginal.get_cantidad_autores(),registroDescomprimido.get_cantidad_autores());
 
 	delete registroComprimido;
 
