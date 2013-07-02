@@ -1126,13 +1126,13 @@ El siguiente diagrama de clases ilustra el diseño del hashing extensible:
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
 \align center
 \begin_inset Graphics
-	filename DiagramasManuales/HashExtensible.png
+	filename DiagramasManuales/HashingExtensible.png
 	scale 50
 
 \end_inset
@@ -1759,6 +1759,23 @@ Para cada registro en ListaPosicionesTerminosEnDocumentos:
 \begin_layout Standard
 Para encontrar los documentos que poseen una frase dada, se utiliza un algoritmo
  de intersección de conjuntos.
+\end_layout
+
+\begin_layout Standard
+Para poder agregar canciones al índice, se realiza la fase de 
+\series bold
+\emph on
+scanning
+\series default
+\emph default
+ sólo sobre los nuevos documentos, y luego se realiza completa la fase de
+ 
+\series bold
+\emph on
+indexing
+\series default
+\emph default
+.
 \end_layout
 
 \begin_layout Subsubsection

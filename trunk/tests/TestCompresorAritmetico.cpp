@@ -95,7 +95,7 @@ TEST_F(TestCompresorAritmetico, ComprimirRegistroVariableConUnCampo)
 	ASSERT_EQ(*campoUno,6);
 
 	// Lo descomprimo
-	RegistroCancion reg_descomprimido;
+	RegistroVariable reg_descomprimido;
 	reg_c->descomprimir(compresor,&reg_descomprimido);
 	ASSERT_EQ(reg_descomprimido.get_cantidad_campos(), 1);
 	char* unicoCampo = new char[4]();

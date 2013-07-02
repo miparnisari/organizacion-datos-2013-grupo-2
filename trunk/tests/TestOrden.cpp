@@ -96,6 +96,8 @@ TEST_F(TestOrden, AgregarDosModelosIguales){
 	ASSERT_EQ(orden.agregar_modelo(s,modelo1), RES_ERROR);
 	ASSERT_EQ(orden.agregar_modelo(s, modelo2), RES_ERROR);
 
+	delete modelo2;
+
 }
 
 TEST_F(TestOrden, Integracion){

@@ -125,10 +125,10 @@ TEST_F(TestOrdenamientoExterno,Ordenar)
 	comparar_registros();
 }
 
-TEST_F(TestOrdenamientoExterno,Ordenar_3812_registros)
+TEST_F(TestOrdenamientoExterno,Ordenar_504_registros)
 {
 	RegistroVariable regVariable;
-	const int CANTIDAD_REGISTROS = 3812;
+	const int CANTIDAD_REGISTROS = 504;
 	for (int i = 0; i < CANTIDAD_REGISTROS; i++)
 	{
 		//agrego clave en el primer campo
@@ -146,63 +146,10 @@ TEST_F(TestOrdenamientoExterno,Ordenar_3812_registros)
 		mv.agregar_registro(& regVariable);
 	}
 
+	const int CANTIDAD_REGISTROS_ANTES = mv.get_cantidad_registros_ocupados();
 	OrdenamientoExterno ordenador (nombre_archivo);
 	ordenador.ordenar_archivo();
-	ASSERT_EQ(mv.get_cantidad_registros_ocupados(),CANTIDAD_REGISTROS);
-	comparar_registros();
-}
-
-TEST_F(TestOrdenamientoExterno,Ordenar_2588_registros)
-{
-	RegistroVariable regVariable;
-	const int CANTIDAD_REGISTROS = 2588;
-	for (int i = 0; i < CANTIDAD_REGISTROS; i++)
-	{
-		//agrego clave en el primer campo
-		int clave = (rand() % 20) + 65;
-
-		regVariable.limpiar_campos();
-
-		regVariable.agregar_campo((char*)&clave,sizeof(clave));
-
-		//agrego clave en el segundo campo
-		int clave2 = (rand() % 20) + 65;
-
-		regVariable.agregar_campo((char*)&clave2,sizeof(clave2));
-
-		mv.agregar_registro(& regVariable);
-	}
-
-	OrdenamientoExterno ordenador (nombre_archivo);
-	ordenador.ordenar_archivo();
-	ASSERT_EQ(mv.get_cantidad_registros_ocupados(),CANTIDAD_REGISTROS);
-	comparar_registros();
-}
-
-TEST_F(TestOrdenamientoExterno,Ordenar_1240_registros)
-{
-	RegistroVariable regVariable;
-	const int CANTIDAD_REGISTROS = 1240;
-	for (int i = 0; i < CANTIDAD_REGISTROS; i++)
-	{
-		//agrego clave en el primer campo
-		int clave = (rand() % 20) + 65;
-
-		regVariable.limpiar_campos();
-
-		regVariable.agregar_campo((char*)&clave,sizeof(clave));
-
-		//agrego clave en el segundo campo
-		int clave2 = (rand() % 20) + 65;
-
-		regVariable.agregar_campo((char*)&clave2,sizeof(clave2));
-
-		mv.agregar_registro(& regVariable);
-	}
-
-	OrdenamientoExterno ordenador (nombre_archivo);
-	ordenador.ordenar_archivo();
-	ASSERT_EQ(mv.get_cantidad_registros_ocupados(),CANTIDAD_REGISTROS);
+	ASSERT_EQ(mv.get_cantidad_registros_ocupados(),CANTIDAD_REGISTROS_ANTES);
 	comparar_registros();
 }
 

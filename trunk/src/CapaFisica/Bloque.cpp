@@ -20,8 +20,6 @@ Bloque::Bloque(const Bloque& otro)
 	espacioLibre = otro.espacioLibre;
 	espacioLibreOffset = otro.espacioLibreOffset;
 	bufferBloque = new char[tamanioBloque]();
-	/*limpiar_buffer antes se invocaba despues del memcpy , deberia invocarse antes.*/
-
 	memcpy(this->bufferBloque,otro.bufferBloque,tamanioBloque);
 }
 
@@ -30,17 +28,19 @@ bool Bloque::fue_eliminado(){
 	if(!this->esta_vacio())
 		return false;
 
-	stringstream stream;
-	stream.write(bufferBloque,tamanioBloque);
-	stream.seekg(0,ios::beg);
+	char caracterBorrado = 1;
+	if (tamanioBloque > 1)
+		memcpy(&caracterBorrado,bufferBloque,sizeof(caracterBorrado));
+//	stringstream stream;
+//	stream.write(bufferBloque,tamanioBloque);
+//	stream.seekg(0,ios::beg);
+//
+//
+//	stream.read( (char*)&caracterBorrado , sizeof(caracterBorrado) );
 
-	char caracterBorrado;
-	stream.read( (char*)&caracterBorrado , sizeof(caracterBorrado) );
-
-	return caracterBorrado== MARCA_BORRADO;
+	return (caracterBorrado == MARCA_BORRADO);
 
 }
-
 
 int Bloque::actualizar_ref_prox_bloque(unsigned int primerBloque){
 
@@ -54,19 +54,25 @@ int Bloque::actualizar_ref_prox_bloque(unsigned int primerBloque){
 		res= RES_ERROR;
 	/*vacio el bloque, marco que su espacio libre es total*/
 
-	stringstream stream;
-	stream.write(bufferBloque , tamanioBloque);
-	stream.seekp(0,ios::beg);
 	char marcaBorrado= MARCA_BORRADO;
-	stream.write( (char*)&marcaBorrado , sizeof(marcaBorrado) );
+	if (tamanioBloque >= sizeof(marcaBorrado) + sizeof(primerBloque))
+	{
+		memcpy(bufferBloque, &marcaBorrado,sizeof(marcaBorrado));
+		memcpy(bufferBloque+sizeof(marcaBorrado),&primerBloque,sizeof(primerBloque));
+	}
 
-	stream.write( (char*)&primerBloque , sizeof(primerBloque) );
-	stream.seekg(0,ios::beg);
-	stream.read( bufferBloque , tamanioBloque );
+//	stringstream stream;
+//	stream.write(bufferBloque , tamanioBloque);
+//	stream.seekp(0,ios::beg);
+//	char marcaBorrado= MARCA_BORRADO;
+//	stream.write( (char*)&marcaBorrado , sizeof(marcaBorrado) );
+//
+//	stream.write( (char*)&primerBloque , sizeof(primerBloque) );
+//	stream.seekg(0,ios::beg);
+//	stream.read( bufferBloque , tamanioBloque );
 
 
 	return res;
-
 }
 
 
@@ -75,13 +81,15 @@ int Bloque::obtener_ref_prox_bloque(){
 	if(!this->fue_eliminado())
 		return RES_BLOQUE_NO_BORRADO;
 
-	stringstream stream;
-	stream.write( bufferBloque , tamanioBloque );
-	char caracterEliminacion;
-	stream>>caracterEliminacion;
+//	stringstream stream;
+//	stream.write( bufferBloque , tamanioBloque );
+//	char caracterEliminacion;
+//	stream>>caracterEliminacion;
 
-	int proximoBloque;
-	stream.read( (char*)&proximoBloque , sizeof(proximoBloque) );
+	int proximoBloque = -1;
+//	stream.read( (char*)&proximoBloque , sizeof(proximoBloque) );
+	if (tamanioBloque >= sizeof(MARCA_BORRADO) + sizeof(proximoBloque))
+		memcpy(&proximoBloque,bufferBloque+sizeof(MARCA_BORRADO),sizeof(proximoBloque));
 
 	return proximoBloque;
 
@@ -131,14 +139,6 @@ es unicamente debido al almacenamiento del espacio libre disponible en buffer */
 
 void Bloque::_limpiar_buffer()throw(){
 
-	/*unsigned int espacioOcupado= this->calcular_espacio_ocupado();
-	if(espacioOcupado){
-		char* limpio= new char[espacioOcupado];
-		strcpy( limpio , "~");
-		memcpy( bufferBloque , limpio , espacioOcupado );
-		delete[] limpio;
-	}*/
-
 	strcpy( bufferBloque , "*****" );
 
 	espacioLibre= tamanioBloque - sizeof(espacioLibre);
@@ -150,11 +150,12 @@ void Bloque::_limpiar_buffer()throw(){
 
 void Bloque::desempaquetar(const char* datos)throw(){
 
+	memcpy(bufferBloque,datos,tamanioBloque);
 	stringstream stream(ios::in |ios::out);
 
-	stream.write(datos,tamanioBloque);
-	stream.seekg(0,stream.beg);
-	stream.read(bufferBloque,tamanioBloque);
+//	stream.write(datos,tamanioBloque);
+//	stream.seekg(0,stream.beg);
+//	stream.read(bufferBloque,tamanioBloque);
 	_obtener_espacio_libre();
 
 }/*carga un bloque contenido en datos en la estructura*/
@@ -207,26 +208,26 @@ unsigned short Bloque::get_cantidad_registros_almacenados()const throw(){
 	if(this->esta_vacio())
 		return 0;
 
-	unsigned int espacioUsado= this->_obtener_offset_final();
+	const unsigned int ESPACIO_USADO = this->_obtener_offset_final();
 	unsigned int cuentaBytes= 0;
 	unsigned short cuentaRegistros= 0;
-	stringstream stream(ios::in | ios::out);
-	stream.write(bufferBloque,tamanioBloque);
-	stream.seekg(0,stream.beg);
+//	stringstream stream(ios::in | ios::out);
+//	stream.write(bufferBloque,tamanioBloque);
+//	stream.seekg(0,stream.beg);
 
-
-	while(cuentaBytes< espacioUsado){
+	while (cuentaBytes < ESPACIO_USADO){
 
 		unsigned short tamanioBufferAux;
-		stream.read( (char*)(&tamanioBufferAux) , sizeof(tamanioBufferAux) );
-		char* bufferAux = new char[tamanioBufferAux];
-		stream.read(bufferAux,tamanioBufferAux);
+		memcpy(&tamanioBufferAux,bufferBloque+cuentaBytes,sizeof(tamanioBufferAux));
+//		stream.read( (char*)(&tamanioBufferAux) , sizeof(tamanioBufferAux) );
+//		char* bufferAux = new char[tamanioBufferAux];
+//		stream.read(bufferAux,tamanioBufferAux);
 
-		cuentaRegistros++;
+		cuentaRegistros ++;
 
-		cuentaBytes+= sizeof(tamanioBufferAux);
-		cuentaBytes+= tamanioBufferAux;
-		delete[] bufferAux;
+		cuentaBytes += sizeof(tamanioBufferAux) + tamanioBufferAux;
+//		cuentaBytes += tamanioBufferAux;
+//		delete[] bufferAux;
 	}
 
 	return cuentaRegistros;
@@ -292,13 +293,15 @@ int Bloque::recuperar_registro(RegistroVariable* registro,unsigned short numeroR
 
 void Bloque::empaquetar(char* copia)const throw(){
 
-	stringstream stream(ios::in |ios::out);
-	stream.write(bufferBloque,tamanioBloque);
+	memcpy(copia,bufferBloque,tamanioBloque);
 
-	stream.seekg(0,stream.beg);
-	stream.read(copia,tamanioBloque);
+//	stringstream stream(ios::in |ios::out);
+//	stream.write(bufferBloque,tamanioBloque);
+//
+//	stream.seekg(0,stream.beg);
+//	stream.read(copia,tamanioBloque);
 
-}/*exporta los datos del buffer en copia. Se exporta el bloque COMPLETO. copia debe tener datos reservados*/
+}/*exporta los datos del buffer en copia. Se exporta el bloque COMPLETO. copia debe tener memroia reservada*/
 
 
 unsigned int Bloque::_obtener_offset_registro(unsigned short numeroRegistro)const throw(){
@@ -390,18 +393,21 @@ void Bloque::_obtener_espacio_libre()const throw(){
 	stream.seekg(espacioLibreOffset , stream.beg);
 	stream.read( (char*)(&espacioLibre) , sizeof(espacioLibre) );
 
+
 }/*recupera el valor de espacio libre guardado en buffer y lo almacena en espacioLibre*/
 
 
 void Bloque::_escribir_espacio_libre()throw(){
 
-	stringstream stream(ios::in | ios::out);
+//	stringstream stream(ios::in | ios::out)
+//
+//	stream.write(bufferBloque,tamanioBloque);
+//	stream.seekp(espacioLibreOffset , stream.beg);
+//	stream.write( (char*)(&espacioLibre) , sizeof(espacioLibre) );
+//	stream.seekg(0,stream.beg);
+//	stream.read(bufferBloque,tamanioBloque);
 
-	stream.write(bufferBloque,tamanioBloque);
-	stream.seekp(espacioLibreOffset , stream.beg);
-	stream.write( (char*)(&espacioLibre) , sizeof(espacioLibre) );
-	stream.seekg(0,stream.beg);
-	stream.read(bufferBloque,tamanioBloque);
+	memcpy(bufferBloque+espacioLibreOffset, &espacioLibre,sizeof(espacioLibre));
 
 }/*escribe en el buffer el espacio libre*/
 
