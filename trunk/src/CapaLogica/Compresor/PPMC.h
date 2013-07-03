@@ -36,8 +36,9 @@ class PPMC : public Compresor
 		TablaOrdenes* mapa_ordenes;
 		Aritmetico* comp_aritmetico;
 
-		void _limpiar_ordenes();
 		void _reset();
+
+		void _comprimir_ultimo (std::vector<bool>& a_emitir);
 
 		int _comprimir (const Uint simbolo, int orden, std::string contexto_del_simbolo, std::vector<bool>& a_emitir);
 
@@ -53,13 +54,7 @@ class PPMC : public Compresor
 		int _descomprimir( unsigned long valor, string contextoActual, int ordenActual, Uint& simbolo,
 				BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& bufferBits,Aritmetico& aritmeticoCopia);
 
-		void _comprimir_ultimo (std::vector<bool>& a_emitir);
-
-		void _actualizar_contexto(int orden, Uint simbolo, string contexto_del_simbolo);
-
 		void _imprimir_emision(int orden,double probabilidad,Uint simbolo);
-
-		void _crear_modelo_vacio (int orden, string nombre_modelo);
 
 		void _guardar_bits(char* bufferComprimido,
 			Uint & indiceBufferComprimido,

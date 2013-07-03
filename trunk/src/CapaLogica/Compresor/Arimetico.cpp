@@ -56,9 +56,6 @@ Uint Aritmetico::descomprimir(Uint valor)
 		//fixme ... revisar. Condicion anterior no incluia el '!='
 		if (piso_caracter <= valor && valor <= techo_caracter && (piso_caracter!= techo_caracter) )
 		{
-//			IMPRIMIR_MY_VARIABLE(piso_caracter);
-//			IMPRIMIR_MY_VARIABLE(techo_caracter);
-//			IMPRIMIR_MY_VARIABLE(i);
 			return i;
 		}
 	}
@@ -230,7 +227,6 @@ int Aritmetico::descomprimir_todo(char* bufferComprimido,
 		bufferBitsDescompresion.get_primer_valor_numerico(PRECISION,valorSimboloActual);
 
 		Uint simboloActual= descomprimir((Uint)valorSimboloActual);
-//		IMPRIMIR_MY_VARIABLE((char)simboloActual);
 		/*recupero un simbolo*/
 
 		Byte cantidadOverflow,cantidadUnderflow;
@@ -275,14 +271,11 @@ int Aritmetico::set_modelo(ModeloProbabilistico* mp){
 
 }
 
-
-//todo no estan testeadas...
 Intervalo* Aritmetico::get_intervalo(){
 
 	return this->intervalo;
 
 }
-
 
 void Aritmetico::set_intervalo(Intervalo* otroIntervalo){
 
@@ -298,6 +291,5 @@ void Aritmetico::set_intervalo(Intervalo* otroIntervalo){
 	this->intervalo->set_techo( stringTecho );
 
 	this->intervalo->calcular_rango();
-
 }
 
