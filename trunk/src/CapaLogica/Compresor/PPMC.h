@@ -17,7 +17,7 @@ using std::stringstream;
 class PPMC : public Compresor
 {
 	public:
-		PPMC(unsigned int orden);
+		PPMC(Uint orden);
 		~PPMC();
 
 		virtual int comprimir_todo
@@ -32,15 +32,16 @@ class PPMC : public Compresor
 			unsigned int cantidadCaracteresOriginal);
 
 	private:
-		int orden_maximo;
+		Uint orden_maximo;
 		TablaOrdenes* mapa_ordenes;
 		Aritmetico* comp_aritmetico;
 
 		void _reset();
 
-		void _comprimir_ultimo (std::vector<bool>& a_emitir);
+		string _calcular_contexto (Uint simbolo, std::string maximo_contexto_actual);
 
-		int _comprimir (const Uint simbolo, int orden, std::string contexto_del_simbolo, std::vector<bool>& a_emitir);
+		int _comprimir (const Uint simbolo, int orden, std::string contexto, BufferBits<TAMANIO_BUFFER_BITS_DEFAULT>& buffer_bits,
+				vector<bool>& bits_a_emitir,char* bufferComprimido,Uint& indiceBufferComprimido, bool esUltimo);
 
 		void _comprimir_un_caracter(int& orden, Uint indiceSimbolo,
 				Uint simbolo ,
