@@ -21,7 +21,7 @@ class Controlador {
 		ResolvedorConsultas resolvedor_consultas;
 		Normalizador normalizador_consultas;
 
-		void mostrar_contenido(int id, RegistroCancion* reg);
+		void mostrar_resultado(const vector<IDdocumento_t> & documentos);
 
 	public:
 		Controlador();

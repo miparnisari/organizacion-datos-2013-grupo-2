@@ -14,22 +14,33 @@ Controlador::Controlador() {
 Controlador::~Controlador() {
 }
 
-void Controlador::mostrar_contenido(int id, RegistroCancion* reg)
+void Controlador::mostrar_resultado(const vector<IDdocumento_t> & documentos)
 {
-	if (reg == NULL)
-		return;
-	std::cout << "----------------------------------------------" << std::endl;
-	std::cout << "- ID DE LA CANCIÓN = " << id << std::endl;
-	std::cout << "- AUTOR/ES  = ";
-	for (unsigned short i = 0; i < reg->get_cantidad_autores(); i++)
+	const unsigned int CANTIDAD_DOCS = documentos.size();
+	for (unsigned int i = 0; i < CANTIDAD_DOCS; i ++)
 	{
-		std::cout << reg->get_autor(i) << ", ";
+		IDdocumento_t id_doc = documentos[i];
+		generador_estadisticas.aumentar_frecuencia_tema(id_doc);
+		RegistroCancion* reg = resolvedor_consultas.get_reg_completo(id_doc);
+
+		std::cout << "----------------------------------------------" << std::endl;
+		std::cout << "- ID DE LA CANCIÓN = " << id_doc << std::endl;
+		std::cout << "- AUTOR/ES  = ";
+
+		const unsigned short CANTIDAD_AUTORES = reg->get_cantidad_autores();
+		for (unsigned short i = 0; i < CANTIDAD_AUTORES; i++)
+		{
+			std::cout << reg->get_autor(i);
+			if (i != CANTIDAD_AUTORES - 1) std::cout<< ", ";
+		}
+		std::cout << std::endl;
+		std::cout << "- TITULO = " << reg->get_titulo() << std::endl;
+		std::cout << "- LETRAS = " << std::endl;
+		std::cout << reg->get_letra() << std::endl;
+		std::cout << "----------------------------------------------" << std::endl;
+
+		delete reg;
 	}
-	std::cout << std::endl;
-	std::cout << "- TITULO = " << reg->get_titulo() << std::endl;
-	std::cout << "- LETRAS = " << std::endl;
-	std::cout << reg->get_letra() << std::endl;
-	std::cout << "----------------------------------------------" << std::endl;
 
 }
 
@@ -50,13 +61,7 @@ int Controlador::consultar_titulo( std::string & directorioSalida, std::string &
 	{
 		std::cout << "No se encontraron canciones con título '" << titulo << "'." << std::endl;
 	}
-	for (unsigned int i = 0; i < ids.size(); i ++)
-	{
-		generador_estadisticas.aumentar_frecuencia_titulo(titulo);
-		RegistroCancion* reg = resolvedor_consultas.get_reg_completo(ids.at(i));
-		mostrar_contenido(ids.at(i),reg);
-		delete reg;
-	}
+	mostrar_resultado(ids);
 	return RES_OK;
 }
 
@@ -71,13 +76,7 @@ int Controlador::consultar_autor( std::string & directorioSalida, std::string & 
 	{
 		std::cout << "El autor '" << autor << "' no fue encontrado." << std::endl;
 	}
-	for (unsigned int i = 0; i < ids.size(); i ++)
-	{
-		generador_estadisticas.aumentar_frecuencia_autor(autor);
-		RegistroCancion* reg = resolvedor_consultas.get_reg_completo(ids.at(i));
-		mostrar_contenido(ids.at(i),reg);
-		delete reg;
-	}
+	mostrar_resultado(ids);
 	return RES_OK;
 }
 
@@ -88,13 +87,11 @@ int Controlador::consultar_frase( std::string & directorioSalida, std::string & 
 	generador_estadisticas.aumentar_frecuencia_frase(fraseNormalizada);
 	resolvedor_consultas.set_directorio_indice(directorioSalida);
 	std::vector <IDdocumento_t> ids = resolvedor_consultas.get_ids_canciones_frases(fraseNormalizada);
-	for (unsigned int i = 0; i < ids.size(); i ++)
+	if (ids.size() == 0)
 	{
-		generador_estadisticas.aumentar_frecuencia_frase(frase);
-		RegistroCancion *reg = resolvedor_consultas.get_reg_completo(ids.at(i));
-		mostrar_contenido(ids.at(i),reg);
-		delete reg;
+		std::cout << "La frase '" << frase << "' no fue encontrada." << std::endl;
 	}
+	mostrar_resultado(ids);
 	return RES_OK;
 }
 
