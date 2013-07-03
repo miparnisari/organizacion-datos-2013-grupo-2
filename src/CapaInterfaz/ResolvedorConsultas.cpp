@@ -30,12 +30,6 @@ std::vector<IDdocumento_t> ResolvedorConsultas::get_ids_canciones_frases(std::st
 	indiceSecundarioFrases.abrir(directorioSalida+'/'+std::string(FILENAME_IDX_SECUN_FRASES));
 
 	indiceSecundarioFrases.buscar_frase(frase,ids);
-	if (ids.size() == 0)
-	{
-		std::cout << "La frase '" << frase << "' no fue encontrada." << std::endl;
-	}
-	else {
-	}
 
 	indiceSecundarioFrases.cerrar();
 	return ids;
@@ -53,11 +47,8 @@ std::vector<IDdocumento_t> ResolvedorConsultas::get_id_canciones_autor(std::stri
 	ClaveX claveInicio;
 	claveInicio.set_clave(autor + (char)0);
 	int res = buscador.comienzo(">=",claveInicio);
-	if (res == RES_ERROR)
+	if (res != RES_ERROR)
 	{
-		cout << "no se encontraron canciones del autor '" <<autor<<"'."<<endl;
-	}
-	else {
 		ClaveX claveFin;
 		std::string autorSiguiente = autor;
 		autorSiguiente[autorSiguiente.size()-1] = (char)(autor[autor.size()-1] + 1);
@@ -78,7 +69,6 @@ std::vector<IDdocumento_t> ResolvedorConsultas::get_id_canciones_autor(std::stri
 
 			ids.push_back(idDoc);
 		}
-
 	}
 
 	indiceSecundarioAutor.cerrar();

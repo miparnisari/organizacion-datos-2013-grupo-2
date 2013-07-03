@@ -163,16 +163,16 @@ void PPMC::_comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint sim
 //	mapa_ordenes->imprimir();
 
 	string maximo_contexto_actual = contexto;
-	int res = _comprimir(simbolo,orden,contexto,buffer_bits,bits_a_emitir,bufferComprimido,indiceBufferComprimido,esUltimo);
+	int res;
 
-	while (res == RES_ESCAPE)
+	do
 	{
+		res = _comprimir(simbolo,orden,contexto,buffer_bits,bits_a_emitir,bufferComprimido,indiceBufferComprimido,esUltimo);
 		orden --;
 		if (orden !=0 && orden != -1)
 			contexto.erase(0,1);
-
-		res = _comprimir(simbolo,orden,contexto,buffer_bits,bits_a_emitir,bufferComprimido,indiceBufferComprimido,esUltimo);
 	}
+	while (res == RES_ESCAPE);
 
 	contexto = _calcular_contexto (simbolo, maximo_contexto_actual);
 

@@ -23,7 +23,7 @@ ModeloProbabilistico::ModeloProbabilistico(const ModeloProbabilistico& otro)
 {
 	this->tamanioAlfabeto = otro.tamanioAlfabeto;
 	this->totalFrecuencias = otro.totalFrecuencias;
-	this->frecuenciasSimbolos = new Uint[tamanioAlfabeto]();
+	this->frecuenciasSimbolos = new Uint[tamanioAlfabeto];
 	memcpy(frecuenciasSimbolos,otro.frecuenciasSimbolos,tamanioAlfabeto * sizeof(Uint));
 }
 
@@ -63,7 +63,7 @@ ModeloProbabilistico& ModeloProbabilistico::operator = (const ModeloProbabilisti
 		delete[] frecuenciasSimbolos;
 		this->tamanioAlfabeto = otro.tamanioAlfabeto;
 		this->totalFrecuencias = otro.totalFrecuencias;
-		this->frecuenciasSimbolos = new Uint[tamanioAlfabeto]();
+		this->frecuenciasSimbolos = new Uint[tamanioAlfabeto];
 		memcpy(frecuenciasSimbolos,otro.frecuenciasSimbolos,tamanioAlfabeto * sizeof(Uint));
 	}
 	return (*this);
