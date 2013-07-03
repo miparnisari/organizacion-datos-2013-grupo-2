@@ -129,11 +129,6 @@ void PPMC::_comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint sim
 {
 //	mapa_ordenes->imprimir();
 
-	if (orden == 0 || orden == -1)
-		contexto = utilitarios::int_a_string(orden);
-
-	string maximo_contexto_actual = contexto;
-
 	if (esUltimo)
 	{
 		ModeloProbabilistico* modelo_actual = mapa_ordenes->devolver_modelo(orden,contexto);
@@ -152,6 +147,7 @@ void PPMC::_comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint sim
 		}
 	}
 
+	string maximo_contexto_actual = contexto;
 	int res = _comprimir(simbolo, orden, contexto, bits_a_emitir);
 
 	_guardar_bits(bufferComprimido, indiceBufferComprimido, buffer_bits, bits_a_emitir,false);
@@ -161,9 +157,7 @@ void PPMC::_comprimir_un_caracter(int& orden, Uint indiceSimbolo, const Uint sim
 	while (res == RES_ESCAPE)
 	{
 		orden --;
-		if (orden == 0 || orden == -1)
-			contexto = utilitarios::int_a_string(orden);
-		else
+		if (orden !=0 && orden != -1)
 			contexto.erase(0,1);
 
 		if (esUltimo)
