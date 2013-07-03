@@ -27,11 +27,6 @@ bool ParserCanciones::fin_directorio()const
 	return (contadorArchivosLeidos >= get_cantidad_archivos());
 }
 
-char ParserCanciones::_estandarizar (char caracter)
-{
-	return normalizador.transformar_char(caracter);
-}
-
 int ParserCanciones::crear (std::string & dir)
 {
 	_init();
@@ -49,7 +44,7 @@ int ParserCanciones::obtener_proxima_cancion(RegistroCancion& regNormalizado,
 	int largoNombreArchivo = nombreArchivo.length();
 
 	// Archivo que tiene la normalizacion
-	char* nombreArchivoNormalizado = new char[largoNombreArchivo + 1]();
+	char* nombreArchivoNormalizado = new char[largoNombreArchivo + 1];
 	nombreArchivoNormalizado[largoNombreArchivo] = '\0';
 	strncpy(nombreArchivoNormalizado,nombreArchivo.c_str(),largoNombreArchivo);
 	memcpy(nombreArchivoNormalizado+largoNombreArchivo-4,".tmp",4);
