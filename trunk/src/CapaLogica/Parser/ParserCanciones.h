@@ -19,7 +19,6 @@ class ParserCanciones
 		std::vector<std::string> archivos;
 		unsigned int contadorArchivosLeidos;
 
-		char _estandarizar(char caracter);
 		void _init();
 
 	public:
