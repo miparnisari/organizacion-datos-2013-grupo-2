@@ -1126,7 +1126,7 @@ El siguiente diagrama de clases ilustra el diseño del hashing extensible:
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -2819,7 +2819,7 @@ Ingrese consulta: helter skelter
 
 \begin_layout Plain Layout
 
-- AUTOR/ES  = aerosmith, 
+- AUTOR/ES  = aerosmith
 \end_layout
 
 \begin_layout Plain Layout
@@ -2849,7 +2849,7 @@ Ingrese consulta: helter skelter
 
 \begin_layout Plain Layout
 
-- AUTOR/ES  = oasis,
+- AUTOR/ES  = oasis
 \end_layout
 
 \begin_layout Plain Layout
@@ -2910,7 +2910,7 @@ Ingrese consulta: u2
 
 \begin_layout Plain Layout
 
-- AUTOR/ES  = u2, 
+- AUTOR/ES  = u2
 \end_layout
 
 \begin_layout Plain Layout
