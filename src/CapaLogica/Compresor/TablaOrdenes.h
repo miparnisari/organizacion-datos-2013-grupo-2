@@ -13,23 +13,25 @@
 #include "../../Utilitarios/Logger.h"
 
 #include <map>
+#include <cassert>
 
 class TablaOrdenes {
 
 	private:
 		int cantidad_ordenes;
-		std::map<int,TablaModelos*> mapa_ordenes;
+		ModeloProbabilistico* modelo_cero;
+		ModeloProbabilistico* modelo_menos_uno;
+		std::map<int,TablaModelos*> resto_modelos;
 
 		void _inicializar_orden_menosuno();
 		void _inicializar_orden_cero();
+		void inicializar();
+		void limpiar_ordenes();
 
 	public:
 		TablaOrdenes(int cantidad_ordenes);
 		virtual ~TablaOrdenes();
 
-		void inicializar();
-
-		void limpiar_ordenes();
 
 		void imprimir();
 

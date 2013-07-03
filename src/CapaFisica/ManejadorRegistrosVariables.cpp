@@ -133,32 +133,23 @@ long ManejadorRegistrosVariables::get_registro(RegistroVariable* registro ,
 
 
 	while( contadorRegistros <= numeroRegistro ){
-
 		archivo.read( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
 		tamanioEmpaquetado = tamanioRegistro + sizeof(tamanioRegistro);
-		bufferRegistro= new char[tamanioEmpaquetado]();
-		archivo.read( bufferRegistro , tamanioRegistro );
+		bufferRegistro     = new char[tamanioEmpaquetado];
+		memcpy(bufferRegistro,&tamanioRegistro,sizeof(tamanioRegistro));
+		archivo.read( bufferRegistro+sizeof(tamanioRegistro) , tamanioRegistro );
 
-		if( bufferRegistro[0]!= MARCA_BORRADO ){
+		if (bufferRegistro[sizeof(tamanioRegistro)] != MARCA_BORRADO ){
 			contadorRegistros++ ;
-		}/*si el registro levantado no fue eliminado*/
+		}
 
-		if(contadorRegistros <= numeroRegistro){
+		if (contadorRegistros <= numeroRegistro){
 			delete[] bufferRegistro;
-			contadorOffset+= tamanioEmpaquetado;
+			contadorOffset += tamanioEmpaquetado;
 		}
 
 	}/*mientras no se haya llegado al numero de registro*/
 
-	stringstream stream;
-	// (const char* s, streamsize n);
-	//Inserts the first n characters of the array pointed by s into the stream.
-	stream.write( (char*)&tamanioRegistro , sizeof(tamanioRegistro) );
-	stream.write( bufferRegistro , tamanioRegistro );
-	stream.seekg( 0,ios::beg );
-
-	//Extracts n characters from the stream and stores them in the array pointed by by s.
-	stream.read( bufferRegistro , tamanioEmpaquetado );
 	registro->desempaquetar( bufferRegistro );
 
 	delete[] bufferRegistro;
