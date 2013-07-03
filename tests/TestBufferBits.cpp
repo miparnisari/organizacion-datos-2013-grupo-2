@@ -11,72 +11,60 @@
 
 // To use a test fixture, derive a class from testing::Test.
 class TestBufferBits : public testing::Test {
- protected:
-	// Declares the variables your tests want to use.
+	 protected:
+		// Declares the variables your tests want to use.
 
-  // virtual void SetUp() will be called before each test is run.  You
-  // should define it if you need to initialize the varaibles.
-  // Otherwise, this can be skipped.
-  virtual void SetUp() {
-  }
+	  // virtual void SetUp() will be called before each test is run.  You
+	  // should define it if you need to initialize the varaibles.
+	  // Otherwise, this can be skipped.
+	  virtual void SetUp() {
+	  }
 
-  virtual void TearDown() {
-  }
-
-  // A helper function that some test uses.
-  void imprimir_test_buffer_bits(string s){
-
-  	cout<<">TestBufferBits: "+s<<endl;
-
-  }
+	  virtual void TearDown() {
+	  }
 
 };
 
 
 TEST_F(TestBufferBits,Get_bit){
 
-	imprimir_test_buffer_bits("Get_bit");
+	const unsigned short TAMANIO_BITSET= 8;
+	BufferBits<TAMANIO_BITSET> bb;
 
-	const unsigned short TBS= 8;
-	BufferBits<TBS> bb;
-
-//	for(unsigned short i=0;i<TBS;i++){
-//
-//		if(i%2)
-//			bb.agregar_bit(true);
-//		else
-//			bb.agregar_bit(false);
-//
-//	}
-//	IMPRIMIR_MY_VARIABLE(bb.to_string());
-//	ASSERT_TRUE(bb.get_indice_buffer()== TBS);
-//
-//	for(unsigned short i=0;i<TBS;i++){
-//
-//		bool bit;
-//		bb.get_bit(i,bit);
-//		IMPRIMIR_MY_VARIABLE(bit);
-//		if(i%2)
-//			ASSERT_TRUE(bit);
-//		else
-//			ASSERT_TRUE(!bit);
-//
-//	}
-
-	bitset<8> bs;
-	bs.reset();
-	bs.set(0);
-
-	for(int i=0;i<TBS;i++){
+	for(unsigned short i=0;i<TAMANIO_BITSET;i++){
 
 		if(i%2)
 			bb.agregar_bit(true);
 		else
 			bb.agregar_bit(false);
-		IMPRIMIR_MY_VARIABLE(bb.to_string_bitset());
+
+	}
+	ASSERT_EQ(bb.to_string() , "01010101");
+	ASSERT_TRUE(bb.get_indice_buffer()== TAMANIO_BITSET);
+
+	for(unsigned short i=0;i<TAMANIO_BITSET;i++){
+
+		bool bit;
+		bb.get_bit(i,bit);
+		if(i%2)
+			ASSERT_TRUE(bit);
+		else
+			ASSERT_TRUE(!bit);
+
+	}
+
+	bitset<8> bs;
+	bs.reset();
+	bs.set(0);
+
+	for(int i=0;i<TAMANIO_BITSET;i++){
+
+		if(i%2)
+			bb.agregar_bit(true);
+		else
+			bb.agregar_bit(false);
 		bool bit;
 		ASSERT_TRUE( bb.get_bit(i,bit)!= RES_ERROR);
-		IMPRIMIR_MY_VARIABLE(bit);
 
 	}
 
@@ -98,13 +86,11 @@ TEST_F(TestBufferBits,Get_bit){
 }
 
 
-TEST_F(TestBufferBits,To_string){
-
-	imprimir_test_buffer_bits("To_string");
+TEST_F(TestBufferBits,To_string)
+{
 
 	const unsigned short TBS= 10;
 	BufferBits<TBS> bb;
-
 
 	const unsigned short CANTIDAD_DUPLAS= 3;
 	for(unsigned short i=0;i<CANTIDAD_DUPLAS;i++){
@@ -114,74 +100,53 @@ TEST_F(TestBufferBits,To_string){
 	string bbString= bb.to_string();
 	string bbStringCompleto= bb.to_string_bitset();
 
-
-	IMPRIMIR_MY_VARIABLE(bbString);
-	IMPRIMIR_MY_VARIABLE(bbStringCompleto);
 	for(unsigned short i=0;i<(int)(CANTIDAD_DUPLAS*2);i+=2){
 		ASSERT_TRUE(bbString.at(i)== '1');
 		ASSERT_TRUE(bbString.at(i+1)== '0');
 
 	}
-
-
-
-
 }
 
 
-TEST_F(TestBufferBits,Contar_bytes){
-
-	imprimir_test_buffer_bits("Contar_bytes");
-
-	const unsigned short TBS=32;
-	BufferBits<TBS> bb;
+TEST_F(TestBufferBits,Contar_bytes)
+{
+	const unsigned short TAMANIO_BITSET=32;
+	BufferBits<TAMANIO_BITSET> bb;
 
 	ASSERT_TRUE(bb.get_cantidad_bytes()== 0);
 	const unsigned short CANTIDAD_BITS= 17;
-	for(unsigned short i=0;i<CANTIDAD_BITS;i++)
+	for (unsigned short i=0;i<CANTIDAD_BITS;i++)
 		bb.agregar_bit(true);
 
 	ASSERT_TRUE(bb.get_cantidad_bytes()== 2);
-	IMPRIMIR_MY_VARIABLE(bb.to_string());
-
-
 }
 
 
-
-
 TEST_F(TestBufferBits,To_char){
-
-	imprimir_test_buffer_bits("To_char");
 
 	BufferBits<8> bb;
 	bb.agregar_bit(1);
 	for(unsigned short i=0;i<7;i++)
 		bb.agregar_bit(0);
 
-	IMPRIMIR_MY_VARIABLE(bb.to_char());
 	ASSERT_TRUE( bb.to_char()== 128 );
 
 	bb.flush();
 	for(unsigned short i=0;i<7;i++)
 		bb.agregar_bit(0);
 	bb.agregar_bit(1);
-	IMPRIMIR_MY_VARIABLE(bb.to_char());
+
 	ASSERT_TRUE(bb.to_char()== 1);
 
 	bb.flush();
 	bb.agregar_bits("00001000");
-	IMPRIMIR_MY_VARIABLE(bb.to_char());
+
 	ASSERT_TRUE(bb.to_char()== 8);
 
-
-
-}//
+}
 
 
 TEST_F(TestBufferBits,Quitar_bit){
-
-	imprimir_test_buffer_bits("Quitar_bit");
 
 	const unsigned short TBS=32;
 	BufferBits<TBS> bb;
@@ -190,11 +155,11 @@ TEST_F(TestBufferBits,Quitar_bit){
 	bb.quitar_bit(4);
 	Byte c;
 	bb.get_byte(0,c);
-	IMPRIMIR_MY_VARIABLE( (int)c );
+	ASSERT_EQ( (int)c , 130);
 
 	bb.quitar_bit(0);
 	bb.get_byte(0,c);
-	IMPRIMIR_MY_VARIABLE( (int)c );
+	ASSERT_EQ( (int)c , 4);
 
 	bb.flush();
 	bb.agregar_bits("00000000000111010000000000");
@@ -202,7 +167,7 @@ TEST_F(TestBufferBits,Quitar_bit){
 	bb.quitar_bit(11);
 	bb.quitar_bit(11);
 	bb.get_byte(1,c);
-	IMPRIMIR_MY_VARIABLE( (int)c);
+	ASSERT_EQ( (int)c , 8);
 
 	bb.flush();
 	bb.agregar_bits("10101010");
@@ -212,8 +177,6 @@ TEST_F(TestBufferBits,Quitar_bit){
 	ASSERT_TRUE( bb.get_indice_buffer()<8 );
 
 	bb.flush();
-
-
 
 }
 
@@ -238,8 +201,6 @@ TEST_F(TestBufferBits,Pop_bit){
 
 TEST_F(TestBufferBits,Get_byte){
 
-	imprimir_test_buffer_bits("Get_byte");
-
 	const unsigned short  TBS= 32;
 	BufferBits<TBS> bb;
 
@@ -251,28 +212,22 @@ TEST_F(TestBufferBits,Get_byte){
 
 	ASSERT_TRUE(bb.get_cantidad_bytes()== 2);
 
-
-	IMPRIMIR_MY_VARIABLE(bb.to_string());
-
+	ASSERT_EQ(bb.to_string() , "1111111110000000");
 
 	Byte c;
 	bb.get_byte(0,c);
-	IMPRIMIR_MY_VARIABLE( (int)c );
 	ASSERT_TRUE( (int)c == 255 );
 
 	bb.get_byte(1,c);
-	IMPRIMIR_MY_VARIABLE( (int)c );
 	ASSERT_TRUE( (int)c == 128 );
 
 	bb.agregar_bits("00000100");
 	ASSERT_TRUE( bb.get_cantidad_bytes()== 3 );
 	bb.get_byte(2,c);
-	IMPRIMIR_MY_VARIABLE( (int)c );
 	ASSERT_TRUE( (int)c== 4 );
 
 	bb.agregar_bits("00000111");
 	bb.get_byte(3,c);
-	IMPRIMIR_MY_VARIABLE( (int)c );
 	bb.get_byte(3,c);
 	ASSERT_TRUE( (int)c== 7 );
 	ASSERT_TRUE( bb.get_cantidad_bytes()==4 );
@@ -283,15 +238,12 @@ TEST_F(TestBufferBits,Get_byte){
 	bool valores[]= {true,false,false,false,false,false,false,false};//128
 	bb.agregar_bits(valores,8);
 	bb.get_byte(0,c);
-	IMPRIMIR_MY_VARIABLE( (int)c );
+	ASSERT_TRUE( (int)c== 128 );
 
-
-}//
+}
 
 
 TEST_F(TestBufferBits,Pop_byte){
-
-	imprimir_test_buffer_bits("Pop_byte");
 
 	const unsigned short TBS= 32;
 	BufferBits<TBS> bb;
@@ -299,51 +251,57 @@ TEST_F(TestBufferBits,Pop_byte){
 	Byte c;
 
 	bb.pop_byte(c);
-	IMPRIMIR_MY_VARIABLE((int)c);
-
+	ASSERT_EQ((int)c,255);
 
 	bb.pop_byte(c);
-	IMPRIMIR_MY_VARIABLE((int)c);
-
+	ASSERT_EQ((int)c,8);
 
 }
 
 
 TEST_F(TestBufferBits,Test_dump){
 
-	imprimir_test_buffer_bits("Test_dump");
-	const unsigned short TBS= 64;
-	BufferBits<TBS> bb;
+	const unsigned short TAMANIO_BITSET= 64;
+	BufferBits<TAMANIO_BITSET> bb;
 
 	bb.agregar_bits( "01000001010000110100010001001111000" );
-	char arreglo[4];
 
-	IMPRIMIR_MY_VARIABLE( bb.get_indice_buffer() );
+
+	ASSERT_TRUE( bb.get_indice_buffer() == 35 );
 	ASSERT_TRUE( bb.get_cantidad_bytes()== 4 );
 
-	int cbe= bb.dump(arreglo);
-	IMPRIMIR_MY_VARIABLE(cbe);
+	char arreglo[4];
+	bb.dump(arreglo);
+
+	char resultado[4] = {'A','C','D'};
+
+
 	for(unsigned short i=0;i<3;i++)
-		IMPRIMIR_MY_VARIABLE( arreglo[i] );
+	{
+		ASSERT_EQ( arreglo[i],resultado[i] );
+	}
 
 }
 
 
 TEST_F(TestBufferBits,Test_dump_y_completar){
 
-	imprimir_test_buffer_bits("Test_dump_y_completar");
 	const unsigned short TBS= 64;
 	BufferBits<TBS> bb;
 
 	bb.agregar_bits( "01000001010000110100010001001111010001" );
 	char* arreglo= new char[ bb.get_cantidad_bytes()+1 ];
 
-	IMPRIMIR_MY_VARIABLE( bb.get_indice_buffer() );
+	ASSERT_TRUE( bb.get_indice_buffer() == 38 );
 
-	int cbe= bb.dump_y_completar(arreglo);
-	IMPRIMIR_MY_VARIABLE(cbe);
+	char resultado [] = {'A','C','D', 'O'};
+
+	bb.dump_y_completar(arreglo);
+
 	for(unsigned short i=0;i<4;i++)
-		IMPRIMIR_MY_VARIABLE( arreglo[i] );
+	{
+		ASSERT_EQ(arreglo[i], resultado[i]);
+	}
 
 	delete[] arreglo;
 
@@ -352,7 +310,6 @@ TEST_F(TestBufferBits,Test_dump_y_completar){
 
 TEST_F(TestBufferBits , Agregar_bits_char){
 
-	imprimir_test_buffer_bits("Agregar_bits_char");
 	BufferBits<32> bb;
 
 	char c1= (char)2;
@@ -361,20 +318,18 @@ TEST_F(TestBufferBits , Agregar_bits_char){
 
 	bb.agregar_bits(c1);
 	bb.agregar_bits(c2);
-	IMPRIMIR_MY_VARIABLE( bb.to_string() );
+	ASSERT_TRUE(bb.to_string() == "0000001000000001");
 
 	//si lo lleno
 	bb.agregar_bits(c2);
 	bb.agregar_bits(c2);
 	ASSERT_TRUE(bb.agregar_bits(c2)==RES_ERROR);
-	IMPRIMIR_MY_VARIABLE(bb.to_string());
-
+	ASSERT_TRUE(bb.to_string() == "00000010000000010000000100000001");
 
 }
 
 TEST_F(TestBufferBits , Agregar_bits_char_con_bits_iniciales){
 
-	imprimir_test_buffer_bits("Agregar_bits_char_con_bits_iniciales");
 	BufferBits<32> bb;
 
 	bool bits[2];
@@ -385,112 +340,104 @@ TEST_F(TestBufferBits , Agregar_bits_char_con_bits_iniciales){
 	char c1= (char)2;
 	bb.agregar_bits(c1);
 
-	IMPRIMIR_MY_VARIABLE( bb.to_string() );
+	ASSERT_TRUE(bb.to_string() == "1000000010");
 
 	c1= (char)7;
 	bb.agregar_bits(c1);
-	IMPRIMIR_MY_VARIABLE( bb.to_string() );
+	ASSERT_TRUE(bb.to_string() == "100000001000000111");
 }
 
 
 TEST_F(TestBufferBits , To_long){
-
-	imprimir_test_buffer_bits("To_long");
 
 	BufferBits<128> bb;
 	const unsigned char CANTIDAD_BYTES= 4;
 
 	for(char c=1;c<CANTIDAD_BYTES;c++){
 		bb.agregar_bits( (char)0 );
-		IMPRIMIR_MY_VARIABLE( bb.to_string() );
-	}bb.agregar_bits( (char)1 );IMPRIMIR_MY_VARIABLE(bb.to_string());
+	}
+
+	bb.agregar_bits( (char)1 );
 
 	unsigned long valorLong;
 	bb.get_long(0,valorLong);
-	IMPRIMIR_MY_VARIABLE( valorLong );
-	ASSERT_TRUE( valorLong== 1 );
+	ASSERT_TRUE( valorLong == 1 );
 
 	bb.agregar_bits( (char)0 );
 	bb.agregar_bits( (char)0 );
 	bb.agregar_bits( (char)1 );
 	bb.agregar_bits( (char)1 );
 	bb.get_long(1,valorLong);
-	IMPRIMIR_MY_VARIABLE( bb.to_string() );
-	IMPRIMIR_MY_VARIABLE(valorLong);
+	ASSERT_TRUE( valorLong == 257 );
 
 	bb.agregar_bits( (char)3 );
 	bb.agregar_bits( (char)0 );
 	bb.agregar_bits( (char)0 );
 	bb.agregar_bits( (char)0 );
 	bb.get_long(2,valorLong);
-	IMPRIMIR_MY_VARIABLE( bb.to_string() );
-	IMPRIMIR_MY_VARIABLE(valorLong);
-
-
+	ASSERT_TRUE( valorLong == 50331648 );
 
 }
 
 
 TEST_F(TestBufferBits,Get_primer_valor_numerico){
 
-	imprimir_test_buffer_bits( "Get_primer_valor_numerico" );
 
 	BufferBits<BITS_LONG> bb;
 	bb.agregar_bits( (Byte)255 );//11111111
 
 	unsigned long valor= 0;
-	IMPRIMIR_MY_VARIABLE( bb.to_string() );
+	ASSERT_EQ(bb.to_string(), "11111111");
 
-	for( unsigned short i=1;i<=8;i++ ){
+	unsigned long resultados[] = {1,3,7,15,31,63,127,255};
 
+	for( unsigned short i=1;i<=8;i++ )
+	{
 		bb.get_primer_valor_numerico(i,valor);
-		IMPRIMIR_MY_VARIABLE(valor);
-
-
+		ASSERT_EQ(valor,resultados[i-1]);
 	}
 
 	bb.flush();
 	bb.agregar_bits( (Byte)128 );
 	bb.agregar_bits( (Byte)0 );
+
+	unsigned long resultados2[] = {128,256,512,1024,2048,4096,8192,16384,32768};
+
 	for( unsigned short i=8;i<=16;i++ ){
 
 		bb.get_primer_valor_numerico(i,valor);
-		IMPRIMIR_MY_VARIABLE(valor);
-
+		ASSERT_EQ(valor,resultados2[i-8]);
 
 	}
 
 }
 
 
-//TEST_F(TestBufferBits,Test_stress){
-//
-//	imprimir_test_buffer_bits("Test_stress");
-//
-//	const TamanioBitset TBS= 4096*8;
-//	BufferBits<TBS> bb;
-//
-//	for(TamanioBitset i=0;i<TBS;i++){
-//		if(i%2)
-//			bb.agregar_bit(true);
-//		else
-//			bb.agregar_bit(false);
-//	}
-//
-//	string s= bb.to_string();
-//	IMPRIMIR_MY_VARIABLE(s);
-//	ASSERT_TRUE( s.length()== TBS );
-//
-//	for(TamanioBitset i=0;i<TBS;i++){
-//		bool bit;
-//		bb.get_bit(i,bit);
-//		if(i%2)
-//			ASSERT_TRUE(bit);
-//		else
-//			ASSERT_TRUE(!bit);
-//	}
-//
-//}
+TEST_F(TestBufferBits,Test_stress){
+
+	const TamanioBitset TAMANIO_BITSET= 4096*8;
+	BufferBits<TAMANIO_BITSET> bb;
+
+	for(TamanioBitset i=0;i<TAMANIO_BITSET;i++){
+		if(i%2)
+			bb.agregar_bit(true);
+		else
+			bb.agregar_bit(false);
+	}
+
+	string s = bb.to_string();
+	ASSERT_TRUE( s.length()== TAMANIO_BITSET );
+
+	for(TamanioBitset i=0;i<TAMANIO_BITSET;i++){
+		bool bit;
+		bb.get_bit(i,bit);
+		if(i%2)
+			ASSERT_TRUE(bit);
+		else
+			ASSERT_TRUE(!bit);
+	}
+
+}
 
 
 TEST_F(TestBufferBits,Buffer_bits)
@@ -509,7 +456,5 @@ TEST_F(TestBufferBits,Buffer_bits)
 	bb.get_cantidad_bytes();
 	Byte c;
 	bb.get_byte(0,c);
-
-
 
 }
