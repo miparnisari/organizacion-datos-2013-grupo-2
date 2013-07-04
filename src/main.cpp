@@ -2,8 +2,12 @@
 #include "Constantes.h"
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <sstream>
 
 using std::ofstream;
+using std::string;
+using std::stringstream;
 
 void mostrar_operaciones()
 {
@@ -20,13 +24,50 @@ void mostrar_operaciones()
 	std::cout << "(9) Buscar tema más consultado." << std::endl;
 }
 
+
+int _transformar_operacion(string& s){
+
+	const int OPERACION_IVALIDA= -1;
+	const int LONGITUD= s.length();
+	const int CERO= (int)'0';
+	const int NUEVE= (int)'9';
+
+	for(int i=0;i<LONGITUD;i++){
+
+		int c= (int)s.at(i);
+		if( c < CERO || c> NUEVE )
+			return OPERACION_IVALIDA;
+
+	}
+
+	stringstream ss;
+	ss<<s;
+	int operacion;
+	ss>>operacion;
+
+	return operacion;
+
+}
+
+
 int pedir_operacion()
 {
+//	mostrar_operaciones();
+//	int operacion;
+//	std::cout << "Ingrese operacion: ";
+//	std::cin >> operacion;
+//	return operacion;
+
 	mostrar_operaciones();
 	int operacion;
-	std::cout << "Ingrese operacion: ";
-	std::cin >> operacion;
+	string operacionString;
+
+	std::cout<<"Ingrese operacion: ";
+	std::cin>>operacionString;
+	operacion= _transformar_operacion(operacionString);
 	return operacion;
+
+
 }
 
 std::string pedir_directorio_entrada()
