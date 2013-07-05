@@ -101,6 +101,13 @@ int Controlador::borrar_cancion( std::string & directorioSalida, int id_cancion)
 
 	RegistroCancion* reg = resolvedor_consultas.get_reg_completo (id_cancion);
 
+	if (reg == NULL)
+	{
+		std::cout << "La canción con ID " << id_cancion << " no existe." << std::endl;
+		return RES_RECORD_DOESNT_EXIST;
+	}
+
+
 	return indexador.borrar_cancion(directorioSalida ,id_cancion, *reg);
 }
 

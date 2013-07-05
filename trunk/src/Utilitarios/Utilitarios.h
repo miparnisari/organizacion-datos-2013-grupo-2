@@ -13,6 +13,7 @@ using namespace std;
 
 namespace utilitarios
 {
+	bool es_numero(const std::string& s);
 	std::vector <bool> interpretar_byte (char byte);
 	int string_a_int (std::string & s_int);
 	std::string int_a_string (int i_int);

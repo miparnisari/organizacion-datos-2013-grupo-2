@@ -85,7 +85,7 @@ ListaPos_t ListaPosiciones::devolver (const CantidadPosiciones_t cuantos, const 
 
 	PosicionTermino_t pos;
 
-	for (unsigned int i = desde; i < desde+cuantos; i++)
+	for (int i = desde; i < desde+cuantos; i++)
 	{
 		pos = this->_devolver_posicion(i);
 		lista_pos.push_back(pos);

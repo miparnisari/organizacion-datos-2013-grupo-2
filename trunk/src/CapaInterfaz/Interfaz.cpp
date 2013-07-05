@@ -76,10 +76,12 @@ std::string Interfaz::pedir_directorio_salida()
 
 int Interfaz::pedir_id_cancion()
 {
-	int id;
+	std::string id;
 	std::cout << "Ingrese el ID de la canción: ";
 	std::cin >> id;
-	return id;
+	if (utilitarios::es_numero(id))
+		return string_a_int(id);
+	return REFERENCIA_INVALIDA;
 }
 
 std::string Interfaz::pedir_consulta()
@@ -129,6 +131,8 @@ void Interfaz::ejecutar()
 		{
 			std::string directorioSalida = pedir_directorio_salida();
 			int idCancion = pedir_id_cancion();
+			if (idCancion == REFERENCIA_INVALIDA)
+				continue;
 			controlador.borrar_cancion(directorioSalida,idCancion);
 		}
 		else if (operacion == 6)
