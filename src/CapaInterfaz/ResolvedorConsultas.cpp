@@ -100,7 +100,9 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (IDdocumento_t id_cancion
 	claveID.set_clave(id_cancion);
 
 	RegistroClave reg;
-	indicePrimario.devolver(claveID, &reg);
+	int res = indicePrimario.devolver(claveID, &reg);
+	if (res != RES_OK)
+		return NULL;
 	indicePrimario.cerrar_archivo();
 
 	archivoMaestro.abrir_archivo(directorioSalida+'/'+std::string(FILENAME_ARCH_MAESTRO));

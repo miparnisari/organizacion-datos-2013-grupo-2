@@ -341,7 +341,7 @@ int IndiceInvertidoBooleanoConPosicion::buscar_frase(const string & frase, vecto
 	const int CANTIDAD_DOCS_INTERSECCION = interseccion.size();
 
 	// Elimino los ID docs repetidos
-	for (unsigned int i = 0; i < CANTIDAD_DOCS_INTERSECCION; i ++)
+	for (int i = 0; i < CANTIDAD_DOCS_INTERSECCION; i ++)
 	{
 		IDdocumento_t id_doc = interseccion[i].first;
 		if(std::find(id_docs.begin(), id_docs.end(), id_doc) == id_docs.end())
