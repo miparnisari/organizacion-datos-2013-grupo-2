@@ -53,8 +53,6 @@ class ModeloProbabilistico {
 		void resetear();
 
 		std::string imprimir()const;
-
-		Uint obtener_simbolo(double probabilidad)const;
 };
 
 #endif /* MODELOPROBABILISTICO_H_ */

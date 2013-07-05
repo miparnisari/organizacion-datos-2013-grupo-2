@@ -108,15 +108,14 @@ RegistroCancion* ResolvedorConsultas::get_reg_completo (IDdocumento_t id_cancion
 	long offset;
 	reg.recuperar_campo((char*)&offset,1);
 
-	PPMC* compresor = new PPMC(CANTIDAD_ORDENES_PPMC);
+	PPMC compresor (CANTIDAD_ORDENES_PPMC);
 
 	RegistroCancion* regVariableComprimido = new RegistroCancion();
 	archivoMaestro.get_registro_por_offset(regVariableComprimido,offset);
 
 	RegistroCancion* regDescomprimido = new RegistroCancion();
-	regVariableComprimido->descomprimir(compresor, regDescomprimido);
+	regVariableComprimido->descomprimir(&compresor, regDescomprimido);
 
-	delete compresor;
 	delete regVariableComprimido;
 	return regDescomprimido;
 }
@@ -136,7 +135,7 @@ std::string ResolvedorConsultas::get_nombre_archivo (IDdocumento_t id_cancion)
 	this->documentos.devolver(IDdoc, &regDoc);
 
 	const unsigned int TAMANIO_NOMBRE_ARCHIVO = regDoc.get_tamanio_campo(1);
-	char* bufferNombreArchivo = new char[TAMANIO_NOMBRE_ARCHIVO + 1]();
+	char* bufferNombreArchivo = new char[TAMANIO_NOMBRE_ARCHIVO + 1];
 	bufferNombreArchivo [TAMANIO_NOMBRE_ARCHIVO] = '\0';
 	regDoc.recuperar_campo(bufferNombreArchivo,1);
 

@@ -62,7 +62,7 @@ Termino_t ListaTerminos::devolver(const IDtermino_t & id_termino)
 	archivo.get_registro(&registro,id_termino);
 
 	const unsigned int TAMANIO_TERMINO = registro.get_tamanio_campo(0);
-	char* c_termino = new char[TAMANIO_TERMINO + 1]();
+	char* c_termino = new char[TAMANIO_TERMINO + 1];
 	c_termino[TAMANIO_TERMINO] = '\0';
 
 	registro.recuperar_campo(c_termino,0);

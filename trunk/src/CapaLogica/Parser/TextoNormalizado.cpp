@@ -18,7 +18,7 @@ TextoNormalizado::~TextoNormalizado() {
 
 bool TextoNormalizado::_es_delimitador(char c)
 {
-	const char delimit[31] = {'=','`','\'',' ','\n','\t','\b','#','&','.',';',':',',','_','~','(',')', '[', ']','{','}','?','!','<','>','"','@','/','$','%','*'};
+	const char delimit[31] = {'=','\'',' ','\n','\t','\b','#','&','.',';',':',',','_','~','(',')', '[', ']','{','}','?','!','<','>','"','@','/','$','%','*'};
 	unsigned int i;
 	for (i = 0; i < 31; i++) {
 		if (c == delimit[i]) {
