@@ -23,7 +23,8 @@ class TestNormalizador : public testing::Test {
 
 TEST_F(TestNormalizador,Normalizar_string)
 {
-	string lineaLarga= "ésta-línea-se-ásemeja-múcho-A\nUNA CANCION\n";
+	string lineaLarga = "ésta-línea-se-ásemeja-múcho-A\nUNA CANCION\n I";
 	string lineaLargaNormalizada = n.normalizar_input(lineaLarga);
-	ASSERT_TRUE(lineaLargaNormalizada == "esta-linea-se-asemeja-mucho-a\nuna cancion\n");
+	ASSERT_TRUE(lineaLargaNormalizada == "esta-linea-se-asemeja-mucho-a\nuna cancion\n i");
+
 }

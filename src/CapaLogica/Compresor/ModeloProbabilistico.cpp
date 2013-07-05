@@ -161,17 +161,6 @@ double ModeloProbabilistico::calcular_high_count (const Uint simbolo)const
 	return high_count;
 }
 
-Uint ModeloProbabilistico::obtener_simbolo(double probabilidad)const
-{
-	for (Uint simbolo = 0; simbolo < tamanioAlfabeto; simbolo++)
-	{
-		if (calcular_low_count(simbolo) <= probabilidad && probabilidad <= calcular_high_count(simbolo))
-			return simbolo;
-	}
-
-	return tamanioAlfabeto; //ultimo simbolo
-}
-
 Uint ModeloProbabilistico::calcular_total_frecuencias()const
 {
 	return totalFrecuencias;

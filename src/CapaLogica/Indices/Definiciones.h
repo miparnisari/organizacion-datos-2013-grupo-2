@@ -22,8 +22,8 @@ typedef unsigned int 							IDdocumento_t;
 typedef std::string 							Termino_t;
 typedef unsigned int 							IDtermino_t;
 
-typedef unsigned int							PosicionTermino_t;
-typedef unsigned int							CantidadPosiciones_t;
+typedef unsigned short						PosicionTermino_t;
+typedef unsigned short						CantidadPosiciones_t;
 
 typedef int 									Referencia_t;
 typedef Referencia_t							ReferenciaListaPos_t;

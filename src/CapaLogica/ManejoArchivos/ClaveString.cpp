@@ -47,7 +47,8 @@ int ClaveString::empaquetar(char* buffer){
 string ClaveString::remover_espacios(const string linea){
 
 	std::string resultado;
-	for (unsigned int i = 0; i < linea.size(); i++)
+	const unsigned int LONGITUD_LINEA = linea.size();
+	for (unsigned int i = 0; i < LONGITUD_LINEA; i++)
 	{
 		if (linea.at(i) != ' ')
 			resultado.push_back(linea.at(i));

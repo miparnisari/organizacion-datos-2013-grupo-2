@@ -26,16 +26,17 @@ TEST_F(TestTextoNormalizado,Obtener_letras_parseadas)
 	palabras.push_back("97");
 	palabras.push_back("hola");
 
+
 	unsigned int cantidad = texto.parsear(letra);
-	assert (cantidad == palabras.size());
+	ASSERT_EQ (cantidad,palabras.size());
 
 	std::string palabra = "";
 	unsigned int i = 0;
 	while (texto.get_proxima_palabra(palabra) != RES_FIN)
 	{
-		assert (palabra == palabras[i]);
+		ASSERT_EQ(palabra, palabras[i]);
 		i ++;
 	}
 
-	assert (i == palabras.size());
+	ASSERT_EQ (i, palabras.size());
 }
