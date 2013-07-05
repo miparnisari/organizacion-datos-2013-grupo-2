@@ -84,6 +84,9 @@ TEST_F(TestIndiceInvertidoBooleanoConPosicion,Busqueda_frases)
 	ASSERT_EQ(id_docs[1],id_doc2);
 	ASSERT_EQ(id_docs[2],id_doc3);
 
+	indice.buscar_frase("una frase muy muy larga que no esta en ninguno de los indices", id_docs);
+	ASSERT_EQ(id_docs.size(),0);
+
 	indice.buscar_frase("to to to to to to to", id_docs);
 	ASSERT_EQ(id_docs.size(),3);
 	ASSERT_EQ(id_docs[0],id_doc1);

@@ -275,8 +275,8 @@ vector<pair<IDdocumento_t,PosicionTermino_t> > IndiceInvertidoBooleanoConPosicio
 
 	int i = 0;
 	int j = 0;
-	const int MAX_INDICE_V1 = v1.size() -1;
-	const int MAX_INDICE_V2 = v2.size() -1;
+	const int MAX_INDICE_V1 = v1.size() - 1;
+	const int MAX_INDICE_V2 = v2.size() - 1;
 
 	while(i <= MAX_INDICE_V1  && j <= MAX_INDICE_V2)
 	{
@@ -329,7 +329,7 @@ int IndiceInvertidoBooleanoConPosicion::buscar_frase(const string & frase, vecto
 	{
 		_buscar_termino(termino,interseccion);
 
-		while (frase_parseada.get_proxima_palabra(termino) != RES_FIN)
+		while (frase_parseada.get_proxima_palabra(termino) != RES_FIN && ! interseccion.empty())
 		{
 			_buscar_termino(termino,vector_termino_dos);
 
@@ -338,9 +338,10 @@ int IndiceInvertidoBooleanoConPosicion::buscar_frase(const string & frase, vecto
 		}
 	}
 
+	const int CANTIDAD_DOCS_INTERSECCION = interseccion.size();
 
 	// Elimino los ID docs repetidos
-	for (unsigned int i = 0; i < interseccion.size(); i ++)
+	for (unsigned int i = 0; i < CANTIDAD_DOCS_INTERSECCION; i ++)
 	{
 		IDdocumento_t id_doc = interseccion[i].first;
 		if(std::find(id_docs.begin(), id_docs.end(), id_doc) == id_docs.end())
